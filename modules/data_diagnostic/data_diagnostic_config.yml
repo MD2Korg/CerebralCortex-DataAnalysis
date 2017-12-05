@@ -1,0 +1,176 @@
+general:
+  window_size: 60
+
+sampling_rate:
+  rip: 21.33
+  ecg: 64
+  autosense_accel: 10.67
+  motionsense_accel: 25
+  motionsense_gyro: 25
+  phone_battery: 1
+  autosense_battery: 1
+  motionsense_battery: 1
+
+battery_marker:
+  phone_powered_off: 30 #min=0 and max=100
+  phone_battery_down: 10
+  autosense_powered_off: 0 #Min=0 and Max=6
+  autosense_battery_down: 0.5 #Min=0 and Max=6
+  motionsense_powered_off: 1 #min= and max=
+  motionsense_battery_down: 10 #min= and max=
+
+sensor_failure:
+  threshold: 0.000003
+
+attachment_marker:
+  ecg_on_body: 1000
+  rip_on_body: 1000
+  #these two parameters are only used with GSR. In future, we might not have GSR values.
+  improper_attachment: 750
+  gsr_off_body: 1800
+  #motionsense
+  motionsense_improper_attachment: 0.33
+  motionsense_onbody: 0.33
+  motionsense_offbody: 0.05
+
+packet_loss_marker:
+  #min=0 and max=1.0
+  ecg_acceptable_packet_loss: 0.33
+  rip_acceptable_packet_loss: 0.33
+  motionsense_accel_acceptable_packet_loss: 0.33
+  motionsense_gyro_acceptable_packet_loss: 0.33
+
+sensor_unavailable_marker:
+  #Threshold to distinguish between a wireless disconnection and sensor-off
+  autosense: 4000
+  motionsense: 0.022
+  phone: 0.014
+
+stream_names:
+  #INPUTS
+  phone_battery: "BATTERY--org.md2k.phonesensor--PHONE"
+  phone_accel: "ACCELEROMETER--org.md2k.phonesensor--PHONE"
+  phone_gyro: "GYROSCOPE--org.md2k.phonesensor--PHONE"
+  phone_physical_activity: "ACTIVITY_TYPE--org.md2k.phonesensor--PHONE"
+  motionsense_hrv_battery_right: "BATTERY--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
+  motionsense_hrv_battery_left: "BATTERY--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
+  motionsense_hrv_accel_right: "ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
+  motionsense_hrv_accel_left: "ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
+  motionsense_hrv_gyro_right: "GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
+  motionsense_hrv_gyro_left: "GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
+  motionsense_hrv_led_quality_right: "DATA_QUALITY--LED--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
+  motionsense_hrv_led_quality_left: "DATA_QUALITY--LED--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
+  motionsense_hrv_led_right: "LED--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
+  motionsense_hrv_led_left: "LED--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
+
+  autosense_battery: "BATTERY--org.md2k.autosense"
+  autosense_ecg: "ECG--org.md2k.autosense"
+  autosense_rip: "RIP--org.md2k.autosense"
+  autosense_accel_x: "ACCELEROMETER-X--org.md2k.autosense"
+  autosense_accel_x: "ACCELEROMETER-Y--org.md2k.autosense"
+  autosense_accel_x: "ACCELEROMETER-Z--org.md2k.autosense"
+  autosense_gyro: "GYRO--org.md2k.autosense"
+
+  # not part of core data-diagnostics
+  phone_screen_touch: "TOUCH_SCREEN--org.md2k.phonesensor--PHONE"
+
+
+  #### OUTPUTS STREAM NAMES
+  # sensor failure
+  motionsense_hrv_right_sensor_failure_marker: "DATA-DIAGNOSTIC--MOTION_SENSE_HRV--RIGHT_WRIST--SENSOR-FAILURE"
+  motionsense_hrv_left_sensor_failure_marker: "DATA-DIAGNOSTIC--MOTION_SENSE_HRV--LEFT_WRIST--SENSOR-FAILURE"
+  phone_sensor_failure_marker: "DATA-DIAGNOSTIC--PHONE--SENSOR-FAILURE"
+  autosense_sensor_failure_marker: "DATA-DIAGNOSTIC--AUTOSENSE--SENSOR-FAILURE"
+
+  # battery markers
+  phone_battery_marker: "DATA-DIAGNOSTIC--PHONE-BATTERY"
+  motionsense_hrv_battery_right_marker: "DATA-DIAGNOSTIC--MOTION_SENSE_HRV--RIGHT_WRIST--BATTERY"
+  motionsense_hrv_battery_left_marker: "DATA-DIAGNOSTIC--MOTION_SENSE_HRV--LEFT_WRIST--BATTERY"
+  autosense_battery_marker: "DATA-DIAGNOSTIC--AUTOSENSE--BATTERY"
+
+  # sensor unavailable marker
+  autosense_rip_wireless_marker: "DATA-DIAGNOSTIC--RIP--WIRELESS-DISCONNECTION"
+  autosense_ecg_wireless_marker: "DATA-DIAGNOSTIC--ECG-DISCONNECTION"
+  motionsense_hrv_right_wireless_marker: "DATA-DIAGNOSTIC--MOTION_SENSE_HRV--RIGHT_WRIST--WIRELESS-DISCONNECTION"
+  motionsense_hrv_left_wireless_marker: "DATA-DIAGNOSTIC--MOTION_SENSE_HRV--LEFT_WRIST--WIRELESS-DISCONNECTION"
+  autosense_wireless_marker: "DATA-DIAGNOSTIC--AUTOSENSE--WIRELESS-DISCONNECTION"
+
+  # mobile app availability marker
+  app_availability_marker: "DATA-DIAGNOSTIC--MOBILE-PHONE-APP-AVAILABILITY"
+
+  #packet loss markers
+  autosense_rip_packetloss_marker: "DATA-DIAGNOSTIC--RIP--PACKET-LOSS"
+  autosense_ecg_packetloss_marker: "DATA-DIAGNOSTIC--ECG--PACKET-LOSS"
+  motionsense_hrv_accel_right_packetloss_marker: "DATA-DIAGNOSTIC--ACCELEROMETER-MOTION_SENSE_HRV--RIGHT_WRIST--PACKET-LOSS"
+  motionsense_hrv_accel_left_packetloss_marker: "DATA-DIAGNOSTIC--ACCELEROMETER-MOTION_SENSE_HRV--LEFT_WRIST--PACKET-LOSS"
+  motionsense_hrv_gyro_right_packetloss_marker: "DATA-DIAGNOSTIC--GYROSCOPE-MOTION_SENSE_HRV--RIGHT_WRIST--PACKET-LOSS"
+  motionsense_hrv_gyro_left_packetloss_marker: "DATA-DIAGNOSTIC--GYROSCOPE-MOTION_SENSE_HRV--LEFT_WRIST--PACKET-LOSS"
+
+  #attachment markers
+  autosense_rip_attachment_marker: "DATA-DIAGNOSTIC--RIP--ATTACHMENT-MARKER"
+  autosense_ecg_attachment_marker: "DATA-DIAGNOSTIC--ECG--ATTACHMENT-MARKER"
+  motionsense_hrv_right_attachment_marker: "DATA-DIAGNOSTIC--MOTION_SENSE_HRV--RIGHT_WRIST--ATTACHMENT"
+  motionsense_hrv_left_attachment_marker: "DATA-DIAGNOSTIC--MOTION_SENSE_HRV--LEFT_WRIST--ATTACHMENT"
+
+  # not part of core data-diagnostics
+  phone_screen_touch_marker: "DATA-DIAGNOSTIC--TOUCH_SCREEN--PHONE"
+
+labels:
+  # sensor failure
+  motionsense_failure: [{"label":"MOTIONSENSE-SENSOR-FAILURE"}]
+  phone_sensor_failure: [{"label":"PHONE-SENSOR-FAILURE"}]
+  autosense_sensor_failure: [{"label":"AUTOSENSE-SENSOR-FAILURE"}]
+
+  # sensor unavailable
+  autosense_unavailable: [{"label":"AUTOSENSE-UNAVAILABLE"}]
+  autosense_available: [{"label":"AUTOSENSE-AVAILABLE"}]
+  motionsense_unavailable: [{"label":"MOTIONSENSE-UNAVAILABLE"}]
+  motionsense_available: [{"label":"MOTIONSENSE-AVAILABLE"}]
+  # mobile app unavailable
+  app_unavailable: [{"label":"MOBILE-APP-UNAVAILABLE"}]
+  app_available: [{"label":"MOBILE-APP-AVAILABLE"}]
+
+  # attachment labels
+  ecg_improper_attachment: [{"label":"ECG-IMPROPER-ATTACHMENT"}]
+  ecg_off_body: [{"label":"ECG-OFF-BODY"}]
+  ecg_on_body: [{"label":"ECG-ON-BODY"}]
+  rip_improper_attachment: [{"label":"RIP-IMPROPER-ATTACHMENT"}]
+  rip_off_body: [{"label":"RIP-OFF-BODY"}]
+  rip_on_body: [{"label":"RIP-ON-BODY"}]
+  motionsense_improper_attachment: [{"label":"MOTIONSENSE-IMPROPER-ATTACHMENT"}]
+  motionsense_offbody: [{"label":"MOTIONSENSE-OFF-BODY"}]
+  motionsense_onbody: [{"label":"MOTIONSENSE-ON-BODY"}]
+
+  #packet loss labels
+  ecg_packet_loss: [{"label":"ECG-PACKET-LOSS"}]
+  rip_packet_loss: [{"label":"RIP-PACKET-LOSS"}]
+  motionsense_accel_packet_loss: [{"label":"MOTIONSENSE-ACCELEROMETER-PACKET-LOSS"}]
+  motionsense_gyro_packet_loss: [{"label":"MOTIONSENSE-GYRO-PACKET-LOSS"}]
+
+  #battery labels
+  powered_off: [{"label":"POWERED-OFF"}]
+  battery_down: [{"label":"BATTERY-DOWN"}]
+
+
+algo_type:
+  battery_marker: battery
+  attachment_marker: attachment
+  sensor_unavailable_marker: sensor_unavailable
+  packet_loss_marker: packet_loss
+  app_availability_marker: app_availability_marker
+  sensor_failure: sensor_failure
+  phone_screen_touch: phone_screen_touch
+
+
+description:
+  data_diagnostic: "Data-diagnostic module helps to identify the causes of missing data."
+  attachment_marker: "Attachment marker algorithm uses variance of a windowed signals data to mark the window as on/off body or improperly attached."
+  battery_data_marker: "Battery data marker uses battery levels to determine whether the battery was down or device was powered off."
+  packet_loss_marker: "Packet loss marker algorithm marks a window as packet-loss if received packets in a window is less than the acceptable packet loss threshold."
+  sensor_unavailable_marker: "Sensor unavailable algorithm uses battery-off stream to analyze whether battery was actually powered off or a person walked away from the phone."
+  app_availability_marker : "Phone battery data is continuously collected. If there is any missing mobile phone battery data then it would be considered as mobile app unavailable."
+  sensor_failure: "Sensor is considered as failed if one of the sensors fails to capture signals."
+  phone_screen_touch: "This algorithm is not part of data diagnostic core suite. This stream contains the duration when a participant was active on phone."
+
+
+
