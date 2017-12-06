@@ -28,8 +28,8 @@ import numpy as np
 from numpy.linalg import norm
 from sklearn import preprocessing
 
-from cerebralcortex.kernel.datatypes.datapoint import DataPoint
-from cerebralcortex.kernel.datatypes.datastream import DataStream
+from cerebralcortex.core.datatypes.datapoint import DataPoint
+from cerebralcortex.core.datatypes.datastream import DataStream
 
 
 def normalize(datastream: DataStream) -> DataStream:

@@ -26,10 +26,10 @@ from typing import List
 
 import numpy as np
 
-from cerebralcortex.data_processor.signalprocessing.dataquality import Quality
-from cerebralcortex.data_processor.signalprocessing.vector import smooth, moving_average_curve
-from cerebralcortex.kernel.datatypes.datapoint import DataPoint
-from cerebralcortex.kernel.datatypes.datastream import DataStream
+from core.signalprocessing.dataquality import Quality
+from core.signalprocessing.vector import smooth, moving_average_curve
+from cerebralcortex.core.datatypes.datapoint import DataPoint
+from cerebralcortex.core.datatypes.datastream import DataStream
 
 
 def filter_bad_rip(rip: DataStream,

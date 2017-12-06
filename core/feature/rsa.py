@@ -24,9 +24,9 @@
 
 import numpy as np
 
-from cerebralcortex.data_processor.signalprocessing.window import window_sliding
-from cerebralcortex.kernel.datatypes.datapoint import DataPoint
-from cerebralcortex.kernel.datatypes.datastream import DataStream
+from core.signalprocessing.window import window_sliding
+from cerebralcortex.core.datatypes.datapoint import DataPoint
+from cerebralcortex.core.datatypes.datastream import DataStream
 
 
 def rsa_calculate(start_time,

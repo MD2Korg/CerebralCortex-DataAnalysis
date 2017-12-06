@@ -27,10 +27,10 @@ import numpy as np
 import scipy.signal as signal
 import datetime
 
-from cerebralcortex.data_processor.signalprocessing.window import window_sliding
-from cerebralcortex.kernel.datatypes.datapoint import DataPoint
-from cerebralcortex.kernel.datatypes.datastream import DataStream
-from cerebralcortex.data_processor.signalprocessing.dataquality import Quality
+from core.signalprocessing.window import window_sliding
+from cerebralcortex.core.datatypes.datapoint import DataPoint
+from cerebralcortex.core.datatypes.datastream import DataStream
+from core.signalprocessing.dataquality import Quality
 
 def lomb(data: List[DataPoint],
          low_frequency: float,

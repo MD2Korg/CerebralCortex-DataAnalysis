@@ -25,11 +25,8 @@
 import json
 from collections import OrderedDict
 
-from cerebralcortex.CerebralCortex import CerebralCortex
-from cerebralcortex.kernel.DataStoreEngine.dataset import DataSet
-from cerebralcortex.kernel.datatypes.datastream import DataStream
-from cerebralcortex.kernel.schema_builder.data_descriptor import data_descriptor
-from cerebralcortex.kernel.schema_builder.execution_context import execution_context
+from cerebralcortex.cerebralcortex import CerebralCortex
+from cerebralcortex.core.datatypes.datastream import DataStream
 
 
 def store(data: OrderedDict, input_streams: dict, output_streams: dict, CC_obj: CerebralCortex):

@@ -1,7 +1,6 @@
 import numpy as np
 from scipy import signal
-from collections import OrderedDict
-from cerebralcortex.kernel.datatypes.datapoint import DataPoint
+from cerebralcortex.core.datatypes.datapoint import DataPoint
 def data_quality_led(windowed_data):
     """
     

@@ -33,8 +33,8 @@ from modules.data_diagnostic.post_processing import get_execution_context, get_a
 from modules.data_diagnostic.post_processing import store
 from modules.data_diagnostic.util import get_stream_days
 from modules.data_diagnostic.util import merge_consective_windows
-from cerebralcortex.data_processor.signalprocessing.window import window
-from cerebralcortex.kernel.DataStoreEngine.dataset import DataSet
+from core.signalprocessing.window import window
+from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 
 
 def battery_marker(raw_stream_id: uuid, stream_name: str, user_id, dd_stream_name, CC: CerebralCortex, config: dict):

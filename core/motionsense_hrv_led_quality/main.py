@@ -25,11 +25,11 @@
 import os
 import uuid
 from datetime import timedelta
-from cerebralcortex.CerebralCortex import CerebralCortex
-from cerebralcortex.data_processor.motionsense_hrv_led_quality.data_quality_led import data_quality_led
-from cerebralcortex.data_processor.motionsense_hrv_led_quality.post_processing import store
-from cerebralcortex.data_processor.signalprocessing.window import window
-from cerebralcortex.kernel.DataStoreEngine.dataset import DataSet
+from cerebralcortex.cerebralcortex import CerebralCortex
+from core.motionsense_hrv_led_quality.data_quality_led import data_quality_led
+from core.motionsense_hrv_led_quality.post_processing import store
+from core.signalprocessing.window import window
+from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 
 # create and load CerebralCortex object and configs
 configuration_file = os.path.join(os.path.dirname(__file__), '../../../cerebralcortex.yml')

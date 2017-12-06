@@ -29,7 +29,7 @@ from typing import List
 import pytz
 from collections import OrderedDict
 
-from cerebralcortex.kernel.datatypes.datapoint import DataPoint
+from cerebralcortex.core.datatypes.datapoint import DataPoint
 
 
 def window(data: List[DataPoint],

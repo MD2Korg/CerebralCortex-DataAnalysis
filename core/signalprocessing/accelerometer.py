@@ -25,10 +25,10 @@ from typing import Tuple
 
 import numpy as np
 
-from cerebralcortex.data_processor.signalprocessing.vector import magnitude, normalize, window_std_dev
-from cerebralcortex.data_processor.signalprocessing.window import window
-from cerebralcortex.kernel.datatypes.datapoint import DataPoint
-from cerebralcortex.kernel.datatypes.datastream import DataStream
+from core.signalprocessing.vector import magnitude, normalize, window_std_dev
+from core.signalprocessing.window import window
+from cerebralcortex.core.datatypes.datapoint import DataPoint
+from cerebralcortex.core.datatypes.datastream import DataStream
 
 
 def accelerometer_features(accel: DataStream,

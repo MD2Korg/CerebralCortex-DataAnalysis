@@ -26,9 +26,9 @@ from typing import List
 import numpy as np
 from scipy import signal
 
-from cerebralcortex.data_processor.signalprocessing.dataquality import Quality
-from cerebralcortex.kernel.datatypes.datapoint import DataPoint
-from cerebralcortex.kernel.datatypes.datastream import DataStream
+from core.signalprocessing.dataquality import Quality
+from cerebralcortex.core.datatypes.datapoint import DataPoint
+from cerebralcortex.core.datatypes.datastream import DataStream
 
 
 def filter_bad_ecg(ecg: DataStream,

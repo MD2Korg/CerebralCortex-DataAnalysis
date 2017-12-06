@@ -28,8 +28,8 @@ import numpy as np
 from fastdtw import fastdtw
 from scipy.interpolate import pchip
 
-from cerebralcortex.kernel.datatypes.datapoint import DataPoint
-from cerebralcortex.kernel.datatypes.datastream import DataStream
+from cerebralcortex.core.datatypes.datapoint import DataPoint
+from cerebralcortex.core.datatypes.datastream import DataStream
 
 
 def interpolate_gaps(data: List[DataPoint],

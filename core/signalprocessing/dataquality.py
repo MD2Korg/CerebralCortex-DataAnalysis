@@ -28,9 +28,9 @@ from enum import Enum
 import numpy as np
 from scipy.stats import iqr
 
-from cerebralcortex.data_processor.signalprocessing.window import window
-from cerebralcortex.kernel.datatypes.datapoint import DataPoint
-from cerebralcortex.kernel.datatypes.datastream import DataStream
+from core.signalprocessing.window import window
+from cerebralcortex.core.datatypes.datapoint import DataPoint
+from cerebralcortex.core.datatypes.datastream import DataStream
 
 
 class Quality(Enum):
