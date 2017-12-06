@@ -1,4 +1,5 @@
 # Copyright (c) 2017, MD2K Center of Excellence
+# - Nasir Ali <nasir.ali08@gmail.com>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -31,8 +32,8 @@ import json
 import uuid
 from datetime import timedelta
 import numpy as np
-from cerebralcortex.CerebralCortex import CerebralCortex
-from cerebralcortex.kernel.datatypes.datastream import DataPoint
+from cerebralcortex.cerebralcortex import CerebralCortex
+from cerebralcortex.core.datatypes.datapoint import DataPoint
 
 
 def merge_consective_windows(data: OrderedDict) -> List[DataPoint]:
