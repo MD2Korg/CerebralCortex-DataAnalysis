@@ -25,8 +25,10 @@
 
 import os
 import uuid
+import argparse
 from datetime import timedelta
-
+from modules.mdebugger.util import get_stream_days
+from cerebralcortex.core.util.spark_helper import get_or_create_sc
 from modules.motionsense_hrv_led_quality.data_quality_led import data_quality_led
 
 from cerebralcortex.cerebralcortex import CerebralCortex
@@ -34,37 +36,33 @@ from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from core.signalprocessing.window import window
 from modules.motionsense_hrv_led_quality.post_processing import store
 
-# create and load CerebralCortex object and configs
-configuration_file = os.path.join(os.path.dirname(__file__), '../../../cerebralcortex.yml')
-CC_driver = CerebralCortex(configuration_file, master="local[*]", name="LED Data Quality", load_spark=True)
-CC_worker = CerebralCortex(configuration_file, master="local[*]", name="LED Data Quality", load_spark=False)
 
-
-def all_participants_data(study_name):
+def all_users_data(study_name, md_config, CC, spark_context):
     # get all participants' name-ids
-    participants = CC_driver.get_all_participants(study_name)
+    users = CC.get_all_participants(study_name)
 
-    if len(participants) > 0:
-        participants_rdd = CC_driver.sc.parallelize(participants)
-        results = participants_rdd.map(
-            lambda participant: process_data(participant["identifier"], CC_worker))
+    if len(users) > 0:
+        rdd = spark_context.parallelize(users)
+        results = rdd.map(
+            lambda user: process_data(user["identifier"], CC))
         results.count()
     else:
         print("No participant is selected")
 
 
-def process_data(owner_id, CC):
-    streams = CC.get_participant_streams(owner_id)
+def process_data(user_id, CC):
+    streams = CC.get_user_streams(user_id)
     if streams and len(streams) > 0:
         led_right_wrist_quality_stream_name = "DATA_QUALITY--LED--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
         led_left_wrist_quality_stream_name = "DATA_QUALITY--LED--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
 
-        analyze_quality(streams, owner_id, led_right_wrist_quality_stream_name, "right", CC)
-        analyze_quality(streams, owner_id, led_left_wrist_quality_stream_name, "left", CC)
+        analyze_quality(streams, user_id, led_right_wrist_quality_stream_name, "right", CC)
+        analyze_quality(streams, user_id, led_left_wrist_quality_stream_name, "left", CC)
 
 
 def analyze_quality(streams, owner_id, led_right_wrist_quality_stream_name, wrist, CC):
     led_stream_quality_id = uuid.uuid3(uuid.NAMESPACE_DNS, str(led_right_wrist_quality_stream_name + owner_id+"LED quality computed on CerebralCortex"))
+    window_size = 3 # in seconds
     if wrist=="right":
         if "LED--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST" in streams:
             led_wrist_stream_id = streams["LED--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"][
@@ -81,14 +79,14 @@ def analyze_quality(streams, owner_id, led_right_wrist_quality_stream_name, wris
             led_wrist_stream_id = None
 
     if led_wrist_stream_id:
-        stream_end_days = CC.get_stream_start_end_time(led_wrist_stream_id)
+        stream_end_days = CC.get_stream_duration(led_wrist_stream_id)
         if stream_end_days["start_time"] and stream_end_days["end_time"]:
             days = stream_end_days["end_time"] - stream_end_days["start_time"]
             for day in range(days.days + 1):
                 day = (stream_end_days["start_time"]+timedelta(days=day)).strftime('%Y%m%d')
-                stream = CC.get_datastream(led_wrist_stream_id, data_type=DataSet.COMPLETE, day=day)
+                stream = CC.get_stream(led_wrist_stream_id, day=day, data_type=DataSet.COMPLETE)
                 if len(stream.data) > 0:
-                    windowed_data = window(stream.data, 3, False)
+                    windowed_data = window(stream.data, window_size, False)
                     led_quality_windows = data_quality_led(windowed_data)
 
                     input_streams = [{"owner_id": str(owner_id), "id": str(led_wrist_stream_id),
@@ -98,5 +96,15 @@ def analyze_quality(streams, owner_id, led_right_wrist_quality_stream_name, wris
                     store(led_quality_windows, input_streams, output_stream, CC)
 
 if __name__ == '__main__':
+    # create and load CerebralCortex object and configs
+    parser = argparse.ArgumentParser(description='CerebralCortex Kafka Message Handler.')
+    parser.add_argument("-cc", "--cc_config_filepath", help="Configuration file path", required=True)
+    args = vars(parser.parse_args())
+
+    CC = CerebralCortex(args["cc_config_filepath"])
+
+    # get/create spark context
+    spark_context = get_or_create_sc(type="sparkContext")
+
     # run for all the participants in a study
-    all_participants_data("mperf")
+    all_users_data("mperf", CC, spark_context)
