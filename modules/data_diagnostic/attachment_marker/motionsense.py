@@ -25,13 +25,13 @@
 import uuid
 from collections import OrderedDict
 
-from cerebralcortex.CerebralCortex import CerebralCortex
-from cerebralcortex.data_processor.data_diagnostic.post_processing import get_execution_context, get_annotations
-from cerebralcortex.data_processor.data_diagnostic.post_processing import store
-from cerebralcortex.data_processor.data_diagnostic.util import get_stream_days
-from cerebralcortex.data_processor.data_diagnostic.util import merge_consective_windows
-from cerebralcortex.data_processor.signalprocessing.window import window
-from cerebralcortex.kernel.DataStoreEngine.dataset import DataSet
+from cerebralcortex.cerebralcortex import CerebralCortex
+from modules.data_diagnostic.post_processing import get_execution_context, get_annotations
+from modules.data_diagnostic.post_processing import store
+from modules.data_diagnostic.util import get_stream_days
+from modules.data_diagnostic.util import merge_consective_windows
+from core.signalprocessing.window import window
+from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 
 
 def attachment_marker(raw_stream_id: uuid, stream_name: str, owner_id: uuid, dd_stream_name, CC: CerebralCortex,
@@ -43,13 +43,13 @@ def attachment_marker(raw_stream_id: uuid, stream_name: str, owner_id: uuid, dd_
     """
     # TODO: quality streams could be multiple so find the one computed with CC
     # using stream_id, data-diagnostic-stream-id, and owner id to generate a unique stream ID for battery-marker
-    attachment_marker_stream_id = uuid.uuid3(uuid.NAMESPACE_DNS, str(raw_stream_id + dd_stream_name + owner_id))
+    attachment_marker_stream_id = uuid.uuid3(uuid.NAMESPACE_DNS, str(raw_stream_id + dd_stream_name + owner_id+"ATTACHMENT MARKER"))
 
     stream_days = get_stream_days(raw_stream_id, attachment_marker_stream_id, CC)
 
     for day in stream_days:
         # load stream data to be diagnosed
-        raw_stream = CC.get_datastream(raw_stream_id, day, data_type=DataSet.COMPLETE)
+        raw_stream = CC.get_stream(raw_stream_id, day=day, data_type=DataSet.COMPLETE)
 
         if len(raw_stream.data) > 0:
             windowed_data = window(raw_stream.data, config['general']['window_size'], True)

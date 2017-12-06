@@ -28,17 +28,17 @@ from typing import List
 
 import numpy as np
 
-from cerebralcortex.CerebralCortex import CerebralCortex
-from cerebralcortex.data_processor.data_diagnostic.post_processing import get_execution_context, get_annotations
-from cerebralcortex.data_processor.data_diagnostic.post_processing import store
-from cerebralcortex.data_processor.data_diagnostic.util import get_stream_days
-from cerebralcortex.data_processor.data_diagnostic.util import merge_consective_windows
-from cerebralcortex.data_processor.signalprocessing.window import window
-from cerebralcortex.kernel.DataStoreEngine.dataset import DataSet
+from cerebralcortex.cerebralcortex import CerebralCortex
+from modules.data_diagnostic.post_processing import get_execution_context, get_annotations
+from modules.data_diagnostic.post_processing import store
+from modules.data_diagnostic.util import get_stream_days
+from modules.data_diagnostic.util import merge_consective_windows
+from core.signalprocessing.window import window
+from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 
 
 def mobile_app_availability_marker(raw_stream_id: uuid, stream_name: str, owner_id, dd_stream_name, CC: CerebralCortex,
-                                   config: dict, start_time=None, end_time=None):
+                                   config: dict):
     """
     This algorithm uses phone battery percentages to decide whether mobile app was available or unavailable.
     Theoretically, phone battery data shall be collected 24/7.
@@ -50,12 +50,12 @@ def mobile_app_availability_marker(raw_stream_id: uuid, stream_name: str, owner_
     try:
         # using stream_id, data-diagnostic-stream-id, and owner id to generate a unique stream ID for battery-marker
         app_availability_marker_stream_id = uuid.uuid3(uuid.NAMESPACE_DNS, str(
-            raw_stream_id + dd_stream_name + owner_id + "mobile app availability marker"))
+            raw_stream_id + dd_stream_name + owner_id + "MOBILE APP AVAILABILITY MARKER"))
 
         stream_days = get_stream_days(raw_stream_id, app_availability_marker_stream_id, CC)
 
         for day in stream_days:
-            stream = CC.get_datastream(raw_stream_id, data_type=DataSet.COMPLETE, day=day)
+            stream = CC.get_stream(raw_stream_id, day=day, data_type=DataSet.COMPLETE)
             if len(stream.data) > 0:
                 windowed_data = window(stream.data, config['general']['window_size'], True)
                 results = process_windows(windowed_data, config)

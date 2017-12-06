@@ -112,7 +112,7 @@ def diagnose_streams(user_id: uuid, CC: CerebralCortex, config: dict):
                            config["stream_names"]["autosense_battery_marker"], CC, config)
 
         # TODO: Motionsense battery values are not available.
-        # TODO: Uncomment following code when the motionsense battery values are available
+        # TODO: Uncomment following code when the motionsense battery values are available and/or not correct
         # if config["stream_names"]["motionsense_hrv_battery_right"] in streams:
         #     battery_marker(streams[config["stream_names"]["motionsense_hrv_battery_right"]]["identifier"], streams[config["stream_names"]["motionsense_hrv_battery_right"]]["name"], participant_id,  config["stream_names"]["motionsense_hrv_battery_right_marker"], CC, config)
         # if config["stream_names"]["motionsense_hrv_battery_left"] in streams:

@@ -93,14 +93,14 @@ def outlier_detection(window_data: list) -> list:
 
 def get_stream_days(raw_stream_id: uuid, dd_stream_id: uuid, CC: CerebralCortex) -> List:
     """
-    Returns a list of days that needs be diagnosed for a participant
+    Returns a list of days (string format: YearMonthDay (e.g., 20171206)
     :param raw_stream_id:
     :param dd_stream_id:
     """
-    dd_stream_days = CC.get_stream_start_end_time(dd_stream_id)["end_time"]
+    dd_stream_days = CC.get_stream_duration(dd_stream_id)["end_time"]
 
     if not dd_stream_days:
-        stream_days = CC.get_stream_start_end_time(raw_stream_id)
+        stream_days = CC.get_stream_duration(raw_stream_id)
         days = stream_days["end_time"]-stream_days["start_time"]
         for day in range(days.days+1):
             stream_days.append((stream_days["start_time"]+timedelta(days=day)).strftime('%Y%m%d'))

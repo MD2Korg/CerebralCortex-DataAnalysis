@@ -28,14 +28,14 @@ from typing import List
 
 import numpy as np
 
-from cerebralcortex.CerebralCortex import CerebralCortex
-from cerebralcortex.data_processor.data_diagnostic.post_processing import get_execution_context, get_annotations
-from cerebralcortex.data_processor.data_diagnostic.post_processing import store
-from cerebralcortex.data_processor.data_diagnostic.util import get_stream_days
-from cerebralcortex.data_processor.data_diagnostic.util import magnitude_datapoints
-from cerebralcortex.data_processor.data_diagnostic.util import merge_consective_windows
-from cerebralcortex.data_processor.signalprocessing.window import window
-from cerebralcortex.kernel.DataStoreEngine.dataset import DataSet
+from cerebralcortex.cerebralcortex import CerebralCortex
+from modules.data_diagnostic.post_processing import get_execution_context, get_annotations
+from modules.data_diagnostic.post_processing import store
+from modules.data_diagnostic.util import get_stream_days
+from modules.data_diagnostic.util import magnitude_datapoints
+from modules.data_diagnostic.util import merge_consective_windows
+from core.signalprocessing.window import window
+from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 
 
 def sensor_availability(raw_stream_id: uuid, stream_name: str, owner_id: uuid, dd_stream_name,
@@ -58,7 +58,7 @@ def sensor_availability(raw_stream_id: uuid, stream_name: str, owner_id: uuid, d
 
     for day in stream_days:
         # load stream data to be diagnosed
-        raw_stream = CC.get_datastream(raw_stream_id, day, data_type=DataSet.COMPLETE)
+        raw_stream = CC.get_stream(raw_stream_id, day=day, data_type=DataSet.COMPLETE)
         if len(raw_stream.data) > 0:
 
             windowed_data = window(raw_stream.data, config['general']['window_size'], True)

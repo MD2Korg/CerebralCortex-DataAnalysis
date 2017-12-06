@@ -28,13 +28,13 @@ from typing import List
 
 import numpy as np
 
-from cerebralcortex.CerebralCortex import CerebralCortex
-from cerebralcortex.data_processor.data_diagnostic.post_processing import get_execution_context, get_annotations
-from cerebralcortex.data_processor.data_diagnostic.post_processing import store
-from cerebralcortex.data_processor.data_diagnostic.util import get_stream_days
-from cerebralcortex.data_processor.data_diagnostic.util import merge_consective_windows
-from cerebralcortex.kernel.DataStoreEngine.dataset import DataSet
-from cerebralcortex.kernel.datatypes.datapoint import DataPoint
+from cerebralcortex.cerebralcortex import CerebralCortex
+from modules.data_diagnostic.post_processing import get_execution_context, get_annotations
+from modules.data_diagnostic.post_processing import store
+from modules.data_diagnostic.util import get_stream_days
+from modules.data_diagnostic.util import merge_consective_windows
+from cerebralcortex.core.datatypes.datapoint import DataPoint
+from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 
 
 def sensor_failure_marker(attachment_marker_stream_id: uuid, mshrv_accel_id: uuid, mshrv_gyro_id: uuid, wrist: str,
@@ -56,17 +56,17 @@ def sensor_failure_marker(attachment_marker_stream_id: uuid, mshrv_accel_id: uui
     try:
         for day in stream_days:
             # load stream data to be diagnosed
-            attachment_marker_stream = CC.get_datastream(attachment_marker_stream_id, day, data_type=DataSet.COMPLETE)
+            attachment_marker_stream = CC.get_stream(attachment_marker_stream_id, day, data_type=DataSet.COMPLETE)
             results = OrderedDict()
             if attachment_marker_stream.data:
                 for marker_window in attachment_marker_stream.data:
                     if "MOTIONSENSE-ON-BODY" in marker_window.sample:
-                        mshrv_accel_stream = CC.get_datastream(mshrv_accel_id, day, data_type=DataSet.ONLY_DATA,
+                        mshrv_accel_stream = CC.get_stream(mshrv_accel_id, day,
                                                                start_time=marker_window.start_time,
-                                                               end_time=marker_window.end_time)
-                        mshrv_gyro_stream = CC.get_datastream(mshrv_gyro_id, day, data_type=DataSet.ONLY_DATA,
+                                                               end_time=marker_window.end_time, data_type=DataSet.ONLY_DATA)
+                        mshrv_gyro_stream = CC.get_stream(mshrv_gyro_id, day,
                                                               start_time=marker_window.start_time,
-                                                              end_time=marker_window.end_time)
+                                                              end_time=marker_window.end_time, data_type=DataSet.ONLY_DATA)
 
                     results_accel = process_windows(mshrv_accel_stream, config)
                     results_gyro = process_windows(mshrv_gyro_stream, config)

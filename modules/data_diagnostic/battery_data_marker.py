@@ -48,12 +48,12 @@ def battery_marker(raw_stream_id: uuid, stream_name: str, user_id, dd_stream_nam
 
     try:
         # using stream_id, data-diagnostic-stream-id, and owner id to generate a unique stream ID for battery-marker
-        battery_marker_stream_id = uuid.uuid3(uuid.NAMESPACE_DNS, str(raw_stream_id +"BATTERY_MARKER"+dd_stream_name + user_id))
+        battery_marker_stream_id = uuid.uuid3(uuid.NAMESPACE_DNS, str(raw_stream_id+dd_stream_name + user_id +"BATTERY MARKER"))
 
         stream_days = get_stream_days(raw_stream_id, battery_marker_stream_id, CC)
 
         for day in stream_days:
-            stream = CC.get_datastream(raw_stream_id, data_type=DataSet.COMPLETE, day=day)
+            stream = CC.get_stream(raw_stream_id, day=day, data_type=DataSet.COMPLETE)
 
             if len(stream.data) > 0:
                 windowed_data = window(stream.data, config['general']['window_size'], True)
