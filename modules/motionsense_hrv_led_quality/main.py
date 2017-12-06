@@ -27,7 +27,7 @@ import os
 import uuid
 from datetime import timedelta
 
-from core.motionsense_hrv_led_quality.data_quality_led import data_quality_led
+from modules.motionsense_hrv_led_quality.data_quality_led import data_quality_led
 
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet

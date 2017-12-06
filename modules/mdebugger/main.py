@@ -23,52 +23,41 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import os
+
 import uuid
 import argparse
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.util.spark_helper import get_or_create_sc
-
-from modules.data_diagnostic.analysis.phone_screen_touch import phone_screen_touch_marker
-from modules.data_diagnostic.app_availability_marker import mobile_app_availability_marker
-from modules.data_diagnostic.attachment_marker.motionsense import \
+from cerebralcortex.core.config_manager.config import Configuration
+from modules.mdebugger.analysis.phone_screen_touch import phone_screen_touch_marker
+from modules.mdebugger.app_availability_marker import mobile_app_availability_marker
+from modules.mdebugger.attachment_marker.motionsense import \
     attachment_marker as ms_attachment_marker
-from modules.data_diagnostic.battery_data_marker import battery_marker
-from modules.data_diagnostic.packet_loss_marker import packet_loss_marker
-from modules.data_diagnostic.sensor_availablity_marker.motionsense import \
+from modules.mdebugger.battery_data_marker import battery_marker
+from modules.mdebugger.packet_loss_marker import packet_loss_marker
+from modules.mdebugger.sensor_availablity_marker.motionsense import \
     sensor_availability as ms_wd
-from modules.data_diagnostic.sensor_failure_marker.motionsense import sensor_failure_marker
-
-# create and load CerebralCortex object and configs
-parser = argparse.ArgumentParser(description='CerebralCortex Kafka Message Handler.')
-parser.add_argument("-c", "--config_filepath", help="Configuration file path", required=True)
-args = vars(parser.parse_args())
-
-CC = CerebralCortex(args["config_filepath"])
-
-# load data diagnostic configs
-config = CC.config
-spark_context = get_or_create_sc(type="sparkContext")
+from modules.mdebugger.sensor_failure_marker.motionsense import sensor_failure_marker
 
 
-def one_user_data(user_id: uuid = None):
+def one_user_data(user_id: uuid, md_config, CC, spark_context):
     # get all streams for a participant
     """
-    Diagnose one participant data only
+    Diagnose one participant streams only
     :param user_id: list containing only one
     """
     if user_id:
         rdd = spark_context.parallelize([user_id])
         results = rdd.map(
-            lambda user: diagnose_streams(user, CC, config))
+            lambda user: diagnose_streams(user, CC, md_config))
         results.count()
     else:
         print("User id cannot be empty.")
 
 
-def all_users_data(study_name: str):
+def all_users_data(study_name: str, md_config, CC, spark_context):
     """
-    Diagnose all participants' data
+    Diagnose all participants' streams
     :param study_name:
     """
     # get all participants' name-ids
@@ -77,7 +66,7 @@ def all_users_data(study_name: str):
     if len(all_users) > 0:
         rdd = spark_context.parallelize(all_users)
         results = rdd.map(
-            lambda user: diagnose_streams(user["identifier"], CC, config))
+            lambda user: diagnose_streams(user["identifier"], CC, md_config))
         results.count()
     else:
         print(study_name, "- study has 0 users.")
@@ -189,8 +178,22 @@ def diagnose_streams(user_id: uuid, CC: CerebralCortex, config: dict):
 
 
 if __name__ == '__main__':
-    # run with one participant
-    # DiagnoseData().one_user_data(["cd7c2cd6-d0a3-4680-9ba2-0c59d0d0c684"])
+    # create and load CerebralCortex object and configs
+    parser = argparse.ArgumentParser(description='CerebralCortex Kafka Message Handler.')
+    parser.add_argument("-cc", "--cc_config_filepath", help="Configuration file path", required=True)
+    parser.add_argument("-mdc", "--mdebugger_config_filepath", help="mDebugger configuration file path", required=True)
+    args = vars(parser.parse_args())
+
+    CC = CerebralCortex(args["cc_config_filepath"])
+
+    # load data diagnostic configs
+    md_config = Configuration(args["mdebugger_config_filepath"]).config
+
+    # get/create spark context
+    spark_context = get_or_create_sc(type="sparkContext")
+
+    # run for one participant
+    # DiagnoseData().one_user_data(["cd7c2cd6-d0a3-4680-9ba2-0c59d0d0c684"], md_config, CC, spark_context)
 
     # run for all the participants in a study
-    all_users_data("mperf")
+    all_users_data("mperf", md_config, CC, spark_context)

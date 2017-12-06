@@ -30,11 +30,11 @@ from typing import List
 import numpy as np
 
 from cerebralcortex.cerebralcortex import CerebralCortex
-from modules.data_diagnostic.post_processing import get_execution_context, get_annotations
-from modules.data_diagnostic.post_processing import store
-from modules.data_diagnostic.util import get_stream_days
-from modules.data_diagnostic.util import magnitude_datapoints
-from modules.data_diagnostic.util import merge_consective_windows
+from modules.mdebugger.post_processing import get_execution_context, get_annotations
+from modules.mdebugger.post_processing import store
+from modules.mdebugger.util import get_stream_days
+from modules.mdebugger.util import magnitude_datapoints
+from modules.mdebugger.util import merge_consective_windows
 from core.signalprocessing.window import window
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 
