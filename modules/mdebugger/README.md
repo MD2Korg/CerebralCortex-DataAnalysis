@@ -7,7 +7,7 @@ To run mdebugger, Clone/install and configure:
 * [Python3.5](https://www.python.org/downloads/release/python-350/)
 * [CerebralCortex-DockerCompose](https://github.com/MD2Korg/CerebralCortex-DockerCompose)
 * [Apache Spark 2.2.0](https://spark.apache.org/releases/spark-release-2-2-0.html) 
-* [CerebralCortex](https://github.com/MD2Korg/CerebralCortex)
+* [CerebralCortex](https://github.com/MD2Korg/CerebralCortex-2.0.git)
 
 ### Clone and configure 
 * clone https://github.com/MD2Korg/CerebralCortex-DataAnalysis.git
