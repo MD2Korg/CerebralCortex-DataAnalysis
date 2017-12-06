@@ -24,87 +24,91 @@
 
 import os
 import uuid
+import argparse
+from cerebralcortex.cerebralcortex import CerebralCortex
+from cerebralcortex.core.util.spark_helper import get_or_create_sc
 
-from cerebralcortex.CerebralCortex import CerebralCortex
-from cerebralcortex.configuration import Configuration
-from cerebralcortex.data_processor.data_diagnostic.analysis.phone_screen_touch import phone_screen_touch_marker
-from cerebralcortex.data_processor.data_diagnostic.app_availability_marker import mobile_app_availability_marker
-from cerebralcortex.data_processor.data_diagnostic.attachment_marker.motionsense import \
+from modules.data_diagnostic.analysis.phone_screen_touch import phone_screen_touch_marker
+from modules.data_diagnostic.app_availability_marker import mobile_app_availability_marker
+from modules.data_diagnostic.attachment_marker.motionsense import \
     attachment_marker as ms_attachment_marker
-from cerebralcortex.data_processor.data_diagnostic.battery_data_marker import battery_marker
-from cerebralcortex.data_processor.data_diagnostic.packet_loss_marker import packet_loss_marker
-from cerebralcortex.data_processor.data_diagnostic.sensor_availablity_marker.motionsense import \
+from modules.data_diagnostic.battery_data_marker import battery_marker
+from modules.data_diagnostic.packet_loss_marker import packet_loss_marker
+from modules.data_diagnostic.sensor_availablity_marker.motionsense import \
     sensor_availability as ms_wd
-from cerebralcortex.data_processor.data_diagnostic.sensor_failure_marker.motionsense import sensor_failure_marker
+from modules.data_diagnostic.sensor_failure_marker.motionsense import sensor_failure_marker
 
 # create and load CerebralCortex object and configs
-configuration_file = os.path.join(os.path.dirname(__file__), '../../../cerebralcortex.yml')
-CC_driver = CerebralCortex(configuration_file, master="local[*]", name="Data Diagnostic App", load_spark=True)
-CC_worker = CerebralCortex(configuration_file, master="local[*]", name="Data Diagnostic App", load_spark=False)
+parser = argparse.ArgumentParser(description='CerebralCortex Kafka Message Handler.')
+parser.add_argument("-c", "--config_filepath", help="Configuration file path", required=True)
+args = vars(parser.parse_args())
+
+CC = CerebralCortex(args["config_filepath"])
 
 # load data diagnostic configs
-config = Configuration(filepath="data_diagnostic_config.yml").config
+config = CC.config
+spark_context = get_or_create_sc(type="sparkContext")
 
 
-def one_participant_data(participant_id: uuid = None):
+def one_user_data(user_id: uuid = None):
     # get all streams for a participant
     """
     Diagnose one participant data only
-    :param participant_id: list containing only one
+    :param user_id: list containing only one
     """
-    if participant_id:
-        participants_rdd = CC_driver.sc.parallelize([participant_id])
-        results = participants_rdd.map(
-            lambda participant: diagnose_pipeline(participant, CC_worker, config))
+    if user_id:
+        rdd = spark_context.parallelize([user_id])
+        results = rdd.map(
+            lambda user: diagnose_streams(user, CC, config))
         results.count()
     else:
-        print("Participant cannot be empty.")
+        print("User id cannot be empty.")
 
 
-def all_participants_data(study_name: str):
+def all_users_data(study_name: str):
     """
     Diagnose all participants' data
     :param study_name:
     """
     # get all participants' name-ids
-    participants = CC_driver.get_all_participants(study_name)
+    all_users = CC.get_all_users(study_name)
 
-    if len(participants) > 0:
-        participants_rdd = CC_driver.sc.parallelize(participants)
-        results = participants_rdd.map(
-            lambda participant: diagnose_pipeline(participant["identifier"], CC_worker, config))
+    if len(all_users) > 0:
+        rdd = spark_context.parallelize(all_users)
+        results = rdd.map(
+            lambda user: diagnose_streams(user["identifier"], CC, config))
         results.count()
     else:
-        print(study_name, "- Study contains no participant.")
+        print(study_name, "- study has 0 users.")
 
 
-def diagnose_pipeline(participant_id: uuid, CC: CerebralCortex, config: dict):
+def diagnose_streams(user_id: uuid, CC: CerebralCortex, config: dict):
     """
     Contains pipeline execution of all the diagnosis algorithms
-    :param participant_id:
+    :param user_id:
     :param CC:
     :param config:
     """
 
     # get all the streams belong to a participant
-    streams = CC.get_participant_streams(participant_id)
+    streams = CC.get_user_streams(user_id)
     if streams and len(streams) > 0:
 
         # phone battery
         if config["stream_names"]["phone_battery"] in streams:
             battery_marker(streams[config["stream_names"]["phone_battery"]]["identifier"],
-                           streams[config["stream_names"]["phone_battery"]]["name"], participant_id,
+                           streams[config["stream_names"]["phone_battery"]]["name"], user_id,
                            config["stream_names"]["phone_battery_marker"], CC, config)
 
             # mobile phone availability marker
             mobile_app_availability_marker(streams[config["stream_names"]["phone_battery"]]["identifier"],
-                                           streams[config["stream_names"]["phone_battery"]]["name"], participant_id,
+                                           streams[config["stream_names"]["phone_battery"]]["name"], user_id,
                                            config["stream_names"]["app_availability_marker"], CC, config)
 
         # autosense battery
         if config["stream_names"]["autosense_battery"] in streams:
             battery_marker(streams[config["stream_names"]["autosense_battery"]]["identifier"],
-                           streams[config["stream_names"]["autosense_battery"]]["name"], participant_id,
+                           streams[config["stream_names"]["autosense_battery"]]["name"], user_id,
                            config["stream_names"]["autosense_battery_marker"], CC, config)
 
         # TODO: Motionsense battery values are not available.
@@ -126,11 +130,11 @@ def diagnose_pipeline(participant_id: uuid, CC: CerebralCortex, config: dict):
                     streams[config["stream_names"]["motionsense_hrv_right_attachment_marker"]]["identifier"],
                     streams[config["stream_names"]["motionsense_hrv_accel_right"]]["identifier"],
                     streams[config["stream_names"]["motionsense_hrv_gyro_right"]]["identifier"],
-                    "right", participant_id,
+                    "right", user_id,
                     config["stream_names"]["motionsense_hrv_right_sensor_failure_marker"], CC, config)
 
             ms_wd(streams[config["stream_names"]["motionsense_hrv_accel_right"]]["identifier"],
-                  streams[config["stream_names"]["motionsense_hrv_accel_right"]]["name"], participant_id,
+                  streams[config["stream_names"]["motionsense_hrv_accel_right"]]["name"], user_id,
                   config["stream_names"]["motionsense_hrv_right_wireless_marker"], phone_physical_activity, CC, config)
 
         if config["stream_names"]["motionsense_hrv_accel_left"] in streams:
@@ -139,53 +143,53 @@ def diagnose_pipeline(participant_id: uuid, CC: CerebralCortex, config: dict):
                     streams[config["stream_names"]["motionsense_hrv_left_attachment_marker"]]["identifier"],
                     streams[config["stream_names"]["motionsense_hrv_accel_left"]]["identifier"],
                     streams[config["stream_names"]["motionsense_hrv_gyro_left"]]["identifier"],
-                    "left", participant_id,
+                    "left", user_id,
                     config["stream_names"]["motionsense_hrv_left_sensor_failure_marker"], CC, config)
 
             ms_wd(streams[config["stream_names"]["motionsense_hrv_accel_left"]]["identifier"],
-                  streams[config["stream_names"]["motionsense_hrv_accel_left"]]["name"], participant_id,
+                  streams[config["stream_names"]["motionsense_hrv_accel_left"]]["name"], user_id,
                   config["stream_names"]["motionsense_hrv_left_wireless_marker"], phone_physical_activity, CC, config)
 
         ### Attachment marker
         if config["stream_names"]["motionsense_hrv_led_quality_right"] in streams:
             ms_attachment_marker(streams[config["stream_names"]["motionsense_hrv_led_quality_right"]]["identifier"],
                                  streams[config["stream_names"]["motionsense_hrv_led_quality_right"]]["name"],
-                                 participant_id, config["stream_names"]["motionsense_hrv_right_attachment_marker"], CC,
+                                 user_id, config["stream_names"]["motionsense_hrv_right_attachment_marker"], CC,
                                  config)
         if config["stream_names"]["motionsense_hrv_led_quality_left"] in streams:
             ms_attachment_marker(streams[config["stream_names"]["motionsense_hrv_led_quality_left"]]["identifier"],
                                  streams[config["stream_names"]["motionsense_hrv_led_quality_left"]]["name"],
-                                 participant_id, config["stream_names"]["motionsense_hrv_left_attachment_marker"], CC,
+                                 user_id, config["stream_names"]["motionsense_hrv_left_attachment_marker"], CC,
                                  config)
 
         ### Packet-loss marker
         if config["stream_names"]["motionsense_hrv_accel_right"] in streams:
             packet_loss_marker(streams[config["stream_names"]["motionsense_hrv_accel_right"]]["identifier"],
-                               streams[config["stream_names"]["motionsense_hrv_accel_right"]]["name"], participant_id,
+                               streams[config["stream_names"]["motionsense_hrv_accel_right"]]["name"], user_id,
                                config["stream_names"]["motionsense_hrv_accel_right_packetloss_marker"], CC, config)
         if config["stream_names"]["motionsense_hrv_accel_left"] in streams:
             packet_loss_marker(streams[config["stream_names"]["motionsense_hrv_accel_left"]]["identifier"],
-                               streams[config["stream_names"]["motionsense_hrv_accel_left"]]["name"], participant_id,
+                               streams[config["stream_names"]["motionsense_hrv_accel_left"]]["name"], user_id,
                                config["stream_names"]["motionsense_hrv_accel_left_packetloss_marker"], CC, config)
         if config["stream_names"]["motionsense_hrv_gyro_right"] in streams:
             packet_loss_marker(streams[config["stream_names"]["motionsense_hrv_gyro_right"]]["identifier"],
-                               streams[config["stream_names"]["motionsense_hrv_gyro_right"]]["name"], participant_id,
+                               streams[config["stream_names"]["motionsense_hrv_gyro_right"]]["name"], user_id,
                                config["stream_names"]["motionsense_hrv_gyro_right_packetloss_marker"], CC, config)
 
         if config["stream_names"]["motionsense_hrv_gyro_left"] in streams:
             packet_loss_marker(streams[config["stream_names"]["motionsense_hrv_gyro_left"]]["identifier"],
-                               streams[config["stream_names"]["motionsense_hrv_gyro_left"]]["name"], participant_id,
+                               streams[config["stream_names"]["motionsense_hrv_gyro_left"]]["name"], user_id,
                                config["stream_names"]["motionsense_hrv_gyro_left_packetloss_marker"], CC, config)
 
         if config["stream_names"]["phone_screen_touch"] in streams:
             phone_screen_touch_marker(streams[config["stream_names"]["phone_screen_touch"]]["identifier"],
-                                      streams[config["stream_names"]["phone_screen_touch"]]["name"], participant_id,
+                                      streams[config["stream_names"]["phone_screen_touch"]]["name"], user_id,
                                       config["stream_names"]["phone_screen_touch_marker"], CC, config)
 
 
 if __name__ == '__main__':
     # run with one participant
-    # DiagnoseData().one_participant_data(["cd7c2cd6-d0a3-4680-9ba2-0c59d0d0c684"])
+    # DiagnoseData().one_user_data(["cd7c2cd6-d0a3-4680-9ba2-0c59d0d0c684"])
 
     # run for all the participants in a study
-    all_participants_data("mperf")
+    all_users_data("mperf")

@@ -28,17 +28,16 @@ from typing import List
 
 import numpy as np
 
-from cerebralcortex.CerebralCortex import CerebralCortex
-from cerebralcortex.data_processor.data_diagnostic.post_processing import get_execution_context, get_annotations
-from cerebralcortex.data_processor.data_diagnostic.post_processing import store
-from cerebralcortex.data_processor.data_diagnostic.util import get_stream_days
-from cerebralcortex.data_processor.data_diagnostic.util import merge_consective_windows
+from cerebralcortex.cerebralcortex import CerebralCortex
+from modules.data_diagnostic.post_processing import get_execution_context, get_annotations
+from modules.data_diagnostic.post_processing import store
+from modules.data_diagnostic.util import get_stream_days
+from modules.data_diagnostic.util import merge_consective_windows
 from cerebralcortex.data_processor.signalprocessing.window import window
 from cerebralcortex.kernel.DataStoreEngine.dataset import DataSet
 
 
-def battery_marker(raw_stream_id: uuid, stream_name: str, owner_id, dd_stream_name, CC: CerebralCortex, config: dict,
-                   start_time=None, end_time=None):
+def battery_marker(raw_stream_id: uuid, stream_name: str, user_id, dd_stream_name, CC: CerebralCortex, config: dict):
     """
     This algorithm uses battery percentages to decide whether device was powered-off or battery was low.
     All the labeled data (st, et, label) with its metadata are then stored in a datastore.
@@ -49,7 +48,7 @@ def battery_marker(raw_stream_id: uuid, stream_name: str, owner_id, dd_stream_na
 
     try:
         # using stream_id, data-diagnostic-stream-id, and owner id to generate a unique stream ID for battery-marker
-        battery_marker_stream_id = uuid.uuid3(uuid.NAMESPACE_DNS, str(raw_stream_id + dd_stream_name + owner_id))
+        battery_marker_stream_id = uuid.uuid3(uuid.NAMESPACE_DNS, str(raw_stream_id +"BATTERY_MARKER"+dd_stream_name + user_id))
 
         stream_days = get_stream_days(raw_stream_id, battery_marker_stream_id, CC)
 
@@ -62,7 +61,7 @@ def battery_marker(raw_stream_id: uuid, stream_name: str, owner_id, dd_stream_na
 
                 merged_windows = merge_consective_windows(results)
                 if len(merged_windows) > 0:
-                    input_streams = [{"owner_id": owner_id, "id": str(raw_stream_id), "name": stream_name}]
+                    input_streams = [{"owner_id": user_id, "id": str(raw_stream_id), "name": stream_name}]
                     output_stream = {"id": battery_marker_stream_id, "name": dd_stream_name,
                                      "algo_type": config["algo_type"]["battery_marker"]}
                     labelled_windows = mark_windows(battery_marker_stream_id, merged_windows, CC, config)
