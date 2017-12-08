@@ -1,2 +1,5 @@
 #author : Rabin Banjade
-# Code for speaking time : duration of speaking frames in the conversation to the total duration of the conversation.
+# Description: calculation of  duration of speaking frames in a conversation (s)
+# calculation of duration of conversation (t)
+# INPUTS : raw audio stream
+# OUTPUT : duration of speaking frame and duration of conversation
