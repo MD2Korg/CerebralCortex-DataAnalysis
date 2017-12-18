@@ -28,6 +28,7 @@
 #
 # the methods written below might not be in order described above
 
+import math
 import numpy as np
 import uuid
 from cerebralcortex.core.datatypes.datapoint import DataPoint
@@ -359,3 +360,463 @@ def average_phone_screen_tap_per_minute(datastream: DataStream):
                       end_time,
                       data)
 
+
+def entropy_phone_call(datastream: DataStream):
+
+    """
+
+    :param datastream: CU_CALL_NUMBER--edu.dartmouth.eureka
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'ENTROPY PHONE CALL'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Entropy of phone call", "DATA_TYPE":"float", "DESCRIPTION": "Entropy of phone call within the given period"}]
+
+    number = {}
+    for x in datastream.data:
+        if x.sample not in number:
+            number[x.sample] = 0
+        number[x.sample] += 1
+
+    entropy = 0.0
+    for key, value in number.items():
+        entropy = entropy - value * math.log(value)
+
+    data = [DataPoint(datastream.data[0].start_time, datastream.data[-1].start_time, entropy)]
+    start_time = data[0].start_time
+    end_time = data[-1].start_time
+
+    return DataStream(identifier, datastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+def entropy_phone_sms(datastream: DataStream):
+
+    """
+
+    :param datastream: CU_SMS_NUMBER--edu.dartmouth.eureka
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'ENTROPY PHONE SMS'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Entropy of phone SMS", "DATA_TYPE":"float", "DESCRIPTION": "Entropy of phone SMS within the given period"}]
+
+    number = {}
+    for x in datastream.data:
+        if x.sample not in number:
+            number[x.sample] = 0
+        number[x.sample] += 1
+
+    entropy = 0.0
+    for key, value in number.items():
+        entropy = entropy - value * math.log(value)
+
+    data = [DataPoint(datastream.data[0].start_time, datastream.data[-1].start_time, entropy)]
+    start_time = data[0].start_time
+    end_time = data[-1].end_time
+
+    return DataStream(identifier, datastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def entropy_phone_call_sms(calldatastream: DataStream, smsdatastream: DataStream):
+
+    identifier = uuid.uuid1()
+    name = 'ENTROPY PHONE CALL & SMS'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Entropy of phone call and SMS", "DATA_TYPE":"float", "DESCRIPTION": "Entropy of phone call and SMS within the given period"}]
+
+    mergeddata = calldatastream.data + smsdatastream.data
+    number = {}
+    for x in mergeddata:
+        if x.sample not in number:
+            number[x.sample] = 0
+        number[x.sample] += 1
+
+    entropy = 0.0
+    for key, value in number.items():
+        entropy = entropy - value * math.log(value)
+
+    start_time = min(calldatastream.data[0].start_time, smsdatastream.data[0].start_time)
+    end_time = max(calldatastream.data[0].end_time, smsdatastream.data[0].end_time)
+
+    data = [DataPoint(start_time, end_time, entropy)]
+
+
+    return DataStream(identifier, calldatastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def unique_contacts_phone_call(datastream: DataStream):
+
+    """
+
+    :param datastream: CU_CALL_NUMBER--edu.dartmouth.eureka
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'UNIQUE CONTACT -- PHONE CALL'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Unique contacts (phone call)", "DATA_TYPE":"integer", "DESCRIPTION": "Phone call from unique numbers within the given period"}]
+
+    numbers = set([x.sample for x in datastream.data])
+
+    data = [DataPoint(datastream.data[0].start_time, datastream.data[-1].start_time, len(numbers))]
+    start_time = data[0].start_time
+    end_time = data[-1].start_time
+
+    return DataStream(identifier, datastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def unique_contact_sms(datastream: DataStream):
+
+    """
+
+    :param datastream: CU_SMS_NUMBER--edu.dartmouth.eureka
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'UNIQUE CONTACT -- SMS'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Unique contact(SMS)", "DATA_TYPE":"integer", "DESCRIPTION": "Number of unique contacts (sms) within the given period"}]
+
+    numbers = set([x.sample for x in datastream.data])
+
+    data = [DataPoint(datastream.data[0].start_time, datastream.data[-1].start_time, len(numbers))]
+    start_time = data[0].start_time
+    end_time = data[-1].end_time
+
+    return DataStream(identifier, datastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def unique_contact_call_sms(calldatastream: DataStream, smsdatastream: DataStream):
+
+    """
+
+    :param calldatastream: CU_CALL_NUMBER--edu.dartmouth.eureka
+    :param smsdatastream: CU_SMS_NUMBER--edu.dartmouth.eureka
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'UNIQUE CONTACT -- PHONE CALL & SMS'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Unique contact (phone call and SMS)", "DATA_TYPE":"integer", "DESCRIPTION": "Unique contacts (Call and SMS) within the given period"}]
+
+    mergeddata = calldatastream.data + smsdatastream.data
+    numbers = set([x.sample for x in mergeddata])
+
+    start_time = min(calldatastream.data[0].start_time, smsdatastream.data[0].start_time)
+    end_time = max(calldatastream.data[0].end_time, smsdatastream.data[0].end_time)
+
+    data = [DataPoint(start_time, end_time, len(numbers))]
+
+
+    return DataStream(identifier, calldatastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def contact_to_interaction_ratio_call(datastream: DataStream):
+
+    """
+
+    :param datastream: CU_CALL_NUMBER--edu.dartmouth.eureka
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'CONTACT TO INTERACTION RATIO -- PHONE CALL'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Contact to interaction ratio (phone call)", "DATA_TYPE":"float", "DESCRIPTION": "Contact to interactoin ratio (Phone call) within the given period"}]
+
+    numbers = set([x.sample for x in datastream.data])
+
+    data = [DataPoint(datastream.data[0].start_time, datastream.data[-1].start_time, len(datastream.data) / len(numbers))]
+    start_time = data[0].start_time
+    end_time = data[-1].start_time
+
+    return DataStream(identifier, datastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def contact_to_interaction_ratio_sms(datastream: DataStream):
+
+    """
+
+    :param datastream: CU_SMS_NUMBER--edu.dartmouth.eureka
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'CONTACT TO INTERACTION RATIO -- SMS'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Contact to interaction ratio(SMS)", "DATA_TYPE":"float", "DESCRIPTION": "Contact to interaction ratio (sms) within the given period"}]
+
+    numbers = set([x.sample for x in datastream.data])
+
+    data = [DataPoint(datastream.data[0].start_time, datastream.data[-1].start_time, len(datastream.data) / len(numbers))]
+    start_time = data[0].start_time
+    end_time = data[-1].end_time
+
+    return DataStream(identifier, datastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def contact_to_interaction_ratio_call_sms(calldatastream: DataStream, smsdatastream: DataStream):
+
+    """
+
+    :param calldatastream: CU_CALL_NUMBER--edu.dartmouth.eureka
+    :param smsdatastream: CU_SMS_NUMBER--edu.dartmouth.eureka
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'CONTACT TO INTERACTION RATIO -- PHONE CALL & SMS'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Contact to interation ratio (phone call and SMS)", "DATA_TYPE":"float", "DESCRIPTION": "Contact to interaction ratio (Call and SMS) within the given period"}]
+
+    mergeddata = calldatastream.data + smsdatastream.data
+    numbers = set([x.sample for x in mergeddata])
+
+    start_time = min(calldatastream.data[0].start_time, smsdatastream.data[0].start_time)
+    end_time = max(calldatastream.data[0].end_time, smsdatastream.data[0].end_time)
+
+    data = [DataPoint(start_time, end_time, len(mergeddata) / len(numbers))]
+
+
+    return DataStream(identifier, calldatastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def number_of_interaction_call(datastream: DataStream):
+
+    """
+
+    :param datastream: CU_CALL_NUMBER--edu.dartmouth.eureka
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'NUMBER OF INTERACTION -- PHONE CALL'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Number of interaction (phone call)", "DATA_TYPE":"integer", "DESCRIPTION": "Number of interaction (Phone call) within the given period"}]
+
+
+    data = [DataPoint(datastream.data[0].start_time, datastream.data[-1].start_time, len(datastream.data))]
+    start_time = data[0].start_time
+    end_time = data[-1].start_time
+
+    return DataStream(identifier, datastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def number_of_interaction_sms(datastream: DataStream):
+
+    """
+
+    :param datastream: CU_SMS_NUMBER--edu.dartmouth.eureka
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'NUMBER OF INTERACTION -- SMS'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Number of interaction (SMS)", "DATA_TYPE":"integer", "DESCRIPTION": "Number of interaction (sms) within the given period"}]
+
+    data = [DataPoint(datastream.data[0].start_time, datastream.data[-1].start_time, len(datastream.data))]
+    start_time = data[0].start_time
+    end_time = data[-1].end_time
+
+    return DataStream(identifier, datastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def number_of_interaction_call_sms(calldatastream: DataStream, smsdatastream: DataStream):
+
+    """
+
+    :param calldatastream: CU_CALL_NUMBER--edu.dartmouth.eureka
+    :param smsdatastream: CU_SMS_NUMBER--edu.dartmouth.eureka
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'NUMBER OF INTERACTION -- PHONE CALL & SMS'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Number of interaction (phone call and SMS)", "DATA_TYPE":"integer", "DESCRIPTION": "Number of interaction (Call and SMS) within the given period"}]
+
+    mergeddata = calldatastream.data + smsdatastream.data
+
+    start_time = min(calldatastream.data[0].start_time, smsdatastream.data[0].start_time)
+    end_time = max(calldatastream.data[0].end_time, smsdatastream.data[0].end_time)
+
+    data = [DataPoint(start_time, end_time, len(mergeddata))]
+
+    return DataStream(identifier, calldatastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def call_initiated_percent(calldatastream: DataStream):
+
+    """
+
+    :param calldatastream: CU_CALL_TYPE--edu.dartmouth.eureka
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'PERCENT INITIATED -- PHONE CALL'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Percent initiated (phone call)", "DATA_TYPE":"float", "DESCRIPTION": "Percent initiated (Phone call) within the given period"}]
+
+    outgoing = 0
+    for x in calldatastream.data:
+        if int(x.sample) == 2:
+            outgoing += 1
+
+    data = [DataPoint(calldatastream.data[0].start_time, calldatastream.data[-1].start_time, outgoing * 100 / len(calldatastream.data))]
+    start_time = data[0].start_time
+    end_time = data[-1].start_time
+
+    return DataStream(identifier, calldatastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def sms_initiated_percent(smsdatastream: DataStream):
+
+    """
+
+    :param smsdatastream: CU_SMS_TYPE--edu.dartmouth.eureka
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'PERCENT INITIATED -- SMS'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Percent initiated (SMS)", "DATA_TYPE":"float", "DESCRIPTION": "Percent initiated (SMS) within the given period"}]
+
+    outgoing = 0
+    for x in smsdatastream.data:
+        if int(x.sample) == 2:
+            outgoing += 1
+
+    data = [DataPoint(smsdatastream.data[0].start_time, smsdatastream.data[-1].start_time, outgoing * 100 / len(smsdatastream.data))]
+    start_time = data[0].start_time
+    end_time = data[-1].start_time
+
+    return DataStream(identifier, smsdatastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def call_sms_initiated_percent(calldatastream: DataStream, smsdatastream: DataStream):
+
+    """
+
+    :param calldatastream: CU_CALL_TYPE--edu.dartmouth.eureka
+    :param smsdatastream: CU_SMS_TYPE--edu.dartmouth.eureka
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'PERCENT INITIATED -- CALL & SMS'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Percent initiated (CALL & SMS)", "DATA_TYPE":"float", "DESCRIPTION": "Percent initiated (CALL & SMS) within the given period"}]
+
+    mergeddata = calldatastream.data + smsdatastream.data
+    outgoing = 0
+    for x in mergeddata:
+        if int(x.sample) == 2:
+            outgoing += 1
+
+
+    start_time = min(calldatastream.data[0].start_time, smsdatastream.data[0].start_time)
+    end_time = max(calldatastream.data[0].end_time, smsdatastream.data[0].end_time)
+
+    data = [DataPoint(start_time, end_time, outgoing * 100 / len(mergeddata))]
+
+    return DataStream(identifier, smsdatastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
