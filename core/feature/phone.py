@@ -322,7 +322,7 @@ def total_phone_screen_tap_count(datastream: DataStream):
     name = 'TOTAL PHONE SCREEN TAP COUNT'
     execution_context = {}
     annotations = {}
-    data_descriptor = [{"NAME":"Screen Touch Count", "DATA_TYPE":"integer", "DESCRIPTION": "Total screen touch count within the time period"}]
+    data_descriptor = [{"NAME":"Screen Touch Count", "DATA_TYPE":"int", "DESCRIPTION": "Total screen touch count within the time period"}]
     data = [DataPoint(datastream.data[0].start_time, datastream.data[-1].start_time, len(datastream.data))]
     start_time = data[0].start_time
     end_time = data[-1].end_time
@@ -477,7 +477,7 @@ def unique_contacts_phone_call(datastream: DataStream):
     name = 'UNIQUE CONTACT -- PHONE CALL'
     execution_context = {}
     annotations = {}
-    data_descriptor = [{"NAME":"Unique contacts (phone call)", "DATA_TYPE":"integer", "DESCRIPTION": "Phone call from unique numbers within the given period"}]
+    data_descriptor = [{"NAME":"Unique contacts (phone call)", "DATA_TYPE":"int", "DESCRIPTION": "Phone call from unique numbers within the given period"}]
 
     numbers = set([x.sample for x in datastream.data])
 
@@ -505,7 +505,7 @@ def unique_contact_sms(datastream: DataStream):
     name = 'UNIQUE CONTACT -- SMS'
     execution_context = {}
     annotations = {}
-    data_descriptor = [{"NAME":"Unique contact(SMS)", "DATA_TYPE":"integer", "DESCRIPTION": "Number of unique contacts (sms) within the given period"}]
+    data_descriptor = [{"NAME":"Unique contact(SMS)", "DATA_TYPE":"int", "DESCRIPTION": "Number of unique contacts (sms) within the given period"}]
 
     numbers = set([x.sample for x in datastream.data])
 
@@ -534,7 +534,7 @@ def unique_contact_call_sms(calldatastream: DataStream, smsdatastream: DataStrea
     name = 'UNIQUE CONTACT -- PHONE CALL & SMS'
     execution_context = {}
     annotations = {}
-    data_descriptor = [{"NAME":"Unique contact (phone call and SMS)", "DATA_TYPE":"integer", "DESCRIPTION": "Unique contacts (Call and SMS) within the given period"}]
+    data_descriptor = [{"NAME":"Unique contact (phone call and SMS)", "DATA_TYPE":"int", "DESCRIPTION": "Unique contacts (Call and SMS) within the given period"}]
 
     mergeddata = calldatastream.data + smsdatastream.data
     numbers = set([x.sample for x in mergeddata])
@@ -653,7 +653,7 @@ def number_of_interaction_call(datastream: DataStream):
     name = 'NUMBER OF INTERACTION -- PHONE CALL'
     execution_context = {}
     annotations = {}
-    data_descriptor = [{"NAME":"Number of interaction (phone call)", "DATA_TYPE":"integer", "DESCRIPTION": "Number of interaction (Phone call) within the given period"}]
+    data_descriptor = [{"NAME":"Number of interaction (phone call)", "DATA_TYPE":"int", "DESCRIPTION": "Number of interaction (Phone call) within the given period"}]
 
 
     data = [DataPoint(datastream.data[0].start_time, datastream.data[-1].start_time, len(datastream.data))]
@@ -680,7 +680,7 @@ def number_of_interaction_sms(datastream: DataStream):
     name = 'NUMBER OF INTERACTION -- SMS'
     execution_context = {}
     annotations = {}
-    data_descriptor = [{"NAME":"Number of interaction (SMS)", "DATA_TYPE":"integer", "DESCRIPTION": "Number of interaction (sms) within the given period"}]
+    data_descriptor = [{"NAME":"Number of interaction (SMS)", "DATA_TYPE":"int", "DESCRIPTION": "Number of interaction (sms) within the given period"}]
 
     data = [DataPoint(datastream.data[0].start_time, datastream.data[-1].start_time, len(datastream.data))]
     start_time = data[0].start_time
@@ -707,7 +707,7 @@ def number_of_interaction_call_sms(calldatastream: DataStream, smsdatastream: Da
     name = 'NUMBER OF INTERACTION -- PHONE CALL & SMS'
     execution_context = {}
     annotations = {}
-    data_descriptor = [{"NAME":"Number of interaction (phone call and SMS)", "DATA_TYPE":"integer", "DESCRIPTION": "Number of interaction (Call and SMS) within the given period"}]
+    data_descriptor = [{"NAME":"Number of interaction (phone call and SMS)", "DATA_TYPE":"int", "DESCRIPTION": "Number of interaction (Call and SMS) within the given period"}]
 
     mergeddata = calldatastream.data + smsdatastream.data
 
