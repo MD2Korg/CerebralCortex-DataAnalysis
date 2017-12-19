@@ -25,9 +25,9 @@
 
 from collections import OrderedDict
 
-from cerebralcortex.CerebralCortex import CerebralCortex
-from cerebralcortex.kernel.datatypes.datastream import DataStream
-from cerebralcortex.kernel.schema_builder.execution_context import execution_context
+from cerebralcortex.cerebralcortex import CerebralCortex
+from cerebralcortex.core.datatypes.datastream import DataStream
+from cerebralcortex.core.metadata_manager.metadata import Metadata
 
 
 def store(data: OrderedDict, input_streams: dict, output_streams: dict, metadata, CC_obj: CerebralCortex, config: dict):
@@ -72,12 +72,12 @@ def get_execution_context(name: str, input_param: dict, input_streams: dict, met
     author = [{"name": "Nasir Ali", "email": "nasir.ali08@gmail.com"}]
     version = '0.0.1'
     ref = {"url": "http://www.cs.memphis.edu/~santosh/Papers/Continuous-Stress-BCB-2014.pdf"}
+    metadata = Metadata()
+    processing_module = metadata.processing_module_schema(name, config["description"]["data_diagnostic"],
+                                      input_param, input_streams)
+    algorithm = metadata.algorithm_schema(method, algo_description, author, version, ref)
+    ec = metadata.get_execution_context(processing_module, algorithm)
 
-    processing_module = execution_context().processing_module_schema(name, config["description"]["data_diagnostic"],
-                                                                     input_param, input_streams)
-    algorithm = execution_context().algorithm_schema(method, algo_description, author, version, ref)
-
-    ec = execution_context().get_execution_context(processing_module, algorithm)
     return ec
 
 

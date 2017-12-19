@@ -24,8 +24,8 @@
 
 import uuid
 
-from cerebralcortex.CerebralCortex import CerebralCortex
-from cerebralcortex.kernel.DataStoreEngine.dataset import DataSet
+from cerebralcortex.cerebralcortex import CerebralCortex
+from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 
 
 def filter_battery_off_windows(stream_id: uuid, stream_name: str, main_stream_windows: dict, owner_id: uuid,

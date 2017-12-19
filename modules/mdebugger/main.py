@@ -64,7 +64,7 @@ def all_users_data(study_name: str, md_config, CC, spark_context):
     # get all participants' name-ids
     all_users = CC.get_all_users(study_name)
 
-    if len(all_users) > 0:
+    if all_users:
         rdd = spark_context.parallelize(all_users)
         results = rdd.map(
             lambda user: diagnose_streams(user["identifier"], CC, md_config))
