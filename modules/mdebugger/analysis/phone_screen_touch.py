@@ -25,13 +25,13 @@
 import uuid
 from collections import OrderedDict
 
-from cerebralcortex.CerebralCortex import CerebralCortex
-from cerebralcortex.data_processor.data_diagnostic.post_processing import get_execution_context, get_annotations
-from cerebralcortex.data_processor.data_diagnostic.post_processing import store
-from cerebralcortex.data_processor.data_diagnostic.util import get_stream_days
-from cerebralcortex.data_processor.data_diagnostic.util import merge_consective_windows
-from cerebralcortex.data_processor.signalprocessing.window import window
-from cerebralcortex.kernel.DataStoreEngine.dataset import DataSet
+from cerebralcortex.cerebralcortex import CerebralCortex
+from modules.mdebugger.post_processing import get_execution_context, get_annotations, store
+
+from modules.mdebugger.util import get_stream_days
+from modules.mdebugger.util import merge_consective_windows
+from core.signalprocessing.window import  window
+from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 
 
 def phone_screen_touch_marker(raw_stream_id: uuid, raw_stream_name: str, owner_id, dd_stream_name, CC: CerebralCortex,
