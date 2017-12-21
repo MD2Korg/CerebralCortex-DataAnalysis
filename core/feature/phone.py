@@ -434,6 +434,12 @@ def entropy_phone_sms(datastream: DataStream):
 
 def entropy_phone_call_sms(calldatastream: DataStream, smsdatastream: DataStream):
 
+    """
+
+    :param calldatastream: CU_CALL_NUMBER--edu.dartmouth.eureka
+    :param smsdatastream: CU_SMS_NUMBER--edu.dartmouth.eureka
+    :return:
+    """
     identifier = uuid.uuid1()
     name = 'ENTROPY PHONE CALL & SMS'
     execution_context = {}
@@ -452,7 +458,7 @@ def entropy_phone_call_sms(calldatastream: DataStream, smsdatastream: DataStream
         entropy = entropy - value * math.log(value)
 
     start_time = min(calldatastream.data[0].start_time, smsdatastream.data[0].start_time)
-    end_time = max(calldatastream.data[0].end_time, smsdatastream.data[0].end_time)
+    end_time = max(calldatastream.data[0].start_time, smsdatastream.data[0].start_time)
 
     data = [DataPoint(start_time, end_time, entropy)]
 
@@ -540,7 +546,7 @@ def unique_contact_call_sms(calldatastream: DataStream, smsdatastream: DataStrea
     numbers = set([x.sample for x in mergeddata])
 
     start_time = min(calldatastream.data[0].start_time, smsdatastream.data[0].start_time)
-    end_time = max(calldatastream.data[0].end_time, smsdatastream.data[0].end_time)
+    end_time = max(calldatastream.data[0].start_time, smsdatastream.data[0].start_time)
 
     data = [DataPoint(start_time, end_time, len(numbers))]
 
@@ -628,7 +634,7 @@ def contact_to_interaction_ratio_call_sms(calldatastream: DataStream, smsdatastr
     numbers = set([x.sample for x in mergeddata])
 
     start_time = min(calldatastream.data[0].start_time, smsdatastream.data[0].start_time)
-    end_time = max(calldatastream.data[0].end_time, smsdatastream.data[0].end_time)
+    end_time = max(calldatastream.data[0].start_time, smsdatastream.data[0].start_time)
 
     data = [DataPoint(start_time, end_time, len(mergeddata) / len(numbers))]
 
@@ -712,7 +718,7 @@ def number_of_interaction_call_sms(calldatastream: DataStream, smsdatastream: Da
     mergeddata = calldatastream.data + smsdatastream.data
 
     start_time = min(calldatastream.data[0].start_time, smsdatastream.data[0].start_time)
-    end_time = max(calldatastream.data[0].end_time, smsdatastream.data[0].end_time)
+    end_time = max(calldatastream.data[0].start_time, smsdatastream.data[0].start_time)
 
     data = [DataPoint(start_time, end_time, len(mergeddata))]
 
@@ -809,11 +815,169 @@ def call_sms_initiated_percent(calldatastream: DataStream, smsdatastream: DataSt
 
 
     start_time = min(calldatastream.data[0].start_time, smsdatastream.data[0].start_time)
-    end_time = max(calldatastream.data[0].end_time, smsdatastream.data[0].end_time)
+    end_time = max(calldatastream.data[0].start_time, smsdatastream.data[0].start_time)
 
     data = [DataPoint(start_time, end_time, outgoing * 100 / len(mergeddata))]
 
     return DataStream(identifier, smsdatastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def total_screen_on_time_second(screendatastream: DataStream):
+
+    """
+
+    :param screendatastream: CU_IS_SCREEN_ON--edu.dartmouth.eureka
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'TOTAL SCREEN ON TIME -- SECOND'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Total screen on time in seconds", "DATA_TYPE":"float", "DESCRIPTION": "Total screen on time in seconds within the given period"}]
+
+    total = 0
+    if len(screendatastream.data)>0:
+        if screendatastream.data[0].sample == "false":
+            total += screendatastream.data[0].start_time - screendatastream.start_time
+
+        for i in range(1, len(screendatastream.data)):
+            if screendatastream.data[i].sample == "false":
+                total += screendatastream.data[i].start_time - screendatastream.data[i-1].start_time
+
+        if screendatastream.data[-1].sample == "true":
+            total += screendatastream.end_time - screendatastream.data[-1].start_time
+
+        total /= 1000.0
+
+    data = [DataPoint(screendatastream.start_time, screendatastream.end_time, total)]
+    start_time = screendatastream.start_time
+    end_time = screendatastream.end_time
+
+    return DataStream(identifier, screendatastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def average_pressure(pressuredatastream: DataStream):
+
+    """
+
+    :param pressuredatastream: PRESSURE--org.md2k.phonesensor--PHONE
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'AVERAGE PRESSURE'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Average pressure", "DATA_TYPE":"float", "DESCRIPTION": "Average pressure sensed by phone's barometer within the given period"}]
+
+    totalpressure = 0
+    for x in pressuredatastream.data:
+        totalpressure += float(x.sample)
+
+    data = [DataPoint(pressuredatastream.data[0].start_time, pressuredatastream.data[-1].start_time, totalpressure / len(pressuredatastream.data))]
+    start_time = data[0].start_time
+    end_time = data[-1].start_time
+
+    return DataStream(identifier, pressuredatastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def pressure_variance(pressuredatastream: DataStream):
+
+    """
+
+    :param pressuredatastream: PRESSURE--org.md2k.phonesensor--PHONE
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'VARIANCE OF PRESSURE'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Variance of pressure", "DATA_TYPE":"float", "DESCRIPTION": "Variance of pressure sensed by phone's barometer within the given period"}]
+
+    l = list(map(lambda x: float(x.sample), pressuredatastream.data))
+
+    data = [DataPoint(pressuredatastream.data[0].start_time, pressuredatastream.data[-1].start_time, np.var(l))]
+    start_time = data[0].start_time
+    end_time = data[-1].start_time
+
+    return DataStream(identifier, pressuredatastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def average_ambient_temperature(temperaturedatastream: DataStream):
+
+    """
+
+    :param temperaturedatastream: AMBIENT_TEMPERATURE--org.md2k.phonesensor--PHONE
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'AVERAGE TEMPERATURE'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Average temperature", "DATA_TYPE":"float", "DESCRIPTION": "Average ambient temperature sensed by phone's barometer within the given period"}]
+
+    total = 0
+    for x in temperaturedatastream.data:
+        total += float(x.sample)
+
+    data = [DataPoint(temperaturedatastream.data[0].start_time, temperaturedatastream.data[-1].start_time, total / len(temperaturedatastream.data))]
+    start_time = data[0].start_time
+    end_time = data[-1].start_time
+
+    return DataStream(identifier, temperaturedatastream.owner, name, data_descriptor,
+                      execution_context,
+                      annotations,
+                      "1",
+                      start_time,
+                      end_time,
+                      data)
+
+
+def average_ambient_light(lightdatastream: DataStream):
+
+    """
+
+    :param lightdatastream: AMBIENT_LIGHT--org.md2k.phonesensor--PHONE
+    :return:
+    """
+    identifier = uuid.uuid1()
+    name = 'AVERAGE AMBIENT LIGHT'
+    execution_context = {}
+    annotations = {}
+    data_descriptor = [{"NAME":"Average ambient light", "DATA_TYPE":"float", "DESCRIPTION": "Average ambient light sensed by phone's barometer within the given period"}]
+
+    total = 0
+    for x in lightdatastream.data:
+        total += float(x.sample)
+
+    data = [DataPoint(lightdatastream.data[0].start_time, lightdatastream.data[-1].start_time, total / len(lightdatastream.data))]
+    start_time = data[0].start_time
+    end_time = data[-1].start_time
+
+    return DataStream(identifier, lightdatastream.owner, name, data_descriptor,
                       execution_context,
                       annotations,
                       "1",
