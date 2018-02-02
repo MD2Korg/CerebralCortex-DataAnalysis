@@ -1,5 +1,3 @@
-import pandas as pd
-import numpy as np
 import os
 from modules.puffmarker_wrist.parse_csv_files import getGroundTruthInputData, getInputDataStream
 from modules.puffmarker_wrist.wrist_features import compute_wrist_feature
