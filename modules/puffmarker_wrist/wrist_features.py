@@ -1,9 +1,10 @@
-from cerebralcortex.core.datatypes.datapoint import DataPoint
-from cerebralcortex.core.datatypes.datastream import DataStream
-from modules.puffmarker_wrist.util import segmentationUsingTwoMovingAverage, smooth, magnitude
-from modules.puffmarker_wrist.wrist_candidate_filter import filterDuration, filterRollPitch
 import math
 import numpy as np
+from cerebralcortex.core.datatypes.datapoint import DataPoint
+from cerebralcortex.core.datatypes.datastream import DataStream
+from core.signalprocessing.vector import magnitude
+from modules.puffmarker_wrist.util import segmentationUsingTwoMovingAverage, smooth
+from modules.puffmarker_wrist.wrist_candidate_filter import filterDuration, filterRollPitch
 
 def calculateRollPitchYawStream(accel_stream: DataStream):
     roll_stream = calculateRollStream(accel_stream)
@@ -52,7 +53,6 @@ def calculateYawStream(accel_stream: DataStream):
     return yaw_datastream
 
 def computeBasicFeatures(data):
-
     mean = np.mean(data)
     median = np.median(data)
     sd = np.std(data)
@@ -60,9 +60,9 @@ def computeBasicFeatures(data):
 
     return mean, median, sd, quartile
 
-def compute_candidate_Features(gyr_intersections_stream, gyr_mag_stream, roll_stream, pitch_stream, yaw_stream, accel_stream):
-
+def compute_candidate_Features(gyr_intersections_stream, gyr_mag_stream, roll_stream, pitch_stream, yaw_stream, wrist: str):
     all_features = []
+    offset = gyr_mag_stream.data[0].offset
 
     for I in gyr_intersections_stream.data:
         sTime = I.start_time
@@ -84,31 +84,31 @@ def compute_candidate_Features(gyr_intersections_stream, gyr_mag_stream, roll_st
 
         gyro_mean, gyro_median, gyro_sd, gyro_quartile = computeBasicFeatures(Gmag_sub)
 
-        f = [duration, roll_mean, roll_median, roll_sd, roll_quartile, pitch_mean, pitch_median, pitch_sd, pitch_quartile, yaw_mean, yaw_median, yaw_sd, yaw_quartile, gyro_mean, gyro_median, gyro_sd, gyro_quartile]
+        f = [duration, roll_mean, roll_median, roll_sd, roll_quartile, pitch_mean, pitch_median, pitch_sd,
+             pitch_quartile, yaw_mean, yaw_median, yaw_sd, yaw_quartile, gyro_mean, gyro_median, gyro_sd,
+             gyro_quartile]
 
-        all_features.append(DataPoint.from_tuple(start_time=sTime, end_time=eTime, sample=f))
+        all_features.append(DataPoint(start_time=sTime, end_time=eTime, offset=offset, sample=f))
 
     feature_vector_stream = DataStream.from_datastream([gyr_intersections_stream])
     feature_vector_stream.data = all_features
     return feature_vector_stream
 
-def compute_wrist_feature(accel_stream: DataStream, gyro_stream: DataStream):
 
-    fastSize = 13
-    slowSize = 131
+def compute_wrist_feature(accel_stream: DataStream, gyro_stream: DataStream, wrist: str, fast_size=13, slow_soze=131):
 
     gyr_mag_stream = magnitude(gyro_stream)
 
     roll_stream, pitch_stream, yaw_stream = calculateRollPitchYawStream(accel_stream)
 
-    gyr_mag_800 = smooth(gyr_mag_stream, fastSize)
-    gyr_mag_8000 = smooth(gyr_mag_stream, slowSize)
+    gyr_mag_800 = smooth(gyr_mag_stream, fast_size)
+    gyr_mag_8000 = smooth(gyr_mag_stream, slow_soze)
 
     gyr_intersections = segmentationUsingTwoMovingAverage(gyr_mag_8000, gyr_mag_800, 0, 4)
 
     gyr_intersections = filterDuration(gyr_intersections)
     gyr_intersections = filterRollPitch(gyr_intersections, roll_stream, pitch_stream)
 
-    all_features = compute_candidate_Features(gyr_intersections, gyr_mag_stream, roll_stream, pitch_stream, yaw_stream, accel_stream)
+    all_features = compute_candidate_Features(gyr_intersections, gyr_mag_stream, roll_stream, pitch_stream, yaw_stream, wrist)
 
     return all_features
