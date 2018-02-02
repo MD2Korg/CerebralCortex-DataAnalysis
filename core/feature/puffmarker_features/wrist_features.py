@@ -1,3 +1,29 @@
+# Copyright (c) 2018, MD2K Center of Excellence
+# - Nazir Saleheen <nazir.saleheen@gmail.com>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+# list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
 import math
 import numpy as np
 from cerebralcortex.core.datatypes.datapoint import DataPoint
@@ -6,14 +32,14 @@ from core.signalprocessing.vector import magnitude
 from core.feature.puffmarker_features.util import segmentationUsingTwoMovingAverage, smooth
 from modules.puffmarker_wrist.wrist_candidate_filter import filterDuration, filterRollPitch
 
-def calculateRollPitchYawStream(accel_stream: DataStream):
-    roll_stream = calculateRollStream(accel_stream)
-    pitch_stream = calculatePitchStream(accel_stream)
-    yaw_stream = calculateYawStream(accel_stream)
+def calculate_roll_pitch_yaw_tream(accel_stream: DataStream):
+    roll_stream = calculate_roll_stream(accel_stream)
+    pitch_stream = calculate_pitch_stream(accel_stream)
+    yaw_stream = calculate_yaw_stream(accel_stream)
 
     return roll_stream, pitch_stream, yaw_stream
 
-def calculateRollStream(accel_stream: DataStream) :
+def calculate_roll_stream(accel_stream: DataStream) :
     roll = []
     for dp in accel_stream.data:
         ax = dp.sample[0]
@@ -26,7 +52,7 @@ def calculateRollStream(accel_stream: DataStream) :
     roll_datastream.data = roll
     return roll_datastream
 
-def calculatePitchStream(accel_stream: DataStream):
+def calculate_pitch_stream(accel_stream: DataStream):
     pitch = []
     for dp in accel_stream.data:
         ax = dp.sample[0]
@@ -39,7 +65,7 @@ def calculatePitchStream(accel_stream: DataStream):
     pitch_datastream.data = pitch
     return pitch_datastream
 
-def calculateYawStream(accel_stream: DataStream):
+def calculate_yaw_stream(accel_stream: DataStream):
     yaw = []
     for dp in accel_stream.data:
         ax = dp.sample[0]
@@ -99,7 +125,7 @@ def compute_wrist_feature(accel_stream: DataStream, gyro_stream: DataStream, wri
 
     gyr_mag_stream = magnitude(gyro_stream)
 
-    roll_stream, pitch_stream, yaw_stream = calculateRollPitchYawStream(accel_stream)
+    roll_stream, pitch_stream, yaw_stream = calculate_roll_pitch_yaw_tream(accel_stream)
 
     gyr_mag_800 = smooth(gyr_mag_stream, fast_size)
     gyr_mag_8000 = smooth(gyr_mag_stream, slow_soze)
