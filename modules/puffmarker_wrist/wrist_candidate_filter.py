@@ -17,8 +17,6 @@ def filterRollPitch(gyr_intersections_stream: DataStream, roll_stream: DataStrea
     gyr_intersections_filtered = []
 
     for I in gyr_intersections_stream.data:
-        sTime = I.start_time
-        eTime = I.end_time
         sIndex = I.sample[0]
         eIndex = I.sample[1]
 
@@ -28,7 +26,6 @@ def filterRollPitch(gyr_intersections_stream: DataStream, roll_stream: DataStrea
         mean_roll = np.mean(roll_sub)
         mean_pitch = np.mean(pitch_sub)
 
-        #         r > -20 && r <= 65 && p >= -125 && p <= -40
         if (mean_roll > -20) & (mean_roll <= 65) & (mean_pitch >= - 125) & (mean_pitch <= - 40):
             gyr_intersections_filtered.append(I)
 
