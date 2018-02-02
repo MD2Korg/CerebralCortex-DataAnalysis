@@ -1,3 +1,7 @@
+
+import argparse
+from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
+from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
 import  uuid
@@ -5,15 +9,12 @@ import datetime
 import time
 import numpy as np
 
-def to_unixtime(d: datetime):
-    return time.mktime(d.timetuple())
-
 
 def inter_event_time_list(data):
     if len(data)==0:
         return None
 
-    last_end = to_unixtime(data[0].end_time)
+    last_end = data[0].end_time
 
     ret = []
     flag = False
@@ -21,28 +22,18 @@ def inter_event_time_list(data):
         if flag == False:
             flag = True
             continue
-        current_start_time = to_unixtime(cd.start_time)
-        ret.append(max(0, current_start_time - last_end))
-        last_end = max(last_end, to_unixtime(cd.end_time))
+        dif = cd.start_time - last_end
+        ret.append(max(0, dif.total_seconds()))
+        last_end = max(last_end, cd.end_time)
 
     return list(map(lambda x: x/60.0, ret))
 
 
 def average_inter_phone_call_sms_time_hourly(phonedatastream: DataStream, smsdatastream: DataStream):
-    """
 
-    :param phonedatastream: phone call duration stream
-    :param smsdatastream: sms length stream
-    :return:
-    """
     if len(phonedatastream.data)+len(smsdatastream.data) <=1:
         return None
 
-    identifier = uuid.uuid1()
-    name = 'AVGERAGE-INTER-EVENT-TIME-CALL-SMS'
-    execution_context = {}
-    annotations = {}
-    data_descriptor = [{"NAME":"Average inter event time (call and sms)", "DATA_TYPE":"float", "DESCRIPTION": "Average inter event time (call and sms) in minutes within the given period"}]
     tmpphonestream = phonedatastream
     tmpsmsstream = smsdatastream
     for s in tmpphonestream.data:
@@ -67,34 +58,14 @@ def average_inter_phone_call_sms_time_hourly(phonedatastream: DataStream, smsdat
         new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(inter_event_time_list(datalist))/(len(datalist)-1)))
 
 
-
-    start_time = new_data[0].start_time
-    end_time = new_data[-1].end_time
-
-    return DataStream(identifier, phonedatastream.owner, name, data_descriptor,
-                      execution_context,
-                      annotations,
-                      "1",
-                      start_time,
-                      end_time,
-                      new_data)
+    return {"metadata":"average_inter_phone_call_sms_time_hourly", "datapoints": new_data}
 
 
 def average_inter_phone_call_sms_time_four_hourly(phonedatastream: DataStream, smsdatastream: DataStream):
-    """
 
-    :param phonedatastream: phone call duration stream
-    :param smsdatastream: sms length stream
-    :return:
-    """
     if len(phonedatastream.data)+len(smsdatastream.data) <=1:
         return None
 
-    identifier = uuid.uuid1()
-    name = 'AVG. INTER EVENT TIME (CALL & SMS)'
-    execution_context = {}
-    annotations = {}
-    data_descriptor = [{"NAME":"Average inter event time (call and sms)", "DATA_TYPE":"float", "DESCRIPTION": "Average inter event time (call and sms) in minutes within the given period"}]
     tmpphonestream = phonedatastream
     tmpsmsstream = smsdatastream
     for s in tmpphonestream.data:
@@ -118,34 +89,15 @@ def average_inter_phone_call_sms_time_four_hourly(phonedatastream: DataStream, s
             continue
         new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(inter_event_time_list(datalist))/(len(datalist)-1)))
 
+    return {"metadata":"average_inter_phone_call_sms_time_four_hourly", "datapoints": new_data}
 
 
-    start_time = new_data[0].start_time
-    end_time = new_data[-1].end_time
-
-    return DataStream(identifier, phonedatastream.owner, name, data_descriptor,
-                      execution_context,
-                      annotations,
-                      "1",
-                      start_time,
-                      end_time,
-                      new_data)
 
 def average_inter_phone_call_sms_time_daily(phonedatastream: DataStream, smsdatastream: DataStream):
-    """
 
-    :param phonedatastream: phone call duration stream
-    :param smsdatastream: sms length stream
-    :return:
-    """
     if len(phonedatastream.data)+len(smsdatastream.data) <=1:
         return None
 
-    identifier = uuid.uuid1()
-    name = 'AVG. INTER EVENT TIME (CALL & SMS)'
-    execution_context = {}
-    annotations = {}
-    data_descriptor = [{"NAME":"Average inter event time (call and sms)", "DATA_TYPE":"float", "DESCRIPTION": "Average inter event time (call and sms) in minutes within the given period"}]
     tmpphonestream = phonedatastream
     tmpsmsstream = smsdatastream
     for s in tmpphonestream.data:
@@ -160,30 +112,14 @@ def average_inter_phone_call_sms_time_daily(phonedatastream: DataStream, smsdata
     end_time = start_time + datetime.timedelta(hours=23, minutes=59)
     new_data = [DataPoint(start_time=start_time, end_time=end_time, sample= sum(inter_event_time_list(combined_data)) / (len(combined_data)-1))]
 
+    return {"metadata":"average_inter_phone_call_sms_time_daily", "datapoints": new_data}
 
-    return DataStream(identifier, phonedatastream.owner, name, data_descriptor,
-                      execution_context,
-                      annotations,
-                      "1",
-                      start_time,
-                      end_time,
-                      new_data)
 
 def variance_inter_phone_call_sms_time_daily(phonedatastream: DataStream, smsdatastream: DataStream):
-    """
 
-    :param phonedatastream: phone call duration stream
-    :param smsdatastream: sms length stream
-    :return:
-    """
     if len(phonedatastream.data)+len(smsdatastream.data) <=1:
         return None
 
-    identifier = uuid.uuid1()
-    name = 'AVG. INTER EVENT TIME (CALL & SMS)'
-    execution_context = {}
-    annotations = {}
-    data_descriptor = [{"NAME":"Average inter event time (call and sms)", "DATA_TYPE":"float", "DESCRIPTION": "Average inter event time (call and sms) in minutes within the given period"}]
     tmpphonestream = phonedatastream
     tmpsmsstream = smsdatastream
     for s in tmpphonestream.data:
@@ -200,29 +136,14 @@ def variance_inter_phone_call_sms_time_daily(phonedatastream: DataStream, smsdat
     new_data = [DataPoint(start_time=start_time, end_time=end_time, sample= np.var(inter_event_time_list(combined_data)) )]
 
 
-    return DataStream(identifier, phonedatastream.owner, name, data_descriptor,
-                      execution_context,
-                      annotations,
-                      "1",
-                      start_time,
-                      end_time,
-                      new_data)
+    return {"metadata":"variance_inter_phone_call_sms_time_daily", "datapoints": new_data}
+
 
 def variance_inter_phone_call_sms_time_hourly(phonedatastream: DataStream, smsdatastream: DataStream):
-    """
 
-    :param phonedatastream: phone call duration stream
-    :param smsdatastream: sms length stream
-    :return:
-    """
     if len(phonedatastream.data)+len(smsdatastream.data) <=1:
         return None
 
-    identifier = uuid.uuid1()
-    name = 'AVG. INTER EVENT TIME (CALL & SMS)'
-    execution_context = {}
-    annotations = {}
-    data_descriptor = [{"NAME":"Average inter event time (call and sms)", "DATA_TYPE":"float", "DESCRIPTION": "Average inter event time (call and sms) in minutes within the given period"}]
     tmpphonestream = phonedatastream
     tmpsmsstream = smsdatastream
     for s in tmpphonestream.data:
@@ -247,33 +168,14 @@ def variance_inter_phone_call_sms_time_hourly(phonedatastream: DataStream, smsda
         new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=np.var(inter_event_time_list(datalist))))
 
 
+    return {"metadata":"variance_inter_phone_call_sms_time_hourly", "datapoints": new_data}
 
-    start_time = new_data[0].start_time
-    end_time = new_data[-1].end_time
-
-    return DataStream(identifier, phonedatastream.owner, name, data_descriptor,
-                      execution_context,
-                      annotations,
-                      "1",
-                      start_time,
-                      end_time,
-                      new_data)
 
 def variance_inter_phone_call_sms_time_four_hourly(phonedatastream: DataStream, smsdatastream: DataStream):
-    """
 
-    :param phonedatastream: phone call duration stream
-    :param smsdatastream: sms length stream
-    :return:
-    """
     if len(phonedatastream.data)+len(smsdatastream.data) <=1:
         return None
 
-    identifier = uuid.uuid1()
-    name = 'AVG. INTER EVENT TIME (CALL & SMS)'
-    execution_context = {}
-    annotations = {}
-    data_descriptor = [{"NAME":"Average inter event time (call and sms)", "DATA_TYPE":"float", "DESCRIPTION": "Average inter event time (call and sms) in minutes within the given period"}]
     tmpphonestream = phonedatastream
     tmpsmsstream = smsdatastream
     for s in tmpphonestream.data:
@@ -297,35 +199,15 @@ def variance_inter_phone_call_sms_time_four_hourly(phonedatastream: DataStream, 
             continue
         new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=np.var(inter_event_time_list(datalist))))
 
-
-
-    start_time = new_data[0].start_time
-    end_time = new_data[-1].end_time
-
-    return DataStream(identifier, phonedatastream.owner, name, data_descriptor,
-                      execution_context,
-                      annotations,
-                      "1",
-                      start_time,
-                      end_time,
-                      new_data)
+    return {"metadata":"variance_inter_phone_call_sms_time_four_hourly", "datapoints": new_data}
 
 
 
 def average_inter_phone_call_time_hourly(phonedatastream: DataStream):
-    """
 
-    :param phonedatastream: phone call duration stream
-    :return:
-    """
     if len(phonedatastream.data) <=1:
         return None
 
-    identifier = uuid.uuid1()
-    name = 'AVG. INTER EVENT TIME (CALL & SMS)'
-    execution_context = {}
-    annotations = {}
-    data_descriptor = [{"NAME":"Average inter event time (call and sms)", "DATA_TYPE":"float", "DESCRIPTION": "Average inter event time (call and sms) in minutes within the given period"}]
     combined_data = phonedatastream.data
 
     for s in combined_data:
@@ -344,33 +226,14 @@ def average_inter_phone_call_time_hourly(phonedatastream: DataStream):
         new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(inter_event_time_list(datalist))/(len(datalist)-1)))
 
 
-
-    start_time = new_data[0].start_time
-    end_time = new_data[-1].end_time
-
-    return DataStream(identifier, phonedatastream.owner, name, data_descriptor,
-                      execution_context,
-                      annotations,
-                      "1",
-                      start_time,
-                      end_time,
-                      new_data)
+    return {"metadata":"average_inter_phone_call_time_hourly", "datapoints": new_data}
 
 
 def average_inter_phone_call_time_four_hourly(phonedatastream: DataStream):
-    """
 
-    :param phonedatastream: phone call duration stream
-    :return:
-    """
     if len(phonedatastream.data) <=1:
         return None
 
-    identifier = uuid.uuid1()
-    name = 'AVG. INTER EVENT TIME (CALL & SMS)'
-    execution_context = {}
-    annotations = {}
-    data_descriptor = [{"NAME":"Average inter event time (call and sms)", "DATA_TYPE":"float", "DESCRIPTION": "Average inter event time (call and sms) in minutes within the given period"}]
     combined_data = phonedatastream.data
 
     for s in combined_data:
@@ -391,31 +254,14 @@ def average_inter_phone_call_time_four_hourly(phonedatastream: DataStream):
 
 
 
-    start_time = new_data[0].start_time
-    end_time = new_data[-1].end_time
+    return {"metadata":"average_inter_phone_call_time_four_hourly", "datapoints": new_data}
 
-    return DataStream(identifier, phonedatastream.owner, name, data_descriptor,
-                      execution_context,
-                      annotations,
-                      "1",
-                      start_time,
-                      end_time,
-                      new_data)
 
 def average_inter_phone_call_time_daily(phonedatastream: DataStream):
-    """
 
-    :param phonedatastream: phone call duration stream
-    :return:
-    """
     if len(phonedatastream.data) <=1:
         return None
 
-    identifier = uuid.uuid1()
-    name = 'AVG. INTER EVENT TIME (CALL & SMS)'
-    execution_context = {}
-    annotations = {}
-    data_descriptor = [{"NAME":"Average inter event time (call and sms)", "DATA_TYPE":"float", "DESCRIPTION": "Average inter event time (call and sms) in minutes within the given period"}]
     combined_data = phonedatastream.data
 
     for s in combined_data:
@@ -426,30 +272,15 @@ def average_inter_phone_call_time_daily(phonedatastream: DataStream):
     new_data = [DataPoint(start_time=start_time, end_time=end_time, sample= sum(inter_event_time_list(combined_data)) / (len(combined_data)-1))]
 
 
-    return DataStream(identifier, phonedatastream.owner, name, data_descriptor,
-                      execution_context,
-                      annotations,
-                      "1",
-                      start_time,
-                      end_time,
-                      new_data)
+    return {"metadata":"average_inter_phone_call_time_daily", "datapoints": new_data}
 
 
 
 def average_inter_sms_time_hourly(smsdatastream: DataStream):
-    """
 
-    :param phonedatastream: phone call duration stream
-    :return:
-    """
     if len(smsdatastream.data) <=1:
         return None
 
-    identifier = uuid.uuid1()
-    name = 'AVG. INTER EVENT TIME (CALL & SMS)'
-    execution_context = {}
-    annotations = {}
-    data_descriptor = [{"NAME":"Average inter event time (call and sms)", "DATA_TYPE":"float", "DESCRIPTION": "Average inter event time (call and sms) in minutes within the given period"}]
     combined_data = smsdatastream.data
 
     for s in combined_data:
@@ -469,32 +300,14 @@ def average_inter_sms_time_hourly(smsdatastream: DataStream):
 
 
 
-    start_time = new_data[0].start_time
-    end_time = new_data[-1].end_time
-
-    return DataStream(identifier, smsdatastream.owner, name, data_descriptor,
-                      execution_context,
-                      annotations,
-                      "1",
-                      start_time,
-                      end_time,
-                      new_data)
+    return {"metadata":"average_inter_sms_time_hourly", "datapoints": new_data}
 
 
 def average_inter_sms_time_four_hourly(smsdatastream: DataStream):
-    """
 
-    :param phonedatastream: phone call duration stream
-    :return:
-    """
     if len(smsdatastream.data) <=1:
         return None
 
-    identifier = uuid.uuid1()
-    name = 'AVG. INTER EVENT TIME (CALL & SMS)'
-    execution_context = {}
-    annotations = {}
-    data_descriptor = [{"NAME":"Average inter event time (call and sms)", "DATA_TYPE":"float", "DESCRIPTION": "Average inter event time (call and sms) in minutes within the given period"}]
     combined_data = smsdatastream.data
 
     for s in combined_data:
@@ -513,33 +326,14 @@ def average_inter_sms_time_four_hourly(smsdatastream: DataStream):
             continue
         new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(inter_event_time_list(datalist))/(len(datalist)-1)))
 
+    return {"metadata":"average_inter_sms_time_four_hourly", "datapoints": new_data}
 
-
-    start_time = new_data[0].start_time
-    end_time = new_data[-1].end_time
-
-    return DataStream(identifier, smsdatastream.owner, name, data_descriptor,
-                      execution_context,
-                      annotations,
-                      "1",
-                      start_time,
-                      end_time,
-                      new_data)
 
 def average_inter_sms_time_daily(smsdatastream: DataStream):
-    """
 
-    :param phonedatastream: phone call duration stream
-    :return:
-    """
     if len(smsdatastream.data) <=1:
         return None
 
-    identifier = uuid.uuid1()
-    name = 'AVG. INTER EVENT TIME (CALL & SMS)'
-    execution_context = {}
-    annotations = {}
-    data_descriptor = [{"NAME":"Average inter event time (call and sms)", "DATA_TYPE":"float", "DESCRIPTION": "Average inter event time (call and sms) in minutes within the given period"}]
     combined_data = smsdatastream.data
 
     for s in combined_data:
@@ -549,11 +343,53 @@ def average_inter_sms_time_daily(smsdatastream: DataStream):
     end_time = start_time + datetime.timedelta(hours=23, minutes=59)
     new_data = [DataPoint(start_time=start_time, end_time=end_time, sample= sum(inter_event_time_list(combined_data)) / (len(combined_data)-1))]
 
+    return {"metadata":"average_inter_sms_time_daily", "datapoints": new_data}
 
-    return DataStream(identifier, smsdatastream.owner, name, data_descriptor,
-                      execution_context,
-                      annotations,
-                      "1",
-                      start_time,
-                      end_time,
-                      new_data)
+
+def all_users_data(study_name: str, CC):
+
+    all_users = CC.get_all_users(study_name)
+
+    if all_users:
+        for user in all_users:
+            print(user)
+            streams = CC.get_user_streams(user["identifier"])
+            process_data(user["identifier"], ['CU_CALL_DURATION--edu.dartmouth.eureka', 'CU_SMS_LENGTH--edu.dartmouth.eureka'], CC)
+    else:
+        print(study_name, "- study has 0 users.")
+
+
+def process_data(user_id, stream_names, CC):
+
+    streams = CC.get_user_streams(user_id)
+    for stream in streams.items():
+        if stream[0]==stream_names[0]:
+            callstream = CC.get_stream(stream[1]["identifier"], day="20180102", data_type=DataSet.COMPLETE)
+        elif stream[0]==stream_names[1]:
+            smsstream = CC.get_stream(stream[1]["identifier"], day="20180102", data_type=DataSet.COMPLETE)
+        else:
+            continue
+
+    average_inter_phone_call_sms_time_hourly(callstream, smsstream)
+    average_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
+    average_inter_phone_call_sms_time_daily(callstream, smsstream)
+    variance_inter_phone_call_sms_time_daily(callstream, smsstream)
+    variance_inter_phone_call_sms_time_hourly(callstream, smsstream)
+    variance_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
+    average_inter_phone_call_time_hourly(callstream)
+    average_inter_phone_call_time_four_hourly(callstream)
+    average_inter_phone_call_time_daily(callstream)
+    average_inter_sms_time_hourly(smsstream)
+    average_inter_sms_time_four_hourly(smsstream)
+    average_inter_sms_time_daily(smsstream)
+
+if __name__ == '__main__':
+    # create and load CerebralCortex object and configs
+    parser = argparse.ArgumentParser(description='CerebralCortex Reporting Application.')
+    parser.add_argument("-cc", "--cc_config_filepath", help="Configuration file path", required=True)
+    args = vars(parser.parse_args())
+
+    CC = CerebralCortex(args["cc_config_filepath"])
+
+    # run for all the participants in a study
+    all_users_data("mperf",  CC)
