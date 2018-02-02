@@ -15,13 +15,12 @@ stream_names:
   motionsense_hrv_gyro_right: "GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
 
   #### OUTPUTS STREAM NAMES
-  puffmarker_wrist_feature_left: "PUFFMARKER-WRIST-FEATURE-LEFT"
-  puffmarker_wrist_smoking_puff_left: "PUFFMARKER-WRIST-SMOKING-PUFF-LEFT"
-  puffmarker_wrist_smoking_episode_left: "PUFFMARKER-WRIST-SMOKING-EPISODE-LEFT"
+  puffmarker_wrist_feature_left: "puffmarker_left_wrist_feature_vector"
+  puffmarker_wrist_smoking_puff_left: "puffmarker_left_wrist_smoking_puff"
 
-  puffmarker_wrist_feature_right: "PUFFMARKER-WRIST-FEATURE-RIGHT"
-  puffmarker_wrist_smoking_puff_right: "PUFFMARKER-WRIST-SMOKING-PUFF-RIGHT"
-  puffmarker_wrist_smoking_episode_right: "PUFFMARKER-WRIST-SMOKING-EPISODE-RIGHT"
+  puffmarker_wrist_feature_right: "puffmarker_right_wrist_feature_vector"
+  puffmarker_wrist_smoking_puff_right: "puffmarker_left_wrist_smoking_puff"
+  puffmarker_wrist_smoking_episode: "puffmarker_wrist_smoking_episode"
 
 description:
   puffmarker_wrist_feature_vector: "This module computes wrist feature vector of puffmarker"
