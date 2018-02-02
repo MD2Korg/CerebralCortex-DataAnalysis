@@ -4,8 +4,7 @@ import argparse
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.util.spark_helper import get_or_create_sc
 from cerebralcortex.core.config_manager.config import Configuration
-from modules.puffmarker_wrist.wrist_features import compute_wrist_feature
-from modules.puffmarker_wrist.puffmarker_wrist import process_puffmarker
+from core.feature.puffmarker_features.puffmarker_wrist import process_puffmarker
 
 def all_users_data(study_name: str, md_config, CC, spark_context):
     """
