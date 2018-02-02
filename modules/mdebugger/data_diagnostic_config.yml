@@ -1,7 +1,7 @@
 general:
   window_size: 60
 
-sampling_rate:
+sampling_rate: #TODO: This shall come from MySQL DB
   rip: 21.33
   ecg: 64
   autosense_accel: 10.67

@@ -57,7 +57,6 @@ def average_inter_phone_call_sms_time_hourly(phonedatastream: DataStream, smsdat
             continue
         new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(inter_event_time_list(datalist))/(len(datalist)-1)))
 
-
     return {"metadata":"average_inter_phone_call_sms_time_hourly", "datapoints": new_data}
 
 
@@ -326,7 +325,7 @@ def average_inter_sms_time_four_hourly(smsdatastream: DataStream):
             continue
         new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(inter_event_time_list(datalist))/(len(datalist)-1)))
 
-    return {"metadata":"average_inter_sms_time_four_hourly", "datapoints": new_data}
+    return new_data
 
 
 def average_inter_sms_time_daily(smsdatastream: DataStream):
@@ -352,26 +351,32 @@ def all_users_data(study_name: str, CC):
 
     if all_users:
         for user in all_users:
-            print(user)
             streams = CC.get_user_streams(user["identifier"])
-            process_data(user["identifier"], ['CU_CALL_DURATION--edu.dartmouth.eureka', 'CU_SMS_LENGTH--edu.dartmouth.eureka'], CC)
+            process_data(user["identifier"], streams, CC)
     else:
         print(study_name, "- study has 0 users.")
 
+#['CU_CALL_DURATION--edu.dartmouth.eureka', 'CU_SMS_LENGTH--edu.dartmouth.eureka']
 
 def process_data(user_id, stream_names, CC):
 
-    streams = CC.get_user_streams(user_id)
-    for stream in streams.items():
-        if stream[0]==stream_names[0]:
+    streams = stream_names
+    for stream in streams:
+        if stream=='CU_CALL_DURATION--edu.dartmouth.eureka':
             callstream = CC.get_stream(stream[1]["identifier"], day="20180102", data_type=DataSet.COMPLETE)
-        elif stream[0]==stream_names[1]:
+        elif stream=='CU_SMS_LENGTH--edu.dartmouth.eureka':
             smsstream = CC.get_stream(stream[1]["identifier"], day="20180102", data_type=DataSet.COMPLETE)
-        else:
-            continue
+
+    # input_stream["id"] = ID
+    # input_stream["name"]=NAME
+    # input_streams.append(input_stream)
+    # user_id = ""
+
 
     average_inter_phone_call_sms_time_hourly(callstream, smsstream)
+    # store_data("bla.json", input_streams, user_id, data)
     average_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
+    # store_data("bla.json", input_streams, user_id, data)
     average_inter_phone_call_sms_time_daily(callstream, smsstream)
     variance_inter_phone_call_sms_time_daily(callstream, smsstream)
     variance_inter_phone_call_sms_time_hourly(callstream, smsstream)
