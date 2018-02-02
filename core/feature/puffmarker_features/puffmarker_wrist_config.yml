@@ -22,6 +22,13 @@ stream_names:
   puffmarker_wrist_smoking_puff_right: "puffmarker_left_wrist_smoking_puff"
   puffmarker_wrist_smoking_episode: "puffmarker_wrist_smoking_episode"
 
+  roll_left_wrist: "roll_left_wrist"
+  pitch_left_wrist: "pitch_left_wrist"
+  yaw_left_wrist: "yaw_left_wrist"
+  roll_right_wrist: "roll_right_wrist"
+  pitch_right_wrist: "pitch_right_wrist"
+  yaw_right_wrist: "yaw_right_wrist"
+
 description:
   puffmarker_wrist_feature_vector: "This module computes wrist feature vector of puffmarker"
   puffmarker_wrist: "puffmarker detects smoking episodes from wrist worn accelerometer and gyroscope"
