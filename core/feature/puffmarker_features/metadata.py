@@ -24,7 +24,7 @@ def update_metadata(all_features_left: DataStream, user_id, CC: CerebralCortex, 
     input_streams = [{"owner_id": owner, "id": str(accel_stream.identifier), "name": accel_stream.name}
         , {"owner_id": owner, "id": str(gyro_stream.identifier), "name": gyro_stream.name}]
 
-    method = 'cerebralcortex.data_processor.data_diagnostic.packet_loss_marker.py'
+    method = 'core.feature.puffmarker_features.wrist_features.py'
 
     execution_context = get_execution_context(dd_stream_name, input_param, input_streams, method,
                                               algo_description, config)
