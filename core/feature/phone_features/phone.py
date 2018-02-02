@@ -374,9 +374,9 @@ def process_data(user_id, stream_names, CC):
 
 
     average_inter_phone_call_sms_time_hourly(callstream, smsstream)
-    # store_data("bla.json", input_streams, user_id, data)
+    # store_data("bla.json", input_streams, user_id, data, CC)
     average_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
-    # store_data("bla.json", input_streams, user_id, data)
+    # store_data("bla.json", input_streams, user_id, data, CC)
     average_inter_phone_call_sms_time_daily(callstream, smsstream)
     variance_inter_phone_call_sms_time_daily(callstream, smsstream)
     variance_inter_phone_call_sms_time_hourly(callstream, smsstream)
