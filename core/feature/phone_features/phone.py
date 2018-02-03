@@ -57,7 +57,7 @@ def average_inter_phone_call_sms_time_hourly(phonedatastream: DataStream, smsdat
             continue
         new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(inter_event_time_list(datalist))/(len(datalist)-1)))
 
-    return {"metadata":"average_inter_phone_call_sms_time_hourly", "datapoints": new_data}
+    return new_data
 
 
 def average_inter_phone_call_sms_time_four_hourly(phonedatastream: DataStream, smsdatastream: DataStream):
@@ -88,7 +88,7 @@ def average_inter_phone_call_sms_time_four_hourly(phonedatastream: DataStream, s
             continue
         new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(inter_event_time_list(datalist))/(len(datalist)-1)))
 
-    return {"metadata":"average_inter_phone_call_sms_time_four_hourly", "datapoints": new_data}
+    return new_data
 
 
 
@@ -111,7 +111,7 @@ def average_inter_phone_call_sms_time_daily(phonedatastream: DataStream, smsdata
     end_time = start_time + datetime.timedelta(hours=23, minutes=59)
     new_data = [DataPoint(start_time=start_time, end_time=end_time, sample= sum(inter_event_time_list(combined_data)) / (len(combined_data)-1))]
 
-    return {"metadata":"average_inter_phone_call_sms_time_daily", "datapoints": new_data}
+    return new_data
 
 
 def variance_inter_phone_call_sms_time_daily(phonedatastream: DataStream, smsdatastream: DataStream):
@@ -134,8 +134,7 @@ def variance_inter_phone_call_sms_time_daily(phonedatastream: DataStream, smsdat
 
     new_data = [DataPoint(start_time=start_time, end_time=end_time, sample= np.var(inter_event_time_list(combined_data)) )]
 
-
-    return {"metadata":"variance_inter_phone_call_sms_time_daily", "datapoints": new_data}
+    return new_data
 
 
 def variance_inter_phone_call_sms_time_hourly(phonedatastream: DataStream, smsdatastream: DataStream):
@@ -166,8 +165,7 @@ def variance_inter_phone_call_sms_time_hourly(phonedatastream: DataStream, smsda
             continue
         new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=np.var(inter_event_time_list(datalist))))
 
-
-    return {"metadata":"variance_inter_phone_call_sms_time_hourly", "datapoints": new_data}
+    return new_data
 
 
 def variance_inter_phone_call_sms_time_four_hourly(phonedatastream: DataStream, smsdatastream: DataStream):
@@ -198,7 +196,7 @@ def variance_inter_phone_call_sms_time_four_hourly(phonedatastream: DataStream, 
             continue
         new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=np.var(inter_event_time_list(datalist))))
 
-    return {"metadata":"variance_inter_phone_call_sms_time_four_hourly", "datapoints": new_data}
+    return new_data
 
 
 
@@ -224,8 +222,7 @@ def average_inter_phone_call_time_hourly(phonedatastream: DataStream):
             continue
         new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(inter_event_time_list(datalist))/(len(datalist)-1)))
 
-
-    return {"metadata":"average_inter_phone_call_time_hourly", "datapoints": new_data}
+    return new_data
 
 
 def average_inter_phone_call_time_four_hourly(phonedatastream: DataStream):
@@ -251,9 +248,7 @@ def average_inter_phone_call_time_four_hourly(phonedatastream: DataStream):
             continue
         new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(inter_event_time_list(datalist))/(len(datalist)-1)))
 
-
-
-    return {"metadata":"average_inter_phone_call_time_four_hourly", "datapoints": new_data}
+    return new_data
 
 
 def average_inter_phone_call_time_daily(phonedatastream: DataStream):
@@ -270,8 +265,7 @@ def average_inter_phone_call_time_daily(phonedatastream: DataStream):
     end_time = start_time + datetime.timedelta(hours=23, minutes=59)
     new_data = [DataPoint(start_time=start_time, end_time=end_time, sample= sum(inter_event_time_list(combined_data)) / (len(combined_data)-1))]
 
-
-    return {"metadata":"average_inter_phone_call_time_daily", "datapoints": new_data}
+    return new_data
 
 
 
@@ -297,9 +291,7 @@ def average_inter_sms_time_hourly(smsdatastream: DataStream):
             continue
         new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(inter_event_time_list(datalist))/(len(datalist)-1)))
 
-
-
-    return {"metadata":"average_inter_sms_time_hourly", "datapoints": new_data}
+    return new_data
 
 
 def average_inter_sms_time_four_hourly(smsdatastream: DataStream):
@@ -342,7 +334,7 @@ def average_inter_sms_time_daily(smsdatastream: DataStream):
     end_time = start_time + datetime.timedelta(hours=23, minutes=59)
     new_data = [DataPoint(start_time=start_time, end_time=end_time, sample= sum(inter_event_time_list(combined_data)) / (len(combined_data)-1))]
 
-    return {"metadata":"average_inter_sms_time_daily", "datapoints": new_data}
+    return new_data
 
 
 def all_users_data(study_name: str, CC):
@@ -360,33 +352,45 @@ def all_users_data(study_name: str, CC):
 
 def process_data(user_id, stream_names, CC):
 
+    input_stream1 = {}
+    input_stream2 = {}
+
     streams = stream_names
     for stream in streams:
         if stream=='CU_CALL_DURATION--edu.dartmouth.eureka':
             callstream = CC.get_stream(stream[1]["identifier"], day="20180102", data_type=DataSet.COMPLETE)
+            input_stream1["id"] = stream[1]["identifier"]
+            input_stream1["name"] = stream[1]["name"]
         elif stream=='CU_SMS_LENGTH--edu.dartmouth.eureka':
             smsstream = CC.get_stream(stream[1]["identifier"], day="20180102", data_type=DataSet.COMPLETE)
-
-    # input_stream["id"] = ID
-    # input_stream["name"]=NAME
-    # input_streams.append(input_stream)
-    # user_id = ""
+            input_stream2["id"] = stream[1]["identifier"]
+            input_stream2["name"] = stream[1]["name"]
 
 
-    average_inter_phone_call_sms_time_hourly(callstream, smsstream)
-    # store_data("bla.json", input_streams, user_id, data, CC)
-    average_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
-    # store_data("bla.json", input_streams, user_id, data, CC)
-    average_inter_phone_call_sms_time_daily(callstream, smsstream)
-    variance_inter_phone_call_sms_time_daily(callstream, smsstream)
-    variance_inter_phone_call_sms_time_hourly(callstream, smsstream)
-    variance_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
-    average_inter_phone_call_time_hourly(callstream)
-    average_inter_phone_call_time_four_hourly(callstream)
-    average_inter_phone_call_time_daily(callstream)
-    average_inter_sms_time_hourly(smsstream)
-    average_inter_sms_time_four_hourly(smsstream)
-    average_inter_sms_time_daily(smsstream)
+    data = average_inter_phone_call_sms_time_hourly(callstream, smsstream)
+    store_data("average_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+    data = average_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
+    store_data("average_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+    data = average_inter_phone_call_sms_time_daily(callstream, smsstream)
+    store_data("average_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, CC)
+    data = variance_inter_phone_call_sms_time_daily(callstream, smsstream)
+    store_data("variance_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, CC)
+    data = variance_inter_phone_call_sms_time_hourly(callstream, smsstream)
+    store_data("variance_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+    data = variance_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
+    store_data("variance_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+    data = average_inter_phone_call_time_hourly(callstream)
+    store_data("average_inter_phone_call_time_hourly.json", [input_stream1], user_id, data, CC)
+    data = average_inter_phone_call_time_four_hourly(callstream)
+    store_data("average_inter_phone_call_time_four_hourly.json", [input_stream1], user_id, data, CC)
+    data = average_inter_phone_call_time_daily(callstream)
+    store_data("average_inter_phone_call_time_daily.json", [input_stream1], user_id, data, CC)
+    data = average_inter_sms_time_hourly(smsstream)
+    store_data("average_inter_sms_time_hourly.json", [input_stream2], user_id, data, CC)
+    data = average_inter_sms_time_four_hourly(smsstream)
+    store_data("average_inter_sms_time_four_hourly.json", [input_stream2], user_id, data, CC)
+    data = average_inter_sms_time_daily(smsstream)
+    store_data("average_inter_sms_time_daily.json", [input_stream2], user_id, data, CC)
 
 if __name__ == '__main__':
     # create and load CerebralCortex object and configs
