@@ -4,6 +4,8 @@ from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
+from save_feature_stream import store_data
+
 import  uuid
 import datetime
 import time
@@ -109,7 +111,7 @@ def average_inter_phone_call_sms_time_daily(phonedatastream: DataStream, smsdata
     combined_data.sort(key=lambda x:x.start_time)
     start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month, day=combined_data[0].start_time.day)
     end_time = start_time + datetime.timedelta(hours=23, minutes=59)
-    new_data = [DataPoint(start_time=start_time, end_time=end_time, sample= sum(inter_event_time_list(combined_data)) / (len(combined_data)-1))]
+    new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset, sample= sum(inter_event_time_list(combined_data)) / (len(combined_data)-1))]
 
     return new_data
 
@@ -132,7 +134,7 @@ def variance_inter_phone_call_sms_time_daily(phonedatastream: DataStream, smsdat
     start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month, day=combined_data[0].start_time.day)
     end_time = start_time + datetime.timedelta(hours=23, minutes=59)
 
-    new_data = [DataPoint(start_time=start_time, end_time=end_time, sample= np.var(inter_event_time_list(combined_data)) )]
+    new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset, sample= np.var(inter_event_time_list(combined_data)) )]
 
     return new_data
 
@@ -263,7 +265,7 @@ def average_inter_phone_call_time_daily(phonedatastream: DataStream):
 
     start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month, day=combined_data[0].start_time.day)
     end_time = start_time + datetime.timedelta(hours=23, minutes=59)
-    new_data = [DataPoint(start_time=start_time, end_time=end_time, sample= sum(inter_event_time_list(combined_data)) / (len(combined_data)-1))]
+    new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset, sample= sum(inter_event_time_list(combined_data)) / (len(combined_data)-1))]
 
     return new_data
 
@@ -332,7 +334,7 @@ def average_inter_sms_time_daily(smsdatastream: DataStream):
 
     start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month, day=combined_data[0].start_time.day)
     end_time = start_time + datetime.timedelta(hours=23, minutes=59)
-    new_data = [DataPoint(start_time=start_time, end_time=end_time, sample= sum(inter_event_time_list(combined_data)) / (len(combined_data)-1))]
+    new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset, sample= sum(inter_event_time_list(combined_data)) / (len(combined_data)-1))]
 
     return new_data
 
@@ -356,39 +358,50 @@ def process_data(user_id, stream_names, CC):
     input_stream2 = {}
 
     streams = stream_names
-    for stream in streams:
-        if stream=='CU_CALL_DURATION--edu.dartmouth.eureka':
-            callstream = CC.get_stream(stream[1]["identifier"], day="20180102", data_type=DataSet.COMPLETE)
-            input_stream1["id"] = stream[1]["identifier"]
-            input_stream1["name"] = stream[1]["name"]
-        elif stream=='CU_SMS_LENGTH--edu.dartmouth.eureka':
-            smsstream = CC.get_stream(stream[1]["identifier"], day="20180102", data_type=DataSet.COMPLETE)
-            input_stream2["id"] = stream[1]["identifier"]
-            input_stream2["name"] = stream[1]["name"]
+    for stream_name,stream_metadata in streams.items():
+        if stream_name=='CU_CALL_DURATION--edu.dartmouth.eureka':
+            callstream = CC.get_stream(stream_metadata["identifier"], day="20180102", data_type=DataSet.COMPLETE)
+            input_stream1["id"] = stream_metadata["identifier"]
+            input_stream1["name"] = stream_metadata["name"]
+        elif stream_name=='CU_SMS_LENGTH--edu.dartmouth.eureka':
+            smsstream = CC.get_stream(stream_metadata["identifier"], day="20180102", data_type=DataSet.COMPLETE)
+            input_stream2["id"] = stream_metadata["identifier"]
+            input_stream2["name"] = stream_metadata["name"]
 
 
     data = average_inter_phone_call_sms_time_hourly(callstream, smsstream)
     store_data("average_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+
     data = average_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
     store_data("average_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+
     data = average_inter_phone_call_sms_time_daily(callstream, smsstream)
     store_data("average_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, CC)
+
     data = variance_inter_phone_call_sms_time_daily(callstream, smsstream)
     store_data("variance_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, CC)
+
     data = variance_inter_phone_call_sms_time_hourly(callstream, smsstream)
     store_data("variance_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+
     data = variance_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
     store_data("variance_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+
     data = average_inter_phone_call_time_hourly(callstream)
     store_data("average_inter_phone_call_time_hourly.json", [input_stream1], user_id, data, CC)
+
     data = average_inter_phone_call_time_four_hourly(callstream)
     store_data("average_inter_phone_call_time_four_hourly.json", [input_stream1], user_id, data, CC)
+
     data = average_inter_phone_call_time_daily(callstream)
     store_data("average_inter_phone_call_time_daily.json", [input_stream1], user_id, data, CC)
+
     data = average_inter_sms_time_hourly(smsstream)
     store_data("average_inter_sms_time_hourly.json", [input_stream2], user_id, data, CC)
+
     data = average_inter_sms_time_four_hourly(smsstream)
     store_data("average_inter_sms_time_four_hourly.json", [input_stream2], user_id, data, CC)
+
     data = average_inter_sms_time_daily(smsstream)
     store_data("average_inter_sms_time_daily.json", [input_stream2], user_id, data, CC)
 
