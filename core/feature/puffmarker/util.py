@@ -23,9 +23,12 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
+import uuid
+from datetime import timedelta
 import numpy as np
+from typing import List
 import core.signalprocessing.vector as vector
+from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
 
@@ -49,35 +52,46 @@ def segmentationUsingTwoMovingAverage(slowMovingAverageDataStream: DataStream
     indexList = [0]*len(slowMovingAverage)
     curIndex = 0
 
-    for i in range(len(slowMovingAverage)):
-        diff = slowMovingAverage[i] - fastMovingAverage[i]
+    for index in range(len(slowMovingAverage)):
+        diff = slowMovingAverage[index] - fastMovingAverage[index]
         if diff > THRESHOLD:
             if curIndex == 0:
-                indexList[curIndex] = i
+                indexList[curIndex] = index
                 curIndex = curIndex + 1
-                indexList[curIndex] = i
+                indexList[curIndex] = index
             else:
-                if i <= indexList[curIndex] + near :
-                    indexList[curIndex] = i
+                if index <= indexList[curIndex] + near :
+                    indexList[curIndex] = index
                 else:
                     curIndex = curIndex + 1
-                    indexList[curIndex] = i
+                    indexList[curIndex] = index
                     curIndex = curIndex + 1
-                    indexList[curIndex] = i
+                    indexList[curIndex] = index
 
     output = []
     if curIndex > 0:
-        for i in range(0, curIndex, 2):
-            sIndex = indexList[i]
-            eIndex = indexList[i+1]
+        for index in range(0, curIndex, 2):
+            sIndex = indexList[index]
+            eIndex = indexList[index+1]
             sTime = slowMovingAverageDataStream.data[sIndex].start_time
             eTime = slowMovingAverageDataStream.data[eIndex].start_time
-            output.append(DataPoint(start_time=sTime, end_time=eTime, sample=[indexList[i], indexList[i + 1]]))
+            output.append(DataPoint(start_time=sTime, end_time=eTime, sample=[indexList[index], indexList[index + 1]]))
 
     intersectionPoints = DataStream.from_datastream([slowMovingAverageDataStream])
     intersectionPoints.data = output
     return intersectionPoints
 
+def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
+    """
+    Returns a list of days (string format: YearMonthDay (e.g., 20171206)
+    :param stream_id:
+    """
+    stream_dicts = CC.get_stream_duration(stream_id)
+    stream_days = []
+    days = stream_dicts["end_time"]-stream_dicts["start_time"]
+    for day in range(days.days+1):
+        stream_days.append((stream_dicts["start_time"]+timedelta(days=day)).strftime('%Y%m%d'))
+    return stream_days
 
 
 
