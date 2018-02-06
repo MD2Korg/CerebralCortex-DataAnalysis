@@ -47,7 +47,7 @@ def normalize(datastream: DataStream) -> DataStream:
 
     data = preprocessing.normalize(input_data, axis=0)
 
-    result.data = [DataPoint.from_tuple(start_time=v.start_time, sample=data[i])
+    result.data = [DataPoint(start_time=v.start_time, end_time=v.end_time, offset=v.offset, sample=data[i])
                    for i, v in enumerate(datastream.data)]
 
     return result
@@ -64,12 +64,7 @@ def magnitude(datastream: DataStream) -> DataStream:
         result.data = []
         return result
 
-    input_data = np.array([i.sample for i in datastream.data])
-
-    data = norm(input_data, axis=1).tolist()
-
-    result.data = [DataPoint.from_tuple(start_time=v.start_time, sample=data[i])
-                   for i, v in enumerate(datastream.data)]
+    result.data = [DataPoint(start_time=value.start_time, offset=value.offset, sample=norm(value.sample)) for value in datastream.data]
 
     return result
 
@@ -107,7 +102,7 @@ def smooth(data: List[DataPoint],
 
     if len(sample_smooth) == len(data):
         for i, item in enumerate(data):
-            dp = DataPoint.from_tuple(sample=sample_smooth[i], start_time=item.start_time, end_time=item.end_time)
+            dp = DataPoint(start_time=item.start_time, end_time=item.end_time, offset=item.offset, sample=sample_smooth[i])
             data_smooth.append(dp)
     else:
         raise Exception("Smoothed data length does not match with original data length.")

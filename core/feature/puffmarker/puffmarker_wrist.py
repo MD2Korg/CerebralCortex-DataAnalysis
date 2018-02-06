@@ -28,8 +28,8 @@ import uuid
 
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
-from core.feature.puffmarker_features.wrist_features import compute_wrist_feature
-from core.feature.puffmarker_features.metadata import update_metadata
+from core.feature.puffmarker.wrist_features import compute_wrist_feature
+from core.feature.puffmarker.metadata import update_metadata
 
 def process_puffmarker(user_id: uuid, CC: CerebralCortex, config: dict,
                        accel_stream_left: DataStream,
@@ -50,10 +50,10 @@ def process_puffmarker(user_id: uuid, CC: CerebralCortex, config: dict,
     slow_size = config["thresholds"]["slow_size"]
     all_features_left = compute_wrist_feature(accel_stream_left, gyro_stream_left, 'leftwrist', fast_size, slow_size)
     all_features_left = update_metadata(all_features_left, user_id, CC, config, accel_stream_left, gyro_stream_left, 'leftwrist')
-    CC.save_datastream(all_features_left, "datastream")
+    CC.save_stream(all_features_left)
 
     all_features_right = compute_wrist_feature(accel_stream_right, gyro_stream_right, 'rightwrist', fast_size, slow_size)
     all_features_right = update_metadata(all_features_right , user_id, CC, config, accel_stream_right, gyro_stream_right, 'rightwrist')
-    CC.save_datastream(all_features_right, "datastream")
+    CC.save_stream(all_features_right)
 
 

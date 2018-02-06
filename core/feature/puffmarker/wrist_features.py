@@ -29,8 +29,8 @@ import numpy as np
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
 from core.signalprocessing.vector import magnitude
-from core.feature.puffmarker_features.util import segmentationUsingTwoMovingAverage, smooth
-from modules.puffmarker_wrist.wrist_candidate_filter import filterDuration, filterRollPitch
+from core.feature.puffmarker.util import segmentationUsingTwoMovingAverage, smooth
+from core.feature.puffmarker.wrist_candidate_filter import filterDuration, filterRollPitch
 
 def calculate_roll_pitch_yaw_tream(accel_stream: DataStream):
     roll_stream = calculate_roll_stream(accel_stream)
@@ -46,7 +46,7 @@ def calculate_roll_stream(accel_stream: DataStream) :
         ay = dp.sample[1]
         az = dp.sample[2]
         rll = 180 * math.atan2(ax, math.sqrt(ay * ay + az * az)) / math.pi
-        roll.append(DataPoint.from_tuple(start_time=dp.start_time, end_time=dp.end_time, sample=rll))
+        roll.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, offset=dp.offset, sample=rll))
 
     roll_datastream = DataStream.from_datastream([accel_stream])
     roll_datastream.data = roll
@@ -55,11 +55,10 @@ def calculate_roll_stream(accel_stream: DataStream) :
 def calculate_pitch_stream(accel_stream: DataStream):
     pitch = []
     for dp in accel_stream.data:
-        ax = dp.sample[0]
         ay = dp.sample[1]
         az = dp.sample[2]
         ptch = 180 * math.atan2(-ay, -az) / math.pi
-        pitch.append(DataPoint.from_tuple(start_time=dp.start_time, end_time=dp.end_time, sample=ptch))
+        pitch.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, offset=dp.offset, sample=ptch))
 
     pitch_datastream = DataStream.from_datastream([accel_stream])
     pitch_datastream.data = pitch
@@ -70,9 +69,8 @@ def calculate_yaw_stream(accel_stream: DataStream):
     for dp in accel_stream.data:
         ax = dp.sample[0]
         ay = dp.sample[1]
-        az = dp.sample[2]
         yw = 180 * math.atan2(ay, ax) / math.pi
-        yaw.append(DataPoint.from_tuple(start_time=dp.start_time, end_time=dp.end_time, sample=yw))
+        yaw.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, offset=dp.offset, sample=yw))
 
     yaw_datastream = DataStream.from_datastream([accel_stream])
     yaw_datastream.data = yaw
