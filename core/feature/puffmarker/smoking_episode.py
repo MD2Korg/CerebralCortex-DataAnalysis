@@ -24,69 +24,23 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-from datetime import timedelta
-from typing import List
-
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-from core.feature.puffmarker.PUFFMARKER_CONSTANTS import *
+from cerebralcortex.core.datatypes.datastream import DataStream
+
+minimum_number_of_puffs = 4
+minimum_puff_distance = 2  # seconds
+min_smoking_epi_duration = 5  # minutes
 
 
-def get_smoking_wrist(only_puff_list, start_index, end_index):
-    '''
-    Based on majority vote detects smoking hand
+def generate_smoking_episodes(puffs_stream: DataStream):
+    puffs_data = [v for v in puffs_stream.data if v.sample > 0]
+    smoking_epis = []
+    i = 0
+    while i < len(puffs_data):
 
-    :param only_puff_list:
-    :param start_index:
-    :param end_index:
-    :return:
-    '''
-    n_left_wrist = 0
-    n_right_wirst = 0
-    i = start_index
-    while i < end_index:
-        if only_puff_list[i].sample == 1:
-            n_left_wrist = n_left_wrist + 1
-        else:
-            n_right_wirst = n_right_wirst + 1
-        i = i + 1
-    if n_right_wirst > n_left_wrist:
-        return PUFF_LABEL_RIGHT
-    return PUFF_LABEL_LEFT
-
-
-def generate_smoking_episode(puff_labels) -> List[DataPoint]:
-    '''
-    Generates smoking episodes from classified puffs
-    :param puff_labels:
-    :return: list of smoking episodes
-    '''
-    only_puffs = [dp for dp in puff_labels if dp.sample > 0]
-
-    smoking_episode_data = []
-
-    cur_index = 0
-    while cur_index < len(only_puffs):
-        temp_index = cur_index
-        dp = only_puffs[temp_index]
-        prev = dp
-        temp_index = temp_index + 1
-        if temp_index >= len(only_puffs):
-            break
-        while (((only_puffs[temp_index].start_time - dp.start_time <= timedelta(
-                    seconds=MINIMUM_TIME_DIFFERENCE_FIRST_AND_LAST_PUFFS))
-                 | (only_puffs[temp_index].start_time - prev.start_time < timedelta(seconds=MINIMUM_INTER_PUFF_DURATION)))):
-            prev = only_puffs[temp_index]
-            temp_index = temp_index + 1
-            if temp_index >= len(only_puffs):
-                break
-        temp_index = temp_index - 1
-        if (temp_index - cur_index + 1) >= MINIMUM_PUFFS_IN_EPISODE:
-            wrist = get_smoking_wrist(only_puffs, cur_index, temp_index)
-            smoking_episode_data.append(DataPoint(start_time=only_puffs[cur_index].start_time,
-                                                  end_time=only_puffs[temp_index].start_time,
-                                                  sample=wrist))
-
-            cur_index = temp_index + 1
-        else:
-            cur_index = cur_index + 1
-    return smoking_episode_data
+        if puffs_data[i + 1].start_time - puffs_data[i].start_time < minimum_puff_distance:
+            j = i + 1
+            while puffs_data[j].start_time - puffs_data[j - 1].start_time < minimum_puff_distance:
+                j = j + 1
+            if j-i > minimum_number_of_puffs:
+                smoking_epis.append(DataPoint(puffs_data[i].start_time))

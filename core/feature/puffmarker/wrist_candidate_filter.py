@@ -24,54 +24,37 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-from typing import List
-
 import numpy as np
+from cerebralcortex.core.datatypes.datastream import DataStream
 
-from cerebralcortex.core.datatypes.datapoint import DataPoint
-from core.feature.puffmarker.PUFFMARKER_CONSTANTS import *
-
-
-def filter_with_duration(gyr_intersections: List[DataPoint]):
-    '''
-    Filters hand-to-mouth gesture candidates based on duration
-
-    :param gyr_intersections: contains all the interval of hand-to-mouth gestures
-    :return:
-    '''
+def filterDuration(gyr_intersections: DataStream):
     gyr_intersections_filtered = []
 
-    for I in gyr_intersections:
+    for I in gyr_intersections.data:
         dur = (I.end_time - I.start_time).total_seconds()
         if (dur >= 1.0) & (dur <= 5.0):
             gyr_intersections_filtered.append(I)
 
-    return gyr_intersections_filtered
+    gyr_intersections_filtered_datastream = DataStream.from_datastream([gyr_intersections])
+    gyr_intersections_filtered_datastream.data = gyr_intersections_filtered
+    return gyr_intersections_filtered_datastream
 
-
-def filter_with_roll_pitch(gyr_intersections: List[DataPoint],
-                           roll_list: List[DataPoint],
-                           pitch_list: List[DataPoint]):
-    '''
-    Filters hand-to-mouth gesture candidates based on roll and pitch
-    :param gyr_intersections: contains all the interval of hand-to-mouth gestures
-    :param roll_list:
-    :param pitch_list:
-    :return:
-    '''
+def filterRollPitch(gyr_intersections_stream: DataStream, roll_stream: DataStream, pitch_stream: DataStream):
     gyr_intersections_filtered = []
 
-    for I in gyr_intersections:
-        start_index = I.sample[0]
-        end_index = I.sample[1]
+    for I in gyr_intersections_stream.data:
+        sIndex = I.sample[0]
+        eIndex = I.sample[1]
 
-        temp_roll = [roll_list[i].sample for i in range(start_index, end_index)]
-        temp_pitch = [pitch_list[i].sample for i in range(start_index, end_index)]
+        roll_sub = [roll_stream.data[i].sample for i in range(sIndex, eIndex)]
+        pitch_sub = [pitch_stream.data[i].sample for i in range(sIndex, eIndex)]
 
-        mean_roll = np.mean(temp_roll)
-        mean_pitch = np.mean(temp_pitch)
+        mean_roll = np.mean(roll_sub)
+        mean_pitch = np.mean(pitch_sub)
 
-        if (mean_roll > MIN_ROLL) & (mean_roll <= MAX_ROLL) & (mean_pitch >= MIN_PITCH) & (mean_pitch <= MAX_PITCH):
+        if (mean_roll > -20) & (mean_roll <= 65) & (mean_pitch >= - 125) & (mean_pitch <= - 40):
             gyr_intersections_filtered.append(I)
 
-    return gyr_intersections_filtered
+    gyr_intersections_filtered_stream = DataStream.from_datastream([gyr_intersections_stream])
+    gyr_intersections_filtered_stream.data = gyr_intersections_filtered
+    return gyr_intersections_filtered_stream

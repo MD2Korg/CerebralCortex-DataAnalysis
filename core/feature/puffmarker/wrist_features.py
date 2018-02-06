@@ -25,65 +25,58 @@
 
 
 import math
-from typing import List
-
 import numpy as np
-
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
-from core.feature.puffmarker.util import moving_average_convergence_divergence, smooth
-from core.feature.puffmarker.wrist_candidate_filter import filter_with_duration, filter_with_roll_pitch
 from core.signalprocessing.vector import magnitude
+from core.feature.puffmarker.util import segmentationUsingTwoMovingAverage, smooth
+from core.feature.puffmarker.wrist_candidate_filter import filterDuration, filterRollPitch
 
+def calculate_roll_pitch_yaw_tream(accel_stream: DataStream):
+    roll_stream = calculate_roll_stream(accel_stream)
+    pitch_stream = calculate_pitch_stream(accel_stream)
+    yaw_stream = calculate_yaw_stream(accel_stream)
 
-def calculate_roll_pitch_yaw(accel_data: List[DataPoint]):
-    '''
-    Computes hand orientation (roll, pitch, yaw) from accelerometer signal
-    :param accel_data:
-    :return: roll_list, pitch_list, yaw_list
-    '''
-    roll_list = calculate_roll(accel_data)
-    pitch_list = calculate_pitch(accel_data)
-    yaw_list = calculate_yaw(accel_data)
+    return roll_stream, pitch_stream, yaw_stream
 
-    return roll_list, pitch_list, yaw_list
-
-
-def calculate_roll(accel_data: List[DataPoint]):
-    roll_list = []
-    for dp in accel_data:
+def calculate_roll_stream(accel_stream: DataStream) :
+    roll = []
+    for dp in accel_stream.data:
         ax = dp.sample[0]
         ay = dp.sample[1]
         az = dp.sample[2]
         rll = 180 * math.atan2(ax, math.sqrt(ay * ay + az * az)) / math.pi
-        roll_list.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, offset=dp.offset, sample=rll))
+        roll.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, offset=dp.offset, sample=rll))
 
-    return roll_list
+    roll_datastream = DataStream.from_datastream([accel_stream])
+    roll_datastream.data = roll
+    return roll_datastream
 
-
-def calculate_pitch(accel_data: List[DataPoint]):
-    pitch_list = []
-    for dp in accel_data:
+def calculate_pitch_stream(accel_stream: DataStream):
+    pitch = []
+    for dp in accel_stream.data:
         ay = dp.sample[1]
         az = dp.sample[2]
         ptch = 180 * math.atan2(-ay, -az) / math.pi
-        pitch_list.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, offset=dp.offset, sample=ptch))
+        pitch.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, offset=dp.offset, sample=ptch))
 
-    return pitch_list
+    pitch_datastream = DataStream.from_datastream([accel_stream])
+    pitch_datastream.data = pitch
+    return pitch_datastream
 
-
-def calculate_yaw(accel_data: List[DataPoint]):
-    yaw_list = []
-    for dp in accel_data:
+def calculate_yaw_stream(accel_stream: DataStream):
+    yaw = []
+    for dp in accel_stream.data:
         ax = dp.sample[0]
         ay = dp.sample[1]
         yw = 180 * math.atan2(ay, ax) / math.pi
-        yaw_list.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, offset=dp.offset, sample=yw))
+        yaw.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, offset=dp.offset, sample=yw))
 
-    return yaw_list
+    yaw_datastream = DataStream.from_datastream([accel_stream])
+    yaw_datastream.data = yaw
+    return yaw_datastream
 
-
-def compute_basic_statistical_features(data):
+def computeBasicFeatures(data):
     mean = np.mean(data)
     median = np.median(data)
     sd = np.std(data)
@@ -91,67 +84,55 @@ def compute_basic_statistical_features(data):
 
     return mean, median, sd, quartile
 
-
-def compute_candidate_features(gyr_intersections, gyr_mag_stream, roll_list, pitch_list, yaw_list):
-    '''
-    Computes feature vector for single hand-to-mouth gesture. Mainly statistical features of hand orientation
-    :param gyr_intersections:
-    :param gyr_mag_stream:
-    :param roll_list:
-    :param pitch_list:
-    :param yaw_list:
-    :return:
-    '''
+def compute_candidate_Features(gyr_intersections_stream, gyr_mag_stream, roll_stream, pitch_stream, yaw_stream, wrist: str):
     all_features = []
     offset = gyr_mag_stream.data[0].offset
 
-    for I in gyr_intersections:
-        start_time = I.start_time
-        end_time = I.end_time
-        start_index = I.sample[0]
-        end_index = I.sample[1]
+    for I in gyr_intersections_stream.data:
+        sTime = I.start_time
+        eTime = I.end_time
+        sIndex = I.sample[0]
+        eIndex = I.sample[1]
 
-        temp_roll = [roll_list[i].sample for i in range(start_index, end_index)]
-        temp_pitch = [pitch_list[i].sample for i in range(start_index, end_index)]
-        temp_yaw = [yaw_list[i].sample for i in range(start_index, end_index)]
+        roll_sub = [roll_stream.data[i].sample for i in range(sIndex, eIndex)]
+        pitch_sub = [pitch_stream.data[i].sample for i in range(sIndex, eIndex)]
+        yaw_sub = [yaw_stream.data[i].sample for i in range(sIndex, eIndex)]
 
-        Gmag_sub = [gyr_mag_stream.data[i].sample for i in range(start_index, end_index)]
+        Gmag_sub = [gyr_mag_stream.data[i].sample for i in range(sIndex, eIndex)]
 
-        duration = 1000 * (end_time - start_time).total_seconds()   # convert to milliseconds
+        duration = 1000 * (eTime - sTime).total_seconds()
 
-        roll_mean, roll_median, roll_sd, roll_quartile = compute_basic_statistical_features(temp_roll)
-        pitch_mean, pitch_median, pitch_sd, pitch_quartile = compute_basic_statistical_features(temp_pitch)
-        yaw_mean, yaw_median, yaw_sd, yaw_quartile = compute_basic_statistical_features(temp_yaw)
+        roll_mean, roll_median, roll_sd, roll_quartile = computeBasicFeatures(roll_sub)
+        pitch_mean, pitch_median, pitch_sd, pitch_quartile = computeBasicFeatures(pitch_sub)
+        yaw_mean, yaw_median, yaw_sd, yaw_quartile = computeBasicFeatures(yaw_sub)
 
-        gyro_mean, gyro_median, gyro_sd, gyro_quartile = compute_basic_statistical_features(Gmag_sub)
+        gyro_mean, gyro_median, gyro_sd, gyro_quartile = computeBasicFeatures(Gmag_sub)
 
-        feature_vector = [duration,
-                          roll_mean, roll_median, roll_sd, roll_quartile,
-                          pitch_mean, pitch_median, pitch_sd, pitch_quartile,
-                          yaw_mean, yaw_median, yaw_sd, yaw_quartile,
-                          gyro_mean, gyro_median, gyro_sd, gyro_quartile]
+        f = [duration, roll_mean, roll_median, roll_sd, roll_quartile, pitch_mean, pitch_median, pitch_sd,
+             pitch_quartile, yaw_mean, yaw_median, yaw_sd, yaw_quartile, gyro_mean, gyro_median, gyro_sd,
+             gyro_quartile]
 
-        all_features.append(DataPoint(start_time=start_time, end_time=end_time, offset=offset, sample=feature_vector))
+        all_features.append(DataPoint(start_time=sTime, end_time=eTime, offset=offset, sample=f))
 
     feature_vector_stream = DataStream.from_datastream([gyr_intersections_stream])
     feature_vector_stream.data = all_features
     return feature_vector_stream
 
 
-def compute_wrist_features(accel_stream: DataStream, gyro_stream: DataStream,
-                           fast_moving_avg_size=13, slow_moving_avg_size=131):
+def compute_wrist_feature(accel_stream: DataStream, gyro_stream: DataStream, wrist: str, fast_size=13, slow_soze=131):
+
     gyr_mag_stream = magnitude(gyro_stream)
 
-    roll_list, pitch_list, yaw_list = calculate_roll_pitch_yaw(accel_stream.data)
+    roll_stream, pitch_stream, yaw_stream = calculate_roll_pitch_yaw_tream(accel_stream)
 
-    gyr_mag_800 = smooth(gyr_mag_stream, fast_moving_avg_size)
-    gyr_mag_8000 = smooth(gyr_mag_stream, slow_moving_avg_size)
+    gyr_mag_800 = smooth(gyr_mag_stream, fast_size)
+    gyr_mag_8000 = smooth(gyr_mag_stream, slow_soze)
 
-    gyr_intersections = moving_average_convergence_divergence(gyr_mag_8000, gyr_mag_800, 0, 4)
+    gyr_intersections = segmentationUsingTwoMovingAverage(gyr_mag_8000, gyr_mag_800, 0, 4)
 
-    gyr_intersections = filter_with_duration(gyr_intersections)
-    gyr_intersections = filter_with_roll_pitch(gyr_intersections, roll_list, pitch_list)
+    gyr_intersections = filterDuration(gyr_intersections)
+    gyr_intersections = filterRollPitch(gyr_intersections, roll_stream, pitch_stream)
 
-    all_features = compute_candidate_features(gyr_intersections, gyr_mag_stream, roll_list, pitch_list, yaw_list)
+    all_features = compute_candidate_Features(gyr_intersections, gyr_mag_stream, roll_stream, pitch_stream, yaw_stream, wrist)
 
     return all_features
