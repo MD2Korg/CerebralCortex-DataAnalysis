@@ -52,7 +52,7 @@ def segmentationUsingTwoMovingAverage(slowMovingAverageDataStream: DataStream
     indexList = [0]*len(slowMovingAverage)
     curIndex = 0
 
-    for index in range(len(slowMovingAverage)):
+    for index, value in enumerate(slowMovingAverage):
         diff = slowMovingAverage[index] - fastMovingAverage[index]
         if diff > THRESHOLD:
             if curIndex == 0:

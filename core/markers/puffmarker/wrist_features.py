@@ -29,8 +29,8 @@ import numpy as np
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
 from core.signalprocessing.vector import magnitude
-from core.feature.puffmarker.util import segmentationUsingTwoMovingAverage, smooth
-from core.feature.puffmarker.wrist_candidate_filter import filterDuration, filterRollPitch
+from core.markers.puffmarker.util import segmentationUsingTwoMovingAverage, smooth
+from core.markers.puffmarker.wrist_candidate_filter import filterDuration, filterRollPitch
 
 def calculate_roll_pitch_yaw_tream(accel_stream: DataStream):
     roll_stream = calculate_roll_stream(accel_stream)

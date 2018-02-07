@@ -28,8 +28,8 @@ import uuid
 
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
-from core.feature.puffmarker.wrist_features import compute_wrist_feature
-from core.feature.puffmarker.metadata import update_metadata
+from core.markers.puffmarker.wrist_features import compute_wrist_feature
+from core.markers.puffmarker.metadata import update_metadata
 
 def process_puffmarker(user_id: uuid, CC: CerebralCortex, config: dict,
                        accel_stream_left: DataStream,

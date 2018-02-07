@@ -40,7 +40,13 @@ def generate_smoking_episodes(puffs_stream: DataStream):
 
         if puffs_data[i + 1].start_time - puffs_data[i].start_time < minimum_puff_distance:
             j = i + 1
-            while puffs_data[j].start_time - puffs_data[j - 1].start_time < minimum_puff_distance:
+            while (puffs_data[j].start_time - puffs_data[j - 1].start_time < minimum_puff_distance) or (puffs_data[j].start_time - puffs_data[i].start_time < min_smoking_epi_duration):
                 j = j + 1
             if j-i > minimum_number_of_puffs:
-                smoking_epis.append(DataPoint(puffs_data[i].start_time))
+                smoking_epis.append(DataPoint(start_time=puffs_data[i].start_time, end_time=puffs_data[j-1].end_time, offset=puffs_data[i].offset, sample=1))
+                i=j
+            i = i+1
+        else:
+            i = i+1
+    smoking_episode_stream = DataStream.from_datastream([puffs_stream])
+    smoking_episode_stream.data = smoking_epis

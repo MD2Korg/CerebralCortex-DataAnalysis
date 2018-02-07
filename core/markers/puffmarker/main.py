@@ -30,8 +30,8 @@ import argparse
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.util.spark_helper import get_or_create_sc
 from cerebralcortex.core.config_manager.config import Configuration
-from core.feature.puffmarker.puffmarker_wrist import process_puffmarker
-from core.feature.puffmarker.util import get_stream_days
+from core.markers.puffmarker.puffmarker_wrist import process_puffmarker
+from core.markers.puffmarker.util import get_stream_days
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 
 def all_users_data(study_name: str, md_config, CC, spark_context):
