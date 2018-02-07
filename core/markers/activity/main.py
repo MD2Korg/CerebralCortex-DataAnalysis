@@ -72,7 +72,7 @@ def process_streams(user_id: uuid, CC: CerebralCortex):
         gyro_stream_right = CC.get_stream(streams[motionsense_hrv_gyro_right]["identifier"], day, data_type=DataSet.COMPLETE)
 
         # Calling puffmarker algorithm to get smoking episodes
-        posture_labels_left, activity_label_left = do_activity_marker(accel_stream_right, gyro_stream_right)
+        posture_labels_left, activity_label_left = do_activity_marker(accel_stream_left, gyro_stream_left)
         posture_labels_right, activity_label_right = do_activity_marker(accel_stream_right, gyro_stream_right)
 
 if __name__ == '__main__':
