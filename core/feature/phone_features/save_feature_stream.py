@@ -17,6 +17,6 @@ def store_data(filepath, input_streams, user_id, data, CC):
                         execution_context=metadata["execution_context"], annotations=metadata["annotations"],
                         stream_type="datastream", data=data)
         try:
-            CC.save_stream(ds, "datastream")
+            CC.save_stream(ds)
         except Exception as exp:
             print(exp)
