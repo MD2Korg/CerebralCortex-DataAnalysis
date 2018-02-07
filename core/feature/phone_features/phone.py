@@ -370,40 +370,40 @@ def process_data(user_id, stream_names, CC):
 
 
     data = average_inter_phone_call_sms_time_hourly(callstream, smsstream)
-    store_data("average_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
 
     data = average_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
-    store_data("average_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
 
     data = average_inter_phone_call_sms_time_daily(callstream, smsstream)
-    store_data("average_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, CC)
 
     data = variance_inter_phone_call_sms_time_daily(callstream, smsstream)
-    store_data("variance_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/variance_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, CC)
 
     data = variance_inter_phone_call_sms_time_hourly(callstream, smsstream)
-    store_data("variance_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/variance_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
 
     data = variance_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
-    store_data("variance_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/variance_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
 
     data = average_inter_phone_call_time_hourly(callstream)
-    store_data("average_inter_phone_call_time_hourly.json", [input_stream1], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_time_hourly.json", [input_stream1], user_id, data, CC)
 
     data = average_inter_phone_call_time_four_hourly(callstream)
-    store_data("average_inter_phone_call_time_four_hourly.json", [input_stream1], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_time_four_hourly.json", [input_stream1], user_id, data, CC)
 
     data = average_inter_phone_call_time_daily(callstream)
-    store_data("average_inter_phone_call_time_daily.json", [input_stream1], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_time_daily.json", [input_stream1], user_id, data, CC)
 
     data = average_inter_sms_time_hourly(smsstream)
-    store_data("average_inter_sms_time_hourly.json", [input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_sms_time_hourly.json", [input_stream2], user_id, data, CC)
 
     data = average_inter_sms_time_four_hourly(smsstream)
-    store_data("average_inter_sms_time_four_hourly.json", [input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_sms_time_four_hourly.json", [input_stream2], user_id, data, CC)
 
     data = average_inter_sms_time_daily(smsstream)
-    store_data("average_inter_sms_time_daily.json", [input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_sms_time_daily.json", [input_stream2], user_id, data, CC)
 
 if __name__ == '__main__':
     # create and load CerebralCortex object and configs
