@@ -1,6 +1,6 @@
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
-from modules.activity.import_model_files import get_posture_model, get_activity_model
+from core.markers.activity.import_model_files import get_posture_model, get_activity_model
 
 
 def classify_posture(features: DataStream) -> DataStream:
