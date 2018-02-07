@@ -1,3 +1,28 @@
+# Copyright (c) 2018, MD2K Center of Excellence
+# - Sayma Akther <sakther@memphis.edu>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+# list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 from core.signalprocessing.window import window_sliding
 import numpy as np
 import math
@@ -19,10 +44,8 @@ def get_rate_of_change(timestamp, value):
 
     return roc
 
-
 def get_magnitude(ax, ay, az):
     return math.sqrt(ax * ax + ay * ay + az * az)
-
 
 def compute_basic_features(ts, data_array):
     mean = np.mean(data_array)
@@ -34,7 +57,6 @@ def compute_basic_features(ts, data_array):
     power = np.mean([v * v for v in data_array])
 
     return mean, median, std, skewness, kurt, rateOfChanges, power
-
 
 def compute_window_features(start_time, end_time, data: List[DataPoint]) -> DataPoint:
     timestamps = [v.start_time for v in data]
@@ -57,7 +79,6 @@ def compute_window_features(start_time, end_time, data: List[DataPoint]) -> Data
     f.extend([z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power])
 
     return DataPoint(start_time=start_time, end_time=end_time, sample=f)
-
 
 def compute_accelerometer_features(accel_stream: DataStream,
                            window_size: float = 10.0) -> DataStream:
