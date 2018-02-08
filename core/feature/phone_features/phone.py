@@ -12,6 +12,8 @@ import time
 import numpy as np
 
 
+feature_class_name='PhoneFeatures'
+
 def inter_event_time_list(data):
     if len(data)==0:
         return None
