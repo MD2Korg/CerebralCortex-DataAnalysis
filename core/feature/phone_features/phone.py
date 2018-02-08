@@ -1,10 +1,10 @@
-
-import argparse
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
+from computefeature import ComputeFeatureBase
 from save_feature_stream import store_data
+
 
 import  uuid
 import datetime
