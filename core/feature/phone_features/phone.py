@@ -4,7 +4,7 @@ from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from computefeature import ComputeFeatureBase
 from save_feature_stream import store_data
-
+#import argparse
 
 import  uuid
 import datetime
@@ -405,6 +405,15 @@ def process_data(user_id, stream_names, CC):
     data = average_inter_sms_time_daily(smsstream)
     store_data("metadata/average_inter_sms_time_daily.json", [input_stream2], user_id, data, CC)
 
+
+class PhoneFeatures(ComputeFeatureBase):
+    def process(self):
+        if self.CC is not None:
+            print("Processing PhoneFeatures")
+            all_users_data("mperf",  self.CC)
+        
+    
+'''
 if __name__ == '__main__':
     # create and load CerebralCortex object and configs
     parser = argparse.ArgumentParser(description='CerebralCortex Reporting Application.')
@@ -414,4 +423,5 @@ if __name__ == '__main__':
     CC = CerebralCortex(args["cc_config_filepath"])
 
     # run for all the participants in a study
-    all_users_data("mperf",  CC)
+'''
+

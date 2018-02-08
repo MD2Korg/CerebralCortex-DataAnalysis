@@ -8,5 +8,8 @@ def main():
   sys.path.append('./feature/phone_features')
   module = __import__('phone')
   #module = __import__('./feature/phone_features/')
+  feature_class = getattr(module,'PhoneFeatures')
+  feature_class_instance = feature_class()
+  feature_class_instance.process()
 
 main()
