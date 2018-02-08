@@ -76,7 +76,8 @@ def analyze_quality(streams, owner_id, led_right_wrist_quality_stream_name, wris
             led_wrist_stream_name = streams["LED--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"]["name"]
         else:
             led_wrist_stream_id = None
-
+#cassandra - cerebralcortex.data
+    #mysql - stream
     if led_wrist_stream_id:
         stream_end_days = CC.get_stream_duration(led_wrist_stream_id)
         if stream_end_days["start_time"] and stream_end_days["end_time"]:

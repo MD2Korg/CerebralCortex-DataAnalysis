@@ -360,11 +360,11 @@ def process_data(user_id, stream_names, CC):
     streams = stream_names
     for stream_name,stream_metadata in streams.items():
         if stream_name=='CU_CALL_DURATION--edu.dartmouth.eureka':
-            callstream = CC.get_stream(stream_metadata["identifier"], day="20180102", data_type=DataSet.COMPLETE)
+            callstream = CC.get_stream(stream_metadata["identifier"], day="20180103", data_type=DataSet.COMPLETE)
             input_stream1["id"] = stream_metadata["identifier"]
             input_stream1["name"] = stream_metadata["name"]
         elif stream_name=='CU_SMS_LENGTH--edu.dartmouth.eureka':
-            smsstream = CC.get_stream(stream_metadata["identifier"], day="20180102", data_type=DataSet.COMPLETE)
+            smsstream = CC.get_stream(stream_metadata["identifier"], day="20180103", data_type=DataSet.COMPLETE)
             input_stream2["id"] = stream_metadata["identifier"]
             input_stream2["name"] = stream_metadata["name"]
 
