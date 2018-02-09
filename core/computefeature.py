@@ -10,7 +10,6 @@ class ComputeFeatureBase(object):
     pass
 
   def __init__(self):
-    pass
     self.CC = CerebralCortex(CC_CONFIG_PATH)
 
 

@@ -2,3 +2,4 @@
 /.idea/
 /modules/mdebugger/__tmp/
 __pycache__
+*.pyc
