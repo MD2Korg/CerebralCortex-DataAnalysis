@@ -26,8 +26,8 @@ import sys
 import os
 import utils.config
 import argparse
-import syslog
 
+import syslog
 from syslog import LOG_ERR
 
 
@@ -46,7 +46,10 @@ def process_features(feature_list):
         feature_class_name = getattr(module,'feature_class_name')
         feature_class = getattr(module,feature_class_name)
         feature_class_instance = feature_class()
-        feature_class_instance.process()
+        try:
+            feature_class_instance.process()
+        except Exception as e:
+            syslog.syslog(LOG_ERR,str(e))
 
 '''
 This method discovers all the features that are present.
@@ -65,13 +68,17 @@ def discover_features(feature_list):
             syslog.syslog(LOG_ERR,'Feature not found %s.' % subdir)
             continue
         if os.path.isdir(feature):
-            syslog.syslog('Found feature %s' % feature)
+            mod_file_path = os.path.join(feature,subdir) + '.py'
+
+            if not os.path.exists(mod_file_path):
+                continue
             sys.path.append(feature)
             try:
                 module = __import__(subdir)
                 found_features.append(module)
+                syslog.syslog('Loaded feature %s' % feature)
             except Exception as exp:
-                syslog.syslog(LOG_ERR,exp)
+                syslog.syslog(LOG_ERR,str(exp))
     
     return found_features
     
@@ -95,7 +102,7 @@ def main():
     
     found_features = discover_features(feature_list)
     feature_to_process = generate_feature_processing_order(found_features)
-    #process_features(feature_to_process)
+    process_features(feature_to_process)
     
 if __name__ == '__main__':
     main()

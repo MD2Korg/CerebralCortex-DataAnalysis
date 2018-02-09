@@ -14,6 +14,10 @@ import numpy as np
 
 feature_class_name='PhoneFeatures'
 
+
+# FIXME hack to make existing code compatible.
+my_instance=None
+
 def inter_event_time_list(data):
     if len(data)==0:
         return None
@@ -372,44 +376,47 @@ def process_data(user_id, stream_names, CC):
 
 
     data = average_inter_phone_call_sms_time_hourly(callstream, smsstream)
-    store_data("metadata/average_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, my_instance)
 
     data = average_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
-    store_data("metadata/average_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, my_instance)
 
     data = average_inter_phone_call_sms_time_daily(callstream, smsstream)
-    store_data("metadata/average_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, my_instance)
 
     data = variance_inter_phone_call_sms_time_daily(callstream, smsstream)
-    store_data("metadata/variance_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/variance_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, my_instance)
 
     data = variance_inter_phone_call_sms_time_hourly(callstream, smsstream)
-    store_data("metadata/variance_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/variance_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, my_instance)
 
     data = variance_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
-    store_data("metadata/variance_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/variance_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, my_instance)
 
     data = average_inter_phone_call_time_hourly(callstream)
-    store_data("metadata/average_inter_phone_call_time_hourly.json", [input_stream1], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_time_hourly.json", [input_stream1], user_id, data, my_instance)
 
     data = average_inter_phone_call_time_four_hourly(callstream)
-    store_data("metadata/average_inter_phone_call_time_four_hourly.json", [input_stream1], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_time_four_hourly.json", [input_stream1], user_id, data, my_instance)
 
     data = average_inter_phone_call_time_daily(callstream)
-    store_data("metadata/average_inter_phone_call_time_daily.json", [input_stream1], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_time_daily.json", [input_stream1], user_id, data, my_instance)
 
     data = average_inter_sms_time_hourly(smsstream)
-    store_data("metadata/average_inter_sms_time_hourly.json", [input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_sms_time_hourly.json", [input_stream2], user_id, data, my_instance)
 
     data = average_inter_sms_time_four_hourly(smsstream)
-    store_data("metadata/average_inter_sms_time_four_hourly.json", [input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_sms_time_four_hourly.json", [input_stream2], user_id, data, my_instance)
 
     data = average_inter_sms_time_daily(smsstream)
-    store_data("metadata/average_inter_sms_time_daily.json", [input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_sms_time_daily.json", [input_stream2], user_id, data, my_instance)
 
 
 class PhoneFeatures(ComputeFeatureBase):
     def process(self):
+        # FIXME hack to make existing code compatible.
+        global my_instance
+        my_instance = self
         if self.CC is not None:
             print("Processing PhoneFeatures")
             all_users_data("mperf",  self.CC)
