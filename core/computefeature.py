@@ -32,6 +32,9 @@ from utils.config import CC_CONFIG_PATH
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 
+# Initialize logging
+syslog.openlog(ident="CerebralCortex-ComputeFeatureBase")
+
 class ComputeFeatureBase(object):
     '''
     Use this method for all your computations.
