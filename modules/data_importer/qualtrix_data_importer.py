@@ -116,7 +116,6 @@ def process_feature(file_path, metadata_path):
     start_column_number = 3    
 
     for row in reader:
-        #print(row)
         if count == 0:
             header_row = row
             count +=1
@@ -153,7 +152,6 @@ def process_feature(file_path, metadata_path):
     metadata = mf.read()
     metadata = json.loads(metadata)
     
-    #print(feature_data[user_id_mappings['1000']])
     for user in feature_data:
         output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str( metadata_path + user + file_path)))
         ds = DataStream(identifier=output_stream_id, owner=user, name=metadata['name'], data_descriptor=\
