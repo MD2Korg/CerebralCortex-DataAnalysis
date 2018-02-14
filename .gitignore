@@ -3,3 +3,4 @@
 /modules/mdebugger/__tmp/
 __pycache__
 *.pyc
+*.swp
