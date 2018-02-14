@@ -11,7 +11,7 @@
       "name":"core.modules.data_importer.qualtrix_data_importer",
       "input_source":[
         {
-          "file_name":"Daily.alc.d.csv",
+          "file_name":"Daily.itp.d.csv",
           "file_source" : "qualtrics"
         }
       ]
@@ -29,7 +29,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_qualtrics.feature.alcohol_use_MITRE_alcohol_use_assessment",
+  "name":"org.md2k.data_qualtrics.feature.task_performance_ITP.3_per_week",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }
