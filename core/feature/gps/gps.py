@@ -6,7 +6,15 @@ from geopy.distance import great_circle
 from shapely.geometry.multipoint import MultiPoint
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from cerebralcortex.core.datatypes.datapoint import DataPoint
+from computefeature import ComputeFeatureBase
 import datetime
+
+feature_class_name='GPS'
+
+class GPS(ComputeFeatureBase):
+    def process(self):
+        print("Processing GPS")
+        
 
 
 def process_data(user_id, CC):

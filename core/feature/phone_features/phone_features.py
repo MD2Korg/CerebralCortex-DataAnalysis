@@ -1,16 +1,22 @@
-
-import argparse
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
+from computefeature import ComputeFeatureBase
 from save_feature_stream import store_data
+#import argparse
 
 import  uuid
 import datetime
 import time
 import numpy as np
 
+
+feature_class_name='PhoneFeatures'
+
+
+# FIXME hack to make existing code compatible.
+my_instance=None
 
 def inter_event_time_list(data):
     if len(data)==0:
@@ -370,41 +376,53 @@ def process_data(user_id, stream_names, CC):
 
 
     data = average_inter_phone_call_sms_time_hourly(callstream, smsstream)
-    store_data("metadata/average_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, my_instance)
 
     data = average_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
-    store_data("metadata/average_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, my_instance)
 
     data = average_inter_phone_call_sms_time_daily(callstream, smsstream)
-    store_data("metadata/average_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, my_instance)
 
     data = variance_inter_phone_call_sms_time_daily(callstream, smsstream)
-    store_data("metadata/variance_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/variance_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, my_instance)
 
     data = variance_inter_phone_call_sms_time_hourly(callstream, smsstream)
-    store_data("metadata/variance_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/variance_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, my_instance)
 
     data = variance_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
-    store_data("metadata/variance_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, CC)
+    store_data("metadata/variance_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, my_instance)
 
     data = average_inter_phone_call_time_hourly(callstream)
-    store_data("metadata/average_inter_phone_call_time_hourly.json", [input_stream1], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_time_hourly.json", [input_stream1], user_id, data, my_instance)
 
     data = average_inter_phone_call_time_four_hourly(callstream)
-    store_data("metadata/average_inter_phone_call_time_four_hourly.json", [input_stream1], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_time_four_hourly.json", [input_stream1], user_id, data, my_instance)
 
     data = average_inter_phone_call_time_daily(callstream)
-    store_data("metadata/average_inter_phone_call_time_daily.json", [input_stream1], user_id, data, CC)
+    store_data("metadata/average_inter_phone_call_time_daily.json", [input_stream1], user_id, data, my_instance)
 
     data = average_inter_sms_time_hourly(smsstream)
-    store_data("metadata/average_inter_sms_time_hourly.json", [input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_sms_time_hourly.json", [input_stream2], user_id, data, my_instance)
 
     data = average_inter_sms_time_four_hourly(smsstream)
-    store_data("metadata/average_inter_sms_time_four_hourly.json", [input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_sms_time_four_hourly.json", [input_stream2], user_id, data, my_instance)
 
     data = average_inter_sms_time_daily(smsstream)
-    store_data("metadata/average_inter_sms_time_daily.json", [input_stream2], user_id, data, CC)
+    store_data("metadata/average_inter_sms_time_daily.json", [input_stream2], user_id, data, my_instance)
 
+
+class PhoneFeatures(ComputeFeatureBase):
+    def process(self):
+        # FIXME hack to make existing code compatible.
+        global my_instance
+        my_instance = self
+        if self.CC is not None:
+            print("Processing PhoneFeatures")
+            all_users_data("mperf",  self.CC)
+        
+    
+'''
 if __name__ == '__main__':
     # create and load CerebralCortex object and configs
     parser = argparse.ArgumentParser(description='CerebralCortex Reporting Application.')
@@ -414,4 +432,5 @@ if __name__ == '__main__':
     CC = CerebralCortex(args["cc_config_filepath"])
 
     # run for all the participants in a study
-    all_users_data("mperf",  CC)
+'''
+

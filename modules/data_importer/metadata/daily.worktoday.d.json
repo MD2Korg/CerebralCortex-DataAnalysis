@@ -1,0 +1,35 @@
+{
+  "annotations":[],
+  "data_descriptor":[
+    {
+      "type":"json",
+      "unit":"int or NA"
+    }
+  ],
+  "execution_context":{
+    "processing_module":{
+      "name":"core.modules.data_importer.qualtrix_data_importer",
+      "input_source":[
+        {
+          "file_name":"Daily.worktoday.d.csv",
+          "file_source" : "qualtrics"
+        }
+      ]
+    },
+    "algorithm":{
+      "method":"core.modules.dat_importer.qualtrix_data_importer.process_feature",
+      "authors":[
+        {
+          "name":"Anand",
+          "email":"nndugudi@memphis.edu"
+        }
+      ],
+      "version":"0.0.1",
+      "description":"Importer of qualtrics data"
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_qualtrics.feature.tobacco_use_MITRE_tobacco_use_assessment.3_or_4_per_week",
+  "owner":"CC_OWNER_CC",
+  "type":"datastream"
+}
