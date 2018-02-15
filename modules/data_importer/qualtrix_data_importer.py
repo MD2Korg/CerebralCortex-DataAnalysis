@@ -126,12 +126,10 @@ def process_feature(file_path, metadata_path):
         
         user_id = user_id_mappings[row[0]]
         start_time = datetime.strptime(row[1], '%m/%d/%Y %H:%M')
-        start_time = start_time.timestamp() * 1000
         
         # handling the different format of the IGTB file
         if IGTB not in file_path:
             end_time = datetime.strptime(row[2], '%m/%d/%Y %H:%M')
-            end_time = end_time.timestamp() * 1000
         else:
             end_time = start_time
             start_column_number = 2    
