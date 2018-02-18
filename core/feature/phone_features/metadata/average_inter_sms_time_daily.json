@@ -34,7 +34,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.phone.inter_event_sms_time.daily.average",
+  "name":"org.md2k.data_analysis.feature.phone.inter_event_sms_time.day.average",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }
