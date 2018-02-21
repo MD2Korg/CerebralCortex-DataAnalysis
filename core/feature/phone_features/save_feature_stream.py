@@ -17,5 +17,6 @@ def store_data(filepath, input_streams, user_id, data, instance):
         metadata = json.loads(metadata)
 
         instance.store(identifier=output_stream_id, owner=user_id, name=metadata["name"], data_descriptor=metadata["data_descriptor"],
-                        execution_context=metadata["execution_context"], annotations=metadata["annotations"],
-                        stream_type="datastream", data=data)
+                       execution_context=metadata["execution_context"], annotations=metadata["annotations"],
+                       stream_type="datastream", data=data)
+
