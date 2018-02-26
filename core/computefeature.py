@@ -27,6 +27,7 @@ This module describes the ComputeFeatureBase class.
 Feature modules should inherit from ComputeFeatureBase.
 '''
 import syslog
+import traceback
 from syslog import LOG_ERR
 from utils.config import CC_CONFIG_PATH
 from cerebralcortex.cerebralcortex import CerebralCortex
@@ -50,9 +51,10 @@ class ComputeFeatureBase(object):
                         execution_context=execution_context, annotations=annotations,
                         stream_type=stream_type, data=data)
         try:
+            print("Saving Stream",ds)
             self.CC.save_stream(ds)
         except Exception as exp:
-            syslog.syslog(LOG_ERR,self.__class__.__name__ + str(exp))
+            syslog.syslog(LOG_ERR,self.__class__.__name__ + str(exp) + "\n" + str(traceback.format_exc()))
 
     def __init__(self):
         self.CC = CerebralCortex(CC_CONFIG_PATH)
