@@ -37,7 +37,7 @@ feature_class_name='activity_marker'
 
 class activity_marker(ComputeFeatureBase):
 
-    def do_activity_marker(self, accel_stream: DataStream, gyro_stream: DataStream):
+    def do_activity_and_posture_marker(self, accel_stream: DataStream, gyro_stream: DataStream):
 
         acc_sync_filtered = gravityFilter_function(accel_stream, gyro_stream, 25.0)
 
@@ -84,7 +84,7 @@ class activity_marker(ComputeFeatureBase):
 
         # stream_end_days = CC.get_stream_duration(streams[motionsense_hrv_gyro_right]["identifier"])
 
-        stream_days = get_stream_days(streams[motionsense_hrv_gyro_left]["identifier"], CC)
+        stream_days = get_stream_days(streams[motionsense_hrv_gyro_left]["identifier"], self.CC)
         for day in stream_days:
 
             accel_stream_left = self.CC.get_stream(streams[motionsense_hrv_accel_left]["identifier"], day, data_type=DataSet.COMPLETE)
@@ -94,7 +94,7 @@ class activity_marker(ComputeFeatureBase):
 
             # # Calling puffmarker algorithm to get smoking episodes
             if len(accel_stream_left.data) == len(gyro_stream_left.data):
-                posture_labels_left, activity_label_left = self.do_activity_marker(accel_stream_left, gyro_stream_left)
+                posture_labels_left, activity_label_left = self.do_activity_and_posture_marker(accel_stream_left, gyro_stream_left)
                 posture_labels_left_all.append(posture_labels_left)
                 activity_label_left_all.append(activity_label_left)
 
@@ -107,9 +107,10 @@ class activity_marker(ComputeFeatureBase):
             print( 'Right---' + user_id + ', ' + day + ', ' + str(len(accel_stream_right.data)) + ', ' + str(len(gyro_stream_right.data)))
 
             if len(accel_stream_right.data) == len(gyro_stream_right.data):
-                posture_labels_right, activity_label_right = self.do_activity_marker(accel_stream_right, gyro_stream_right)
+                posture_labels_right, activity_label_right = self.do_activity_and_posture_marker(accel_stream_right, gyro_stream_right)
                 posture_labels_right_all.append(posture_labels_right)
                 activity_label_right_all.append(activity_label_right)
+
         store_data("metadata/activity_type_10seconds_window.json", [accel_stream_right, gyro_stream_right], user_id, activity_label_right_all, self)
         store_data("metadata/posture_10seconds_window.json", [accel_stream_right, gyro_stream_right], user_id, posture_labels_right_all, self)
 

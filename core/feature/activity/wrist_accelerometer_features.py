@@ -106,7 +106,7 @@ def compute_basic_features(timestamp, data):
 def computeFeatures(start_time, end_time, time, x, y, z, pid):
 
     mag =[0]*len(x)# np.empty([len(x), 1])
-    for i in range(len(x)):
+    for i, value in enumerate(x):
         mag[i] = math.sqrt(x[i]*x[i] + y[i]*y[i]+z[i]*z[i])
 
     mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rateOfChanges, mag_power, mag_sp_entropy, mag_peak_freq = compute_basic_features(time, mag)

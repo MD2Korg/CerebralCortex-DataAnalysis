@@ -39,7 +39,7 @@ def gravityFilter_function(accl_stream, gyro_stream, Fs=25.0):
 
 #     Fs = 16.0
     AHRS_motion = MadgwickAHRS(sampleperiod=(1/Fs), beta=0.4)
-    
+
     quaternion_motion = []
 
     for t, value in enumerate(accl):
