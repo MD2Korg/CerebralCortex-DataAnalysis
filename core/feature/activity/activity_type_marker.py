@@ -110,7 +110,8 @@ class activity_marker(ComputeFeatureBase):
                 posture_labels_right, activity_label_right = self.do_activity_marker(accel_stream_right, gyro_stream_right)
                 posture_labels_right_all.append(posture_labels_right)
                 activity_label_right_all.append(activity_label_right)
-        store_data("metadata/average_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, self)
+        store_data("metadata/activity_type_10seconds_window.json", [accel_stream_right, gyro_stream_right], user_id, activity_label_right_all, self)
+        store_data("metadata/posture_10seconds_window.json", [accel_stream_right, gyro_stream_right], user_id, posture_labels_right_all, self)
 
     def process(self):
         if self.CC is not None:
