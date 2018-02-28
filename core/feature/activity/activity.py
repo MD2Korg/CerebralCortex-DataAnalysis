@@ -29,13 +29,12 @@ from core.feature.activity.do_classification import classify_posture, classify_a
 from core.signalprocessing.gravity_filter.gravityFilter import gravityFilter_function
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from core.feature.activity.util import *
+from core.computefeature import ComputeFeatureBase
 
-from computefeature import ComputeFeatureBase
-
-feature_class_name='activity_marker'
+feature_class_name='ActivityMarker'
 
 
-class activity_marker(ComputeFeatureBase):
+class ActivityMarker(ComputeFeatureBase):
 
     def do_activity_and_posture_marker(self, accel_stream: DataStream, gyro_stream: DataStream):
 
@@ -110,9 +109,8 @@ class activity_marker(ComputeFeatureBase):
                 posture_labels_right, activity_label_right = self.do_activity_and_posture_marker(accel_stream_right, gyro_stream_right)
                 posture_labels_right_all.append(posture_labels_right)
                 activity_label_right_all.append(activity_label_right)
-
-        store_data("metadata/activity_type_10seconds_window.json", [accel_stream_right, gyro_stream_right], user_id, activity_label_right_all, self)
-        store_data("metadata/posture_10seconds_window.json", [accel_stream_right, gyro_stream_right], user_id, posture_labels_right_all, self)
+                store_data("metadata/activity_type_10seconds_window.json", [accel_stream_right, gyro_stream_right], user_id, activity_label_right, self)
+                store_data("metadata/posture_10seconds_window.json", [accel_stream_right, gyro_stream_right], user_id, posture_labels_right, self)
 
     def process(self):
         if self.CC is not None:
