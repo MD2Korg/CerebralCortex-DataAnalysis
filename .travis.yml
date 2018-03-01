@@ -4,9 +4,9 @@ python:
 
 before_install:
   - git clone https://github.com/MD2Korg/CerebralCortex
-  - pushd CerebralCortex && pip install -r requirements.txt && python setup.py install && popd
+  - pushd CerebralCortex && pip install -r requirements.txt && python setup.py build && popd
 
 install:
   - pip install -r requirements.txt
 
-scirpt: python3 -m unittest discover
+scirpt: env PYTHONPATH=$PYTHONPATH:CerebralCortex/ python3 -m unittest discover
