@@ -1,0 +1,12 @@
+language: python
+python:
+  - "3.6"
+
+before_install:
+  - git clone https://github.com/MD2Korg/CerebralCortex
+  - pushd CerebralCortex && pip install -r requirements.txt && python setup.py install && popd
+
+install:
+  - pip install -r requirements.txt
+
+scirpt: python3 -m unittest discover
