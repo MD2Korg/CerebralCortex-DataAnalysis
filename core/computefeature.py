@@ -29,7 +29,7 @@ Feature modules should inherit from ComputeFeatureBase.
 import syslog
 import traceback
 from syslog import LOG_ERR
-from utils.config import CC_CONFIG_PATH
+from core.utils.config import CC_CONFIG_PATH
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 

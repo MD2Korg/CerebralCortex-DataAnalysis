@@ -1,2 +1,2 @@
-CC_CONFIG_PATH = '/home/vagrant/CerebralCortex-DockerCompose/cc_config_file/cc_vagrant_configuration.yml'
+CC_CONFIG_PATH = '/md2k/code/ali/cc_config/cc_configuration.yml'
 FEATURES_DIR_NAME = 'feature'
