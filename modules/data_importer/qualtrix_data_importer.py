@@ -155,7 +155,7 @@ def process_feature(file_path, metadata_path):
         ds = DataStream(identifier=output_stream_id, owner=user, name=metadata['name'], data_descriptor=\
                 metadata['data_descriptor'], execution_context=metadata['execution_context'], annotations=\
                 metadata['annotations'], stream_type='datastream', data=feature_data[user]) 
-        print(str(user),str(output_stream_id),len(feature_data[user]))   	 
+        #print(str(user),str(output_stream_id),len(feature_data[user]))   	 
         try:
             CC.save_stream(ds)
         except Exception as e:

@@ -11,8 +11,8 @@ from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 import datetime
 # from core.feature.gps.computefeature import ComputeFeatureBase
-from core.computefeature import ComputeFeatureBase
-from core.feature.gps.gps_groundtruth import gps_gt
+from computefeature import ComputeFeatureBase
+from feature.gps.gps_groundtruth import gps_gt
 
 feature_class_name = 'GPSClusteringEpochComputation'
 
@@ -20,21 +20,21 @@ feature_class_name = 'GPSClusteringEpochComputation'
 class GPSClusteringEpochComputation(ComputeFeatureBase):
     def process(self):
         if self.CC is not None:
-            print("Processing PhoneFeatures")
+            print("Processing GPS")
             self.all_users_data("mperf")
 
-    def all_users_data(self, study_name, CC, spark_context):
-        users = CC.get_all_users(study_name)
+    def all_users_data(self, study_name):
+        users = self.CC.get_all_users(study_name)
         for user in users:
-            self.process_data(user["identifier"], CC)
+            self.process_data(user["identifier"])
 
-    def process_data(self, user_id, CC):
-        streams = CC.get_user_streams(user_id)
+    def process_data(self, user_id):
+        streams = self.CC.get_user_streams(user_id)
         if streams and len(streams) > 0:
             # print (streams)
-            self.analyze_gps(streams, user_id, CC)
+            self.analyze_gps(streams, user_id)
 
-    def analyze_gps(self, streams, user_id, CC):
+    def analyze_gps(self, streams, user_id):
         if "LOCATION--org.md2k.phonesensor--PHONE" in streams:
             gps_stream_id = streams["LOCATION--org.md2k.phonesensor--PHONE"][
                 "identifier"]
@@ -44,12 +44,12 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
             gps_stream_id = None
         all_day_data = []
         if gps_stream_id:
-            stream_end_days = CC.get_stream_duration(gps_stream_id)
+            stream_end_days = self.CC.get_stream_duration(gps_stream_id)
             if stream_end_days["start_time"] and stream_end_days["end_time"]:
                 days = stream_end_days["end_time"] - stream_end_days["start_time"]
                 for day in range(days.days + 1):
                     day = (stream_end_days["start_time"] + datetime.timedelta(days=day)).strftime('%Y%m%d')
-                    stream = CC.get_stream(gps_stream_id, user_id=user_id, day=day, data_type=DataSet.COMPLETE)
+                    stream = self.CC.get_stream(gps_stream_id, user_id=user_id, day=day, data_type=DataSet.COMPLETE)
                     only_data = stream.data
                     all_day_data.append(only_data)
         all_gps = []
@@ -57,11 +57,11 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
             for aa in a:
                 all_gps.append(aa)
 
-        cent_name = gps_gt(streams, user_id, CC)
+        cent_name = gps_gt(streams, user_id, self.CC)
         self.get_gps_data_format(all_gps, geo_fence_dist=100, min_points_in_cluster=500, max_dist_assign_centroid=1000,
                                  centroid_name_dict=cent_name)
 
-    def haversine(lon1, lat1, lon2, lat2):
+    def haversine(self, lon1, lat1, lon2, lat2):
         """
         Calculate the great circle distance between two points
         on the earth (specified in decimal degrees)
@@ -76,13 +76,13 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         km = 6373 * c
         return km
 
-    def get_gps_points(c_lat, c_long):
+    def get_gps_points(self, c_lat, c_long):
         lat = c_lat
         long = c_long
         gps_pt = zip(lat, long)
         return list(gps_pt)
 
-    def get_gps_triplet(in_lat, in_long, in_time, in_offset):
+    def get_gps_triplet(self, in_lat, in_long, in_time, in_offset):
         lat = in_lat
         long = in_long
         gps_time = in_time
@@ -131,6 +131,9 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     def get_gps_clusters(self, all_data, geo_fence_dist, min_points_in_cluster):
         kms_per_radian = 6371.0088
         interpolated_data = self.gps_interpolation(all_data)
+
+        if len(interpolated_data) < 1 : return
+
         arr_lat = []
         arr_long = []
 
@@ -169,6 +172,9 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         cen_name = []
         semantic_name_list = []
         all_index = []
+        
+        if not centorids_coord : return
+        
         for i in centorids_coord:
             semantic_name_list.append([i[0], i[1], '-1'])
 
@@ -208,6 +214,9 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                             centroid_name_dict):
         interpolated_data = self.gps_interpolation(all_data)
         loc_c = self.get_gps_clusters(all_data, geo_fence_dist, min_points_in_cluster)  # th1==500, th2==500
+        
+        if not loc_c: return
+
         arr_lat = []
         arr_long = []
         arr_time = []

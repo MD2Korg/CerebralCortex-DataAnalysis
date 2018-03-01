@@ -19,7 +19,6 @@ def gps_gt(streams, user_id, CC):
         gps_stream_id = streams["GEOFENCE--LIST--org.md2k.phonesensor--PHONE"][
             "identifier"]
         # gps_stream_id = 'a1402e7c-d761-3814-b989-bad282f8bec3'
-        print(gps_stream_id)
         gps_stream_name = streams["GEOFENCE--LIST--org.md2k.phonesensor--PHONE"]["name"]
     else:
         gps_stream_id = None
@@ -33,7 +32,7 @@ def gps_gt(streams, user_id, CC):
                 # if gps_stream_id =='4f2d6378-43fd-3c51-b418-d71beb72daa0':
                 #     continue
                 # else:
-                stream = CC.get_stream(gps_stream_id, day=day, data_type=DataSet.COMPLETE)
+                stream = CC.get_stream(gps_stream_id, day=day, data_type=DataSet.COMPLETE, user_id=user_id)
                 only_data = stream.data
                 all_day_data.append(only_data)
     all_gps = []

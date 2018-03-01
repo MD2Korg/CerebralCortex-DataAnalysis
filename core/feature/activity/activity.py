@@ -89,7 +89,7 @@ class ActivityMarker(ComputeFeatureBase):
         if not stream_days:return
 
         for day in stream_days:
-            print("AAAAAAAAAA",day)
+            #print("AAAAAAAAAA",day)
             accel_stream_left = self.CC.get_stream(streams[motionsense_hrv_accel_left]["identifier"], day=day, user_id=user_id, data_type=DataSet.COMPLETE)
             gyro_stream_left = self.CC.get_stream(streams[motionsense_hrv_gyro_left]["identifier"], day=day, user_id=user_id, data_type=DataSet.COMPLETE)
 
@@ -120,5 +120,4 @@ class ActivityMarker(ComputeFeatureBase):
         if self.CC is not None:
             print("Processing ActivityMarkers")
             self.all_users_data("mperf")
-        else:
-            print("self.CC is None")
+
