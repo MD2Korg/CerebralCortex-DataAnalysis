@@ -24,12 +24,12 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from cerebralcortex.core.datatypes.datastream import DataStream
-from core.feature.activity.wrist_accelerometer_features import compute_accelerometer_features
-from core.feature.activity.do_classification import classify_posture, classify_activity
-from core.signalprocessing.gravity_filter.gravityFilter import gravityFilter_function
+from feature.activity.wrist_accelerometer_features import compute_accelerometer_features
+from feature.activity.do_classification import classify_posture, classify_activity
+from signalprocessing.gravity_filter.gravityFilter import gravityFilter_function
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
-from core.feature.activity.util import *
-from core.computefeature import ComputeFeatureBase
+from feature.activity.util import *
+from computefeature import ComputeFeatureBase
 
 feature_class_name='ActivityMarker'
 
@@ -82,12 +82,16 @@ class ActivityMarker(ComputeFeatureBase):
         activity_label_right_all = []
 
         # stream_end_days = CC.get_stream_duration(streams[motionsense_hrv_gyro_right]["identifier"])
+        stream_days = None
+        if motionsense_hrv_gyro_left in streams:
+            stream_days = get_stream_days(streams[motionsense_hrv_gyro_left]["identifier"], self.CC)
+        
+        if not stream_days:return
 
-        stream_days = get_stream_days(streams[motionsense_hrv_gyro_left]["identifier"], self.CC)
         for day in stream_days:
-
-            accel_stream_left = self.CC.get_stream(streams[motionsense_hrv_accel_left]["identifier"], day, data_type=DataSet.COMPLETE)
-            gyro_stream_left = self.CC.get_stream(streams[motionsense_hrv_gyro_left]["identifier"], day, data_type=DataSet.COMPLETE)
+            print("AAAAAAAAAA",day)
+            accel_stream_left = self.CC.get_stream(streams[motionsense_hrv_accel_left]["identifier"], day=day, user_id=user_id, data_type=DataSet.COMPLETE)
+            gyro_stream_left = self.CC.get_stream(streams[motionsense_hrv_gyro_left]["identifier"], day=day, user_id=user_id, data_type=DataSet.COMPLETE)
 
             print( 'Left---' + user_id + ', ' + day + ', ' +  str(len(accel_stream_left.data))  + ', ' +  str(len(gyro_stream_left.data)))
 
@@ -100,8 +104,8 @@ class ActivityMarker(ComputeFeatureBase):
         stream_days = get_stream_days(streams[motionsense_hrv_gyro_right]["identifier"], self.CC)
         for day in stream_days:
 
-            accel_stream_right = self.CC.get_stream(streams[motionsense_hrv_accel_right]["identifier"], day, data_type=DataSet.COMPLETE)
-            gyro_stream_right = self.CC.get_stream(streams[motionsense_hrv_gyro_right]["identifier"], day, data_type=DataSet.COMPLETE)
+            accel_stream_right = self.CC.get_stream(streams[motionsense_hrv_accel_right]["identifier"], day=day, user_id=user_id, data_type=DataSet.COMPLETE)
+            gyro_stream_right = self.CC.get_stream(streams[motionsense_hrv_gyro_right]["identifier"], day=day, user_id=user_id, data_type=DataSet.COMPLETE)
 
             print( 'Right---' + user_id + ', ' + day + ', ' + str(len(accel_stream_right.data)) + ', ' + str(len(gyro_stream_right.data)))
 
@@ -109,10 +113,12 @@ class ActivityMarker(ComputeFeatureBase):
                 posture_labels_right, activity_label_right = self.do_activity_and_posture_marker(accel_stream_right, gyro_stream_right)
                 posture_labels_right_all.append(posture_labels_right)
                 activity_label_right_all.append(activity_label_right)
-                store_data("metadata/activity_type_10seconds_window.json", [accel_stream_right, gyro_stream_right], user_id, activity_label_right, self)
-                store_data("metadata/posture_10seconds_window.json", [accel_stream_right, gyro_stream_right], user_id, posture_labels_right, self)
+                store_data("metadata/activity_type_10seconds_window.json", [streams[motionsense_hrv_accel_right], streams[motionsense_hrv_gyro_right]], user_id, activity_label_right, self)
+                store_data("metadata/posture_10seconds_window.json", [streams[motionsense_hrv_accel_right], streams[motionsense_hrv_gyro_right]], user_id, posture_labels_right, self)
 
     def process(self):
         if self.CC is not None:
-            print("Processing PhoneFeatures")
+            print("Processing ActivityMarkers")
             self.all_users_data("mperf")
+        else:
+            print("self.CC is None")

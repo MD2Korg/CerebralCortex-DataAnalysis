@@ -26,8 +26,8 @@
 import pickle
 from sklearn.ensemble import RandomForestClassifier
 
-posture_model_filename = './models/posture_randomforest.model'
-activity_model_filename = './models/activity_level_randomforest.model'
+posture_model_filename = 'core/feature/activity/models/posture_randomforest.model'
+activity_model_filename = 'core/feature/activity/models/activity_level_randomforest.model'
 
 def get_posture_model() -> RandomForestClassifier:
     clf = pickle.load(open(posture_model_filename, 'rb'))

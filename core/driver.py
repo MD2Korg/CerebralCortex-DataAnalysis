@@ -57,6 +57,7 @@ This method discovers all the features that are present.
 '''
 def discover_features(feature_list):
     feature_dir = os.path.join(utils.config.FEATURES_DIR_NAME)
+    print(feature_dir)
     found_features = []
     if feature_list:
         feature_subdirs = feature_list
@@ -80,7 +81,8 @@ def discover_features(feature_list):
                 syslog.syslog('Loaded feature %s' % feature)
             except Exception as exp:
                 #syslog.syslog(LOG_ERR,str(exp))
-                syslog.syslog(LOG_ERR,self.__class__.__name__ + str(exp) + "\n" + str(traceback.format_exc()))
+                print(str(exp)+"\n"+str(traceback.format_exc()))
+                syslog.syslog(LOG_ERR, str(exp) + "\n" + str(traceback.format_exc()))
     
     return found_features
     
