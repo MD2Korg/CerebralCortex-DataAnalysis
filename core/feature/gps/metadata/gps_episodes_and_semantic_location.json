@@ -8,8 +8,8 @@
   ],
   "execution_context":{
     "processing_module":{
-      "name":"GPS Data Clustering and Episode Generation",
-      "confidential":"True",
+      "name":"GPS Episodes and Semantic Location",
+      "confidential":"False",
       "input_streams":[
         {
           "id":"CC_INPUT_STREAM_ID_CC",
@@ -38,7 +38,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.gps_clustering_episode_generation",
+  "name":"org.md2k.data_analysis.gps_episodes_and_semantic_location",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }
