@@ -57,7 +57,10 @@ class ComputeFeatureBase(object):
             syslog.syslog(LOG_ERR,self.__class__.__name__ + str(exp) + "\n" + str(traceback.format_exc()))
 
     def __init__(self):
-        self.CC = CerebralCortex(CC_CONFIG_PATH)
+        if CC_CONFIG_PATH == "":
+            self.CC = CerebralCortex()
+        else:
+            self.CC = CerebralCortex(CC_CONFIG_PATH)
 
 
 
