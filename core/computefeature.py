@@ -29,8 +29,6 @@ Feature modules should inherit from ComputeFeatureBase.
 import syslog
 import traceback
 from syslog import LOG_ERR
-from core.utils.config import CC_CONFIG_PATH
-from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 
 # Initialize logging
@@ -56,11 +54,8 @@ class ComputeFeatureBase(object):
         except Exception as exp:
             syslog.syslog(LOG_ERR,self.__class__.__name__ + str(exp) + "\n" + str(traceback.format_exc()))
 
-    def __init__(self):
-        if CC_CONFIG_PATH == "":
-            self.CC = CerebralCortex()
-        else:
-            self.CC = CerebralCortex(CC_CONFIG_PATH)
+    def __init__(self, CC = None):
+        self.CC = CC
 
 
 
