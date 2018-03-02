@@ -23,16 +23,19 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import uuid
-from datetime import timedelta
-import numpy as np
-from typing import List
 import json
 import os
+import uuid
+from datetime import timedelta
+from typing import List
+
+import numpy as np
+
 import core.signalprocessing.vector as vector
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
+
 
 def smooth(datastream: DataStream,
            span: int = 5) -> DataStream:
@@ -103,10 +106,10 @@ def store_data(filepath, input_streams, user_id, data, instance):
     newfilepath = os.path.join(cur_dir,filepath)
     with open(newfilepath,"r") as f:
         metadata = f.read()
-        metadata = metadata.replace("CC_INPUT_STREAM_ID1_CC",input_streams[0]["id"])
-        metadata = metadata.replace("CC_INPUT_STREAM_NAME1_CC",input_streams[0]["name"])
-        metadata = metadata.replace("CC_INPUT_STREAM_ID2_CC",input_streams[1]["id"])
-        metadata = metadata.replace("CC_INPUT_STREAM_NAME2_CC",input_streams[1]["name"])
+        metadata = metadata.replace("CC_INPUT_STREAM_ID1_CC",input_streams[0].identifier)
+        metadata = metadata.replace("CC_INPUT_STREAM_NAME1_CC",input_streams[0].name)
+        metadata = metadata.replace("CC_INPUT_STREAM_ID2_CC",input_streams[1].identifier)
+        metadata = metadata.replace("CC_INPUT_STREAM_NAME2_CC",input_streams[1].name)
         metadata = metadata.replace("CC_OUTPUT_STREAM_IDENTIFIER_CC",output_stream_id)
         metadata = metadata.replace("CC_OWNER_CC",user_id)
         metadata = json.loads(metadata)
