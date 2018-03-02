@@ -14,6 +14,9 @@ import datetime
 from computefeature import ComputeFeatureBase
 from feature.gps.gps_groundtruth import gps_gt
 
+from cerebralcortex.core.datatypes.datastream import DataStream
+
+
 feature_class_name = 'GPSClusteringEpochComputation'
 
 
@@ -257,3 +260,51 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                 dp = DataPoint(start_date, end_date, gps_data[i][4], gps_data[i][5], gps_data[i][6], sample)
                 data.append(dp)
                 start_date = gps_data[i + 1][0]
+
+
+    def total_distance_covered(centroidstream: DataStream):
+        """
+        :param locationstream: location datastreaam of the participant
+        :return: total distance covered by one participant in the whole study
+        """
+
+
+        identifier = uuid.uuid1()
+        name = 'TOT DIST COV'
+        execution_context = {}
+        annotations = {}
+        data_descriptor = [{"NAME":"total distance covered", "DATA_TYPE":"float", "DESCRIPTION": "total distance covered in whole study"}]
+        total_distance = 0
+
+
+        i = 0
+
+        while i <= len(centroidstream.data)-1:
+
+
+            while (float(centroidstream.data[i].sample[0]) == -1.0):
+                i += 1
+            lattitude_pre = centroidstream.data[i].sample[0]
+            longitude_pre = centroidstream.data[i].sample[1]
+
+            while (float(centroidstream.data[i+1].sample[0]) == -1.0):
+                i += 1
+
+            lattitude_post = centroidstream.data[i+1].sample[0]
+            longitude_post = centroidstream.data[i+1].sample[1]
+
+            distance = haversine(longitude_pre,lattitude_pre,longitude_post,lattitude_post)
+            total_distance = total_distance + distance
+            i += 1
+
+
+        start_time = centroidstream.data[0].start_time
+        end_time = centroidstream.data[-1].end_time
+
+        return DataStream(identifier, centroidstream.owner, name, data_descriptor,
+                          execution_context,
+                          annotations,
+                          "1",
+                          start_time,
+                          end_time,
+                          total_distance)
