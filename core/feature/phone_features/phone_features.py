@@ -1,9 +1,7 @@
-from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
-from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
-from computefeature import ComputeFeatureBase
-from save_feature_stream import store_data
+from core.computefeature import ComputeFeatureBase
+from .save_feature_stream import store_data
 
 import datetime
 import numpy as np
@@ -12,10 +10,7 @@ from datetime import timedelta
 
 feature_class_name='PhoneFeatures'
 
-
-
 class PhoneFeatures(ComputeFeatureBase):
-
 
     def inter_event_time_list(self, data):
         if len(data)==0:
@@ -501,16 +496,3 @@ class PhoneFeatures(ComputeFeatureBase):
         if self.CC is not None:
             print("Processing PhoneFeatures")
             self.all_users_data("mperf")
-        
-    
-'''
-if __name__ == '__main__':
-    # create and load CerebralCortex object and configs
-    parser = argparse.ArgumentParser(description='CerebralCortex Reporting Application.')
-    parser.add_argument("-cc", "--cc_config_filepath", help="Configuration file path", required=True)
-    args = vars(parser.parse_args())
-
-    CC = CerebralCortex(args["cc_config_filepath"])
-
-    # run for all the participants in a study
-'''

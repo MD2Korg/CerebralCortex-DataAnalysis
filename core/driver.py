@@ -30,6 +30,8 @@ import traceback
 
 import syslog
 from syslog import LOG_ERR
+from core.utils.config import CC_CONFIG_PATH
+from cerebralcortex.cerebralcortex import CerebralCortex
 
 
 # TODO ADD ADMISSION CoNTROL LOGIC
@@ -106,6 +108,9 @@ def main():
     
     found_features = discover_features(feature_list)
     feature_to_process = generate_feature_processing_order(found_features)
+    
+    CC = CerebralCortex(CC_CONFIG_PATH)
+
     process_features(feature_to_process)
     
 if __name__ == '__main__':
