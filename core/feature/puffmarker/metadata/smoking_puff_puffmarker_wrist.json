@@ -1,0 +1,44 @@
+{
+  "annotations":[],
+  "data_descriptor":[
+    {
+      "type":"int",
+      "unit":"0: non_puff, 1:puff_left, 2:puff_right"
+    }
+  ],
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.puffmarker",
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID1_CC",
+          "name":"CC_INPUT_STREAM_NAME1_CC"
+        },
+        {
+          "id":"CC_INPUT_STREAM_ID2_CC",
+          "name":"CC_INPUT_STREAM_NAME2_CC"
+        }
+      ],
+      "input_parameters":{
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.puffmarker.puffmarker",
+      "authors":[
+        {
+          "name":"Nazir Saleheen",
+          "email":"nazir.saleheen@gmail.com"
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+        "url":"https://dl.acm.org/citation.cfm?id=2806897"
+      },
+      "description":"Detects smoking puffs from wrist worn inertial sensors (Accelerometer and Gyroscope)"
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.feature.puffmarker.smoking_puff",
+  "owner":"CC_OWNER_CC",
+  "type":"datastream"
+}
