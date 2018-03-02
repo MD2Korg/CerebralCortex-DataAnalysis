@@ -24,122 +24,101 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-import numpy as np
+import uuid
 
-from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
+from cerebralcortex.core.datatypes.datastream import DataStream
 from core.computefeature import ComputeFeatureBase
-from core.feature.puffmarker.PUFFMARKER_CONSTANTS import *
-from core.feature.puffmarker.admission_control import check_motionsense_hrv_accelerometer, \
-    check_motionsense_hrv_gyroscope
+from core.feature.puffmarker.CONSTANT import *
 from core.feature.puffmarker.puff_classifier import classify_puffs
 from core.feature.puffmarker.smoking_episode import generate_smoking_episode
 from core.feature.puffmarker.util import get_stream_days, store_data
-from core.feature.puffmarker.wrist_features import compute_wrist_features
+from core.feature.puffmarker.wrist_features import compute_wrist_feature
 
 feature_class_name = 'PuffMarker'
 
 
 class PuffMarker(ComputeFeatureBase):
-    '''
-    Generates smoking episodes from wrist worn inertial sensors (Accelerometer and gyroscope)
 
-    '''
+    def process_puffmarker(self, user_id: uuid,
+                           accel_stream_left: DataStream,
+                           gyro_stream_left: DataStream,
+                           accel_stream_right: DataStream,
+                           gyro_stream_right: DataStream):
+        """
+        1. generates puffmarker wrist feature vectors from accelerometer and gyroscope
+        2. classifies each feature vector as either puff or non_puff
+        3. constructs smoking episodes from this puffs
+        :param accel_stream_left:
+        :param gyro_stream_left:
+        :param accel_stream_right:
+        :param gyro_stream_right:
+        """
 
-    def __init__(self):
-        CC_CONFIG_PATH = '/home/md2k/cc_configuration.yml'
-        self.CC = CerebralCortex(CC_CONFIG_PATH)
+        all_features_left = compute_wrist_feature(accel_stream_left, gyro_stream_left, 'leftwrist', fast_size,
+                                                  slow_size)
+        puff_labels_left = classify_puffs(all_features_left)
 
-    def get_input_streams(self, streams, user_id, day):
+        all_features_right = compute_wrist_feature(accel_stream_right, gyro_stream_right, 'rightwrist', fast_size,
+                                                   slow_size)
+        puff_labels_right = classify_puffs(all_features_right)
+        for indx in range(len(puff_labels_right)):
+            if puff_labels_right[indx].sample == 1:
+                puff_labels_right[indx].sample = 2
 
-        accel_stream_left = None
-        accel_stream_right = None
-        gyro_stream_left = None
-        gyro_stream_right = None
+        puff_labels = puff_labels_right + puff_labels_left
+        puff_labels.sort(key=lambda x: x.start_time)
 
-        if MOTIONSENSE_HRV_ACCEL_LEFT_STREAMNAME in streams:
+        store_data("metadata/smoking_puff_puffmarker_wrist.json", [accel_stream_right, gyro_stream_right], user_id,
+                   puff_labels, self)
+
+        smoking_episodes = generate_smoking_episode(puff_labels)
+        store_data("metadata/smoking_episode_puffmarker_wrist.json", [accel_stream_right, gyro_stream_right], user_id,
+                   smoking_episodes, self)
+
+    def process_data(self, user_id: uuid):
+        """
+        Contains pipeline execution of all the diagnosis algorithms
+        :param user_id:
+        """
+        # get all the streams belong to a participant
+        streams = self.CC.get_user_streams(user_id)
+
+        stream_days = get_stream_days(streams[motionsense_hrv_accel_left_streamname]["identifier"], self.CC)
+        for day in stream_days:
             accel_stream_left = self.CC.get_stream(
-                streams[MOTIONSENSE_HRV_ACCEL_LEFT_STREAMNAME]["identifier"], user_id, day,
+                streams[motionsense_hrv_accel_left_streamname]["identifier"], day,
                 data_type=DataSet.COMPLETE)
-        if MOTIONSENSE_HRV_GYRO_LEFT_STREAMNAME in streams:
             gyro_stream_left = self.CC.get_stream(
-                streams[MOTIONSENSE_HRV_GYRO_LEFT_STREAMNAME]["identifier"], user_id, day,
-                data_type=DataSet.COMPLETE)
-        if MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME in streams:
-            accel_stream_right = self.CC.get_stream(
-                streams[MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME]["identifier"], user_id, day,
-                data_type=DataSet.COMPLETE)
-        if MOTIONSENSE_HRV_GYRO_RIGHT_STREAMNAME in streams:
-            gyro_stream_right = self.CC.get_stream(
-                streams[MOTIONSENSE_HRV_GYRO_RIGHT_STREAMNAME]["identifier"], user_id, day,
+                streams[motionsense_hrv_gyro_left_streamname]["identifier"], day,
                 data_type=DataSet.COMPLETE)
 
-        return accel_stream_left, gyro_stream_left, accel_stream_right, gyro_stream_right
+            accel_stream_right = self.CC.get_stream(
+                streams[motionsense_hrv_accel_right_streamname]["identifier"], day,
+                data_type=DataSet.COMPLETE)
+            gyro_stream_right = self.CC.get_stream(
+                streams[motionsense_hrv_gyro_right_streamname]["identifier"], day,
+                data_type=DataSet.COMPLETE)
+
+            # Calling puffmarker algorithm to get smoking episodes
+            self.process_puffmarker(user_id, accel_stream_left, gyro_stream_left, accel_stream_right,
+                                    gyro_stream_right)
+
+    def all_users_data(self, study_name: str):
+        """
+        Process all participants' streams
+        :param study_name:
+        """
+        # get all participants' name-ids
+        all_users = self.CC.get_all_users(study_name)
+
+        if all_users:
+            for user in all_users:
+                self.process_data(user["identifier"])
+        else:
+            print(study_name, "- study has 0 users.")
 
     def process(self):
         if self.CC is not None:
-
-            all_users = self.CC.get_all_users(study_name)
-
-            for user in all_users:
-                user_id = user['identifier']
-
-                streams = self.CC.get_user_streams(user_id)
-
-                stream_days = []
-                if MOTIONSENSE_HRV_ACCEL_LEFT_STREAMNAME in streams:
-                    stream_days = get_stream_days(streams[MOTIONSENSE_HRV_ACCEL_LEFT_STREAMNAME]["identifier"],
-                                                  self.CC)
-                if MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME in streams:
-                    temp_stream_days = get_stream_days(
-                        streams[MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME]["identifier"], self.CC)
-                    stream_days = stream_days + temp_stream_days
-                    stream_days = np.unique(stream_days)
-
-                for day in stream_days:
-
-                    accel_stream_left, gyro_stream_left, accel_stream_right, gyro_stream_right = \
-                        self.get_input_streams(streams, user_id, day)
-
-                    accel_stream_left.data = check_motionsense_hrv_accelerometer(accel_stream_left.data)
-                    accel_stream_right.data = check_motionsense_hrv_accelerometer(accel_stream_right.data)
-                    gyro_stream_left.data = check_motionsense_hrv_gyroscope(gyro_stream_left.data)
-                    gyro_stream_right.data = check_motionsense_hrv_gyroscope(gyro_stream_right.data)
-
-                    puff_labels_left = []
-                    puff_labels_right = []
-
-                    if (len(accel_stream_left.data) > 0) & (len(gyro_stream_left.data) > 0):
-                        all_features_left = compute_wrist_features(accel_stream_left,
-                                                                   gyro_stream_left,
-                                                                   FAST_MOVING_AVG_SIZE,
-                                                                   SLOW_MOVING_AVG_SIZE)
-                        puff_labels_left = classify_puffs(all_features_left)
-
-                    if (len(accel_stream_right.data) > 0) & (len(gyro_stream_right.data) > 0):
-                        all_features_right = compute_wrist_features(accel_stream_right,
-                                                                    gyro_stream_right,
-                                                                    FAST_MOVING_AVG_SIZE,
-                                                                    SLOW_MOVING_AVG_SIZE)
-                        puff_labels_right = classify_puffs(all_features_right)
-
-                    for index in range(len(puff_labels_right)):
-                        if puff_labels_right[index].sample == PUFF_LABEL_LEFT:
-                            puff_labels_right[index].sample = PUFF_LABEL_RIGHT
-
-                    puff_labels = puff_labels_right + puff_labels_left
-
-                    if len(puff_labels) > 0:
-                        puff_labels.sort(key=lambda x: x.start_time)
-
-                        store_data("metadata/smoking_puff_puffmarker_wrist.json",
-                                   [accel_stream_right, gyro_stream_right], user_id,
-                                   puff_labels, self)
-
-                        smoking_episodes = generate_smoking_episode(puff_labels)
-                        store_data("metadata/smoking_episode_puffmarker_wrist.json",
-                                   [accel_stream_right, gyro_stream_right], user_id,
-                                   smoking_episodes, self)
-
-# pm = PuffMarker()
-# pm.process()
+            print("Processing PuffMarker")
+            self.all_users_data("mperf")
