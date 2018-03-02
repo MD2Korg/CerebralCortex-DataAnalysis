@@ -38,7 +38,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"CC_OUTPUT_STREAM_NAME_CC",
+  "name":"org.md2k.data_analysis.feature.puffmarker.smoking_puff",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }
