@@ -19,7 +19,7 @@
 import warnings
 import numpy as np
 from numpy.linalg import norm
-from signalprocessing.gravity_filter.quaternion import Quaternion
+from core.signalprocessing.gravity_filter.quaternion import Quaternion
 
 
 class MadgwickAHRS:
