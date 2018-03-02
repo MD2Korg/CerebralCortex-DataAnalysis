@@ -25,12 +25,12 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from cerebralcortex.core.datatypes.datastream import DataStream
-from feature.activity.wrist_accelerometer_features import compute_accelerometer_features
-from feature.activity.do_classification import classify_posture, classify_activity
-from signalprocessing.gravity_filter.gravityFilter import gravityFilter_function
+from core.feature.activity.wrist_accelerometer_features import compute_accelerometer_features
+from core.feature.activity.do_classification import classify_posture, classify_activity
+from core.signalprocessing.gravity_filter.gravityFilter import gravityFilter_function
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
-from feature.activity.util import *
-from computefeature import ComputeFeatureBase
+from core.feature.activity.util import *
+from core.computefeature import ComputeFeatureBase
 
 feature_class_name='ActivityMarker'
 
