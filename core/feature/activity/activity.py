@@ -1,6 +1,5 @@
 # Copyright (c) 2018, MD2K Center of Excellence
 # - Sayma Akther <sakther@memphis.edu>
-# FIXME - No need for author name, can be obtained from the git commit logs
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,109 +23,101 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import numpy as np
+from cerebralcortex.core.datatypes.datastream import DataStream
 from core.feature.activity.wrist_accelerometer_features import compute_accelerometer_features
-from core.feature.activity.activity_classifier import classify_posture, classify_activity
+from core.feature.activity.do_classification import classify_posture, classify_activity
 from core.signalprocessing.gravity_filter.gravityFilter import gravityFilter_function
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
-from core.feature.activity.utils import *
-from core.feature.activity.admission_control import *
+from core.feature.activity.util import *
 from core.computefeature import ComputeFeatureBase
 
-feature_class_name = 'ActivityMarker'
+feature_class_name='ActivityMarker'
 
 
 class ActivityMarker(ComputeFeatureBase):
-    """
-    Detects activity and posture per 10 seconds window from
-        motionSense HRV accelerometer and gyroscope
 
-    At first it computes activity and posture from both wrist then
-        takes maximum as final label
+    def do_activity_and_posture_marker(self, accel_stream: DataStream, gyro_stream: DataStream):
 
-    """
+        acc_sync_filtered = gravityFilter_function(accel_stream, gyro_stream, 25.0)
 
-    def process_activity_and_posture_marker(self, streams, user_id, day, wrist: str):
+        accel_features = compute_accelerometer_features(acc_sync_filtered, window_size=10)
 
-        """ Process activity and posture detection fro single wrist
-        :param streams: all the streams of user with user-id
-        :param user_id:
-        :param wrist: either left or right
-        :return: activity labels and posture lebels for each 10 seconds window
+        posture_label = classify_posture(accel_features)
+        activity_label = classify_activity(accel_features)
+
+        return posture_label, activity_label
+
+    def all_users_data(self, study_name: str):
         """
+        Process all participants' streams
+        :param study_name:
+        """
+        # get all participants' name-ids
+        all_users = self.CC.get_all_users(study_name)
 
-        if wrist in [LEFT_WRIST] and MOTIONSENSE_HRV_ACCEL_LEFT in streams:
-            accel_stream = self.CC.get_stream(streams[MOTIONSENSE_HRV_ACCEL_LEFT]["identifier"],
-                                              day=day,
-                                              user_id=user_id,
-                                              data_type=DataSet.COMPLETE)
-            gyro_stream = self.CC.get_stream(streams[MOTIONSENSE_HRV_GYRO_LEFT]["identifier"],
-                                             day=day,
-                                             user_id=user_id,
-                                             data_type=DataSet.COMPLETE)
-        elif wrist in [RIGHT_WRIST] and MOTIONSENSE_HRV_ACCEL_RIGHT in streams:
-            accel_stream = self.CC.get_stream(streams[MOTIONSENSE_HRV_ACCEL_RIGHT]["identifier"],
-                                              day=day,
-                                              user_id=user_id, data_type=DataSet.COMPLETE)
-            gyro_stream = self.CC.get_stream(streams[MOTIONSENSE_HRV_GYRO_RIGHT]["identifier"],
-                                             day=day,
-                                             user_id=user_id, data_type=DataSet.COMPLETE)
+        if all_users:
+            for user in all_users:
+                self.process_streams(user["identifier"])
         else:
-            return [], []
+            print(study_name, "- study has 0 users.")
 
-        if accel_stream is None or gyro_stream is None or \
-                len(accel_stream.data) == 0 or len(gyro_stream.data) == 0:
-            return [], []
-        if len(accel_stream.data) != len(gyro_stream.data):
-            return [], []
-        valid_accel_data, valid_gyro_data = check_motionsense_hrv_accel_gyroscope(accel_stream.data, gyro_stream.data)
-        accel_stream.data = valid_accel_data
-        gyro_stream.data = valid_gyro_data
+    def process_streams(self, user_id: uuid):
+        """
+        Contains pipeline execution of all the diagnosis algorithms
+        :param user_id:
+        :param CC:
+        :param config:
+        """
+        motionsense_hrv_accel_right = "ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
+        motionsense_hrv_accel_left = "ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
+        motionsense_hrv_gyro_right = "GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
+        motionsense_hrv_gyro_left = "GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
 
-        gravity_filtered_accel_stream = gravityFilter_function(accel_stream,
-                                                               gyro_stream,
-                                                               sampling_freq=SAMPLING_FREQ_MOTIONSENSE_ACCEL,
-                                                               is_gyro_in_degree=IS_MOTIONSENSE_HRV_GYRO_IN_DEGREE)
+        # get all the streams belong to a participant
+        streams = self.CC.get_user_streams(user_id)
 
-        activity_features = compute_accelerometer_features(gravity_filtered_accel_stream,
-                                                           window_size=TEN_SECONDS)
+        posture_labels_left_all =[]
+        posture_labels_right_all =[]
+        activity_label_left_all = []
+        activity_label_right_all = []
 
-        posture_labels = classify_posture(activity_features)
-        activity_labels = classify_activity(activity_features)
+        # stream_end_days = CC.get_stream_duration(streams[motionsense_hrv_gyro_right]["identifier"])
+        stream_days = None
+        if motionsense_hrv_gyro_left in streams:
+            stream_days = get_stream_days(streams[motionsense_hrv_gyro_left]["identifier"], self.CC)
+        
+        if not stream_days:return
 
-        return posture_labels, activity_labels
+        for day in stream_days:
+            #print("AAAAAAAAAA",day)
+            accel_stream_left = self.CC.get_stream(streams[motionsense_hrv_accel_left]["identifier"], day=day, user_id=user_id, data_type=DataSet.COMPLETE)
+            gyro_stream_left = self.CC.get_stream(streams[motionsense_hrv_gyro_left]["identifier"], day=day, user_id=user_id, data_type=DataSet.COMPLETE)
 
-    def process(self, user, all_days):
+            print( 'Left---' + user_id + ', ' + day + ', ' +  str(len(accel_stream_left.data))  + ', ' +  str(len(gyro_stream_left.data)))
+
+            # # Calling puffmarker algorithm to get smoking episodes
+            if len(accel_stream_left.data) == len(gyro_stream_left.data):
+                posture_labels_left, activity_label_left = self.do_activity_and_posture_marker(accel_stream_left, gyro_stream_left)
+                posture_labels_left_all.append(posture_labels_left)
+                activity_label_left_all.append(activity_label_left)
+
+        stream_days = get_stream_days(streams[motionsense_hrv_gyro_right]["identifier"], self.CC)
+        for day in stream_days:
+
+            accel_stream_right = self.CC.get_stream(streams[motionsense_hrv_accel_right]["identifier"], day=day, user_id=user_id, data_type=DataSet.COMPLETE)
+            gyro_stream_right = self.CC.get_stream(streams[motionsense_hrv_gyro_right]["identifier"], day=day, user_id=user_id, data_type=DataSet.COMPLETE)
+
+            print( 'Right---' + user_id + ', ' + day + ', ' + str(len(accel_stream_right.data)) + ', ' + str(len(gyro_stream_right.data)))
+
+            if len(accel_stream_right.data) == len(gyro_stream_right.data):
+                posture_labels_right, activity_label_right = self.do_activity_and_posture_marker(accel_stream_right, gyro_stream_right)
+                posture_labels_right_all.append(posture_labels_right)
+                activity_label_right_all.append(activity_label_right)
+                store_data("metadata/activity_type_10seconds_window.json", [streams[motionsense_hrv_accel_right], streams[motionsense_hrv_gyro_right]], user_id, activity_label_right, self)
+                store_data("metadata/posture_10seconds_window.json", [streams[motionsense_hrv_accel_right], streams[motionsense_hrv_gyro_right]], user_id, posture_labels_right, self)
+
+    def process(self):
         if self.CC is not None:
-            if user:
-                streams = self.CC.get_user_streams(user)
-                if streams is None:
-                    return
+            print("Processing ActivityMarkers")
+            self.all_users_data("mperf")
 
-                for day in all_days:
-                    posture_labels_left, activity_labels_left = self.process_activity_and_posture_marker(streams,
-                                                                                                         user, day,
-                                                                                                         LEFT_WRIST)
-                    posture_labels_right, activity_labels_right = self.process_activity_and_posture_marker(streams,
-                                                                                                           user, day,
-                                                                                                           RIGHT_WRIST)
-                    activity_labels = merge_left_right(activity_labels_left,
-                                                       activity_labels_right,
-                                                       window_size=TEN_SECONDS)
-                    posture_labels = merge_left_right(posture_labels_left,
-                                                      posture_labels_right,
-                                                      window_size=TEN_SECONDS)
-
-                    print("activity_type_stream:", len(activity_labels))
-                    print("posture_stream:", len(posture_labels))
-
-                    store_data("metadata/activity_type_10seconds_window.json",
-                               [streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
-                                streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
-                               user,
-                               activity_labels, "ACTIVITY TYPES", self)
-                    store_data("metadata/posture_10seconds_window.json",
-                               [streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
-                                streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
-                               user,
-                               posture_labels, "POSTURE", self)
