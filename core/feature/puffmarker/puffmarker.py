@@ -25,18 +25,15 @@
 
 
 import uuid
-import argparse
 
-from cerebralcortex.cerebralcortex import CerebralCortex
+from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from cerebralcortex.core.datatypes.datastream import DataStream
-from core.feature.puffmarker.wrist_features import compute_wrist_feature
-from core.feature.puffmarker.util import get_stream_days, store_data
-from cerebralcortex.core.config_manager.config import Configuration
 from core.computefeature import ComputeFeatureBase
+from core.feature.puffmarker.CONSTANT import *
 from core.feature.puffmarker.puff_classifier import classify_puffs
 from core.feature.puffmarker.smoking_episode import generate_smoking_episode
-from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
-from core.feature.puffmarker.CONSTANT import *
+from core.feature.puffmarker.util import get_stream_days, store_data
+from core.feature.puffmarker.wrist_features import compute_wrist_feature
 
 feature_class_name = 'PuffMarker'
 
@@ -71,6 +68,7 @@ class PuffMarker(ComputeFeatureBase):
 
         puff_labels = puff_labels_right + puff_labels_left
         puff_labels.sort(key=lambda x: x.start_time)
+
         store_data("metadata/smoking_puff_puffmarker_wrist.json", [accel_stream_right, gyro_stream_right], user_id,
                    puff_labels, self)
 
