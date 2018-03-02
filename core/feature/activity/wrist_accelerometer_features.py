@@ -87,7 +87,6 @@ def spectral_entropy(a, sampling_freq, bands=None):
 def peak_frequency(data):
     w = np.fft.fft(data)
     freqs = np.fft.fftfreq(len(w))
-    print(freqs.min(), freqs.max())
     return freqs.max()
 
 def compute_basic_features(timestamp, data):
