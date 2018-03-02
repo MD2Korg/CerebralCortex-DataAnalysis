@@ -114,9 +114,7 @@ def compute_candidate_Features(gyr_intersections_stream, gyr_mag_stream, roll_st
 
         all_features.append(DataPoint(start_time=sTime, end_time=eTime, offset=offset, sample=f))
 
-    feature_vector_stream = DataStream.from_datastream([gyr_intersections_stream])
-    feature_vector_stream.data = all_features
-    return feature_vector_stream
+    return all_features
 
 
 def compute_wrist_feature(accel_stream: DataStream, gyro_stream: DataStream, wrist: str, fast_size=13, slow_soze=131):

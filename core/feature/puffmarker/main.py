@@ -30,7 +30,6 @@ import argparse
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.util.spark_helper import get_or_create_sc
 from cerebralcortex.core.config_manager.config import Configuration
-from core.feature.puffmarker.puffmarker_wrist import process_puffmarker
 from core.feature.puffmarker.util import get_stream_days
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 
@@ -44,11 +43,11 @@ def all_users_data(study_name: str, md_config, CC, spark_context):
 
     if all_users:
         for user in all_users:
-            process_streams(user["identifier"], CC, md_config)
+            process_data(user["identifier"], CC, md_config)
     else:
         print(study_name, "- study has 0 users.")
 
-def process_streams(user_id: uuid, CC: CerebralCortex, config: dict):
+def process_data(user_id: uuid, CC: CerebralCortex, config: dict):
     """
     Contains pipeline execution of all the diagnosis algorithms
     :param user_id:

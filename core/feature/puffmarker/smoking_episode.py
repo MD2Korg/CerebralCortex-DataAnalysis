@@ -25,22 +25,57 @@
 
 
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-from cerebralcortex.core.datatypes.datastream import DataStream
+from datetime import timedelta
 
-minimum_number_of_puffs = 4
-minimum_puff_distance = 2  # seconds
-min_smoking_epi_duration = 5  # minutes
+MINIMUM_TIME_DIFFERENCE_BETWEEN_EPISODES = 10 * 60 * 1000
+MINIMUM_TIME_DIFFERENCE_FIRST_AND_LAST_PUFFS = 7  # minutes
+MINIMUM_INTER_PUFF_DURATION = 5  # seconds
+MINIMUM_PUFFS_IN_EPISODE = 4
+
+def getSmokingWrist(onlyPuffList, indx, end_indx):
+    nLeftWrst = 0
+    nRightWrst = 0
+    i = indx
+    while (i < end_indx):
+        if (onlyPuffList[i].sample == 1):
+            nLeftWrst = nLeftWrst + 1
+        else:
+            nRightWrst = nRightWrst + 1
+        i = i + 1
+    if (nRightWrst > nLeftWrst):
+        return 2
+    return 1
 
 
-def generate_smoking_episodes(puffs_stream: DataStream):
-    puffs_data = [v for v in puffs_stream.data if v.sample > 0]
-    smoking_epis = []
-    i = 0
-    while i < len(puffs_data):
+def generate_smoking_episode(puff_labels):
 
-        if puffs_data[i + 1].start_time - puffs_data[i].start_time < minimum_puff_distance:
-            j = i + 1
-            while puffs_data[j].start_time - puffs_data[j - 1].start_time < minimum_puff_distance:
-                j = j + 1
-            if j-i > minimum_number_of_puffs:
-                smoking_epis.append(DataPoint(puffs_data[i].start_time))
+    only_puff_list = [dp for dp in puff_labels if dp.sample > 0]
+
+    smoking_episode_data = []
+
+    indx = 0
+    while (indx < len(only_puff_list)):
+        i = indx
+        dp = only_puff_list[i]
+        prev = dp
+        i = i + 1
+        if i >= len(only_puff_list):
+            break
+        while (
+        ((only_puff_list[i].start_time - dp.start_time <= timedelta(minutes=MINIMUM_TIME_DIFFERENCE_FIRST_AND_LAST_PUFFS))
+         | (only_puff_list[i].start_time - prev.start_time < timedelta(seconds=MINIMUM_INTER_PUFF_DURATION)))):
+            prev = only_puff_list[i]
+            i = i + 1
+            if i >= len(only_puff_list):
+                break
+        i = i - 1
+        if (i - indx + 1 >= MINIMUM_PUFFS_IN_EPISODE):
+            wrst = getSmokingWrist(only_puff_list, indx, i)
+            smoking_episode_data.append(
+                DataPoint(start_time=only_puff_list[indx].start_time, end_time=only_puff_list[i].start_time,
+                          sample=(wrst * 100) + (i - indx + 1)))
+
+            indx = i + 1
+        else:
+            indx = indx + 1
+    return smoking_episode_data
