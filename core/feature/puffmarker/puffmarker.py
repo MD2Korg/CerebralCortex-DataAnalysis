@@ -87,17 +87,17 @@ class PuffMarker(ComputeFeatureBase):
         stream_days = get_stream_days(streams[motionsense_hrv_accel_left_streamname]["identifier"], self.CC)
         for day in stream_days:
             accel_stream_left = self.CC.get_stream(
-                streams[motionsense_hrv_accel_left_streamname]["identifier"], day,
+                streams[motionsense_hrv_accel_left_streamname]["identifier"], user_id, day,
                 data_type=DataSet.COMPLETE)
             gyro_stream_left = self.CC.get_stream(
-                streams[motionsense_hrv_gyro_left_streamname]["identifier"], day,
+                streams[motionsense_hrv_gyro_left_streamname]["identifier"], user_id, day,
                 data_type=DataSet.COMPLETE)
 
             accel_stream_right = self.CC.get_stream(
-                streams[motionsense_hrv_accel_right_streamname]["identifier"], day,
+                streams[motionsense_hrv_accel_right_streamname]["identifier"], user_id, day,
                 data_type=DataSet.COMPLETE)
             gyro_stream_right = self.CC.get_stream(
-                streams[motionsense_hrv_gyro_right_streamname]["identifier"], day,
+                streams[motionsense_hrv_gyro_right_streamname]["identifier"], user_id, day,
                 data_type=DataSet.COMPLETE)
 
             # Calling puffmarker algorithm to get smoking episodes
@@ -122,3 +122,6 @@ class PuffMarker(ComputeFeatureBase):
         if self.CC is not None:
             print("Processing PuffMarker")
             self.all_users_data("mperf")
+
+pm = PuffMarker()
+pm.process()

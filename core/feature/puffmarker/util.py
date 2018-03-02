@@ -25,15 +25,21 @@
 
 import uuid
 from datetime import timedelta
-import numpy as np
 from typing import List
+
+import numpy as np
+
 import core.signalprocessing.vector as vector
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
 
+
 def smooth(datastream: DataStream,
            span: int = 5) -> DataStream:
+
+    if span % 2 == 0:
+        span = span + 1
 
     data = datastream.data
     data_smooth = vector.smooth(data, span)
