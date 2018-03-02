@@ -43,12 +43,12 @@ syslog.openlog(ident="CerebralCortex-Driver")
 This method runs the processing pipeline for each of
 the features in the list.
 '''
-def process_features(feature_list):
+def process_features(feature_list,CC):
 # TODO FIXME - should we parallize these as spark jobs ?
     for module in feature_list:
         feature_class_name = getattr(module,'feature_class_name')
         feature_class = getattr(module,feature_class_name)
-        feature_class_instance = feature_class()
+        feature_class_instance = feature_class(CC)
         try:
             feature_class_instance.process()
         except Exception as e:
@@ -109,9 +109,13 @@ def main():
     found_features = discover_features(feature_list)
     feature_to_process = generate_feature_processing_order(found_features)
     
-    CC = CerebralCortex(CC_CONFIG_PATH)
-
-    process_features(feature_to_process)
+    CC = None
+    try:
+        CC = CerebralCortex(CC_CONFIG_PATH)
+    except Exception as e:
+        print(str(e)
+    )
+    process_features(feature_to_process, CC)
     
 if __name__ == '__main__':
     main()

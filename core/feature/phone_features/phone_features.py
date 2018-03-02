@@ -1,7 +1,6 @@
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from core.computefeature import ComputeFeatureBase
-from .save_feature_stream import store_data
 
 import datetime
 import numpy as np
@@ -11,6 +10,22 @@ from datetime import timedelta
 feature_class_name='PhoneFeatures'
 
 class PhoneFeatures(ComputeFeatureBase):
+    def store_data(filepath, input_streams, user_id, data):
+        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(filepath + user_id+"PHONE FEATURES")))
+        # TODO FIXME XXX : This is a hack, Please fixme
+        cur_dir = os.path.dirname(os.path.abspath(__file__))
+        newfilepath = os.path.join(cur_dir,filepath)
+        with open(newfilepath,"r") as f:
+            metadata = f.read()
+            metadata = metadata.replace("CC_INPUT_STREAM_ID_CC",input_streams[0]["id"])
+            metadata = metadata.replace("CC_INPUT_STREAM_NAME_CC",input_streams[0]["name"])
+            metadata = metadata.replace("CC_OUTPUT_STREAM_IDENTIFIER_CC",output_stream_id)
+            metadata = metadata.replace("CC_OWNER_CC",user_id)
+            json_metadata = json.loads(metadata)
+
+            self.store(identifier=output_stream_id, owner=user_id, name=json_metadata["name"], data_descriptor=json_metadata["data_descriptor"],
+                       execution_context=json_metadata["execution_context"], annotations=json_metadata["annotations"],
+                       stream_type="datastream", data=data)
 
     def inter_event_time_list(self, data):
         if len(data)==0:
@@ -356,84 +371,84 @@ class PhoneFeatures(ComputeFeatureBase):
         try:
             data = self.average_inter_phone_call_sms_time_hourly(callstream, smsstream)
             if data:
-                store_data("metadata/average_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, self)
+                self.store_data("metadata/average_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, self)
         except Exception as e:
             print("Exception:", str(e))
             
         try:
             data = self.average_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
             if data:
-                store_data("metadata/average_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, self)
+                self.store_data("metadata/average_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, self)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.average_inter_phone_call_sms_time_daily(callstream, smsstream)
             if data:
-                store_data("metadata/average_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, self)
+                self.store_data("metadata/average_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, self)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
-            data = self.variance_inter_phone_call_sms_time_daily(callstream, smsstream)
+            self.data = self.variance_inter_phone_call_sms_time_daily(callstream, smsstream)
             if data:
-                store_data("metadata/variance_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, self)
+                self.store_data("metadata/variance_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, self)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.variance_inter_phone_call_sms_time_hourly(callstream, smsstream)
             if data:
-                store_data("metadata/variance_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, self)
+                self.store_data("metadata/variance_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, self)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.variance_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
             if data:
-                store_data("metadata/variance_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, self)
+                self.store_data("metadata/variance_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, self)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.average_inter_phone_call_time_hourly(callstream)
             if data:
-                store_data("metadata/average_inter_phone_call_time_hourly.json", [input_stream1], user_id, data, self)
+                self.store_data("metadata/average_inter_phone_call_time_hourly.json", [input_stream1], user_id, data, self)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.average_inter_phone_call_time_four_hourly(callstream)
             if data:
-                store_data("metadata/average_inter_phone_call_time_four_hourly.json", [input_stream1], user_id, data, self)
+                self.store_data("metadata/average_inter_phone_call_time_four_hourly.json", [input_stream1], user_id, data, self)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.average_inter_phone_call_time_daily(callstream)
             if data:
-                store_data("metadata/average_inter_phone_call_time_daily.json", [input_stream1], user_id, data, self)
+                self.store_data("metadata/average_inter_phone_call_time_daily.json", [input_stream1], user_id, data, self)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.average_inter_sms_time_hourly(smsstream)
             if data:
-                store_data("metadata/average_inter_sms_time_hourly.json", [input_stream2], user_id, data, self)
+                self.store_data("metadata/average_inter_sms_time_hourly.json", [input_stream2], user_id, data, self)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.average_inter_sms_time_four_hourly(smsstream)
             if data:
-                store_data("metadata/average_inter_sms_time_four_hourly.json", [input_stream2], user_id, data, self)
+                self.store_data("metadata/average_inter_sms_time_four_hourly.json", [input_stream2], user_id, data, self)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.average_inter_sms_time_daily(smsstream)
             if data:
-                store_data("metadata/average_inter_sms_time_daily.json", [input_stream2], user_id, data, self)
+                self.store_data("metadata/average_inter_sms_time_daily.json", [input_stream2], user_id, data, self)
         except Exception as e:
             print("Exception:",str(e))
 
