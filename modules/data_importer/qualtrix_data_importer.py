@@ -11,9 +11,9 @@ from cerebralcortex.cerebralcortex import CerebralCortex
 
 CC_CONFIG_PATH = '/home/vagrant/CerebralCortex-DockerCompose/cc_config_file/cc_vagrant_configuration.yml'
 
-DATA_DIR='/home/vagrant/mPerf_test_data'
+DATA_DIR='/home/vagrant/mperf_data'
 
-UUID_MAPPING = 'UUID_mapping.txt'
+UUID_MAPPING = '/home/vagrant/mperf_ids.txt'
 
 files_to_process=[]
 
@@ -155,7 +155,7 @@ def process_feature(file_path, metadata_path):
         ds = DataStream(identifier=output_stream_id, owner=user, name=metadata['name'], data_descriptor=\
                 metadata['data_descriptor'], execution_context=metadata['execution_context'], annotations=\
                 metadata['annotations'], stream_type='datastream', data=feature_data[user]) 
-    
+        #print(str(user),str(output_stream_id),len(feature_data[user]))   	 
         try:
             CC.save_stream(ds)
         except Exception as e:

@@ -1,4 +1,5 @@
-# Copyright (c) 2017, MD2K Center of Excellence
+# Copyright (c) 2018, MD2K Center of Excellence
+# - Sayma Akther <sakther@memphis.edu>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -22,42 +23,38 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-'''
-This module describes the ComputeFeatureBase class.
-Feature modules should inherit from ComputeFeatureBase.
-'''
-import syslog
-import traceback
-from syslog import LOG_ERR
-from utils.config import CC_CONFIG_PATH
-from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
+from cerebralcortex.core.datatypes.datastream import DataPoint
+from import_model_files import get_posture_model, get_activity_model
 
-# Initialize logging
-syslog.openlog(ident="CerebralCortex-ComputeFeatureBase")
 
-class ComputeFeatureBase(object):
-    '''
-    Use this method for all your computations.
-    '''
-    def process(self):
-        pass
-    
-    '''
-    All store operations MUST be through this method.
-    '''
-    def store(self,identifier,owner,name,data_descriptor,execution_context,annotations,stream_type,data):
-        ds = DataStream(identifier=identifier, owner=owner, name=name, data_descriptor=data_descriptor,
-                        execution_context=execution_context, annotations=annotations,
-                        stream_type=stream_type, data=data)
-        try:
-            print("Saving Stream",ds)
-            self.CC.save_stream(ds)
-        except Exception as exp:
-            syslog.syslog(LOG_ERR,self.__class__.__name__ + str(exp) + "\n" + str(traceback.format_exc()))
+def classify_posture(features: DataStream) -> DataStream:
 
-    def __init__(self):
-        self.CC = CerebralCortex(CC_CONFIG_PATH)
+    clf = get_posture_model()
+    labels = []
+    for dp in features.data:
+        preds=clf.predict([dp.sample])
+        labels.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, sample=preds))
+
+    label_stream = DataStream.from_datastream([features])
+    label_stream.data = labels
+
+    return labels
+
+def classify_activity(features: DataStream) -> DataStream:
+
+    clf = get_activity_model()
+    labels = []
+    for dp in features.data:
+        preds=clf.predict([dp.sample])
+        labels.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, sample=preds))
+
+    label_stream = DataStream.from_datastream([features])
+    label_stream.data = labels
+
+    return labels
+
+
 
 
 

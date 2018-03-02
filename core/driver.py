@@ -26,6 +26,7 @@ import sys
 import os
 import utils.config
 import argparse
+import traceback
 
 import syslog
 from syslog import LOG_ERR
@@ -49,13 +50,14 @@ def process_features(feature_list):
         try:
             feature_class_instance.process()
         except Exception as e:
-            syslog.syslog(LOG_ERR,str(e))
-
+            #syslog.syslog(LOG_ERR,str(e))
+            syslog.syslog(LOG_ERR, str(e) + "\n" + str(traceback.format_exc()))
 '''
 This method discovers all the features that are present.
 '''
 def discover_features(feature_list):
     feature_dir = os.path.join(utils.config.FEATURES_DIR_NAME)
+    print(feature_dir)
     found_features = []
     if feature_list:
         feature_subdirs = feature_list
@@ -78,7 +80,9 @@ def discover_features(feature_list):
                 found_features.append(module)
                 syslog.syslog('Loaded feature %s' % feature)
             except Exception as exp:
-                syslog.syslog(LOG_ERR,str(exp))
+                #syslog.syslog(LOG_ERR,str(exp))
+                print(str(exp)+"\n"+str(traceback.format_exc()))
+                syslog.syslog(LOG_ERR, str(exp) + "\n" + str(traceback.format_exc()))
     
     return found_features
     
