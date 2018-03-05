@@ -2,7 +2,7 @@ import numbers
 from typing import List
 
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-from core.feature.puffmarker.CONSTANT import *
+from core.feature.puffmarker.CONSTANTS import *
 
 
 def is_number(sample):

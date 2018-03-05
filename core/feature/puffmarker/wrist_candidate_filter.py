@@ -29,7 +29,7 @@ from typing import List
 import numpy as np
 
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-from core.feature.puffmarker.CONSTANT import *
+from core.feature.puffmarker.CONSTANTS import *
 
 
 def filter_with_duration(gyr_intersections: List[DataPoint]):
