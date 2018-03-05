@@ -24,37 +24,39 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-import numpy as np
-from cerebralcortex.core.datatypes.datastream import DataStream
+from typing import List
 
-def filterDuration(gyr_intersections: DataStream):
+import numpy as np
+
+from cerebralcortex.core.datatypes.datapoint import DataPoint
+from core.feature.puffmarker.CONSTANT import *
+
+
+def filter_with_duration(gyr_intersections: List[DataPoint]):
     gyr_intersections_filtered = []
 
-    for I in gyr_intersections.data:
+    for I in gyr_intersections:
         dur = (I.end_time - I.start_time).total_seconds()
         if (dur >= 1.0) & (dur <= 5.0):
             gyr_intersections_filtered.append(I)
 
-    gyr_intersections_filtered_datastream = DataStream.from_datastream([gyr_intersections])
-    gyr_intersections_filtered_datastream.data = gyr_intersections_filtered
-    return gyr_intersections_filtered_datastream
+    return gyr_intersections_filtered
 
-def filterRollPitch(gyr_intersections_stream: DataStream, roll_stream: DataStream, pitch_stream: DataStream):
+
+def filter_with_roll_pitch(gyr_intersections: List[DataPoint], roll_list: List[DataPoint], pitch_list: List[DataPoint]):
     gyr_intersections_filtered = []
 
-    for I in gyr_intersections_stream.data:
-        sIndex = I.sample[0]
-        eIndex = I.sample[1]
+    for I in gyr_intersections:
+        start_index = I.sample[0]
+        end_index = I.sample[1]
 
-        roll_sub = [roll_stream.data[i].sample for i in range(sIndex, eIndex)]
-        pitch_sub = [pitch_stream.data[i].sample for i in range(sIndex, eIndex)]
+        roll_sub = [roll_list[i].sample for i in range(start_index, end_index)]
+        pitch_sub = [pitch_list[i].sample for i in range(start_index, end_index)]
 
         mean_roll = np.mean(roll_sub)
         mean_pitch = np.mean(pitch_sub)
 
-        if (mean_roll > -20) & (mean_roll <= 65) & (mean_pitch >= - 125) & (mean_pitch <= - 40):
+        if (mean_roll > MIN_ROLL) & (mean_roll <= MAX_ROLL) & (mean_pitch >= MIN_PITCH) & (mean_pitch <= MAX_PITCH):
             gyr_intersections_filtered.append(I)
 
-    gyr_intersections_filtered_stream = DataStream.from_datastream([gyr_intersections_stream])
-    gyr_intersections_filtered_stream.data = gyr_intersections_filtered
-    return gyr_intersections_filtered_stream
+    return gyr_intersections_filtered

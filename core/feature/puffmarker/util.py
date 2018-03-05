@@ -40,6 +40,9 @@ from cerebralcortex.core.datatypes.datastream import DataStream
 def smooth(datastream: DataStream,
            span: int = 5) -> DataStream:
 
+    if span % 2 == 0:
+        span = span + 1
+
     data = datastream.data
     data_smooth = vector.smooth(data, span)
 
@@ -47,9 +50,9 @@ def smooth(datastream: DataStream,
     data_smooth_stream.data = data_smooth
     return data_smooth_stream
 
-def segmentationUsingTwoMovingAverage(slowMovingAverageDataStream: DataStream
-                                      , fastMovingAverageDataStream: DataStream
-                                      , THRESHOLD: float, near: int):
+def moving_average_convergence_divergence(slowMovingAverageDataStream: DataStream
+                                          , fastMovingAverageDataStream: DataStream
+                                          , THRESHOLD: float, near: int):
 
     slowMovingAverage = np.array([data.sample for data in slowMovingAverageDataStream.data])
     fastMovingAverage = np.array([data.sample for data in fastMovingAverageDataStream.data])
@@ -73,18 +76,16 @@ def segmentationUsingTwoMovingAverage(slowMovingAverageDataStream: DataStream
                     curIndex = curIndex + 1
                     indexList[curIndex] = index
 
-    output = []
+    intersection_points = []
     if curIndex > 0:
         for index in range(0, curIndex, 2):
             sIndex = indexList[index]
             eIndex = indexList[index+1]
             sTime = slowMovingAverageDataStream.data[sIndex].start_time
             eTime = slowMovingAverageDataStream.data[eIndex].start_time
-            output.append(DataPoint(start_time=sTime, end_time=eTime, sample=[indexList[index], indexList[index + 1]]))
+            intersection_points.append(DataPoint(start_time=sTime, end_time=eTime, sample=[indexList[index], indexList[index + 1]]))
 
-    intersectionPoints = DataStream.from_datastream([slowMovingAverageDataStream])
-    intersectionPoints.data = output
-    return intersectionPoints
+    return intersection_points
 
 def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
     """
