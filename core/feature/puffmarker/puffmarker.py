@@ -67,15 +67,21 @@ class PuffMarker(ComputeFeatureBase):
         gyro_stream_left.data = check_motionsense_hrv_gyroscope(gyro_stream_left.data)
         gyro_stream_right.data = check_motionsense_hrv_gyroscope(gyro_stream_right.data)
 
-        all_features_left = compute_wrist_feature(accel_stream_left, gyro_stream_left, 'leftwrist',
-                                                  fast_moving_avg_size,
-                                                  slow_moving_avg_size)
-        puff_labels_left = classify_puffs(all_features_left)
+        puff_labels_left = []
+        puff_labels_right = []
 
-        all_features_right = compute_wrist_feature(accel_stream_right, gyro_stream_right, 'rightwrist',
-                                                   fast_moving_avg_size,
-                                                   slow_moving_avg_size)
-        puff_labels_right = classify_puffs(all_features_right)
+        if (len(accel_stream_left.data) > 0) & (len(gyro_stream_left.data) > 0):
+            all_features_left = compute_wrist_feature(accel_stream_left, gyro_stream_left, 'leftwrist',
+                                                      fast_moving_avg_size,
+                                                      slow_moving_avg_size)
+            puff_labels_left = classify_puffs(all_features_left)
+
+        if (len(accel_stream_right.data) > 0) & (len(gyro_stream_right.data) > 0):
+            all_features_right = compute_wrist_feature(accel_stream_right, gyro_stream_right, 'rightwrist',
+                                                       fast_moving_avg_size,
+                                                       slow_moving_avg_size)
+            puff_labels_right = classify_puffs(all_features_right)
+
         for indx in range(len(puff_labels_right)):
             if puff_labels_right[indx].sample == 1:
                 puff_labels_right[indx].sample = 2
