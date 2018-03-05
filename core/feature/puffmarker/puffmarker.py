@@ -30,7 +30,7 @@ from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from cerebralcortex.core.datatypes.datastream import DataStream
 from core.computefeature import ComputeFeatureBase
-from core.feature.puffmarker.CONSTANT import *
+from core.feature.puffmarker.CONSTANTS import *
 from core.feature.puffmarker.admission_control import check_motionsense_hrv_accelerometer, \
     check_motionsense_hrv_gyroscope
 from core.feature.puffmarker.puff_classifier import classify_puffs

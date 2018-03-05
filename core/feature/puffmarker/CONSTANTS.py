@@ -29,12 +29,6 @@ motionsense_hrv_accel_right_streamname = "ACCELEROMETER--org.md2k.motionsense--M
 motionsense_hrv_gyro_right_streamname = "GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
 
 #### OUTPUTS STREAM NAMES
-puffmarker_wrist_feature_left = "puffmarker_left_wrist_feature_vector"
-puffmarker_wrist_smoking_puff_left = "puffmarker_left_wrist_smoking_puff"
-
-puffmarker_wrist_feature_right = "puffmarker_right_wrist_feature_vector"
-puffmarker_wrist_smoking_puff_right = "puffmarker_left_wrist_smoking_puff"
-puffmarker_wrist_smoking_episode = "puffmarker_wrist_smoking_episode"
-
-
+puffmarker_wrist_smoking_episode = "org.md2k.data_analysis.feature.puffmarker.smoking_episode"
+puffmarker_wrist_smoking_puff= "org.md2k.data_analysis.feature.puffmarker.smoking_puff"
 
