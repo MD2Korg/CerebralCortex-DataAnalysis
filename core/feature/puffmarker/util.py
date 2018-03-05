@@ -107,10 +107,8 @@ def store_data(filepath, input_streams, user_id, data, instance):
     newfilepath = os.path.join(cur_dir,filepath)
     with open(newfilepath,"r") as f:
         metadata = f.read()
-        metadata = metadata.replace("CC_INPUT_STREAM_ID1_CC",input_streams[0].identifier)
-        metadata = metadata.replace("CC_INPUT_STREAM_NAME1_CC",input_streams[0].name)
-        metadata = metadata.replace("CC_INPUT_STREAM_ID2_CC",input_streams[1].identifier)
-        metadata = metadata.replace("CC_INPUT_STREAM_NAME2_CC",input_streams[1].name)
+        metadata = metadata.replace("CC_INPUT_STREAM_ID_CC",input_streams[0].identifier)
+        metadata = metadata.replace("CC_INPUT_STREAM_NAME_CC",input_streams[0].name)
         metadata = metadata.replace("CC_OUTPUT_STREAM_IDENTIFIER_CC",output_stream_id)
         metadata = metadata.replace("CC_OWNER_CC",user_id)
         metadata = json.loads(metadata)
