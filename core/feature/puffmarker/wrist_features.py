@@ -84,11 +84,11 @@ def compute_basic_statistical_features(data):
     return mean, median, sd, quartile
 
 
-def compute_candidate_features(gyr_intersections_stream, gyr_mag_stream, roll_list, pitch_list, yaw_list):
+def compute_candidate_features(gyr_intersections, gyr_mag_stream, roll_list, pitch_list, yaw_list):
     all_features = []
     offset = gyr_mag_stream.data[0].offset
 
-    for I in gyr_intersections_stream.data:
+    for I in gyr_intersections:
         start_time = I.start_time
         end_time = I.end_time
         start_index = I.sample[0]
