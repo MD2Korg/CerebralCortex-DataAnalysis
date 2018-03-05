@@ -1,5 +1,5 @@
 # Copyright (c) 2018, MD2K Center of Excellence
-# - Sayma Akther <sakther@memphis.edu>
+# - Nazir Saleheen <nazir.saleheen@gmail.com>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -23,31 +23,40 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from cerebralcortex.core.datatypes.datastream import DataPoint
-from core.feature.activity.import_model_files import get_posture_model, \
-    get_activity_model
+
 from typing import List
 
-def classify_posture(features: List[DataPoint], is_gravity) -> List[DataPoint]:
-    clf = get_posture_model(is_gravity)
-    labels = []
+import numpy as np
 
-    prediction_values = [dp.sample for dp in features]
-    preds = clf.predict(prediction_values)
-    for i, dp in enumerate(features):
-        labels.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time,
-                                offset=dp.offset, sample=str(preds[i])))
+from cerebralcortex.core.datatypes.datapoint import DataPoint
+from core.feature.puffmarker.CONSTANT import *
 
-    return labels
 
-def classify_activity(features: List[DataPoint], is_gravity) -> List[DataPoint]:
-    clf = get_activity_model(is_gravity)
-    labels = []
+def filter_with_duration(gyr_intersections: List[DataPoint]):
+    gyr_intersections_filtered = []
 
-    prediction_values = [dp.sample for dp in features]
-    preds = clf.predict(prediction_values)
-    for i, dp in enumerate(features):
-        labels.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time,
-                                offset=dp.offset, sample=str(preds[i])))
+    for I in gyr_intersections:
+        dur = (I.end_time - I.start_time).total_seconds()
+        if (dur >= 1.0) & (dur <= 5.0):
+            gyr_intersections_filtered.append(I)
 
-    return labels
+    return gyr_intersections_filtered
+
+
+def filter_with_roll_pitch(gyr_intersections: List[DataPoint], roll_list: List[DataPoint], pitch_list: List[DataPoint]):
+    gyr_intersections_filtered = []
+
+    for I in gyr_intersections:
+        start_index = I.sample[0]
+        end_index = I.sample[1]
+
+        roll_sub = [roll_list[i].sample for i in range(start_index, end_index)]
+        pitch_sub = [pitch_list[i].sample for i in range(start_index, end_index)]
+
+        mean_roll = np.mean(roll_sub)
+        mean_pitch = np.mean(pitch_sub)
+
+        if (mean_roll > MIN_ROLL) & (mean_roll <= MAX_ROLL) & (mean_pitch >= MIN_PITCH) & (mean_pitch <= MAX_PITCH):
+            gyr_intersections_filtered.append(I)
+
+    return gyr_intersections_filtered
