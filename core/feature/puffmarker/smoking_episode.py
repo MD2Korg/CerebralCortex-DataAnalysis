@@ -24,15 +24,17 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-from cerebralcortex.core.datatypes.datapoint import DataPoint
 from datetime import timedelta
+
+from cerebralcortex.core.datatypes.datapoint import DataPoint
 
 MINIMUM_TIME_DIFFERENCE_BETWEEN_EPISODES = 10 * 60 * 1000
 MINIMUM_TIME_DIFFERENCE_FIRST_AND_LAST_PUFFS = 7  # minutes
 MINIMUM_INTER_PUFF_DURATION = 5  # seconds
 MINIMUM_PUFFS_IN_EPISODE = 4
 
-def getSmokingWrist(onlyPuffList, indx, end_indx):
+
+def get_smoking_wrist(onlyPuffList, indx, end_indx):
     nLeftWrst = 0
     nRightWrst = 0
     i = indx
@@ -48,7 +50,6 @@ def getSmokingWrist(onlyPuffList, indx, end_indx):
 
 
 def generate_smoking_episode(puff_labels):
-
     only_puff_list = [dp for dp in puff_labels if dp.sample > 0]
 
     smoking_episode_data = []
@@ -62,18 +63,18 @@ def generate_smoking_episode(puff_labels):
         if i >= len(only_puff_list):
             break
         while (
-        ((only_puff_list[i].start_time - dp.start_time <= timedelta(minutes=MINIMUM_TIME_DIFFERENCE_FIRST_AND_LAST_PUFFS))
-         | (only_puff_list[i].start_time - prev.start_time < timedelta(seconds=MINIMUM_INTER_PUFF_DURATION)))):
+                ((only_puff_list[i].start_time - dp.start_time <= timedelta(minutes=MINIMUM_TIME_DIFFERENCE_FIRST_AND_LAST_PUFFS))
+                 | (only_puff_list[i].start_time - prev.start_time < timedelta(seconds=MINIMUM_INTER_PUFF_DURATION)))):
             prev = only_puff_list[i]
             i = i + 1
             if i >= len(only_puff_list):
                 break
         i = i - 1
         if (i - indx + 1 >= MINIMUM_PUFFS_IN_EPISODE):
-            wrst = getSmokingWrist(only_puff_list, indx, i)
+            wrist = get_smoking_wrist(only_puff_list, indx, i)
             smoking_episode_data.append(
                 DataPoint(start_time=only_puff_list[indx].start_time, end_time=only_puff_list[i].start_time,
-                          sample=(wrst * 100) + (i - indx + 1)))
+                          sample=(wrist * 100) + (i - indx + 1)))
 
             indx = i + 1
         else:

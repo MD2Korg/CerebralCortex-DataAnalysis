@@ -26,10 +26,13 @@
 
 import uuid
 
+from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from cerebralcortex.core.datatypes.datastream import DataStream
 from core.computefeature import ComputeFeatureBase
 from core.feature.puffmarker.CONSTANT import *
+from core.feature.puffmarker.admission_control import check_motionsense_hrv_accelerometer, \
+    check_motionsense_hrv_gyroscope
 from core.feature.puffmarker.puff_classifier import classify_puffs
 from core.feature.puffmarker.smoking_episode import generate_smoking_episode
 from core.feature.puffmarker.util import get_stream_days, store_data
@@ -39,6 +42,10 @@ feature_class_name = 'PuffMarker'
 
 
 class PuffMarker(ComputeFeatureBase):
+
+    def __init__(self):
+        CC_CONFIG_PATH = '/home/md2k/cc_configuration.yml'
+        self.CC = CerebralCortex(CC_CONFIG_PATH)
 
     def process_puffmarker(self, user_id: uuid,
                            accel_stream_left: DataStream,
@@ -55,12 +62,19 @@ class PuffMarker(ComputeFeatureBase):
         :param gyro_stream_right:
         """
 
-        all_features_left = compute_wrist_feature(accel_stream_left, gyro_stream_left, 'leftwrist', fast_size,
-                                                  slow_size)
+        accel_stream_left.data = check_motionsense_hrv_accelerometer(accel_stream_left.data)
+        accel_stream_right.data = check_motionsense_hrv_accelerometer(accel_stream_right.data)
+        gyro_stream_left.data = check_motionsense_hrv_gyroscope(gyro_stream_left.data)
+        gyro_stream_right.data = check_motionsense_hrv_gyroscope(gyro_stream_right.data)
+
+        all_features_left = compute_wrist_feature(accel_stream_left, gyro_stream_left, 'leftwrist',
+                                                  fast_moving_avg_size,
+                                                  slow_moving_avg_size)
         puff_labels_left = classify_puffs(all_features_left)
 
-        all_features_right = compute_wrist_feature(accel_stream_right, gyro_stream_right, 'rightwrist', fast_size,
-                                                   slow_size)
+        all_features_right = compute_wrist_feature(accel_stream_right, gyro_stream_right, 'rightwrist',
+                                                   fast_moving_avg_size,
+                                                   slow_moving_avg_size)
         puff_labels_right = classify_puffs(all_features_right)
         for indx in range(len(puff_labels_right)):
             if puff_labels_right[indx].sample == 1:
@@ -104,24 +118,17 @@ class PuffMarker(ComputeFeatureBase):
             self.process_puffmarker(user_id, accel_stream_left, gyro_stream_left, accel_stream_right,
                                     gyro_stream_right)
 
-    def all_users_data(self, study_name: str):
-        """
-        Process all participants' streams
-        :param study_name:
-        """
-        # get all participants' name-ids
-        all_users = self.CC.get_all_users(study_name)
-
-        if all_users:
-            for user in all_users:
-                self.process_data(user["identifier"])
-        else:
-            print(study_name, "- study has 0 users.")
-
     def process(self):
         if self.CC is not None:
             print("Processing PuffMarker")
-            self.all_users_data("mperf")
 
-pm = PuffMarker()
-pm.process()
+            all_users = self.CC.get_all_users(study_name)
+
+            if all_users:
+                for user in all_users:
+                    self.process_data(user["identifier"])
+            else:
+                print(study_name, "- study has 0 users.")
+
+# pm = PuffMarker()
+# pm.process()
