@@ -1,4 +1,5 @@
 import numbers
+from typing import List
 
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from core.feature.puffmarker.CONSTANT import *
@@ -9,11 +10,14 @@ def is_number(sample):
 
 
 def is_valid_motionsense_hrv_accelerometer(dp: DataPoint):
+    if not isinstance(dp.sample, List):
+        return False
+
     if len(dp.sample) != 3:
         return False
 
     for v in dp.sample:
-        if ~isinstance(v, numbers.Real):
+        if not isinstance(v, numbers.Real):
             return False
         if (v < MIN_MSHRV_ACCEL) or (v > MAX_MSHRV_ACCEL):
             return False
@@ -22,13 +26,16 @@ def is_valid_motionsense_hrv_accelerometer(dp: DataPoint):
 
 
 def is_valid_motionsense_hrv_gyroscope(dp: DataPoint):
+    if not isinstance(dp.sample, List):
+        return False
+
     if len(dp.sample) != 3:
         return False
 
     for v in dp.sample:
-        if ~isinstance(v, numbers.Real):
+        if not isinstance(v, numbers.Real):
             return False
-        if (v >= MIN_MSHRV_GYRO) and (v <= MAX_MSHRV_GYRO):
+        if (v < MIN_MSHRV_GYRO) or (v > MAX_MSHRV_GYRO):
             return False
 
     return True
