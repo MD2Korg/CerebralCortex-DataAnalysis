@@ -31,6 +31,9 @@ from scipy.stats import kurtosis
 from datetime import timedelta
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
+from core.feature.activity.ACTIVITY_CONSTANTS import *
+from core.signalprocessing.window import window_sliding
+
 
 def get_rate_of_change(timestamp, value):
     roc = 0
@@ -44,12 +47,13 @@ def get_rate_of_change(timestamp, value):
 
     return roc
 
+
 def get_magnitude(ax, ay, az):
     return math.sqrt(ax * ax + ay * ay + az * az)
 
-def spectral_entropy(a, sampling_freq, bands=None):
 
-    r"""
+def spectral_entropy(data, sampling_freq, bands=None):
+    """
     Compute spectral entropy of a  signal with respect to frequency bands.
     The power spectrum is computed through fft. Then, it is normalised and assimilated to a probability density function.
     The entropy of the signal :math:`x` can be expressed by:
@@ -58,62 +62,69 @@ def spectral_entropy(a, sampling_freq, bands=None):
     Where:
     :math:`PSD` is the normalised power spectrum (Power Spectrum Density), and
     :math:`f_s` is the sampling frequency
-    :param a: a one dimensional floating-point array representing a time series.
-    :type a: :class:`~numpy.ndarray` or :class:`~pyrem.time_series.Signal`
+    :param data: a one dimensional floating-point array representing a time series.
+    :type data: :class:`~numpy.ndarray` or :class:`~pyrem.time_series.Signal`
     :param sampling_freq: the sampling frequency
     :type sampling_freq:  float
     :param bands: a list of numbers delimiting the bins of the frequency bands. If None the entropy is computed over the whole range of the DFT (from 0 to :math:`f_s/2`)
     :return: the spectral entropy; a scalar
     """
-    psd = np.abs(np.fft.rfft(a))**2
-    psd /= np.sum(psd) # psd as a pdf (normalised to one)
+    psd = np.abs(np.fft.rfft(data)) ** 2
+    psd /= np.sum(psd)  # psd as a pdf (normalised to one)
 
     if bands is None:
-        power_per_band= psd[psd>0]
+        power_per_band = psd[psd > 0]
     else:
-        freqs = np.fft.rfftfreq(a.size, 1/float(sampling_freq))
+        freqs = np.fft.rfftfreq(data.size, 1 / float(sampling_freq))
         bands = np.asarray(bands)
 
-        freq_limits_low = np.concatenate([[0.0],bands])
+        freq_limits_low = np.concatenate([[0.0], bands])
         freq_limits_up = np.concatenate([bands, [np.Inf]])
 
-        power_per_band = [np.sum(psd[np.bitwise_and(freqs >= low, freqs<up)])
-                          for low,up in zip(freq_limits_low, freq_limits_up)]
+        power_per_band = [np.sum(psd[np.bitwise_and(freqs >= low, freqs < up)])
+                          for low, up in zip(freq_limits_low, freq_limits_up)]
 
-        power_per_band= power_per_band[ power_per_band > 0]
+        power_per_band = power_per_band[power_per_band > 0]
 
     return - np.sum(power_per_band * np.log2(power_per_band))
+
 
 def peak_frequency(data):
     w = np.fft.fft(data)
     freqs = np.fft.fftfreq(len(w))
     return freqs.max()
 
+
 def compute_basic_features(timestamp, data):
-    mean =  np.mean(data)
+    mean = np.mean(data)
     median = np.median(data)
     std = np.std(data)
     skewness = skew(data)
     kurt = kurtosis(data)
-    rateOfChanges=get_rate_of_change(timestamp, data)
-    power = np.mean([v*v for v in data] )
-    sp_entropy = spectral_entropy(data, 25)
+    rate_of_changes = get_rate_of_change(timestamp, data)
+    power = np.mean([v * v for v in data])
+    sp_entropy = spectral_entropy(data, SAMPLING_FREQ_MOTIONSENSE_ACCEL)
     peak_freq = peak_frequency(data)
 
-    return mean, median, std, skewness, kurt, rateOfChanges, power, sp_entropy, peak_freq
+    return mean, median, std, skewness, kurt, rate_of_changes, power, sp_entropy, peak_freq
+
 
 def computeFeatures(start_time, end_time, time, x, y, z, pid):
-
-    mag =[0]*len(x)# np.empty([len(x), 1])
+    mag = [0] * len(x)  # np.empty([len(x), 1])
     for i, value in enumerate(x):
-        mag[i] = math.sqrt(x[i]*x[i] + y[i]*y[i]+z[i]*z[i])
+        mag[i] = math.sqrt(x[i] * x[i] + y[i] * y[i] + z[i] * z[i])
 
-    mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rateOfChanges, mag_power, mag_sp_entropy, mag_peak_freq = compute_basic_features(time, mag)
-    x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power, x_sp_entropy, x_peak_freq = compute_basic_features(time, x)
-    y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power, y_sp_entropy, y_peak_freq = compute_basic_features(time, y)
-    z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power, z_sp_entropy, z_peak_freq = compute_basic_features(time, z)
+    mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rateOfChanges, mag_power, mag_sp_entropy, mag_peak_freq = compute_basic_features(
+        time, mag)
+    x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power, x_sp_entropy, x_peak_freq = compute_basic_features(
+        time, x)
+    y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power, y_sp_entropy, y_peak_freq = compute_basic_features(
+        time, y)
+    z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power, z_sp_entropy, z_peak_freq = compute_basic_features(
+        time, z)
 
-    f = [pid, start_time, end_time, mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rateOfChanges, mag_power, mag_sp_entropy, mag_peak_freq]
+    f = [pid, start_time, end_time, mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rateOfChanges, mag_power,
+         mag_sp_entropy, mag_peak_freq]
 
     f.extend([x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power, x_sp_entropy, x_peak_freq])
     f.extend([y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power, y_sp_entropy, y_peak_freq])
@@ -121,64 +132,80 @@ def computeFeatures(start_time, end_time, time, x, y, z, pid):
 
     return f
 
+
 def compute_window_features(start_time, end_time, data: List[DataPoint]) -> DataPoint:
+    """ Computes feature vector for single window
+    :param start_time:
+    :param end_time:
+    :param data:
+    :return: feature vector as DataPoint
+    """
+
     timestamps = [v.start_time for v in data]
     accel_x = [v.sample[0] for v in data]
     accel_y = [v.sample[1] for v in data]
     accel_z = [v.sample[2] for v in data]
-    accel_magnitude = [get_magnitude(i.sample[0], i.sample[1], i.sample[2]) for i in data]
+    accel_magnitude = [get_magnitude(value.sample[0], value.sample[1], value.sample[2]) for value in data]
 
-    mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rateOfChanges, mag_power, mag_sp_entropy, mag_peak_freq = compute_basic_features(
-        timestamps, accel_magnitude)
-    x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power, x_sp_entropy, x_peak_freq = compute_basic_features(timestamps, accel_x)
-    y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power, y_sp_entropy, y_peak_freq = compute_basic_features(timestamps, accel_y)
-    z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power, z_sp_entropy, z_peak_freq = compute_basic_features(timestamps, accel_z)
+    mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rateOfChanges, mag_power, mag_sp_entropy, mag_peak_freq = \
+        compute_basic_features(timestamps, accel_magnitude)
+    x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power, x_sp_entropy, x_peak_freq = \
+        compute_basic_features(timestamps, accel_x)
+    y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power, y_sp_entropy, y_peak_freq = \
+        compute_basic_features(timestamps, accel_y)
+    z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power, z_sp_entropy, z_peak_freq = \
+        compute_basic_features(timestamps, accel_z)
 
-    f = [mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rateOfChanges, mag_power, mag_sp_entropy, mag_peak_freq]
+    feature_vector = [mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rateOfChanges, mag_power,
+                      mag_sp_entropy,
+                      mag_peak_freq]
 
-    f.extend([x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power, x_sp_entropy, x_peak_freq])
-    f.extend([y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power, y_sp_entropy, y_peak_freq])
-    f.extend([z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power, z_sp_entropy, z_peak_freq])
+    feature_vector.extend(
+        [x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power, x_sp_entropy, x_peak_freq])
+    feature_vector.extend(
+        [y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power, y_sp_entropy, y_peak_freq])
+    feature_vector.extend(
+        [z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power, z_sp_entropy, z_peak_freq])
 
-    return DataPoint(start_time=start_time, end_time=end_time, sample=f)
+    return DataPoint(start_time=start_time, end_time=end_time, sample=feature_vector)
+
 
 def compute_accelerometer_features(accel_stream: DataStream,
-                           window_size: float = 10.0) -> DataStream:
-
-
+                                   window_size: float = 10.0):
+    """ Segment data and computes feature vector for each window
+    :param accel_stream:
+    :param window_size:
+    :return: list of feature vectors
+    """
     all_features = []
 
-    indx = 0
-    accl = accel_stream.data
+    cur_index = 0
+    accel_data = accel_stream.data
 
-    while(indx < len(accel_stream.data)):
-        start_index = indx
-        end_index = indx
+    while cur_index < len(accel_data):
+        start_index = cur_index
+        end_index = cur_index
 
-        accl_window = []
+        accel_window = []
         win_size = timedelta(seconds=window_size)
 
-        while(accl[end_index].start_time - accl[start_index].start_time < win_size):
-            accl_window.append(accl[end_index])
+        while (accel_data[end_index].start_time - accel_data[start_index].start_time) < win_size:
+            accel_window.append(accel_data[end_index])
             end_index = end_index + 1
             if end_index >= len(accel_stream.data):
                 break
 
-        feature_list = compute_window_features(accl_window[0].start_time, accl_window[-1].start_time, accl_window)
-        all_features.append(feature_list)
+        feature_vector = compute_window_features(accel_window[0].start_time, accel_window[-1].start_time, accel_window)
+        all_features.append(feature_vector)
 
-        indx = end_index
-
+        cur_index = end_index
 
     # perform windowing of datastream
-    # window_data = window_sliding(accel_stream.data, window_size, window_size)
-    # for key, value in window_data.items():
-    #     if len(value) > 200:
-    #         start_time, end_time = key
-    #         feature_list = compute_window_features(start_time, end_time, value)
-    #         all_features.append(feature_list)
+    window_data = window_sliding(accel_stream.data, window_size, window_size)
+    for key, value in window_data.items():
+        if len(value) > 200:
+            start_time, end_time = key
+            feature_list = compute_window_features(start_time, end_time, value)
+            all_features.append(feature_list)
 
-    all_feature_stream = DataStream.from_datastream([accel_stream])
-    all_feature_stream.data = all_features
-
-    return all_feature_stream
+    return all_features
