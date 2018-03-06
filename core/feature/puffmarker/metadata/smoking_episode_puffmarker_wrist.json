@@ -19,7 +19,7 @@
       }
     },
     "algorithm":{
-      "method":"core.feature.puffmarker.puffmarker_wrist",
+      "method":"core.feature.puffmarker.puffmarker",
       "authors":[
         {
           "name":"Nazir Saleheen",

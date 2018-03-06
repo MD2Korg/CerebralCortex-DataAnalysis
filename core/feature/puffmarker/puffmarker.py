@@ -41,6 +41,10 @@ feature_class_name = 'PuffMarker'
 
 
 class PuffMarker(ComputeFeatureBase):
+    '''
+    Generates smoking episodes from wrist worn inertial sensors (Accelerometer and gyroscope)
+
+    '''
 
     def __init__(self):
         CC_CONFIG_PATH = '/home/md2k/cc_configuration.yml'
@@ -77,68 +81,65 @@ class PuffMarker(ComputeFeatureBase):
 
             all_users = self.CC.get_all_users(study_name)
 
-            if all_users:
-                for user in all_users:
-                    user_id = user['identifier']
+            for user in all_users:
+                user_id = user['identifier']
 
-                    streams = self.CC.get_user_streams(user_id)
+                streams = self.CC.get_user_streams(user_id)
 
-                    stream_days = []
-                    if MOTIONSENSE_HRV_ACCEL_LEFT_STREAMNAME in streams:
-                        stream_days = get_stream_days(streams[MOTIONSENSE_HRV_ACCEL_LEFT_STREAMNAME]["identifier"],
-                                                      self.CC)
-                    if MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME in streams:
-                        temp_stream_days = get_stream_days(
-                            streams[MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME]["identifier"], self.CC)
-                        stream_days = stream_days + temp_stream_days
-                        stream_days = np.unique(stream_days)
+                stream_days = []
+                if MOTIONSENSE_HRV_ACCEL_LEFT_STREAMNAME in streams:
+                    stream_days = get_stream_days(streams[MOTIONSENSE_HRV_ACCEL_LEFT_STREAMNAME]["identifier"],
+                                                  self.CC)
+                if MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME in streams:
+                    temp_stream_days = get_stream_days(
+                        streams[MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME]["identifier"], self.CC)
+                    stream_days = stream_days + temp_stream_days
+                    stream_days = np.unique(stream_days)
 
-                    for day in stream_days:
+                for day in stream_days:
 
-                        accel_stream_left, gyro_stream_left, accel_stream_right, gyro_stream_right = \
-                            self.get_input_streams(streams, user_id, day)
+                    accel_stream_left, gyro_stream_left, accel_stream_right, gyro_stream_right = \
+                        self.get_input_streams(streams, user_id, day)
 
-                        accel_stream_left.data = check_motionsense_hrv_accelerometer(accel_stream_left.data)
-                        accel_stream_right.data = check_motionsense_hrv_accelerometer(accel_stream_right.data)
-                        gyro_stream_left.data = check_motionsense_hrv_gyroscope(gyro_stream_left.data)
-                        gyro_stream_right.data = check_motionsense_hrv_gyroscope(gyro_stream_right.data)
+                    accel_stream_left.data = check_motionsense_hrv_accelerometer(accel_stream_left.data)
+                    accel_stream_right.data = check_motionsense_hrv_accelerometer(accel_stream_right.data)
+                    gyro_stream_left.data = check_motionsense_hrv_gyroscope(gyro_stream_left.data)
+                    gyro_stream_right.data = check_motionsense_hrv_gyroscope(gyro_stream_right.data)
 
-                        puff_labels_left = []
-                        puff_labels_right = []
+                    puff_labels_left = []
+                    puff_labels_right = []
 
-                        if (len(accel_stream_left.data) > 0) & (len(gyro_stream_left.data) > 0):
-                            all_features_left = compute_wrist_features(accel_stream_left,
-                                                                       gyro_stream_left,
-                                                                       fast_moving_avg_size,
-                                                                       slow_moving_avg_size)
-                            puff_labels_left = classify_puffs(all_features_left)
+                    if (len(accel_stream_left.data) > 0) & (len(gyro_stream_left.data) > 0):
+                        all_features_left = compute_wrist_features(accel_stream_left,
+                                                                   gyro_stream_left,
+                                                                   FAST_MOVING_AVG_SIZE,
+                                                                   SLOW_MOVING_AVG_SIZE)
+                        puff_labels_left = classify_puffs(all_features_left)
 
-                        if (len(accel_stream_right.data) > 0) & (len(gyro_stream_right.data) > 0):
-                            all_features_right = compute_wrist_features(accel_stream_right,
-                                                                        gyro_stream_right,
-                                                                        fast_moving_avg_size,
-                                                                        slow_moving_avg_size)
-                            puff_labels_right = classify_puffs(all_features_right)
+                    if (len(accel_stream_right.data) > 0) & (len(gyro_stream_right.data) > 0):
+                        all_features_right = compute_wrist_features(accel_stream_right,
+                                                                    gyro_stream_right,
+                                                                    FAST_MOVING_AVG_SIZE,
+                                                                    SLOW_MOVING_AVG_SIZE)
+                        puff_labels_right = classify_puffs(all_features_right)
 
-                        for indx in range(len(puff_labels_right)):
-                            if puff_labels_right[indx].sample == PUFF_LABEL_LEFT:
-                                puff_labels_right[indx].sample = PUFF_LABEL_RIGHT
+                    for index in range(len(puff_labels_right)):
+                        if puff_labels_right[index].sample == PUFF_LABEL_LEFT:
+                            puff_labels_right[index].sample = PUFF_LABEL_RIGHT
 
-                        puff_labels = puff_labels_right + puff_labels_left
+                    puff_labels = puff_labels_right + puff_labels_left
 
-                        if len(puff_labels) > 0:
-                            puff_labels.sort(key=lambda x: x.start_time)
+                    if len(puff_labels) > 0:
+                        puff_labels.sort(key=lambda x: x.start_time)
 
-                            store_data("metadata/smoking_puff_puffmarker_wrist.json",
-                                       [accel_stream_right, gyro_stream_right], user_id,
-                                       puff_labels, self)
+                        store_data("metadata/smoking_puff_puffmarker_wrist.json",
+                                   [accel_stream_right, gyro_stream_right], user_id,
+                                   puff_labels, self)
 
-                            smoking_episodes = generate_smoking_episode(puff_labels)
-                            store_data("metadata/smoking_episode_puffmarker_wrist.json",
-                                       [accel_stream_right, gyro_stream_right], user_id,
-                                       smoking_episodes, self)
-            else:
-                print(study_name, "- study has 0 users.")
+                        smoking_episodes = generate_smoking_episode(puff_labels)
+                        store_data("metadata/smoking_episode_puffmarker_wrist.json",
+                                   [accel_stream_right, gyro_stream_right], user_id,
+                                   smoking_episodes, self)
 
 # pm = PuffMarker()
 # pm.process()
