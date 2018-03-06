@@ -17,6 +17,7 @@ def classify_puffs(features):
     for dp in features:
         predicted_label = clf.predict([dp.sample])
         labels.append(
-            DataPoint(start_time=dp.start_time, offset=dp.offset, end_time=dp.end_time, sample=predicted_label))
+            DataPoint(start_time=dp.start_time, offset=dp.offset,
+                      end_time=dp.end_time, sample=predicted_label))
 
     return labels

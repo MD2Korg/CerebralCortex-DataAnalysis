@@ -53,6 +53,14 @@ def smooth(datastream: DataStream,
 def moving_average_convergence_divergence(slow_moving_average_data: DataStream
                                           , fast_moving_average_data: DataStream
                                           , THRESHOLD: float, near: int):
+    '''
+    Generates intersection points of two moving average signals
+    :param slow_moving_average_data:
+    :param fast_moving_average_data:
+    :param THRESHOLD: Cut-off value
+    :param near: # of nearest point to ignore
+    :return:
+    '''
     slow_moving_average = np.array([data.sample for data in slow_moving_average_data.data])
     fast_moving_average = np.array([data.sample for data in fast_moving_average_data.data])
 

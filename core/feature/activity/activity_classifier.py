@@ -33,6 +33,12 @@ from core.feature.puffmarker.PUFFMARKER_CONSTANTS import *
 
 
 def filter_with_duration(gyr_intersections: List[DataPoint]):
+    '''
+    Filters hand-to-mouth gesture candidates based on duration
+
+    :param gyr_intersections: contains all the interval of hand-to-mouth gestures
+    :return:
+    '''
     gyr_intersections_filtered = []
 
     for I in gyr_intersections:
@@ -46,17 +52,24 @@ def filter_with_duration(gyr_intersections: List[DataPoint]):
 def filter_with_roll_pitch(gyr_intersections: List[DataPoint],
                            roll_list: List[DataPoint],
                            pitch_list: List[DataPoint]):
+    '''
+    Filters hand-to-mouth gesture candidates based on roll and pitch
+    :param gyr_intersections: contains all the interval of hand-to-mouth gestures
+    :param roll_list:
+    :param pitch_list:
+    :return:
+    '''
     gyr_intersections_filtered = []
 
     for I in gyr_intersections:
         start_index = I.sample[0]
         end_index = I.sample[1]
 
-        roll_sub = [roll_list[i].sample for i in range(start_index, end_index)]
-        pitch_sub = [pitch_list[i].sample for i in range(start_index, end_index)]
+        temp_roll = [roll_list[i].sample for i in range(start_index, end_index)]
+        temp_pitch = [pitch_list[i].sample for i in range(start_index, end_index)]
 
-        mean_roll = np.mean(roll_sub)
-        mean_pitch = np.mean(pitch_sub)
+        mean_roll = np.mean(temp_roll)
+        mean_pitch = np.mean(temp_pitch)
 
         if (mean_roll > MIN_ROLL) & (mean_roll <= MAX_ROLL) & (mean_pitch >= MIN_PITCH) & (mean_pitch <= MAX_PITCH):
             gyr_intersections_filtered.append(I)

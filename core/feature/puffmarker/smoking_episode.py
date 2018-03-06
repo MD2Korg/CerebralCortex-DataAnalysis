@@ -25,12 +25,21 @@
 
 
 from datetime import timedelta
+from typing import List
 
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from core.feature.puffmarker.PUFFMARKER_CONSTANTS import *
 
 
 def get_smoking_wrist(only_puff_list, start_index, end_index):
+    '''
+    Based on majority vote detects smoking hand
+
+    :param only_puff_list:
+    :param start_index:
+    :param end_index:
+    :return:
+    '''
     n_left_wrist = 0
     n_right_wirst = 0
     i = start_index
@@ -41,11 +50,16 @@ def get_smoking_wrist(only_puff_list, start_index, end_index):
             n_right_wirst = n_right_wirst + 1
         i = i + 1
     if n_right_wirst > n_left_wrist:
-        return 2
-    return 1
+        return PUFF_LABEL_RIGHT
+    return PUFF_LABEL_LEFT
 
 
-def generate_smoking_episode(puff_labels):
+def generate_smoking_episode(puff_labels) -> List[DataPoint]:
+    '''
+    Generates smoking episodes from classified puffs
+    :param puff_labels:
+    :return: list of smoking episodes
+    '''
     only_puffs = [dp for dp in puff_labels if dp.sample > 0]
 
     smoking_episode_data = []
@@ -70,7 +84,7 @@ def generate_smoking_episode(puff_labels):
             wrist = get_smoking_wrist(only_puffs, cur_index, temp_index)
             smoking_episode_data.append(DataPoint(start_time=only_puffs[cur_index].start_time,
                                                   end_time=only_puffs[temp_index].start_time,
-                                                  sample=(wrist * 100) + (temp_index - cur_index + 1)))
+                                                  sample=wrist))
 
             cur_index = temp_index + 1
         else:
