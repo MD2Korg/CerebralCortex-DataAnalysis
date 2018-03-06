@@ -200,12 +200,13 @@ def compute_accelerometer_features(accel_stream: DataStream,
 
         cur_index = end_index
 
-    # perform windowing of datastream
-    window_data = window_sliding(accel_stream.data, window_size, window_size)
-    for key, value in window_data.items():
-        if len(value) > 200:
-            start_time, end_time = key
-            feature_list = compute_window_features(start_time, end_time, value)
-            all_features.append(feature_list)
+    # TODO: I will remove this when windowing function works
+    # # perform windowing of datastream
+    # window_data = window_sliding(accel_stream.data, window_size, window_size)
+    # for key, value in window_data.items():
+    #     if len(value) > 200:
+    #         start_time, end_time = key
+    #         feature_list = compute_window_features(start_time, end_time, value)
+    #         all_features.append(feature_list)
 
     return all_features
