@@ -29,7 +29,7 @@ from typing import List
 import numpy as np
 
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-from core.feature.puffmarker.CONSTANTS import *
+from core.feature.puffmarker.PUFFMARKER_CONSTANTS import *
 
 
 def filter_with_duration(gyr_intersections: List[DataPoint]):
@@ -43,7 +43,9 @@ def filter_with_duration(gyr_intersections: List[DataPoint]):
     return gyr_intersections_filtered
 
 
-def filter_with_roll_pitch(gyr_intersections: List[DataPoint], roll_list: List[DataPoint], pitch_list: List[DataPoint]):
+def filter_with_roll_pitch(gyr_intersections: List[DataPoint],
+                           roll_list: List[DataPoint],
+                           pitch_list: List[DataPoint]):
     gyr_intersections_filtered = []
 
     for I in gyr_intersections:

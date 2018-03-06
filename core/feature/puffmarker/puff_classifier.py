@@ -3,12 +3,11 @@ import pickle
 from sklearn.ensemble import RandomForestClassifier
 
 from cerebralcortex.core.datatypes.datastream import DataPoint
-
-puffmarker_model_filename = 'core/feature/puffmarker/model_file/puffmarker_wrist_randomforest.model'
+from core.feature.puffmarker.PUFFMARKER_CONSTANTS import *
 
 
 def get_posture_model() -> RandomForestClassifier:
-    clf = pickle.load(open(puffmarker_model_filename, 'rb'))
+    clf = pickle.load(open(PUFFMARKER_MODEL_FILENAME, 'rb'))
     return clf
 
 

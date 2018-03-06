@@ -2,11 +2,7 @@ import numbers
 from typing import List
 
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-from core.feature.puffmarker.CONSTANTS import *
-
-
-def is_number(sample):
-    return isinstance(sample, numbers.Real)
+from core.feature.puffmarker.PUFFMARKER_CONSTANTS import *
 
 
 def is_valid_motionsense_hrv_accelerometer(dp: DataPoint):
