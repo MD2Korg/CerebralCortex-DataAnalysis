@@ -25,10 +25,14 @@
 
 import numpy as np
 import math
+from typing import List
 from scipy.stats import skew
 from scipy.stats import kurtosis
+from datetime import timedelta
+from cerebralcortex.core.datatypes.datapoint import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
-from core.feature.activity.utils import *
+from core.feature.activity.ACTIVITY_CONSTANTS import *
+from core.signalprocessing.window import window_sliding
 
 
 def get_rate_of_change(timestamp, value):
@@ -137,9 +141,6 @@ def compute_window_features(start_time, end_time, data: List[DataPoint]) -> Data
     :return: feature vector as DataPoint
     """
 
-    offset = 0
-    if len(data)>0:
-        offset = data[0].offset
     timestamps = [v.start_time for v in data]
     accel_x = [v.sample[0] for v in data]
     accel_y = [v.sample[1] for v in data]
@@ -166,7 +167,7 @@ def compute_window_features(start_time, end_time, data: List[DataPoint]) -> Data
     feature_vector.extend(
         [z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power, z_sp_entropy, z_peak_freq])
 
-    return DataPoint(start_time=start_time, end_time=end_time, offset=offset, sample=feature_vector)
+    return DataPoint(start_time=start_time, end_time=end_time, sample=feature_vector)
 
 
 def compute_accelerometer_features(accel_stream: DataStream,
@@ -199,13 +200,12 @@ def compute_accelerometer_features(accel_stream: DataStream,
 
         cur_index = end_index
 
-    # TODO: I will remove this when windowing function works
-    # # perform windowing of datastream
-    # window_data = window_sliding(accel_stream.data, window_size, window_size)
-    # for key, value in window_data.items():
-    #     if len(value) > 200:
-    #         start_time, end_time = key
-    #         feature_list = compute_window_features(start_time, end_time, value)
-    #         all_features.append(feature_list)
+    # perform windowing of datastream
+    window_data = window_sliding(accel_stream.data, window_size, window_size)
+    for key, value in window_data.items():
+        if len(value) > 200:
+            start_time, end_time = key
+            feature_list = compute_window_features(start_time, end_time, value)
+            all_features.append(feature_list)
 
     return all_features
