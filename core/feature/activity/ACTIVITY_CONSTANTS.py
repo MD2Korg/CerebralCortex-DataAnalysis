@@ -22,8 +22,8 @@ POSTURE_MODEL_FILENAME = 'core/feature/activity/models/posture_randomforest.mode
 ACTIVITY_MODEL_FILENAME = 'core/feature/activity/models/activity_level_randomforest.model'
 
 # Output labels
-ACTIVITY_LABELS = {"NO", "LOW", "WALKING", "MOD", "HIGH"}
-POSTURE_LABELS = {"LYING", "SITTING", "STANDING"}
+ACTIVITY_LABELS = ["NO", "LOW", "WALKING", "MOD", "HIGH"]
+POSTURE_LABELS = ["LYING", "SITTING", "STANDING"]
 
 ACTIVITY_LABELS_INDEX_MAP = {"NO": 0, "LOW": 1, "WALKING": 2, "MOD": 3, "HIGH": 4}
 POSTURE_LABELS_INDEX_MAP = {"LYING": 0, "SITTING": 1, "STANDING": 2}
