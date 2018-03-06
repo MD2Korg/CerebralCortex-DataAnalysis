@@ -37,6 +37,11 @@ from core.signalprocessing.vector import magnitude
 
 
 def calculate_roll_pitch_yaw(accel_data: List[DataPoint]):
+    '''
+    Computes hand orientation (roll, pitch, yaw) from accelerometer signal
+    :param accel_data:
+    :return: roll_list, pitch_list, yaw_list
+    '''
     roll_list = calculate_roll(accel_data)
     pitch_list = calculate_pitch(accel_data)
     yaw_list = calculate_yaw(accel_data)
@@ -88,6 +93,15 @@ def compute_basic_statistical_features(data):
 
 
 def compute_candidate_features(gyr_intersections, gyr_mag_stream, roll_list, pitch_list, yaw_list):
+    '''
+    Computes feature vector for single hand-to-mouth gesture. Mainly statistical features of hand orientation
+    :param gyr_intersections:
+    :param gyr_mag_stream:
+    :param roll_list:
+    :param pitch_list:
+    :param yaw_list:
+    :return:
+    '''
     all_features = []
     offset = gyr_mag_stream.data[0].offset
 
@@ -97,17 +111,17 @@ def compute_candidate_features(gyr_intersections, gyr_mag_stream, roll_list, pit
         start_index = I.sample[0]
         end_index = I.sample[1]
 
-        roll_sub = [roll_list[i].sample for i in range(start_index, end_index)]
-        pitch_sub = [pitch_list[i].sample for i in range(start_index, end_index)]
-        yaw_sub = [yaw_list[i].sample for i in range(start_index, end_index)]
+        temp_roll = [roll_list[i].sample for i in range(start_index, end_index)]
+        temp_pitch = [pitch_list[i].sample for i in range(start_index, end_index)]
+        temp_yaw = [yaw_list[i].sample for i in range(start_index, end_index)]
 
         Gmag_sub = [gyr_mag_stream.data[i].sample for i in range(start_index, end_index)]
 
         duration = 1000 * (end_time - start_time).total_seconds()   # convert to milliseconds
 
-        roll_mean, roll_median, roll_sd, roll_quartile = compute_basic_statistical_features(roll_sub)
-        pitch_mean, pitch_median, pitch_sd, pitch_quartile = compute_basic_statistical_features(pitch_sub)
-        yaw_mean, yaw_median, yaw_sd, yaw_quartile = compute_basic_statistical_features(yaw_sub)
+        roll_mean, roll_median, roll_sd, roll_quartile = compute_basic_statistical_features(temp_roll)
+        pitch_mean, pitch_median, pitch_sd, pitch_quartile = compute_basic_statistical_features(temp_pitch)
+        yaw_mean, yaw_median, yaw_sd, yaw_quartile = compute_basic_statistical_features(temp_yaw)
 
         gyro_mean, gyro_median, gyro_sd, gyro_quartile = compute_basic_statistical_features(Gmag_sub)
 

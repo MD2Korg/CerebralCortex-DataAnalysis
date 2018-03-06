@@ -6,8 +6,8 @@ SAMPLING_FREQ_MOTIONSENSE_ACCEL = 25
 SAMPLING_FREQ_MOTIONSENSE_GYRO = 25
 
 # MACD (moving average convergence divergence) related threshold
-fast_moving_avg_size = 20
-slow_moving_avg_size = 205
+FAST_MOVING_AVG_SIZE = 20
+SLOW_MOVING_AVG_SIZE = 205
 
 # Hand orientation related threshold
 MIN_ROLL = -20
@@ -35,11 +35,11 @@ MOTIONSENSE_HRV_GYRO_RIGHT_STREAMNAME = "GYROSCOPE--org.md2k.motionsense--MOTION
 
 PUFFMARKER_MODEL_FILENAME = 'core/feature/puffmarker/model_file/puffmarker_wrist_randomforest.model'
 
-#### OUTPUTS STREAM NAMES
-puffmarker_wrist_smoking_episode = "org.md2k.data_analysis.feature.puffmarker.smoking_episode"
-puffmarker_wrist_smoking_puff= "org.md2k.data_analysis.feature.puffmarker.smoking_puff"
+# Outputs stream names
+PUFFMARKER_WRIST_SMOKING_EPISODE = "org.md2k.data_analysis.feature.puffmarker.smoking_episode"
+PUFFMARKER_WRIST_SMOKING_PUFF = "org.md2k.data_analysis.feature.puffmarker.smoking_puff"
 
 # smoking episode
-MINIMUM_TIME_DIFFERENCE_FIRST_AND_LAST_PUFFS = 7 * 60 # seconds
+MINIMUM_TIME_DIFFERENCE_FIRST_AND_LAST_PUFFS = 7 * 60  # seconds
 MINIMUM_INTER_PUFF_DURATION = 5  # seconds
 MINIMUM_PUFFS_IN_EPISODE = 4
