@@ -39,7 +39,6 @@ from cerebralcortex.core.datatypes.datastream import DataStream
 
 def smooth(datastream: DataStream,
            span: int = 5) -> DataStream:
-
     if span % 2 == 0:
         span = span + 1
 
@@ -50,42 +49,44 @@ def smooth(datastream: DataStream,
     data_smooth_stream.data = data_smooth
     return data_smooth_stream
 
-def moving_average_convergence_divergence(slowMovingAverageDataStream: DataStream
-                                          , fastMovingAverageDataStream: DataStream
+
+def moving_average_convergence_divergence(slow_moving_average_data: DataStream
+                                          , fast_moving_average_data: DataStream
                                           , THRESHOLD: float, near: int):
+    slow_moving_average = np.array([data.sample for data in slow_moving_average_data.data])
+    fast_moving_average = np.array([data.sample for data in fast_moving_average_data.data])
 
-    slowMovingAverage = np.array([data.sample for data in slowMovingAverageDataStream.data])
-    fastMovingAverage = np.array([data.sample for data in fastMovingAverageDataStream.data])
+    index_list = [0] * len(slow_moving_average)
+    cur_index = 0
 
-    indexList = [0]*len(slowMovingAverage)
-    curIndex = 0
-
-    for index in range(len(slowMovingAverage)):
-        diff = slowMovingAverage[index] - fastMovingAverage[index]
+    for index in range(len(slow_moving_average)):
+        diff = slow_moving_average[index] - fast_moving_average[index]
         if diff > THRESHOLD:
-            if curIndex == 0:
-                indexList[curIndex] = index
-                curIndex = curIndex + 1
-                indexList[curIndex] = index
+            if cur_index == 0:
+                index_list[cur_index] = index
+                cur_index = cur_index + 1
+                index_list[cur_index] = index
             else:
-                if index <= indexList[curIndex] + near :
-                    indexList[curIndex] = index
+                if index <= index_list[cur_index] + near:
+                    index_list[cur_index] = index
                 else:
-                    curIndex = curIndex + 1
-                    indexList[curIndex] = index
-                    curIndex = curIndex + 1
-                    indexList[curIndex] = index
+                    cur_index = cur_index + 1
+                    index_list[cur_index] = index
+                    cur_index = cur_index + 1
+                    index_list[cur_index] = index
 
     intersection_points = []
-    if curIndex > 0:
-        for index in range(0, curIndex, 2):
-            sIndex = indexList[index]
-            eIndex = indexList[index+1]
-            sTime = slowMovingAverageDataStream.data[sIndex].start_time
-            eTime = slowMovingAverageDataStream.data[eIndex].start_time
-            intersection_points.append(DataPoint(start_time=sTime, end_time=eTime, sample=[indexList[index], indexList[index + 1]]))
+    if cur_index > 0:
+        for index in range(0, cur_index, 2):
+            start_index = index_list[index]
+            end_index = index_list[index + 1]
+            start_time = slow_moving_average_data.data[start_index].start_time
+            end_time = slow_moving_average_data.data[end_index].start_time
+            intersection_points.append(
+                DataPoint(start_time=start_time, end_time=end_time, sample=[index_list[index], index_list[index + 1]]))
 
     return intersection_points
+
 
 def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
     """
@@ -94,27 +95,26 @@ def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
     """
     stream_dicts = CC.get_stream_duration(stream_id)
     stream_days = []
-    days = stream_dicts["end_time"]-stream_dicts["start_time"]
-    for day in range(days.days+1):
-        stream_days.append((stream_dicts["start_time"]+timedelta(days=day)).strftime('%Y%m%d'))
+    days = stream_dicts["end_time"] - stream_dicts["start_time"]
+    for day in range(days.days + 1):
+        stream_days.append((stream_dicts["start_time"] + timedelta(days=day)).strftime('%Y%m%d'))
     return stream_days
 
 
 def store_data(filepath, input_streams, user_id, data, instance):
-    output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(filepath + user_id+"SMOKING EPISODE")))
+    output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(filepath + user_id + "SMOKING EPISODE")))
 
     cur_dir = os.path.dirname(os.path.abspath(__file__))
-    newfilepath = os.path.join(cur_dir,filepath)
-    with open(newfilepath,"r") as f:
+    new_file_path = os.path.join(cur_dir, filepath)
+    with open(new_file_path, "r") as f:
         metadata = f.read()
-        metadata = metadata.replace("CC_INPUT_STREAM_ID_CC",input_streams[0].identifier)
-        metadata = metadata.replace("CC_INPUT_STREAM_NAME_CC",input_streams[0].name)
-        metadata = metadata.replace("CC_OUTPUT_STREAM_IDENTIFIER_CC",output_stream_id)
-        metadata = metadata.replace("CC_OWNER_CC",user_id)
+        metadata = metadata.replace("CC_INPUT_STREAM_ID_CC", input_streams[0].identifier)
+        metadata = metadata.replace("CC_INPUT_STREAM_NAME_CC", input_streams[0].name)
+        metadata = metadata.replace("CC_OUTPUT_STREAM_IDENTIFIER_CC", output_stream_id)
+        metadata = metadata.replace("CC_OWNER_CC", user_id)
         metadata = json.loads(metadata)
 
-        instance.store(identifier=output_stream_id, owner=user_id, name=metadata["name"], data_descriptor=metadata["data_descriptor"],
+        instance.store(identifier=output_stream_id, owner=user_id, name=metadata["name"],
+                       data_descriptor=metadata["data_descriptor"],
                        execution_context=metadata["execution_context"], annotations=metadata["annotations"],
                        stream_type="datastream", data=data)
-
-
