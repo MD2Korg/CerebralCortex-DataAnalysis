@@ -30,13 +30,14 @@ import syslog
 import traceback
 from syslog import LOG_ERR
 from cerebralcortex.core.datatypes.datastream import DataStream
+from cerebralcortex.core.datatypes.datastream import StreamTypes
 
 # Initialize logging
 syslog.openlog(ident="CerebralCortex-ComputeFeatureBase")
 
 class ComputeFeatureBase(object):
     '''
-    Use this method for all your computations.
+    Use this method as an entry point for all your computations.
     '''
     def process(self):
         pass
@@ -44,7 +45,7 @@ class ComputeFeatureBase(object):
     '''
     All store operations MUST be through this method.
     '''
-    def store(self,identifier,owner,name,data_descriptor,execution_context,annotations,stream_type,data):
+    def store(self,identifier,owner,name,data_descriptor,execution_context,annotations,stream_type=StreamTypes.DATASTREAM,data):
         ds = DataStream(identifier=identifier, owner=owner, name=name, data_descriptor=data_descriptor,
                         execution_context=execution_context, annotations=annotations,
                         stream_type=stream_type, data=data)

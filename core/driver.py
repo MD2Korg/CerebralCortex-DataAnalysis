@@ -30,7 +30,6 @@ import traceback
 
 import syslog
 from syslog import LOG_ERR
-from core.utils.config import CC_CONFIG_PATH
 from cerebralcortex.cerebralcortex import CerebralCortex
 
 
@@ -38,6 +37,16 @@ from cerebralcortex.cerebralcortex import CerebralCortex
 
 # Initialize logging
 syslog.openlog(ident="CerebralCortex-Driver")
+
+def all_users_data(self, study_name: str):
+     all_users = self.CC.get_all_users(study_name)
+
+     if all_users:
+        for user in all_users:
+            streams = self.CC.get_user_streams(user["identifier"])
+            self.process_data(user["identifier"], streams)
+        else:
+            print(study_name, "- study has 0 users.")
 
 '''
 This method runs the processing pipeline for each of
@@ -101,8 +110,15 @@ def main():
     # Get the list of the features to process
     parser = argparse.ArgumentParser(description='CerebralCortex Feature Processing Driver')
     parser.add_argument("-f", "--feature-list", help="List of feature names seperated by commas", required=False)
+    parser.add_argument("-c", "--cc-config", help="Path to file containing the CerebralCortex configuration", required=True)
+    parser.add_argument("-s", "--study-name", help="Study name.", required=True)
+    parser.add_argument("-u", "--users", help="Comma separated userids", required=False)
+    parser.add_argument("-sd", "--start-date", help="Start date in yyyy/mm/dd format", required=True)
+    parser.add_argument("-ed", "--end-date", help="End date in yyyy/mm/dd format", required=True)
     args = vars(parser.parse_args())
     feature_list = None
+    cc_config_path = None
+    study_name = None 
     if args['feature_list']:
         feature_list = args['feature_list'].split(',')
     
@@ -111,7 +127,7 @@ def main():
     
     CC = None
     try:
-        CC = CerebralCortex(CC_CONFIG_PATH)
+        CC = CerebralCortex(cc_config_path)
     except Exception as e:
         print(str(e)
     )
