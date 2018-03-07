@@ -33,6 +33,7 @@ def classify_posture(features: List[DataPoint]) -> List[DataPoint]:
     labels = []
     for dp in features:
         preds = clf.predict([dp.sample])
+        preds = str(preds[0])
         labels.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, sample=preds))
 
     return labels
@@ -43,6 +44,7 @@ def classify_activity(features: List[DataPoint]) -> List[DataPoint]:
     labels = []
     for dp in features:
         preds = clf.predict([dp.sample])
+        preds = str(preds[0])
         labels.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, sample=preds))
 
     return labels
