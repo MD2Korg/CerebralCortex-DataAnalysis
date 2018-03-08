@@ -36,27 +36,32 @@ from cerebralcortex.core.datatypes.datastream import StreamTypes
 syslog.openlog(ident="CerebralCortex-ComputeFeatureBase")
 
 class ComputeFeatureBase(object):
-    '''
-    Use this method as an entry point for all your computations.
-    '''
     def process(self):
+        '''
+        Use this method as an entry point for all your computations.
+        '''
         pass
     
-    '''
-    All store operations MUST be through this method.
-    '''
-    def store(self,identifier,owner,name,data_descriptor,execution_context,annotations,stream_type=StreamTypes.DATASTREAM,data):
-        ds = DataStream(identifier=identifier, owner=owner, name=name, data_descriptor=data_descriptor,
-                        execution_context=execution_context, annotations=annotations,
+    def store(self, identifier, owner, name, data_descriptor, execution_context,
+              annotations, stream_type=StreamTypes.DATASTREAM, data):
+        '''
+        All store operations MUST be through this method.
+        '''
+        ds = DataStream(identifier=identifier, owner=owner, name=name, 
+                        data_descriptor=data_descriptor,
+                        execution_context=execution_context, 
+                        annotations=annotations,
                         stream_type=stream_type, data=data)
         try:
-            print("Saving Stream",ds)
             self.CC.save_stream(ds)
         except Exception as exp:
-            syslog.syslog(LOG_ERR,self.__class__.__name__ + str(exp) + "\n" + str(traceback.format_exc()))
+            syslog.syslog(LOG_ERR,self.__class__.__name__ + str(exp) + "\n" + 
+                          str(traceback.format_exc()))
 
-    def __init__(self, CC = None):
+    def __init__(self, CC = None, users, all_days):
         self.CC = CC
+        self.all_users = users
+        self.all_days = all_days
 
 
 

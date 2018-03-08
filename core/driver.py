@@ -27,46 +27,36 @@ import os
 import utils.config
 import argparse
 import traceback
+from datetime import datetime
 
 import syslog
 from syslog import LOG_ERR
 from cerebralcortex.cerebralcortex import CerebralCortex
 
-
-# TODO ADD ADMISSION CoNTROL LOGIC
-
 # Initialize logging
 syslog.openlog(ident="CerebralCortex-Driver")
 
-def all_users_data(self, study_name: str):
-     all_users = self.CC.get_all_users(study_name)
-
-     if all_users:
-        for user in all_users:
-            streams = self.CC.get_user_streams(user["identifier"])
-            self.process_data(user["identifier"], streams)
-        else:
-            print(study_name, "- study has 0 users.")
-
-'''
-This method runs the processing pipeline for each of
-the features in the list.
-'''
-def process_features(feature_list,CC):
-# TODO FIXME - should we parallize these as spark jobs ?
+def process_features(feature_list, CC, users, all_days):
+    '''
+    This method runs the processing pipeline for each of
+    the features in the list.
+    '''
+    # TODO FIXME - should we parallize these as spark jobs ?
     for module in feature_list:
         feature_class_name = getattr(module,'feature_class_name')
         feature_class = getattr(module,feature_class_name)
-        feature_class_instance = feature_class(CC)
+        feature_class_instance = feature_class(CC, users, all_days)
         try:
             feature_class_instance.process()
         except Exception as e:
             #syslog.syslog(LOG_ERR,str(e))
             syslog.syslog(LOG_ERR, str(e) + "\n" + str(traceback.format_exc()))
-'''
-This method discovers all the features that are present.
-'''
+
+
 def discover_features(feature_list):
+    '''
+    This method discovers all the features that are present.
+    '''
     feature_dir = os.path.join(utils.config.FEATURES_DIR_NAME)
     print(feature_dir)
     found_features = []
@@ -98,40 +88,73 @@ def discover_features(feature_list):
     return found_features
     
 
-'''
-This method returns the execution order of processing the features 
-after resolving the inter dependencies.
-'''
 def generate_feature_processing_order(feature_list):
+    '''
+    This method returns the execution order of processing the features 
+    after resolving the inter dependencies.
+    '''
     return feature_list
 
 
 def main():
     # Get the list of the features to process
-    parser = argparse.ArgumentParser(description='CerebralCortex Feature Processing Driver')
-    parser.add_argument("-f", "--feature-list", help="List of feature names seperated by commas", required=False)
-    parser.add_argument("-c", "--cc-config", help="Path to file containing the CerebralCortex configuration", required=True)
+    parser = argparse.ArgumentParser(description='CerebralCortex 
+                                     Feature Processing Driver')
+    parser.add_argument("-f", "--feature-list", help="List of feature names 
+                         seperated by commas", required=False)
+    parser.add_argument("-c", "--cc-config", help="Path to file containing the 
+                         CerebralCortex configuration", required=True)
     parser.add_argument("-s", "--study-name", help="Study name.", required=True)
-    parser.add_argument("-u", "--users", help="Comma separated userids", required=False)
-    parser.add_argument("-sd", "--start-date", help="Start date in yyyy/mm/dd format", required=True)
-    parser.add_argument("-ed", "--end-date", help="End date in yyyy/mm/dd format", required=True)
+    parser.add_argument("-u", "--users", help="Comma separated userids", 
+                         required=False)
+    parser.add_argument("-sd", "--start-date", help="Start date in 
+                         YYYY/MM/DD Format", required=True)
+    parser.add_argument("-ed", "--end-date", help="End date in 
+                         YYYY/MM/DD Format", required=True)
+    
     args = vars(parser.parse_args())
     feature_list = None
     cc_config_path = None
     study_name = None 
+    users = None
+    start_date = None
+    end_date = None
+    date_format = '%Y %m %d'
+    
     if args['feature_list']:
         feature_list = args['feature_list'].split(',')
+    if args['cc-config']:
+        cc-config-path = args['cc-config']
+    if args['study-name']:
+        study_name = args['study-name']
+    if args['users']:
+        users = args['users'].split(',')
+    if args['start_date']:
+        start_date = datetime.strptime(args['start_date'], date_format)
+    if args['end-date']:
+        end_date = datetime.strptime(args['end-date'], date_format)
     
-    found_features = discover_features(feature_list)
-    feature_to_process = generate_feature_processing_order(found_features)
-    
+    all_days = []
+    while True:
+        all_days.append(start_date)
+        start_date += timedelta(days = 1)
+        if start_date > end_date : break
+
     CC = None
     try:
         CC = CerebralCortex(cc_config_path)
+        if not users:
+            users = CC.get_all_users(study_name)
+        if not len(users):
+            return # no point continuing
+        
     except Exception as e:
         print(str(e)
     )
-    process_features(feature_to_process, CC)
+
+    found_features = discover_features(feature_list)
+    feature_to_process = generate_feature_processing_order(found_features)
+    process_features(feature_to_process, CC, users, all_days)
     
 if __name__ == '__main__':
     main()
