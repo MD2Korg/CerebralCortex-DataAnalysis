@@ -150,7 +150,7 @@ def create_all_windows(datapoint: List[DataPoint], window_size: float, window_of
 def epoch_align(ts: datetime,
                 offset: float,
                 after: bool = False,
-                time_zone: pytz = pytz.timezone('US/Central'),
+                # time_zone: pytz = pytz.timezone('US/Central'),
                 time_base: int = 1e6) -> datetime:
     """
     Epoch timestamp alignment based on offset
@@ -167,5 +167,6 @@ def epoch_align(ts: datetime,
     if after:
         new_timestamp += offset * time_base
 
-    result = datetime.fromtimestamp(new_timestamp / time_base, time_zone)
+    #result = datetime.fromtimestamp(new_timestamp / time_base, time_zone)
+    result = datetime.fromtimestamp(new_timestamp / time_base)
     return result
