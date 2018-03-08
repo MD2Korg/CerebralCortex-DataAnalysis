@@ -30,7 +30,7 @@ from datetime import timedelta
 from typing import List
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-from core.feature.activity.activity_constants Import *
+from core.feature.activity.activity_constants import *
 
 
 def get_max_label(label1, label2):

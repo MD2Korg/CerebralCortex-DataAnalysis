@@ -28,6 +28,7 @@ import utils.config
 import argparse
 import traceback
 from datetime import datetime
+from datetime import timedelta
 
 import syslog
 from syslog import LOG_ERR
@@ -45,9 +46,9 @@ def process_features(feature_list, CC, users, all_days):
     for module in feature_list:
         feature_class_name = getattr(module,'feature_class_name')
         feature_class = getattr(module,feature_class_name)
-        feature_class_instance = feature_class(CC, users, all_days)
+        feature_class_instance = feature_class(CC)
         try:
-            feature_class_instance.process()
+            feature_class_instance.process(users[0],all_days)
         except Exception as e:
             #syslog.syslog(LOG_ERR,str(e))
             syslog.syslog(LOG_ERR, str(e) + "\n" + str(traceback.format_exc()))
@@ -98,41 +99,42 @@ def generate_feature_processing_order(feature_list):
 
 def main():
     # Get the list of the features to process
-    parser = argparse.ArgumentParser(description='CerebralCortex 
-                                     Feature Processing Driver')
-    parser.add_argument("-f", "--feature-list", help="List of feature names 
-                         seperated by commas", required=False)
-    parser.add_argument("-c", "--cc-config", help="Path to file containing the 
-                         CerebralCortex configuration", required=True)
+    parser = argparse.ArgumentParser(description='CerebralCortex '
+                                     'Feature Processing Driver')
+    parser.add_argument("-f", "--feature-list", help="List of feature names "
+                         "seperated by commas", required=False)
+    parser.add_argument("-c", "--cc-config", help="Path to file containing the "
+                         "CerebralCortex configuration", required=True)
     parser.add_argument("-s", "--study-name", help="Study name.", required=True)
-    parser.add_argument("-u", "--users", help="Comma separated userids", 
+    parser.add_argument("-u", "--users", help="Comma separated user uuids", 
                          required=False)
-    parser.add_argument("-sd", "--start-date", help="Start date in 
-                         YYYY/MM/DD Format", required=True)
-    parser.add_argument("-ed", "--end-date", help="End date in 
-                         YYYY/MM/DD Format", required=True)
+    parser.add_argument("-sd", "--start-date", help="Start date in " 
+                         "YYYYMMDD Format", required=True)
+    parser.add_argument("-ed", "--end-date", help="End date in " 
+                         "YYYYMMDD Format", required=True)
     
     args = vars(parser.parse_args())
+    print(args)
     feature_list = None
     cc_config_path = None
     study_name = None 
     users = None
     start_date = None
     end_date = None
-    date_format = '%Y %m %d'
+    date_format = '%Y%m%d'
     
     if args['feature_list']:
         feature_list = args['feature_list'].split(',')
-    if args['cc-config']:
-        cc-config-path = args['cc-config']
-    if args['study-name']:
-        study_name = args['study-name']
+    if args['cc_config']:
+        cc_config_path = args['cc_config']
+    if args['study_name']:
+        study_name = args['study_name']
     if args['users']:
         users = args['users'].split(',')
     if args['start_date']:
         start_date = datetime.strptime(args['start_date'], date_format)
-    if args['end-date']:
-        end_date = datetime.strptime(args['end-date'], date_format)
+    if args['end_date']:
+        end_date = datetime.strptime(args['end_date'], date_format)
     
     all_days = []
     while True:
@@ -145,8 +147,11 @@ def main():
         CC = CerebralCortex(cc_config_path)
         if not users:
             users = CC.get_all_users(study_name)
-        if not len(users):
-            return # no point continuing
+            if not users:
+                print('USERS',users)
+                return
+            if not len(users):
+                return # no point continuing
         
     except Exception as e:
         print(str(e)

@@ -31,7 +31,7 @@ from core.signalprocessing.gravity_filter.gravityFilter import gravityFilter_fun
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from core.feature.activity.utils import *
 from core.computefeature import ComputeFeatureBase
-from core.feature.activity.activity_constants Import *
+from core.feature.activity.activity_constants import *
 
 feature_class_name = 'ActivityMarker'
 
@@ -88,14 +88,14 @@ class ActivityMarker(ComputeFeatureBase):
 
         return posture_labels, activity_labels
 
-    def process(self):
+    def process(self, user, all_days):
         if self.CC is not None:
-            all_users = self.all_users()
-
-            for user in all_users:
-                user_id = user["identifier"]
-
-                streams = self.CC.get_user_streams(user_id)
+            if user:
+                streams = self.CC.get_user_streams(user)
+                if not len(streams):
+                    self.CC.logging.log('No streams found for user_id %s'
+                                        %(user))
+                    return
 
                 for day in all_days:
                     posture_labels_left, activity_labels_left = self.process_activity_and_posture_marker(streams,

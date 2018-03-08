@@ -30,7 +30,7 @@ import syslog
 import traceback
 from syslog import LOG_ERR
 from cerebralcortex.core.datatypes.datastream import DataStream
-from cerebralcortex.core.datatypes.datastream import StreamTypes
+from cerebralcortex.core.datatypes.stream_types import StreamTypes
 
 # Initialize logging
 syslog.openlog(ident="CerebralCortex-ComputeFeatureBase")
@@ -43,10 +43,14 @@ class ComputeFeatureBase(object):
         pass
     
     def store(self, identifier, owner, name, data_descriptor, execution_context,
-              annotations, stream_type=StreamTypes.DATASTREAM, data):
+              annotations, stream_type=StreamTypes.DATASTREAM, data=None):
         '''
         All store operations MUST be through this method.
         '''
+        if not data:
+            syslog.syslog(LOG_ERR,'Null data received for storing '+ 
+                          str(traceback.format_exc()))
+            return
         ds = DataStream(identifier=identifier, owner=owner, name=name, 
                         data_descriptor=data_descriptor,
                         execution_context=execution_context, 
@@ -58,10 +62,6 @@ class ComputeFeatureBase(object):
             syslog.syslog(LOG_ERR,self.__class__.__name__ + str(exp) + "\n" + 
                           str(traceback.format_exc()))
 
-    def __init__(self, CC = None, users, all_days):
+    def __init__(self, CC = None):
         self.CC = CC
-        self.all_users = users
-        self.all_days = all_days
-
-
 

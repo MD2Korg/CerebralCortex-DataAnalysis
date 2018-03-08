@@ -31,7 +31,7 @@ from scipy.stats import kurtosis
 from datetime import timedelta
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
-from core.feature.activity.activity_constants Import *
+from core.feature.activity.activity_constants import *
 from core.signalprocessing.window import window_sliding
 
 
