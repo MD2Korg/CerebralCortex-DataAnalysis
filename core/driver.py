@@ -33,6 +33,7 @@ from datetime import timedelta
 import syslog
 from syslog import LOG_ERR
 from cerebralcortex.cerebralcortex import CerebralCortex
+from cerebralcortex.core.util.spark_helper import get_or_create_sc
 
 # Initialize logging
 syslog.openlog(ident="CerebralCortex-Driver")
@@ -43,6 +44,12 @@ def process_features(feature_list, CC, users, all_days):
     the features in the list.
     '''
     # TODO FIXME - should we parallize these as spark jobs ?
+
+    spark_context = get_or_create_sc(type="sparkContext")
+    rdd = spark_context.parallelize(all_users)
+    results = rdd.map(
+            lambda user: diagnose_streams(user["identifier"], CC, md_config))
+    results.count()
     for module in feature_list:
         feature_class_name = getattr(module,'feature_class_name')
         feature_class = getattr(module,feature_class_name)
