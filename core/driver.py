@@ -46,16 +46,17 @@ def process_features(feature_list, CC, all_users, all_days):
     for module in feature_list:
         spark_context = get_or_create_sc(type="sparkContext")
         rdd = spark_context.parallelize(all_users)
+        feature_class_name = getattr(module,'feature_class_name')
+        feature_class = getattr(module,feature_class_name)
+        feature_class_instance = feature_class(CC)
+        f = feature_class_instance.process
         results = rdd.map(
-            lambda user: process_feature_on_user(user, module, CC, all_days))
+            lambda user: process_feature_on_user(user, f, all_days))
         results.count()
 
-def process_feature_on_user(user, module, CC, all_days):
-    feature_class_name = getattr(module,'feature_class_name')
-    feature_class = getattr(module,feature_class_name)
-    feature_class_instance = feature_class(CC)
+def process_feature_on_user(user, f, all_days):
     try:
-        feature_class_instance.process(user,all_days)
+        f(user,all_days)
     except Exception as e:
         #syslog.syslog(LOG_ERR,str(e))
         syslog.syslog(LOG_ERR, str(e) + "\n" + str(traceback.format_exc()))
@@ -149,6 +150,7 @@ def main():
         if start_date > end_date : break
 
     CC = None
+    '''
     try:
         CC = CerebralCortex(cc_config_path)
         if not users:
@@ -164,7 +166,8 @@ def main():
         
     except Exception as e:
         print(str(e))
-
+    '''
+    all_users = users
     found_features = discover_features(feature_list)
     feature_to_process = generate_feature_processing_order(found_features)
     process_features(feature_to_process, CC, all_users, all_days)
