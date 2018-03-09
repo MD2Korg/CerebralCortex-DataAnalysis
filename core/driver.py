@@ -38,28 +38,27 @@ from cerebralcortex.core.util.spark_helper import get_or_create_sc
 # Initialize logging
 syslog.openlog(ident="CerebralCortex-Driver")
 
-def process_features(feature_list, CC, users, all_days):
+def process_features(feature_list, CC, all_users, all_days):
     '''
     This method runs the processing pipeline for each of
     the features in the list.
     '''
-    # TODO FIXME - should we parallize these as spark jobs ?
-
-    spark_context = get_or_create_sc(type="sparkContext")
-    rdd = spark_context.parallelize(all_users)
-    results = rdd.map(
-            lambda user: diagnose_streams(user["identifier"], CC, md_config))
-    results.count()
     for module in feature_list:
-        feature_class_name = getattr(module,'feature_class_name')
-        feature_class = getattr(module,feature_class_name)
-        feature_class_instance = feature_class(CC)
-        try:
-            feature_class_instance.process(users[0],all_days)
-        except Exception as e:
-            #syslog.syslog(LOG_ERR,str(e))
-            syslog.syslog(LOG_ERR, str(e) + "\n" + str(traceback.format_exc()))
+        spark_context = get_or_create_sc(type="sparkContext")
+        rdd = spark_context.parallelize(all_users)
+        results = rdd.map(
+            lambda user: process_feature_on_user(user, module, CC, all_days))
+        results.count()
 
+def process_feature_on_user(user, module, CC, all_days):
+    feature_class_name = getattr(module,'feature_class_name')
+    feature_class = getattr(module,feature_class_name)
+    feature_class_instance = feature_class(CC)
+    try:
+        feature_class_instance.process(user,all_days)
+    except Exception as e:
+        #syslog.syslog(LOG_ERR,str(e))
+        syslog.syslog(LOG_ERR, str(e) + "\n" + str(traceback.format_exc()))
 
 def discover_features(feature_list):
     '''
@@ -159,14 +158,16 @@ def main():
                 return
             if not len(users):
                 return # no point continuing
+            all_users = [usr['identifier'] for usr in users]
+        else:
+            all_users = users
         
     except Exception as e:
-        print(str(e)
-    )
+        print(str(e))
 
     found_features = discover_features(feature_list)
     feature_to_process = generate_feature_processing_order(found_features)
-    process_features(feature_to_process, CC, users, all_days)
+    process_features(feature_to_process, CC, all_users, all_days)
     
 if __name__ == '__main__':
     main()
