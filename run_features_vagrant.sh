@@ -14,6 +14,10 @@ MYDB_BATCH_SIZE="5000" #number of messages
 
 #set spark home
 export PATH=$SPARK_HOME/bin:$PATH
+export PYTHONPATH=$PYTHONPATH:/home/vagrant/CerebralCortex-DataAnalysis/
+export PYTHONPATH=$PYTHONPATH:/home/vagrant/CerebralCortex-DataAnalysis/core/feature/activity
+export PYTHONPATH=$PYTHONPATH:/home/vagrant/CerebralCortex-DataAnalysis/core/signalprocessing
+export PYTHONPATH=$PYTHONPATH:/home/vagrant/CerebralCortex-DataAnalysis/core/signalprocessing/gravity_filter
 
 # path of cc configuration path
 CC_CONFIG_FILEPATH="/home/vagrant/CerebralCortex-DockerCompose/cc_config_file/cc_vagrant_configuration.yml"

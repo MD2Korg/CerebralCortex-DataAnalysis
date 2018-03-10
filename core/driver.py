@@ -43,19 +43,22 @@ def process_features(feature_list, CC, all_users, all_days):
     This method runs the processing pipeline for each of
     the features in the list.
     '''
+    print('BBBB',all_users)
     for module in feature_list:
         spark_context = get_or_create_sc(type="sparkContext")
-        rdd = spark_context.parallelize(all_users)
         feature_class_name = getattr(module,'feature_class_name')
         feature_class = getattr(module,feature_class_name)
         feature_class_instance = feature_class(CC)
         f = feature_class_instance.process
+        
+        rdd = spark_context.parallelize(all_users)
         results = rdd.map(
             lambda user: process_feature_on_user(user, f, all_days))
         results.count()
 
 def process_feature_on_user(user, f, all_days):
     try:
+        sys.path.append('/home/vagrant/CerebralCortex-DataAnalysis/core/feature/activity')
         f(user,all_days)
     except Exception as e:
         #syslog.syslog(LOG_ERR,str(e))
@@ -150,9 +153,10 @@ def main():
         if start_date > end_date : break
 
     CC = None
-    '''
     try:
-        CC = CerebralCortex(cc_config_path)
+        CC = CerebralCortex('')
+        #CC = CerebralCortex(cc_config_path)
+        '''
         if not users:
             users = CC.get_all_users(study_name)
             if not users:
@@ -163,10 +167,10 @@ def main():
             all_users = [usr['identifier'] for usr in users]
         else:
             all_users = users
-        
+        '''
     except Exception as e:
         print(str(e))
-    '''
+
     all_users = users
     found_features = discover_features(feature_list)
     feature_to_process = generate_feature_processing_order(found_features)
