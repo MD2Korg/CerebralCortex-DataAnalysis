@@ -37,28 +37,29 @@ from cerebralcortex.core.util.spark_helper import get_or_create_sc
 
 # Initialize logging
 syslog.openlog(ident="CerebralCortex-Driver")
+cc_config_path = None
 
 def process_features(feature_list, CC, all_users, all_days):
     '''
     This method runs the processing pipeline for each of
     the features in the list.
     '''
-    print('BBBB',all_users)
+    print('BBBB',all_users,cc_config_path)
     for module in feature_list:
         spark_context = get_or_create_sc(type="sparkContext")
-        feature_class_name = getattr(module,'feature_class_name')
-        feature_class = getattr(module,feature_class_name)
-        feature_class_instance = feature_class(CC)
-        f = feature_class_instance.process
         
         rdd = spark_context.parallelize(all_users)
         results = rdd.map(
-            lambda user: process_feature_on_user(user, f, all_days))
+            lambda user: process_feature_on_user(user, module, all_days, cc_config_path))
         results.count()
 
-def process_feature_on_user(user, f, all_days):
+def process_feature_on_user(user, module, all_days, cc_config_path):
     try:
-        sys.path.append('/home/vagrant/CerebralCortex-DataAnalysis/core/feature/activity')
+        cc = CerebralCortex(cc_config_path)
+        feature_class_name = getattr(module,'feature_class_name')
+        feature_class = getattr(module,feature_class_name)
+        feature_class_instance = feature_class(cc)
+        f = feature_class_instance.process
         f(user,all_days)
     except Exception as e:
         #syslog.syslog(LOG_ERR,str(e))
@@ -108,6 +109,7 @@ def generate_feature_processing_order(feature_list):
 
 
 def main():
+    global cc_config_path
     # Get the list of the features to process
     parser = argparse.ArgumentParser(description='CerebralCortex '
                                      'Feature Processing Driver')
@@ -126,7 +128,6 @@ def main():
     args = vars(parser.parse_args())
     print(args)
     feature_list = None
-    cc_config_path = None
     study_name = None 
     users = None
     start_date = None
@@ -154,8 +155,7 @@ def main():
 
     CC = None
     try:
-        CC = CerebralCortex('')
-        #CC = CerebralCortex(cc_config_path)
+        CC = CerebralCortex(cc_config_path)
         '''
         if not users:
             users = CC.get_all_users(study_name)

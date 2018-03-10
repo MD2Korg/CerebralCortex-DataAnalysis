@@ -89,8 +89,8 @@ class ActivityMarker(ComputeFeatureBase):
         return posture_labels, activity_labels
 
     def process(self, user, all_days):
-        print("AAA",user)
         if self.CC is not None:
+            print("AAA",user)
             if user:
                 streams = self.CC.get_user_streams(user)
                 if not len(streams):
