@@ -13,6 +13,7 @@ export SPARK_HOME=/usr/local/spark/
 export PATH=$SPARK_HOME/bin:$PATH
 export PYTHONPATH=$PYTHONPATH:$DATA_ANALAYSIS_PATH
 export PYTHONPATH=$PYTHONPATH:'$DATA_ANALAYSIS_PATH:core/feature/activity'
+export PYTHONPATH=$PYTHONPATH:'$DATA_ANALAYSIS_PATH:core/feature/gps'
 export PYTHONPATH=$PYTHONPATH:'$DATA_ANALAYSIS_PATH:core/signalprocessing'
 export PYTHONPATH=$PYTHONPATH:'$DATA_ANALAYSIS_PATH:core/signalprocessing/gravity_filter'
 
@@ -23,7 +24,7 @@ CC_CONFIG_FILEPATH="/home/vagrant/CerebralCortex-DockerCompose/cc_config_file/cc
 SPARK_MASTER="local[2]"
 
 # list of features to process, leave blank to process all features
-FEATURES="activity"
+FEATURES="activity,gps"
 
 # study name
 STUDY_NAME="mPerf"

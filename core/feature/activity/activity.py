@@ -90,7 +90,6 @@ class ActivityMarker(ComputeFeatureBase):
 
     def process(self, user, all_days):
         if self.CC is not None:
-            print("AAA",user)
             if user:
                 streams = self.CC.get_user_streams(user)
                 if not len(streams):

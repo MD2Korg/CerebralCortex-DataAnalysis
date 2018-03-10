@@ -24,8 +24,8 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from madgwickahrs import MadgwickAHRS
-from util_quaternion import *
+from core.signalprocessing.gravity_filter.madgwickahrs import MadgwickAHRS
+from core.signalprocessing.gravity_filter.util_quaternion import *
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
 

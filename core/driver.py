@@ -46,11 +46,12 @@ def process_features(feature_list, all_users, all_days):
     '''
     for module in feature_list:
         spark_context = get_or_create_sc(type="sparkContext")
-        
         rdd = spark_context.parallelize(all_users)
         results = rdd.map(
-            lambda user: process_feature_on_user(user, module, all_days, cc_config_path))
+            lambda user: process_feature_on_user(user, module, all_days, 
+                                                 cc_config_path))
         results.count()
+        spark_context.stop()
 
 def process_feature_on_user(user, module, all_days, cc_config_path):
     try:
@@ -87,13 +88,19 @@ def discover_features(feature_list):
                 continue
             sys.path.append(feature)
             try:
+                module_name = mod_file_path[:-3] # strip '.py'
+                module_name_dotted = module_name.replace('/','.')
+                print(module_name_dotted)
                 module = __import__(subdir)
+                #module = __import__(module_name_dotted)
+                
                 found_features.append(module)
                 syslog.syslog('Loaded feature %s' % feature)
             except Exception as exp:
                 #syslog.syslog(LOG_ERR,str(exp))
                 print(str(exp)+"\n"+str(traceback.format_exc()))
-                syslog.syslog(LOG_ERR, str(exp) + "\n" + str(traceback.format_exc()))
+                syslog.syslog(LOG_ERR, str(exp) + "\n" 
+                              + str(traceback.format_exc()))
     
     return found_features
     
@@ -112,9 +119,10 @@ def main():
     parser = argparse.ArgumentParser(description='CerebralCortex '
                                      'Feature Processing Driver')
     parser.add_argument("-f", "--feature-list", help="List of feature names "
-                         "seperated by commas", nargs='?', default=None, required=False)
+                        "seperated by commas", nargs='?', default=None, 
+                        required=False)
     parser.add_argument("-c", "--cc-config", help="Path to file containing the "
-                         "CerebralCortex configuration", required=True)
+                        "CerebralCortex configuration", required=True)
     parser.add_argument("-s", "--study-name", help="Study name.", required=True)
     parser.add_argument("-u", "--users", help="Comma separated user uuids", 
                          nargs='?', default=None, required=False)
