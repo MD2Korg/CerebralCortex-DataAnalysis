@@ -39,12 +39,11 @@ from cerebralcortex.core.util.spark_helper import get_or_create_sc
 syslog.openlog(ident="CerebralCortex-Driver")
 cc_config_path = None
 
-def process_features(feature_list, CC, all_users, all_days):
+def process_features(feature_list, all_users, all_days):
     '''
     This method runs the processing pipeline for each of
     the features in the list.
     '''
-    print('BBBB',all_users,cc_config_path)
     for module in feature_list:
         spark_context = get_or_create_sc(type="sparkContext")
         
@@ -70,7 +69,6 @@ def discover_features(feature_list):
     This method discovers all the features that are present.
     '''
     feature_dir = os.path.join(utils.config.FEATURES_DIR_NAME)
-    print(feature_dir)
     found_features = []
     if feature_list:
         feature_subdirs = feature_list
@@ -114,19 +112,18 @@ def main():
     parser = argparse.ArgumentParser(description='CerebralCortex '
                                      'Feature Processing Driver')
     parser.add_argument("-f", "--feature-list", help="List of feature names "
-                         "seperated by commas", required=False)
+                         "seperated by commas", nargs='?', default=None, required=False)
     parser.add_argument("-c", "--cc-config", help="Path to file containing the "
                          "CerebralCortex configuration", required=True)
     parser.add_argument("-s", "--study-name", help="Study name.", required=True)
     parser.add_argument("-u", "--users", help="Comma separated user uuids", 
-                         required=False)
+                         nargs='?', default=None, required=False)
     parser.add_argument("-sd", "--start-date", help="Start date in " 
                          "YYYYMMDD Format", required=True)
     parser.add_argument("-ed", "--end-date", help="End date in " 
                          "YYYYMMDD Format", required=True)
     
     args = vars(parser.parse_args())
-    print(args)
     feature_list = None
     study_name = None 
     users = None
@@ -156,25 +153,23 @@ def main():
     CC = None
     try:
         CC = CerebralCortex(cc_config_path)
-        '''
         if not users:
             users = CC.get_all_users(study_name)
             if not users:
-                print('USERS',users)
+                print('No users found')
                 return
             if not len(users):
+                print('No users found')
                 return # no point continuing
             all_users = [usr['identifier'] for usr in users]
         else:
             all_users = users
-        '''
     except Exception as e:
         print(str(e))
 
-    all_users = users
     found_features = discover_features(feature_list)
     feature_to_process = generate_feature_processing_order(found_features)
-    process_features(feature_to_process, CC, all_users, all_days)
+    process_features(feature_to_process, all_users, all_days)
     
 if __name__ == '__main__':
     main()
