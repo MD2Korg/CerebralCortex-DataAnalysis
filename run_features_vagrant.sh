@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DATA_ANALAYSIS_PATH='/home/vagrant/CerebralCortex-DataAnalysis/'
+DATA_ANALAYSIS_PATH='/home/vagrant/tmp/CerebralCortex-DataAnalysis/'
 # Python3 path
 export PYSPARK_PYTHON=/usr/bin/python3.6
 export LD_LIBRARY_PATH=/home/vagrant/hadoop/lib/native/
@@ -11,6 +11,8 @@ export SPARK_HOME=/usr/local/spark/
 
 #set spark home
 export PATH=$SPARK_HOME/bin:$PATH
+
+# setting of PYTHONPATH
 export PYTHONPATH=$PYTHONPATH:$DATA_ANALAYSIS_PATH
 export PYTHONPATH=$PYTHONPATH:'$DATA_ANALAYSIS_PATH:core/feature/activity'
 export PYTHONPATH=$PYTHONPATH:'$DATA_ANALAYSIS_PATH:core/signalprocessing'
