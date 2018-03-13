@@ -2,6 +2,7 @@ import csv
 import os
 import json
 import uuid
+import argparse
 from datetime import datetime
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
@@ -14,6 +15,24 @@ CC_CONFIG_PATH = '/home/vagrant/CerebralCortex-DockerCompose/cc_config_file/cc_v
 DATA_DIR='/home/vagrant/mperf_data'
 
 UUID_MAPPING = '/home/vagrant/mperf_ids.txt'
+
+parser = argparse.ArgumentParser(description='CerebralCortex '
+                                     'Qualtrics data importer')
+parser.add_argument("-c", "--cc-config", help="Path to file containing the "
+                        "CerebralCortex configuration", required=True)
+parser.add_argument("-d", "--data-dir", help="Path to dir containing the "
+                                      "qualtrics data" , required=True)
+parser.add_argument("-u", "--user-mappings", help="Path to the file containing "
+                    " the user id to uuid mappings",  required=True)
+
+args = vars(parser.parse_args())
+
+if args['cc_config']:
+    CC_CONFIG_PATH = args['cc_config']
+if args['data_dir']:
+    DATA_DIR = args['data_dir']
+if args['user_mappings']:
+    UUID_MAPPING = args['user_mappings']
 
 files_to_process=[]
 
