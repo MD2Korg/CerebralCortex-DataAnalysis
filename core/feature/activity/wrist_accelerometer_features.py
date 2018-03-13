@@ -25,14 +25,10 @@
 
 import numpy as np
 import math
-from typing import List
 from scipy.stats import skew
 from scipy.stats import kurtosis
-from datetime import timedelta
-from cerebralcortex.core.datatypes.datapoint import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
-from core.feature.activity.ACTIVITY_CONSTANTS import *
-from core.signalprocessing.window import window_sliding
+from core.feature.activity.utils import *
 
 
 def get_rate_of_change(timestamp, value):
