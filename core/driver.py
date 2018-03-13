@@ -154,11 +154,12 @@ def main():
     
     all_days = []
     while True:
-        all_days.append(start_date)
+        all_days.append(start_date.strftime('%Y%m%d'))
         start_date += timedelta(days = 1)
         if start_date > end_date : break
 
     CC = None
+    all_users = None
     try:
         CC = CerebralCortex(cc_config_path)
         if not users:
