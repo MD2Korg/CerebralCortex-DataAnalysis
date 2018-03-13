@@ -30,8 +30,8 @@ from core.feature.activity.activity_classifier import classify_posture, classify
 from core.signalprocessing.gravity_filter.gravityFilter import gravityFilter_function
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from core.feature.activity.utils import *
+from core.feature.activity.admission_control import *
 from core.computefeature import ComputeFeatureBase
-from core.feature.activity.ACTIVITY_CONSTANTS import *
 
 feature_class_name = 'ActivityMarker'
 
@@ -55,7 +55,7 @@ class ActivityMarker(ComputeFeatureBase):
         :return: activity labels and posture lebels for each 10 seconds window
         """
 
-        if wrist in [LEFT_WRIST]:
+        if wrist in [LEFT_WRIST] and MOTIONSENSE_HRV_ACCEL_LEFT in streams:
             accel_stream = self.CC.get_stream(streams[MOTIONSENSE_HRV_ACCEL_LEFT]["identifier"],
                                               day=day,
                                               user_id=user_id,
@@ -64,16 +64,22 @@ class ActivityMarker(ComputeFeatureBase):
                                              day=day,
                                              user_id=user_id,
                                              data_type=DataSet.COMPLETE)
-        else:
+        elif wrist in [RIGHT_WRIST] and MOTIONSENSE_HRV_ACCEL_RIGHT in streams:
             accel_stream = self.CC.get_stream(streams[MOTIONSENSE_HRV_ACCEL_RIGHT]["identifier"],
                                               day=day,
-                                              user_id=user_id, data_type=DataSet.COMPLETE)  # FIXME
+                                              user_id=user_id, data_type=DataSet.COMPLETE)
             gyro_stream = self.CC.get_stream(streams[MOTIONSENSE_HRV_GYRO_RIGHT]["identifier"],
                                              day=day,
-                                             user_id=user_id, data_type=DataSet.COMPLETE)  # FIXME
-
-        if len(accel_stream.data) == 0 or len(gyro_stream.data) == 0:
+                                             user_id=user_id, data_type=DataSet.COMPLETE)
+        else:
             return [], []
+
+        if accel_stream is None or gyro_stream is None or \
+                len(accel_stream.data) == 0 or len(gyro_stream.data) == 0:
+            return [], []
+        valid_accel_data, valid_gyro_data = check_motionsense_hrv_accel_gyroscope(accel_stream.data, gyro_stream.data)
+        accel_stream.data = valid_accel_data
+        gyro_stream.data = valid_gyro_data
 
         gravity_filtered_accel_stream = gravityFilter_function(accel_stream,
                                                                gyro_stream,
@@ -121,14 +127,14 @@ class ActivityMarker(ComputeFeatureBase):
                     posture_labels = merge_left_right(posture_labels_left,
                                                       posture_labels_right,
                                                       window_size=TEN_SECONDS)
-
-                    store_data("metadata/activity_type_10seconds_window.json",
-                               [streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
-                                streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
-                               user_id,
-                               activity_labels, "ACTIVITY TYPES", self)
-                    store_data("metadata/posture_10seconds_window.json",
-                               [streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
-                                streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
-                               user_id,
-                               posture_labels, "POSTURE", self)
+                    if len(activity_labels) > 0:
+                        store_data("metadata/activity_type_10seconds_window.json",
+                                   [streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
+                                    streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
+                                   user_id,
+                                   activity_labels, "ACTIVITY TYPES", self)
+                        store_data("metadata/posture_10seconds_window.json",
+                                   [streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
+                                    streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
+                                   user_id,
+                                   posture_labels, "POSTURE", self)
