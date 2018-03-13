@@ -174,7 +174,9 @@ def main():
             all_users = users
     except Exception as e:
         print(str(e))
-
+    if not all_users:
+        print('No users found for the study',study_name)
+        return
     found_features = discover_features(feature_list)
     feature_to_process = generate_feature_processing_order(found_features)
     process_features(feature_to_process, all_users, all_days)

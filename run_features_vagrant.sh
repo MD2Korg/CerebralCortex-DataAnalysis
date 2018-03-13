@@ -29,7 +29,7 @@ SPARK_MASTER="local[2]"
 FEATURES="activity,gps"
 
 # study name
-STUDY_NAME="mPerf"
+STUDY_NAME="mperf"
 
 # start date
 START_DATE="20180101"
