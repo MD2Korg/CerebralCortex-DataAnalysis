@@ -103,6 +103,9 @@ class ActivityMarker(ComputeFeatureBase):
 
                 streams = self.CC.get_user_streams(user_id)
 
+                if streams is None:
+                    continue
+
                 stream_days = []
                 if MOTIONSENSE_HRV_GYRO_LEFT in streams:
                     stream_days = get_stream_days(streams[MOTIONSENSE_HRV_GYRO_LEFT]["identifier"],
