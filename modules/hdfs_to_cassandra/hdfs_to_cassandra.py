@@ -35,9 +35,9 @@ from cerebralcortex.cerebralcortex import CerebralCortex
 
 CC_CONFIG_PATH = '/home/vagrant/CerebralCortex-DockerCompose/cc_config_file/cc_vagrant_configuration.yml'
 
-DATA_DIR = '/home/vagrant/features'
+DATA_DIR = '/home/vagrant/extraversion_data'
 
-METADATA = '/home/vagrant/mperf_ids.txt'
+METADATA = '/home/vagrant/extraversion_metadata'
 
 parser = argparse.ArgumentParser(description='CerebralCortex '
                                      'Imports data from HDFS')
@@ -121,7 +121,12 @@ def parse_and_save_pickles(root_dir):
                 user_id = os.path.basename(user)
                 stream_id = os.path.basename(stream)
                 stream_name = stream_names[stream_id]
-                metadata = metadata_map[stream_name]
+                
+                mf_name = os.path.join(METADATA,stream_id)
+                mf_name += '.pickle'
+                mfp = open(mf_name,'rb')
+                metadata = pickle.load(mfp)
+                mfp.close()
                 save(stream_id, user_id, stream_name, 
                       metadata['data_descriptor'],
                       metadata['execution_context'],
@@ -149,6 +154,6 @@ def save(identifier, owner, name, data_descriptor, execution_context,
        print(traceback.format_exc()) 
 
 #main 
-load_metadata(METADATA)
+#load_metadata(METADATA)
 load_streamnames()
 parse_and_save_pickles(DATA_DIR)

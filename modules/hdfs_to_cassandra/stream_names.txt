@@ -109,3 +109,43 @@ f3839f91-c386-3dbd-bba5-91802e9d945a	org.md2k.data_analysis.feature.phone.inter_
 9cd7319b-fac4-3412-84bc-8ef990d39021	org.md2k.data_analysis.feature.phone.inter_event_sms_time.four_hour.average
 4630e79a-c78e-32eb-b317-fafabdf26c47	org.md2k.data_analysis.feature.phone.inter_event_sms_time.day.average
 90d22d88-b47c-3dc9-9b6e-c8e4e652db7b	org.md2k.data_analysis.feature.phone.inter_event_phone_call_time.hour.average
+0553698c-327c-3984-b170-8b3d9f532b7b	ACTIVITY_TYPE--org.md2k.phonesensor--PHONE
+5fd01d78-9ca8-36fb-973a-6faf11d0d78c	BEACON--org.md2k.beacon--BEACON--WORK 1
+1fea6a69-d88d-314b-ae7e-ce5d60d18337	BEACON--org.md2k.beacon--BEACON--HOME
+59f6807b-7201-3c45-9d6c-5440518a36d5	ACTIVITY_TYPE--org.md2k.phonesensor--PHONE
+c61ea438-d163-3944-9008-4e41a4707875	ACTIVITY_TYPE--org.md2k.phonesensor--PHONE
+eef45255-13f5-3114-825a-9f0b06afe87d	BEACON--org.md2k.beacon--BEACON--WORK 1
+d7db28a6-465b-3b02-9514-cd6b442e687e	BEACON--org.md2k.beacon--BEACON--HOME
+1c6c1ddb-1141-396d-b443-f5dc518b40e8	ACTIVITY_TYPE--org.md2k.phonesensor--PHONE
+9ebb7398-cddd-3996-9001-88824a932d42	BEACON--org.md2k.beacon--BEACON--WORK 1
+f768aba3-c1f3-3da0-b041-6d85fb65c4d0	BEACON--org.md2k.beacon--BEACON--HOME
+3c64ff28-d626-3d10-9da5-9b4e7a069d84	ACTIVITY_TYPE--org.md2k.phonesensor--PHONE
+02699276-28f3-3cc3-87c6-3121f4c6dfc2	ACTIVITY_TYPE--org.md2k.phonesensor--PHONE
+389f6873-7114-3e3e-afec-9b040eb62fc2	BEACON--org.md2k.beacon--BEACON--WORK 1
+f8ac3316-973b-329f-8b41-efdba58ef5a7	BEACON--org.md2k.beacon--BEACON--WORK 1
+03fbe838-b5f4-3ba2-8f23-8fd9c87e3193	BEACON--org.md2k.beacon--BEACON--HOME
+db6a552e-1a5d-3d4e-a535-b40d5de78c15	BEACON--org.md2k.beacon--BEACON--HOME
+b56d5d92-41e3-3699-aa0a-e869c1da43a8	ACTIVITY_TYPE--org.md2k.phonesensor--PHONE
+f9966820-bc7c-3512-8be8-61433aa8f95f	ACTIVITY_TYPE--org.md2k.phonesensor--PHONE
+4c4e8f45-71a6-3152-82a6-8a35626163c0	BEACON--org.md2k.beacon--BEACON--WORK 1
+3a977d0e-7feb-373d-b624-d29c84debc29	BEACON--org.md2k.beacon--BEACON--HOME
+3b356206-8636-3478-bf3a-9fbdeb9b7ec8	ACTIVITY_TYPE--org.md2k.phonesensor--PHONE
+87bee1d5-8cf3-374c-b1a2-90d8787619de	ACTIVITY_TYPE--org.md2k.phonesensor--PHONE
+529d7a0c-fdb6-3c4b-803d-b13e4eae3bb8	GEOFENCE--Home--org.md2k.phonesensor--PHONE
+84b6699e-7b69-35ba-84a8-b265462884f2	GEOFENCE--Home--org.md2k.phonesensor--PHONE
+4daa9e5b-7b78-381d-a486-98d5adebadc8	GEOFENCE--Work--org.md2k.phonesensor--PHONE
+e0db5bf6-ad93-3ed7-bce3-1d13c0df9c35	GEOFENCE--Work--org.md2k.phonesensor--PHONE
+cf12539c-5220-381e-86f1-b900eb6454bb	BEACON--org.md2k.beacon--BEACON--WORK 1
+f5fb8344-373a-3457-afe1-acc799d0ec0b	BEACON--org.md2k.beacon--BEACON--HOME
+560093a4-8229-3855-b2a6-5f8774e3bbdb	ACTIVITY_TYPE--org.md2k.phonesensor--PHONE
+2c61f5ad-26b2-339e-bab9-679b6b1a8db6	BEACON--org.md2k.beacon--BEACON--WORK 1
+680801c3-14bb-356a-adf4-b185dc418ef0	BEACON--org.md2k.beacon--BEACON--HOME
+15617522-4e9d-33ef-a27b-b83a3ed178c6	ACTIVITY_TYPE--org.md2k.phonesensor--PHONE
+f274428d-a504-32c5-b239-509f9067f276	ACTIVITY_TYPE--org.md2k.phonesensor--PHONE
+41a783b2-4d85-3a46-8c44-b470ac6d86a2	ACTIVITY_TYPE--org.md2k.phonesensor--PHONE
+eda98c81-5623-3b9c-a1df-d106c3bd3570	GEOFENCE--Work--org.md2k.phonesensor--PHONE
+e8aed9ae-2d54-3dd6-8aba-04aa5022441c	GEOFENCE--Work--org.md2k.phonesensor--PHONE
+93435d66-8f68-326f-b799-acdee0d6fb4a	BEACON--org.md2k.beacon--BEACON--WORK 1
+54bd23a0-37ff-3cca-9fe0-8214240c3c3f	BEACON--org.md2k.beacon--BEACON--WORK 1
+90c13563-ded1-31bb-98c0-626b6bc3efd0	BEACON--org.md2k.beacon--BEACON--HOME
+2b541e8c-bb8d-3ad3-84d8-aec212482bbc	BEACON--org.md2k.beacon--BEACON--HOME
