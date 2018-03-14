@@ -26,8 +26,11 @@ import sys
 import os
 import argparse
 import pickle
+import json
+import traceback
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
+from cerebralcortex.core.datatypes.stream_types import StreamTypes
 from cerebralcortex.cerebralcortex import CerebralCortex
 
 CC_CONFIG_PATH = '/home/vagrant/CerebralCortex-DockerCompose/cc_config_file/cc_vagrant_configuration.yml'
@@ -47,6 +50,7 @@ parser.add_argument("-m", "--metadata_file", help="Path to the file containing "
 
 args = vars(parser.parse_args())
 metadata_map = {}
+stream_names = {}
 
 if args['cc_config']:
     CC_CONFIG_PATH = args['cc_config']
@@ -55,6 +59,7 @@ if args['data_dir']:
 if args['metadata_file']:
     METADATA = args['metadata_file']
 
+CC = CerebralCortex(CC_CONFIG_PATH)
 
 def load_metadata(metadata_dir):
     '''
@@ -62,12 +67,21 @@ def load_metadata(metadata_dir):
     them with key as the stream name in the metadata_map dict. 
     '''
     metadata_files = [os.path.join(metadata_dir,f) for f in os.listdir(metadata_dir)
-                      if os.path.isfile(os.path.join(metadate_dir,f))]
+                      if os.path.isfile(os.path.join(metadata_dir,f))]
     for mf in metadata_files:
         mfp = open(mf,'r')
         metadata_json = json.loads(mfp.read())        
         metadata_map[metadata_json['name']] = metadata_json
 
+
+def load_streamnames():
+    f = open('stream_names.txt','r')
+    for line in f:
+        id_name = line.split('\t')
+        streamid = id_name[0]
+        streamname = id_name[1].strip()
+        stream_names[streamid] = streamname
+    f.close()
 
 def parse_and_save_pickles(root_dir):
     '''
@@ -106,21 +120,35 @@ def parse_and_save_pickles(root_dir):
                 dps = pickle.load(pick_fp)
                 user_id = os.path.basename(user)
                 stream_id = os.path.basename(stream)
-                stream_name = ' ' #FIXME
-                metadata = ' ' # FIXME
-                #store() TODO
+                stream_name = stream_names[stream_id]
+                metadata = metadata_map[stream_name]
+                save(stream_id, user_id, stream_name, 
+                      metadata['data_descriptor'],
+                      metadata['execution_context'],
+                      metadata['annotations'],
+                      StreamTypes.DATASTREAM,
+                      dps) 
                 pick_fp.close()
             #print(stream,pickle_files)
     f.close()        
             
 
-def save():
+def save(identifier, owner, name, data_descriptor, execution_context,
+         annotations, stream_type, data):
     ds = DataStream(identifier=identifier, owner=owner, name=name, 
                     data_descriptor=data_descriptor,
                     execution_context=execution_context, 
                     annotations=annotations,
                     stream_type=stream_type, data=data)
 
+
+    try:
+        CC.save_stream(ds)
+        print("Saved %d data points"%(len(data)))
+    except Exception as e:
+       print(traceback.format_exc()) 
+
 #main 
 load_metadata(METADATA)
+load_streamnames()
 parse_and_save_pickles(DATA_DIR)
