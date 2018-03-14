@@ -41,28 +41,31 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         """
         location_stream = 'LOCATION--org.md2k.phonesensor--PHONE'
         geofence_list_stream = 'GEOFENCE--LIST--org.md2k.phonesensor--PHONE'
+
         if self.CC is not None:
-            self.CC.logging.log('GPS processing %s ' %(str(user)))
+            #self.CC.logging.log('GPS processing %s ' %(str(user)))
             #users = [{'username': 'mperf_9040', 'identifier': '397c6457-0954-4cd2-995c-2fbeb6c72097'}]
             streams = self.CC.get_user_streams(user)
             gps_data_all_streams = []
             gps_groundtruth_data = {}
+
             for stream_name in streams:
                 if geofence_list_stream in stream_name:
                     stream_ids = self.CC.get_stream_id(user, stream_name)
                     for stream_id in stream_ids:
                         geofence_stream_id = stream_id["identifier"]
-                        gps_groundtruth_d = self.gps_groundtruth(geofence_stream_id, user)
+                        gps_groundtruth_d = self.gps_groundtruth(geofence_stream_id, user, all_days)
                         gps_groundtruth_data.update(gps_groundtruth_d)
                 if location_stream in stream_name:
                     stream_ids = self.CC.get_stream_id(user, stream_name)
                     for stream_id in stream_ids:
                         gps_stream_id = stream_id["identifier"]
-                        data = self.get_gps(gps_stream_id, user)
+                        data = self.get_gps(gps_stream_id, user, all_days)
                         gps_data_all_streams.extend(data)
 
             if not gps_groundtruth_data:
                 return
+            print("Ground Truth Data Found",user)
 
             gps_data_admission_controlled = self.gps_admission_control(gps_data_all_streams)
             interpolated_gps_data = self.gps_interpolation(gps_data=gps_data_admission_controlled)
@@ -72,6 +75,10 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                                          min_points_in_cluster=self.MINIMUM_POINTS_IN_CLUSTER,
                                          max_dist_assign_centroid=self.GEOFENCE_ASSIGNING_CENTROID,
                                          centroid_name_dict=gps_groundtruth_data)
+
+            print("gps_data_clustering:",len(epoch_centroid))
+            print("gps_semantic:",len(epoch_semantic))
+
             self.store_data("metadata/gps_data_clustering_episode_generation.json", [streams[location_stream],
                              streams[geofence_list_stream]], user, epoch_centroid)
             self.store_data("metadata/gps_episodes_and_semantic_location.json", [streams[location_stream],

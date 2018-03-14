@@ -110,6 +110,9 @@ class ActivityMarker(ComputeFeatureBase):
                     posture_labels = merge_left_right(posture_labels_left,
                                                       posture_labels_right,
                                                       window_size=TEN_SECONDS)
+                    
+                    print("activity_type_stream:",len(activity_labels))
+                    print("posture_stream:",len(posture_labels))
 
                     store_data("metadata/activity_type_10seconds_window.json",
                                [streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
