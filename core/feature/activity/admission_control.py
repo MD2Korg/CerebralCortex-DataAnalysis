@@ -2,7 +2,7 @@ import numbers
 from typing import List
 
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-from core.feature.activity.ACTIVITY_CONSTANTS import *
+from core.feature.activity.utils import *
 
 
 def is_valid_motionsense_hrv_accelerometer(dp: DataPoint):
