@@ -46,6 +46,13 @@ MOTIONSENSE_HRV_ACCEL_LEFT = "ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_
 MOTIONSENSE_HRV_GYRO_RIGHT = "GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
 MOTIONSENSE_HRV_GYRO_LEFT = "GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
 
+# MotionSense sample range
+MIN_MSHRV_ACCEL = -2.5
+MAX_MSHRV_ACCEL = 2.5
+
+MIN_MSHRV_GYRO = -250
+MAX_MSHRV_GYRO = 250
+
 LEFT_WRIST = 'left_wrist'
 RIGHT_WRIST = 'right_wrist'
 
@@ -61,6 +68,8 @@ POSTURE_LABELS = ["lying", "sitting", "standing"]
 
 ACTIVITY_LABELS_INDEX_MAP = {"NO": 0, "LOW": 1, "WALKING": 2, "MOD": 3, "HIGH": 4}
 POSTURE_LABELS_INDEX_MAP = {"lying": 0, "sitting": 1, "standing": 2}
+
+
 ###### --------------- END constants -------------------------------------
 
 

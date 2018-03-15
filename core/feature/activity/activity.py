@@ -77,6 +77,8 @@ class ActivityMarker(ComputeFeatureBase):
         if accel_stream is None or gyro_stream is None or \
                 len(accel_stream.data) == 0 or len(gyro_stream.data) == 0:
             return [], []
+        if len(accel_stream.data) != len(gyro_stream.data):
+            return [], []
         valid_accel_data, valid_gyro_data = check_motionsense_hrv_accel_gyroscope(accel_stream.data, gyro_stream.data)
         accel_stream.data = valid_accel_data
         gyro_stream.data = valid_gyro_data
@@ -94,35 +96,19 @@ class ActivityMarker(ComputeFeatureBase):
 
         return posture_labels, activity_labels
 
-    def process(self):
+    def process(self, user, all_days):
         if self.CC is not None:
-            all_users = self.CC.get_all_users("mperf")
-
-            for user in all_users:
-                user_id = user["identifier"]
-
-                streams = self.CC.get_user_streams(user_id)
-
+            if user:
+                streams = self.CC.get_user_streams(user)
                 if streams is None:
-                    continue
+                    return
 
-                stream_days = []
-                if MOTIONSENSE_HRV_GYRO_LEFT in streams:
-                    stream_days = get_stream_days(streams[MOTIONSENSE_HRV_GYRO_LEFT]["identifier"],
-                                                  self.CC)
-                if MOTIONSENSE_HRV_GYRO_RIGHT in streams:
-                    temp_stream_days = get_stream_days(streams[MOTIONSENSE_HRV_GYRO_RIGHT]["identifier"],
-                                                       self.CC)
-                    stream_days = stream_days + temp_stream_days
-                    stream_days = np.unique(stream_days)
-                    stream_days.sort()
-
-                for day in stream_days:
+                for day in all_days:
                     posture_labels_left, activity_labels_left = self.process_activity_and_posture_marker(streams,
-                                                                                                         user_id, day,
+                                                                                                         user, day,
                                                                                                          LEFT_WRIST)
                     posture_labels_right, activity_labels_right = self.process_activity_and_posture_marker(streams,
-                                                                                                           user_id, day,
+                                                                                                           user, day,
                                                                                                            RIGHT_WRIST)
                     activity_labels = merge_left_right(activity_labels_left,
                                                        activity_labels_right,
@@ -130,14 +116,17 @@ class ActivityMarker(ComputeFeatureBase):
                     posture_labels = merge_left_right(posture_labels_left,
                                                       posture_labels_right,
                                                       window_size=TEN_SECONDS)
-                    if len(activity_labels) > 0:
-                        store_data("metadata/activity_type_10seconds_window.json",
-                                   [streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
-                                    streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
-                                   user_id,
-                                   activity_labels, "ACTIVITY TYPES", self)
-                        store_data("metadata/posture_10seconds_window.json",
-                                   [streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
-                                    streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
-                                   user_id,
-                                   posture_labels, "POSTURE", self)
+
+                    print("activity_type_stream:", len(activity_labels))
+                    print("posture_stream:", len(posture_labels))
+
+                    store_data("metadata/activity_type_10seconds_window.json",
+                               [streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
+                                streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
+                               user,
+                               activity_labels, "ACTIVITY TYPES", self)
+                    store_data("metadata/posture_10seconds_window.json",
+                               [streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
+                                streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
+                               user,
+                               posture_labels, "POSTURE", self)
