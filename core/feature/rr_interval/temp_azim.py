@@ -8,4 +8,5 @@ import pickle
 CC = CerebralCortex()
 users = CC.get_all_users("mperf-alabsi")
 for user in users:
+
     print(user['identifier'])
