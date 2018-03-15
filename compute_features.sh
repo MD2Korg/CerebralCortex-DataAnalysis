@@ -23,22 +23,22 @@ export PYTHONPATH=$PYTHONPATH:'$DATA_ANALAYSIS_PATH:core/signalprocessing/gravit
 CC_CONFIG_FILEPATH="/md2k/code/ali/cc_config/cc_configuration.yml"
 
 # spark master
-SPARK_MASTER="local[8]"
+SPARK_MASTER="local[1]"
 
 # list of features to process, leave blank to process all features
-FEATURES=""
+FEATURES="activity"
 
 # study name
 STUDY_NAME="mperf"
 
 # start date
-START_DATE="20171001"
+START_DATE="20171104"
 
 # end date
-END_DATE="20180130"
+END_DATE="20171111"
 
 # list of usersids separated by comma. Leave blank to process all users.
-USERIDS=""
+USERIDS="247d42cf-f81c-44d2-9db8-fea69f468d58"
 
 spark-submit --master $SPARK_MASTER \
 core/driver.py -c $CC_CONFIG_FILEPATH -s $STUDY_NAME -sd $START_DATE \
