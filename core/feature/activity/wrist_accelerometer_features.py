@@ -137,6 +137,9 @@ def compute_window_features(start_time, end_time, data: List[DataPoint]) -> Data
     :return: feature vector as DataPoint
     """
 
+    offset = 0
+    if len(data)>0:
+        offset = data[0].offset
     timestamps = [v.start_time for v in data]
     accel_x = [v.sample[0] for v in data]
     accel_y = [v.sample[1] for v in data]
@@ -163,7 +166,7 @@ def compute_window_features(start_time, end_time, data: List[DataPoint]) -> Data
     feature_vector.extend(
         [z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power, z_sp_entropy, z_peak_freq])
 
-    return DataPoint(start_time=start_time, end_time=end_time, sample=feature_vector)
+    return DataPoint(start_time=start_time, end_time=end_time, offset=offset, sample=feature_vector)
 
 
 def compute_accelerometer_features(accel_stream: DataStream,
