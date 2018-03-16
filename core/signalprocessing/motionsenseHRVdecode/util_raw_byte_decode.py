@@ -27,7 +27,7 @@
 import numpy as np
 import pandas as pd
 
-def Preprc(raw_data=[],flag=0):
+def Preprc(raw_data,flag=0):
     # process recieved arrays (data_arr1=data, data_arr2=time,seq)
     data_arr1,data_arr2,err_pkts=process_raw_PPG(raw_data)
     seq=np.copy(data_arr2[:,1])
