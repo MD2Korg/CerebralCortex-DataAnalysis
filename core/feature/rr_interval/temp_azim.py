@@ -1,7 +1,50 @@
 from cerebralcortex.cerebralcortex import CerebralCortex
+from core.feature.rr_interval.util_get_store import get_stream_days
+import numpy as np
 
 CC = CerebralCortex()
 users = CC.get_all_users("mperf-alabsi")
-respiration_raw_autosenseble = "RESPIRATION--org.md2k.autosenseble--AUTOSENSE_BLE--CHEST"
-for user in users:
-    print(user['identifier'])
+
+motionsense_hrv_left_raw = "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
+motionsense_hrv_right_raw = "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
+both_stream_available = False
+only_left_available = False
+only_right_available = False
+
+for user in users[1:2]:
+    streams = CC.get_user_streams(user['identifier'])
+    user_id = user["identifier"]
+    user_data_collection = {}
+    if motionsense_hrv_left_raw in streams:
+        # print(1)
+        user_data_collection['left']={}
+        stream_days_left = get_stream_days(streams[motionsense_hrv_left_raw]["identifier"],
+                                           CC)
+
+        if len(stream_days_left)>0:
+            for day in stream_days_left:
+                motionsense_left_raw = CC.get_stream(streams[motionsense_hrv_left_raw]["identifier"],
+                                        day=day,user_id=user_id)
+                if len(motionsense_left_raw.data)>0:
+                    user_data_collection['left'][day] = np.array(motionsense_left_raw.data)
+    if motionsense_hrv_right_raw in streams:
+        user_data_collection['right']={}
+        stream_days_right = get_stream_days(streams[motionsense_hrv_right_raw]["identifier"],
+                                           CC)
+        if len(stream_days_right)>0:
+            for day in stream_days_right:
+                motionsense_right_raw = CC.get_stream(streams[motionsense_hrv_right_raw]["identifier"],
+                                                     day=day,user_id=user_id)
+                if len(motionsense_right_raw.data)>0:
+                    user_data_collection['right'][day] = np.array(motionsense_right_raw.data)
+
+    for day in user_data_collection['left'].keys():
+        data = user_data_collection['left'][day]
+        ts = [i.start_time.timestamp() for i in data]
+        sample = np.zeros((len(ts),22))
+        sample[:,0] = ts;sample[:,1] = ts
+        for k in range(len(ts)):
+            sample[k,2:] = [np.float(dp) for dp in (data[k].sample.split(','))]
+
+
+
