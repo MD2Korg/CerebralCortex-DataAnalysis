@@ -1,5 +1,6 @@
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
+from cerebralcortex.core.datatypes.stream_types import StreamTypes
 from core.computefeature import ComputeFeatureBase
 
 import datetime
@@ -25,7 +26,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
             self.store(identifier=output_stream_id, owner=user_id, name=json_metadata["name"], data_descriptor=json_metadata["data_descriptor"],
                        execution_context=json_metadata["execution_context"], annotations=json_metadata["annotations"],
-                       stream_type="datastream", data=data)
+                       stream_type=StreamTypes.DATASTREAM, data=data)
 
     def inter_event_time_list(self, data):
         if len(data)==0:

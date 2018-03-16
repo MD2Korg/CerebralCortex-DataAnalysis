@@ -1,7 +1,33 @@
+# Copyright (c) 2017, MD2K Center of Excellence
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+# list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+import sys
 import csv
 import os
 import json
 import uuid
+import argparse
 from datetime import datetime
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
@@ -14,6 +40,24 @@ CC_CONFIG_PATH = '/home/vagrant/CerebralCortex-DockerCompose/cc_config_file/cc_v
 DATA_DIR='/home/vagrant/mperf_data'
 
 UUID_MAPPING = '/home/vagrant/mperf_ids.txt'
+
+parser = argparse.ArgumentParser(description='CerebralCortex '
+                                     'Qualtrics data importer')
+parser.add_argument("-c", "--cc-config", help="Path to file containing the "
+                        "CerebralCortex configuration", required=True)
+parser.add_argument("-d", "--data-dir", help="Path to dir containing the "
+                                      "qualtrics data" , required=True)
+parser.add_argument("-u", "--user-mappings", help="Path to the file containing "
+                    " the user id to uuid mappings",  required=True)
+
+args = vars(parser.parse_args())
+
+if args['cc_config']:
+    CC_CONFIG_PATH = args['cc_config']
+if args['data_dir']:
+    DATA_DIR = args['data_dir']
+if args['user_mappings']:
+    UUID_MAPPING = args['user_mappings']
 
 files_to_process=[]
 
