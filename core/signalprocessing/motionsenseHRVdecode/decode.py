@@ -25,16 +25,16 @@
 
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from core.computefeature import ComputeFeatureBase
-from core.signalprocessing.motionsenseHRVdecode.util_get_store import get_stream_days,store_data
+from core.signalprocessing.motionsenseHRVdecode.util_get_store import get_stream_days, store_data
 from core.signalprocessing.motionsenseHRVdecode.util_helper_functions import get_decoded_matrix
 import numpy as np
 import uuid
 from datetime import datetime
 
-feature_class_name='DecodeHRV'
+feature_class_name = 'DecodeHRV'
+
 
 class DecodeHRV(ComputeFeatureBase):
-
     def all_users_data(self, study_name: str):
         """
         Process all participants' streams
@@ -66,47 +66,47 @@ class DecodeHRV(ComputeFeatureBase):
             stream_days_left = get_stream_days(streams[motionsense_hrv_left_raw]["identifier"],
                                                self.CC)
 
-            if len(stream_days_left)>0:
+            if len(stream_days_left) > 0:
                 for day in stream_days_left:
                     motionsense_left_raw = self.CC.get_stream(streams[motionsense_hrv_left_raw]["identifier"],
-                                                         day=day,user_id=user_id)
-                    if len(motionsense_left_raw.data)>0:
+                                                              day=day, user_id=user_id)
+                    if len(motionsense_left_raw.data) > 0:
                         data = np.array(motionsense_left_raw.data)
                         offset = data[0].offset
                         decoded_sample = get_decoded_matrix(data)
                         final_data = []
-                        for i in range(len(decoded_sample[:,0])):
+                        for i in range(len(decoded_sample[:, 0])):
                             final_data.append(DataPoint.from_tuple(start_time=datetime.fromtimestamp(
-                                decoded_sample[i,-1]),offset=offset,sample=decoded_sample[i,1:-1]))
+                                decoded_sample[i, -1]), offset=offset, sample=decoded_sample[i, 1:-1]))
                         store_data("metadata/decoded_hrv_left_wrist.json",
-                                           [streams[motionsense_hrv_left_raw]],
-                                           user_id,final_data, self)
+                                   [streams[motionsense_hrv_left_raw]],
+                                   user_id, final_data, self)
 
         if motionsense_hrv_right_raw in streams:
 
             stream_days_right = get_stream_days(streams[motionsense_hrv_right_raw]["identifier"],
                                                 self.CC)
 
-            if len(stream_days_right)>0:
+            if len(stream_days_right) > 0:
                 for day in stream_days_right:
                     motionsense_right_raw = self.CC.get_stream(streams[motionsense_hrv_right_raw]["identifier"],
-                                                          day=day,user_id=user_id)
-                    if len(motionsense_right_raw.data)>0:
+                                                               day=day, user_id=user_id)
+                    if len(motionsense_right_raw.data) > 0:
                         data = np.array(motionsense_right_raw.data)
                         offset = data[0].offset
                         decoded_sample = get_decoded_matrix(data)
                         final_data = []
-                        for i in range(len(decoded_sample[:,0])):
+                        for i in range(len(decoded_sample[:, 0])):
                             final_data.append(DataPoint.from_tuple(start_time=datetime.fromtimestamp(
-                                decoded_sample[i,-1]),offset=offset,sample=decoded_sample[i,1:-1]))
+                                decoded_sample[i, -1]), offset=offset, sample=decoded_sample[i, 1:-1]))
                         store_data("metadata/decoded_hrv_right_wrist.json",
                                    [streams[motionsense_hrv_right_raw]],
-                                   user_id,final_data, self)
+                                   user_id, final_data, self)
 
     def process(self):
         if self.CC is not None:
             print("Decoding All the Raw MotionsenseHRV Raw Byte Data")
             self.all_users_data("mperf-alabsi")
 
-    if __name__ == '__main__':
-        process()
+
+
