@@ -41,6 +41,7 @@ END_DATE="20171111"
 USERIDS="247d42cf-f81c-44d2-9db8-fea69f468d58"
 
 spark-submit --master $SPARK_MASTER \
+             --conf spark.ui.port=4045 \
 core/driver.py -c $CC_CONFIG_FILEPATH -s $STUDY_NAME -sd $START_DATE \
                -ed $END_DATE -u $USERIDS -f $FEATURES
 
