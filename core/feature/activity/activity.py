@@ -25,9 +25,12 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import numpy as np
-from core.feature.activity.wrist_accelerometer_features import compute_accelerometer_features
-from core.feature.activity.activity_classifier import classify_posture, classify_activity
-from core.signalprocessing.gravity_filter.gravityFilter import gravityFilter_function
+from core.feature.activity.wrist_accelerometer_features import \
+    compute_accelerometer_features
+from core.feature.activity.activity_classifier import classify_posture, \
+    classify_activity
+from core.signalprocessing.gravity_filter.gravityFilter import \
+    gravityFilter_function
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from core.feature.activity.utils import *
 from core.feature.activity.admission_control import *
@@ -46,7 +49,8 @@ class ActivityMarker(ComputeFeatureBase):
 
     """
 
-    def process_activity_and_posture_marker(self, streams, user_id, day, wrist: str):
+    def process_activity_and_posture_marker(self, streams, user_id, day,
+                                            wrist: str):
 
         """ Process activity and posture detection fro single wrist
         :param streams: all the streams of user with user-id
@@ -56,21 +60,25 @@ class ActivityMarker(ComputeFeatureBase):
         """
 
         if wrist in [LEFT_WRIST] and MOTIONSENSE_HRV_ACCEL_LEFT in streams:
-            accel_stream = self.CC.get_stream(streams[MOTIONSENSE_HRV_ACCEL_LEFT]["identifier"],
-                                              day=day,
-                                              user_id=user_id,
-                                              data_type=DataSet.COMPLETE)
-            gyro_stream = self.CC.get_stream(streams[MOTIONSENSE_HRV_GYRO_LEFT]["identifier"],
-                                             day=day,
-                                             user_id=user_id,
-                                             data_type=DataSet.COMPLETE)
+            accel_stream = self.CC.get_stream(
+                streams[MOTIONSENSE_HRV_ACCEL_LEFT]["identifier"],
+                day=day,
+                user_id=user_id,
+                data_type=DataSet.COMPLETE)
+            gyro_stream = self.CC.get_stream(
+                streams[MOTIONSENSE_HRV_GYRO_LEFT]["identifier"],
+                day=day,
+                user_id=user_id,
+                data_type=DataSet.COMPLETE)
         elif wrist in [RIGHT_WRIST] and MOTIONSENSE_HRV_ACCEL_RIGHT in streams:
-            accel_stream = self.CC.get_stream(streams[MOTIONSENSE_HRV_ACCEL_RIGHT]["identifier"],
-                                              day=day,
-                                              user_id=user_id, data_type=DataSet.COMPLETE)
-            gyro_stream = self.CC.get_stream(streams[MOTIONSENSE_HRV_GYRO_RIGHT]["identifier"],
-                                             day=day,
-                                             user_id=user_id, data_type=DataSet.COMPLETE)
+            accel_stream = self.CC.get_stream(
+                streams[MOTIONSENSE_HRV_ACCEL_RIGHT]["identifier"],
+                day=day,
+                user_id=user_id, data_type=DataSet.COMPLETE)
+            gyro_stream = self.CC.get_stream(
+                streams[MOTIONSENSE_HRV_GYRO_RIGHT]["identifier"],
+                day=day,
+                user_id=user_id, data_type=DataSet.COMPLETE)
         else:
             return [], []
 
@@ -79,7 +87,8 @@ class ActivityMarker(ComputeFeatureBase):
             return [], []
         if len(accel_stream.data) != len(gyro_stream.data):
             return [], []
-        valid_accel_data, valid_gyro_data = check_motionsense_hrv_accel_gyroscope(accel_stream.data, gyro_stream.data)
+        valid_accel_data, valid_gyro_data = check_motionsense_hrv_accel_gyroscope(
+            accel_stream.data, gyro_stream.data)
         accel_stream.data = valid_accel_data
         gyro_stream.data = valid_gyro_data
 
@@ -88,8 +97,9 @@ class ActivityMarker(ComputeFeatureBase):
                                                                sampling_freq=SAMPLING_FREQ_MOTIONSENSE_ACCEL,
                                                                is_gyro_in_degree=IS_MOTIONSENSE_HRV_GYRO_IN_DEGREE)
 
-        activity_features = compute_accelerometer_features(gravity_filtered_accel_stream,
-                                                           window_size=TEN_SECONDS)
+        activity_features = compute_accelerometer_features(
+            gravity_filtered_accel_stream,
+            window_size=TEN_SECONDS)
 
         posture_labels = classify_posture(activity_features)
         activity_labels = classify_activity(activity_features)
@@ -104,12 +114,14 @@ class ActivityMarker(ComputeFeatureBase):
                     return
 
                 for day in all_days:
-                    posture_labels_left, activity_labels_left = self.process_activity_and_posture_marker(streams,
-                                                                                                         user, day,
-                                                                                                         LEFT_WRIST)
-                    posture_labels_right, activity_labels_right = self.process_activity_and_posture_marker(streams,
-                                                                                                           user, day,
-                                                                                                           RIGHT_WRIST)
+                    posture_labels_left, activity_labels_left = self.process_activity_and_posture_marker(
+                        streams,
+                        user, day,
+                        LEFT_WRIST)
+                    posture_labels_right, activity_labels_right = self.process_activity_and_posture_marker(
+                        streams,
+                        user, day,
+                        RIGHT_WRIST)
                     activity_labels = merge_left_right(activity_labels_left,
                                                        activity_labels_right,
                                                        window_size=TEN_SECONDS)

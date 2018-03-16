@@ -1,7 +1,4 @@
 import numbers
-from typing import List
-
-from cerebralcortex.core.datatypes.datapoint import DataPoint
 from core.feature.activity.utils import *
 
 
@@ -60,7 +57,7 @@ def check_motionsense_hrv_accelerometer(accel_data):
         if is_valid_motionsense_hrv_accelerometer(dp):
             valid_accel_data.append(dp)
         else:
-            print('ACCL='+str(dp.sample))
+            print('ACCL=' + str(dp.sample))
 
     return valid_accel_data
 
@@ -76,9 +73,10 @@ def check_motionsense_hrv_gyroscope(gyro_data):
         if is_valid_motionsense_hrv_gyroscope(dp):
             valid_gyro_data.append(dp)
         else:
-            print('gyro='+str(dp.sample))
+            print('gyro=' + str(dp.sample))
 
     return valid_gyro_data
+
 
 def check_motionsense_hrv_accel_gyroscope(accel_data, gyro_data):
     '''
@@ -91,7 +89,8 @@ def check_motionsense_hrv_accel_gyroscope(accel_data, gyro_data):
     for index, dp in enumerate(gyro_data):
         dp_g = gyro_data[index]
         dp_a = accel_data[index]
-        if is_valid_motionsense_hrv_accelerometer(dp_a) and is_valid_motionsense_hrv_gyroscope(dp_g):
+        if is_valid_motionsense_hrv_accelerometer(
+                dp_a) and is_valid_motionsense_hrv_gyroscope(dp_g):
             valid_accel_data.append(dp_a)
             valid_gyro_data.append(dp_g)
 

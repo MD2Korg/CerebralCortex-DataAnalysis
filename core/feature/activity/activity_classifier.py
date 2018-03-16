@@ -24,7 +24,8 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from cerebralcortex.core.datatypes.datastream import DataPoint
-from core.feature.activity.import_model_files import get_posture_model, get_activity_model
+from core.feature.activity.import_model_files import get_posture_model, \
+    get_activity_model
 from typing import List
 
 
@@ -34,7 +35,8 @@ def classify_posture(features: List[DataPoint]) -> List[DataPoint]:
     for dp in features:
         preds = clf.predict([dp.sample])
         preds = str(preds[0])
-        labels.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, offset=dp.offset, sample=preds))
+        labels.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time,
+                                offset=dp.offset, sample=preds))
 
     return labels
 
@@ -45,6 +47,7 @@ def classify_activity(features: List[DataPoint]) -> List[DataPoint]:
     for dp in features:
         preds = clf.predict([dp.sample])
         preds = str(preds[0])
-        labels.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, offset=dp.offset, sample=preds))
+        labels.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time,
+                                offset=dp.offset, sample=preds))
 
     return labels
