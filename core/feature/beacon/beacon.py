@@ -1,3 +1,6 @@
+import os
+import json
+import uuid
 from cerebralcortex.core.util.data_types import DataPoint
 from core.computefeature import ComputeFeatureBase
 from core.signalprocessing.window import window
@@ -41,7 +44,7 @@ class BeaconFeatures(ComputeFeatureBase):
                                           offset=beaconstream[0].offset, sample="around home beacon"))
         try:
             self.store_data("metadata/home_beacon_context.json",
-                            input_streams, user_id, new_data, "HOME_BEACON_CONTEXT", self)
+                            input_streams, user_id, new_data, "HOME_BEACON_CONTEXT")
         except Exception as e:
             print("Exception:", str(e))
 
@@ -62,9 +65,25 @@ class BeaconFeatures(ComputeFeatureBase):
 
         try:
             self.store_data("metadata/home_beacon_context.json",
-                            input_streams, user_id, new_data, "WORK_BEACON_CONTEXT", self)
+                            input_streams, user_id, new_data, "WORK_BEACON_CONTEXT")
         except Exception as e:
             print("Exception:", str(e))
+
+    def store_data(self, filepath, input_streams, user_id, data, str_sufix):
+        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(filepath + user_id + str_sufix)))
+        cur_dir = os.path.dirname(os.path.abspath(__file__))
+        newfilepath = os.path.join(cur_dir, filepath)
+        with open(newfilepath, "r") as f:
+            metadata = f.read()
+            metadata = json.loads(metadata)
+            metadata["execution_context"]["processing_module"]["input_streams"] = input_streams
+            metadata["identifier"] = str(output_stream_id)
+            metadata["owner"] = str(user_id)
+
+            self.store(identifier=output_stream_id, owner=user_id, name=metadata["name"],
+                       data_descriptor=metadata["data_descriptor"],
+                       execution_context=metadata["execution_context"], annotations=metadata["annotations"],
+                       stream_type="datastream", data=data)
 
     def process(self, user, all_days):
         if self.CC is not None:
