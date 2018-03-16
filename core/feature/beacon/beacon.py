@@ -7,7 +7,6 @@ from core.signalprocessing.window import window
 
 feature_class_name = 'BeaconFeatures'
 
-
 class BeaconFeatures(ComputeFeatureBase):
 
     def __init__(self):
