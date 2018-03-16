@@ -12,3 +12,4 @@ kafka
 influxdb==5.0.0
 pympler
 shapely
+matplotlib

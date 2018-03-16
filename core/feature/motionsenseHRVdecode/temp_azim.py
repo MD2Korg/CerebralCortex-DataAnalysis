@@ -1,6 +1,8 @@
 from cerebralcortex.cerebralcortex import CerebralCortex
-from core.feature.rr_interval.util_get_store import get_stream_days
+from core.feature.motionsenseHRVdecode.util_get_store import get_stream_days
+from core.feature.motionsenseHRVdecode.util_helper_functions import get_decoded_matrix
 import numpy as np
+from datetime import datetime
 
 CC = CerebralCortex()
 users = CC.get_all_users("mperf-alabsi")
@@ -40,11 +42,8 @@ for user in users[1:2]:
 
     for day in user_data_collection['left'].keys():
         data = user_data_collection['left'][day]
-        ts = [i.start_time.timestamp() for i in data]
-        sample = np.zeros((len(ts),22))
-        sample[:,0] = ts;sample[:,1] = ts
-        for k in range(len(ts)):
-            sample[k,2:] = [np.float(dp) for dp in (data[k].sample.split(','))]
+        decoded_sample = get_decoded_matrix(data)
+
 
 
 
