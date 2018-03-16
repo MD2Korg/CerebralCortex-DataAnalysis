@@ -17,7 +17,7 @@ class BeaconFeatures(ComputeFeatureBase):
 
             stream = self.CC.get_stream(beacon_stream_id, user_id=user_id, day=day)
 
-            if (len(stream.data) != 0):
+            if (len(stream.data) > 0):
                 if (stream_name == 'BEACON--org.md2k.beacon--BEACON--HOME'):
                     self.home_beacon_context(
                         stream.data, beacon_stream_id, beacon_stream_name, user_id)
