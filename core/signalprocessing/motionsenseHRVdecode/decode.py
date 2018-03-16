@@ -24,10 +24,9 @@
 
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from core.computefeature import ComputeFeatureBase
-from core.signalprocessing.motionsenseHRVdecode.util_get_store import get_stream_days, store_data
+from core.signalprocessing.motionsenseHRVdecode.util_get_store import store_data
 from core.signalprocessing.motionsenseHRVdecode.util_helper_functions import get_decoded_matrix
 import numpy as np
-import uuid
 from datetime import datetime
 
 feature_class_name = 'DecodeHRV'
@@ -66,11 +65,11 @@ class DecodeHRV(ComputeFeatureBase):
 
                 if motionsense_hrv_left_raw in streams:
                     json_path = 'metadata/decoded_hrv_left_wrist.json'
-                    self.get_and_save_data(self,streams,all_days,motionsense_hrv_left_raw,user_id,json_path)
+                    self.get_and_save_data(streams,all_days,motionsense_hrv_left_raw,user_id,json_path)
 
 
                 if motionsense_hrv_right_raw in streams:
                     json_path = 'metadata/decoded_hrv_right_wrist.json'
-                    self.get_and_save_data(self,streams,all_days,motionsense_hrv_right_raw,user_id,json_path)
+                    self.get_and_save_data(streams,all_days,motionsense_hrv_right_raw,user_id,json_path)
 
 
