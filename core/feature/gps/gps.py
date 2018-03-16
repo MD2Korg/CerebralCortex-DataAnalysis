@@ -14,6 +14,7 @@ from core.computefeature import ComputeFeatureBase
 
 feature_class_name = 'GPSClusteringEpochComputation'
 
+
 class GPSClusteringEpochComputation(ComputeFeatureBase):
     INTERPOLATION_TIME = 1.0
     KM_PER_RADIAN = 6371.0088
@@ -43,8 +44,8 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         geofence_list_stream = 'GEOFENCE--LIST--org.md2k.phonesensor--PHONE'
 
         if self.CC is not None:
-            #self.CC.logging.log('GPS processing %s ' %(str(user)))
-            #users = [{'username': 'mperf_9040', 'identifier': '397c6457-0954-4cd2-995c-2fbeb6c72097'}]
+            # self.CC.logging.log('GPS processing %s ' %(str(user)))
+            # users = [{'username': 'mperf_9040', 'identifier': '397c6457-0954-4cd2-995c-2fbeb6c72097'}]
             streams = self.CC.get_user_streams(user)
             gps_data_all_streams = []
             gps_groundtruth_data = {}
@@ -55,35 +56,41 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                     for stream_id in stream_ids:
                         geofence_stream_id = stream_id["identifier"]
                         gps_groundtruth_d = self.gps_groundtruth(geofence_stream_id, user, all_days)
+                        if not gps_groundtruth_d:
+                            continue
                         gps_groundtruth_data.update(gps_groundtruth_d)
                 if location_stream in stream_name:
                     stream_ids = self.CC.get_stream_id(user, stream_name)
                     for stream_id in stream_ids:
                         gps_stream_id = stream_id["identifier"]
                         data = self.get_gps(gps_stream_id, user, all_days)
+                        if not data:
+                            continue
                         gps_data_all_streams.extend(data)
 
-            if not gps_groundtruth_data:
+            if not gps_data_all_streams and not gps_groundtruth_data:
+                self.CC.logging.log('if not gps_data_all_streams and not '
+                                    'gps_groundtruth_data ' +str(user))
                 return
-            print("Ground Truth Data Found",user)
+            else:
+                gps_data_admission_controlled = self.gps_admission_control(gps_data_all_streams)
+                interpolated_gps_data = self.gps_interpolation(gps_data=gps_data_admission_controlled)
+                epoch_centroid, epoch_semantic = \
+                    self.get_gps_data_format(interpolated_gps_data,
+                                             geo_fence_distance=self.GEO_FENCE_DISTANCE,
+                                             min_points_in_cluster=self.MINIMUM_POINTS_IN_CLUSTER,
+                                             max_dist_assign_centroid=self.GEOFENCE_ASSIGNING_CENTROID,
+                                             centroid_name_dict=gps_groundtruth_data)
 
-            gps_data_admission_controlled = self.gps_admission_control(gps_data_all_streams)
-            interpolated_gps_data = self.gps_interpolation(gps_data=gps_data_admission_controlled)
-            epoch_centroid, epoch_semantic = \
-                self.get_gps_data_format(interpolated_gps_data,
-                                         geo_fence_distance=self.GEO_FENCE_DISTANCE,
-                                         min_points_in_cluster=self.MINIMUM_POINTS_IN_CLUSTER,
-                                         max_dist_assign_centroid=self.GEOFENCE_ASSIGNING_CENTROID,
-                                         centroid_name_dict=gps_groundtruth_data)
+                print("gps_data_clustering:", len(epoch_centroid))
+                print("gps_semantic:", len(epoch_semantic))
 
-            print("gps_data_clustering:",len(epoch_centroid))
-            print("gps_semantic:",len(epoch_semantic))
-
-            self.store_data("metadata/gps_data_clustering_episode_generation.json", [streams[location_stream],
-                             streams[geofence_list_stream]], user, epoch_centroid)
-            self.store_data("metadata/gps_episodes_and_semantic_location.json", [streams[location_stream],
-                             streams[geofence_list_stream]], user, epoch_semantic)
-
+                self.store_data("metadata/gps_data_clustering_episode_generation.json", [streams[location_stream],
+                                                                                         streams[geofence_list_stream]],
+                                user, epoch_centroid)
+                self.store_data("metadata/gps_episodes_and_semantic_location.json", [streams[location_stream],
+                                                                                     streams[geofence_list_stream]], user,
+                                epoch_semantic)
 
     def store_data(self, filepath, input_streams, user_id, data):
         output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(filepath + user_id + "GPS Clustering")))
@@ -105,6 +112,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     def get_gps(self, gps_stream_id, user_id, all_days):
         """
         Extract all gps data of a given user
+        :param all_days:
         :param gps_stream_id: String
         :param user_id: String
         :return: List (of gps datapoints for the that gps_stream_id for that user_id)
@@ -116,27 +124,33 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                 data_for_a_day = stream.data
                 data_for_all_days.append(data_for_a_day)
         extracted_gps_data = []
-        for all_data in data_for_all_days:
-            for data in all_data:
-                extracted_gps_data.append(data)
+        if not data_for_all_days:
+            extracted_gps_data = []
+        else:
+            for all_data in data_for_all_days:
+                for data in all_data:
+                    extracted_gps_data.append(data)
         return extracted_gps_data
 
-    def gps_admission_control(self, gps_data):
+    @staticmethod
+    def gps_admission_control(gps_data):
         """
          Filter out spurious data
         :param gps_data: List
         :return: List
         """
+        gps_data_control = []
         for gps in gps_data:
-            if not isinstance(gps.sample, list):
-                gps_data.remove(gps)
+            if isinstance(gps.sample, list):
+                gps_data_control.append(gps)
             else:
                 continue
-        return gps_data
+        return gps_data_control
 
     def gps_groundtruth(self, geofence_stream_id, user_id, all_days):
         """
          Obtain gps locations marked by users
+        :param all_days:
         :param geofence_stream_id: String
         :param user_id: String
         :return: Dictionary (key - semantic names, values - Corresponding co-ordinates)
@@ -144,22 +158,24 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         data_for_all_days = []
         if geofence_stream_id:
             for day in all_days:
-                stream = self.CC.get_stream(geofence_stream_id, 
-                                                user_id=user_id, day=day,
-                                                data_type=DataSet.COMPLETE)
+                stream = self.CC.get_stream(geofence_stream_id,
+                                            user_id=user_id, day=day,
+                                            data_type=DataSet.COMPLETE)
                 data_for_a_day = stream.data
                 data_for_all_days.append(data_for_a_day)
         extracted_semantic_name = {}
-        for all_data in data_for_all_days:
-            for data in all_data:
-                if isinstance(data.sample, str) and '#' in data.sample:
-                    for i in range(1, len(data.sample.split('#')), self.GROUND_STRING_LENGTH):
-                        semantic_gps_data = np.array(
-                            [float(data.sample.split('#')[i]), 
-                             float(data.sample.split('#')[i + 1])])
-                        extracted_semantic_name[data.sample.split('#')[i - 1]] = semantic_gps_data
-                else:
-                    continue
+        if not data_for_all_days:
+            extracted_semantic_name = {}
+        else:
+            for all_data in data_for_all_days:
+                for data in all_data:
+                    if isinstance(data.sample, str) and '#' in data.sample:
+                        for i in range(1, len(data.sample.split('#')), self.GROUND_STRING_LENGTH):
+                            semantic_gps_data = np.array(
+                                [float(data.sample.split('#')[i]), float(data.sample.split('#')[i + 1])])
+                            extracted_semantic_name[data.sample.split('#')[i - 1]] = semantic_gps_data
+                    else:
+                        continue
         return extracted_semantic_name
 
     def gps_interpolation(self, gps_data):
@@ -301,7 +317,6 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                             max_dist_assign_centroid,
                             centroid_name_dict):
         """
-
         :param interpolated_gps_data: List
         :param geo_fence_distance: Constant
         :param min_points_in_cluster: Constant
