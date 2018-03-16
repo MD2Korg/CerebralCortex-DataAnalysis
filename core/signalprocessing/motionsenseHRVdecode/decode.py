@@ -31,7 +31,7 @@ import numpy as np
 import uuid
 from datetime import datetime
 
-feature_class_name='DecodedHRV'
+feature_class_name='DecodeHRV'
 
 class DecodeHRV(ComputeFeatureBase):
 
@@ -41,7 +41,7 @@ class DecodeHRV(ComputeFeatureBase):
         :param study_name:
         """
         # get all participants' name-ids
-        all_users = self.CC.get_all_users(study_name)
+        all_users = self.CC.get_all_users(study_name)[1:2]
 
         if all_users:
             for user in all_users:
@@ -108,3 +108,5 @@ class DecodeHRV(ComputeFeatureBase):
             print("Decoding All the Raw MotionsenseHRV Raw Byte Data")
             self.all_users_data("mperf-alabsi")
 
+    if __name__ == '__main__':
+        process()
