@@ -28,6 +28,7 @@ import math
 from scipy.stats import skew
 from scipy.stats import kurtosis
 from cerebralcortex.core.datatypes.datastream import DataStream
+from cerebralcortex.core.datatypes.datastream import DataPoint
 from core.feature.activity.utils import *
 
 
@@ -37,7 +38,7 @@ def get_rate_of_change(timestamp, value):
     for i in range(len(value) - 1):
         if (timestamp[i + 1] - timestamp[i]).total_seconds() > 0:
             roc = roc + (((value[i + 1] - value[i]) / (
-                        timestamp[i + 1] - timestamp[i]).total_seconds()))
+                    timestamp[i + 1] - timestamp[i]).total_seconds()))
             cnt = cnt + 1
     if cnt > 0:
         roc = roc / cnt
@@ -52,7 +53,8 @@ def get_magnitude(ax, ay, az):
 def spectral_entropy(data, sampling_freq, bands=None):
     """
     Compute spectral entropy of a  signal with respect to frequency bands.
-    The power spectrum is computed through fft. Then, it is normalised and assimilated to a probability density function.
+    The power spectrum is computed through fft. Then, it is normalised and
+    assimilated to a probability density function.
     The entropy of the signal :math:`x` can be expressed by:
     .. math::
         H(x) =  -\sum_{f=0}^{f = f_s/2} PSD(f) log_2[PSD(f)]
@@ -63,7 +65,9 @@ def spectral_entropy(data, sampling_freq, bands=None):
     :type data: :class:`~numpy.ndarray` or :class:`~pyrem.time_series.Signal`
     :param sampling_freq: the sampling frequency
     :type sampling_freq:  float
-    :param bands: a list of numbers delimiting the bins of the frequency bands. If None the entropy is computed over the whole range of the DFT (from 0 to :math:`f_s/2`)
+    :param bands: a list of numbers delimiting the bins of the frequency bands.
+    If None the entropy is computed over the whole range of the DFT
+    (from 0 to :math:`f_s/2`)
     :return: the spectral entropy; a scalar
     """
     psd = np.abs(np.fft.rfft(data)) ** 2
@@ -111,14 +115,14 @@ def computeFeatures(start_time, end_time, time, x, y, z, pid):
     for i, value in enumerate(x):
         mag[i] = math.sqrt(x[i] * x[i] + y[i] * y[i] + z[i] * z[i])
 
-    mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rateOfChanges, mag_power, mag_sp_entropy, mag_peak_freq = compute_basic_features(
-        time, mag)
-    x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power, x_sp_entropy, x_peak_freq = compute_basic_features(
-        time, x)
-    y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power, y_sp_entropy, y_peak_freq = compute_basic_features(
-        time, y)
-    z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power, z_sp_entropy, z_peak_freq = compute_basic_features(
-        time, z)
+    mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rateOfChanges, \
+    mag_power, mag_sp_entropy, mag_peak_freq = compute_basic_features(time, mag)
+    x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power, \
+    x_sp_entropy, x_peak_freq = compute_basic_features(time, x)
+    y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power, \
+    y_sp_entropy, y_peak_freq = compute_basic_features(time, y)
+    z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power, \
+    z_sp_entropy, z_peak_freq = compute_basic_features(time, z)
 
     f = [pid, start_time, end_time, mag_mean, mag_median, mag_std, mag_skewness,
          mag_kurt, mag_rateOfChanges, mag_power,
