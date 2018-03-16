@@ -56,8 +56,6 @@ def check_motionsense_hrv_accelerometer(accel_data):
     for dp in accel_data:
         if is_valid_motionsense_hrv_accelerometer(dp):
             valid_accel_data.append(dp)
-        else:
-            print('ACCL=' + str(dp.sample))
 
     return valid_accel_data
 
@@ -72,8 +70,6 @@ def check_motionsense_hrv_gyroscope(gyro_data):
     for dp in gyro_data:
         if is_valid_motionsense_hrv_gyroscope(dp):
             valid_gyro_data.append(dp)
-        else:
-            print('gyro=' + str(dp.sample))
 
     return valid_gyro_data
 
