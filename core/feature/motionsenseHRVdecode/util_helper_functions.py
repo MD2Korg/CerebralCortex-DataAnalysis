@@ -24,7 +24,8 @@
 
 
 import numpy as np
-from core.signalprocessing.motionsenseHRVdecode.util_raw_byte_decode import Preprc
+from core.feature.motionsenseHRVdecode.util_raw_byte_decode \
+    import Preprc
 
 
 def get_decoded_matrix(data):

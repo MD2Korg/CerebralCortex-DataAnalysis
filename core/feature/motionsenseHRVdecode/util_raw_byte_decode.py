@@ -54,7 +54,7 @@ def Preprc(raw_data,flag=0):
 
     itime=data_arr2[0,0];ftime=data_arr2[-1,0]
     df3=df2.merge(df1,how='left',on=['Seq'])
-    df3['time']=pd.to_datetime(np.linspace(itime,ftime,len(df2)),unit='ms')  # After Ju's 2nd discussion
+    df3['time']=pd.to_datetime(np.linspace(itime,ftime,len(df2)),unit='ms')
     df3.set_index('time',inplace=True)
     df3.interpolate(method='time',axis=0,inplace=True) #filling missing data
     df3.dropna(inplace=True)
@@ -81,10 +81,16 @@ def process_raw_PPG(raw_data):
         Gyrox[i] = np.int16((np.uint8(Vals[n,6])<<8) | (np.uint8(Vals[n,7])))
         Gyroy[i] = np.int16((np.uint8(Vals[n,8])<<8) | (np.uint8(Vals[n,9])))
         Gyroz[i] = np.int16((np.uint8(Vals[n,10])<<8) | (np.uint8(Vals[n,11])))
-        led1[i]=(np.uint8(Vals[n,12])<<10) | (np.uint8(Vals[n,13])<<2) | ((np.uint8(Vals[n,14]) & int('11000000',2))>>6)
-        led2[i]=((np.uint8(Vals[n,14]) & int('00111111',2))<<12) | (np.uint8(Vals[n,15])<<4) | ((np.uint8(Vals[n,16]) & int('11110000',2))>>4)
-        led3[i]=((np.uint8(Vals[n,16]) & int('00001111',2))<<14) | (np.uint8(Vals[n,17])<<6) | ((np.uint8(Vals[n,18]) & int('11111100',2))>>2)
-        seq[i]=((np.uint8(Vals[n,18]) & int('00000011',2))<<8) | (np.uint8(Vals[n,19]))
+        led1[i]=(np.uint8(Vals[n,12])<<10) | (np.uint8(Vals[n,13])<<2) | \
+                ((np.uint8(Vals[n,14]) & int('11000000',2))>>6)
+        led2[i]=((np.uint8(Vals[n,14]) & int('00111111',2))<<12) |\
+                (np.uint8(Vals[n,15])<<4) | \
+                ((np.uint8(Vals[n,16]) & int('11110000',2))>>4)
+        led3[i]=((np.uint8(Vals[n,16]) & int('00001111',2))<<14) | \
+                (np.uint8(Vals[n,17])<<6) |\
+                ((np.uint8(Vals[n,18]) & int('11111100',2))>>2)
+        seq[i]=((np.uint8(Vals[n,18]) & int('00000011',2))<<8) | \
+               (np.uint8(Vals[n,19]))
         if i>0:
             difer=int((seq[i]-seq[i-1])%1024)
             if difer>50:
