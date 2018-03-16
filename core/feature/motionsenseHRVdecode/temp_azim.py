@@ -42,6 +42,11 @@ for user in users[1:2]:
 
     for day in user_data_collection['left'].keys():
         data = user_data_collection['left'][day]
+        offset = data[0].offset
+        decoded_sample = get_decoded_matrix(data)
+    for day in user_data_collection['right'].keys():
+        data = user_data_collection['right'][day]
+        offset = data[0].offset
         decoded_sample = get_decoded_matrix(data)
 
 
