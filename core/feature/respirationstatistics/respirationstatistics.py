@@ -38,7 +38,7 @@ from core.feature.respirationstatistics.utils.get_store import get_stream_days
 from core.feature.respirationstatistics.utils.util import *
 
 CC = CerebralCortex()
-users = CC.get_all_users("mperf-buder")
+users = CC.get_all_users("mperf-alabsi")
 respiration_raw_autosenseble = "RESPIRATION--org.md2k.autosenseble--AUTOSENSE_BLE--CHEST"
 respiration_baseline_autosenseble = "RESPIRATION_BASELINE--org.md2k.autosenseble--AUTOSENSE_BLE--CHEST"
 for user in users:
@@ -55,11 +55,52 @@ for user in users:
                                     user_id=user_id)
             rip_baseline = CC.get_stream(streams[respiration_baseline_autosenseble]["identifier"],
                                          day=day, user_id=user_id)
-            if not rip_raw:
+            if not rip_raw.data:
                 continue
             elif not rip_baseline.data:
                 final_respiration = rip_raw.data
             else:
-                final_respiration = get_recovery(rip_raw.data[1:1000],
-                                                 rip_baseline.data[1:1000],25)
-            print(final_respiration)
+                final_respiration = get_recovery(rip_raw.data[1:10000],
+                                                 rip_baseline.data[1:10000],25)
+
+            respiration_final = [i for i in final_respiration if i.sample>0]
+            sample = np.array([i.sample for i in respiration_final])
+            ts = np.array([i.start_time.timestamp() for i in respiration_final])
+            sample_smoothed_detrened = smooth_detrend(sample,ts)
+            sample_filtered,ts_filtered,indexes = filter_bad_rip(ts,sample_smoothed_detrened)
+            respiration_final_smoothed_detrended_filtered = np.array(respiration_final)[indexes]
+            peak,valley = compute_peak_valley(rip=respiration_final_smoothed_detrended_filtered)
+            feature = rip_cycle_feature_computation(peak,valley)
+            inspiration_duration, expiration_duration, respiration_duration, \
+            inspiration_expiration_ratio, stretch= feature[2:7]
+            cycle_quality,corr_pre_cycle,corr_post_cycle = return_neighbour_cycle_correlation(sample_filtered,
+                                                                                              ts_filtered,peak,
+                                                                                              valley,
+                                                                                              inspiration_duration)
+            quality_area_velocity_shape = RIPcycleAreaCalculationV2(sample_filtered,ts_filtered,peak,valley,cycle_quality)
+            cycle_quality,area_Inspiration,area_Expiration, \
+            area_Respiration,area_ie_ratio, \
+            velocity_Inspiration,velocity_Expiration,shape_skew, shape_kurt = quality_area_velocity_shape
+            entropy_array = SpectralEntropyCalculation(sample_filtered,ts_filtered,peak,valley,cycle_quality)
+            energyX,FQ_05_2_Hz,FQ_201_4_Hz,FQ_401_6_Hz,FQ_601_8_Hz,FQ_801_1_Hz = SpectralEnergyCalculation(sample_filtered,ts_filtered,peak,valley,cycle_quality)
+            conversation_feature = []
+            for i,dp in enumerate(cycle_quality):
+                if dp.sample == Quality.UNACCEPTABLE:
+                    continue
+                temp = np.zeros((21,))
+                temp[0] = inspiration_duration[i].sample;temp[1] = expiration_duration[i].sample
+                temp[2] = respiration_duration[i].sample;temp[3] = temp[0]/temp[1];
+                temp[4] = stretch[i].sample;
+                temp[5] = velocity_Inspiration[i].sample;
+                temp[6] = velocity_Expiration[i].sample
+                temp[7] = shape_skew[i].sample
+                temp[8] = shape_kurt[i].sample;
+                temp[9] = entropy_array[i].sample;temp[10] = temp[5]/temp[6];
+                temp[11] = area_ie_ratio[i].sample;temp[12] = temp[1]/temp[2];
+                temp[13] = area_Respiration[i].sample/temp[0];
+                temp[14] = FQ_05_2_Hz[i].sample;temp[15] = FQ_201_4_Hz[i].sample;
+                temp[16] = FQ_401_6_Hz[i].sample;temp[17] = FQ_601_8_Hz[i].sample;
+                temp[18] = FQ_801_1_Hz[i].sample;temp[19] = corr_pre_cycle[i].sample;
+                temp[20] = corr_post_cycle[i].sample
+                conversation_feature.append(deepcopy(dp))
+                conversation_feature[-1].sample = temp
