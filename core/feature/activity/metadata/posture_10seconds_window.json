@@ -34,7 +34,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.posture",
+  "name":"org.md2k.data_analysis.feature.body_posture.wrist.10_second",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }
