@@ -38,6 +38,8 @@ from cerebralcortex.core.util.spark_helper import get_or_create_sc
 # Initialize logging
 syslog.openlog(ident="CerebralCortex-Driver")
 cc_config_path = None
+metadata_dir = None
+
 
 def process_features(feature_list, all_users, all_days):
     '''
@@ -59,6 +61,8 @@ def process_feature_on_user(user, module, all_days, cc_config_path):
         feature_class_name = getattr(module,'feature_class_name')
         feature_class = getattr(module,feature_class_name)
         feature_class_instance = feature_class(cc)
+        feature_class_instance.feature_metadata_dir = metadata_dir
+        cc.feature_metadata_dir = metadata_dir
         f = feature_class_instance.process
         f(user,all_days)
     except Exception as e:
@@ -115,6 +119,7 @@ def generate_feature_processing_order(feature_list):
 
 def main():
     global cc_config_path
+    global metadata_dir
     # Get the list of the features to process
     parser = argparse.ArgumentParser(description='CerebralCortex '
                                      'Feature Processing Driver')
@@ -130,6 +135,8 @@ def main():
                          "YYYYMMDD Format", required=True)
     parser.add_argument("-ed", "--end-date", help="End date in " 
                          "YYYYMMDD Format", required=True)
+    parser.add_argument("-m", "--metadata-dir", help="Folder path containing "
+                        "the metadata templates for the features." , required=True)
     
     args = vars(parser.parse_args())
     feature_list = None
@@ -137,6 +144,7 @@ def main():
     users = None
     start_date = None
     end_date = None
+    metadata_dir = None
     date_format = '%Y%m%d'
     
     if args['feature_list']:
@@ -151,6 +159,8 @@ def main():
         start_date = datetime.strptime(args['start_date'], date_format)
     if args['end_date']:
         end_date = datetime.strptime(args['end_date'], date_format)
+    if args['metadata_dir']:
+        metadata_dir = args['metadata_dir']
     
     all_days = []
     while True:
@@ -162,6 +172,7 @@ def main():
     all_users = None
     try:
         CC = CerebralCortex(cc_config_path)
+        CC.feature_metadata_dir = metadata_dir
         if not users:
             users = CC.get_all_users(study_name)
             if not users:

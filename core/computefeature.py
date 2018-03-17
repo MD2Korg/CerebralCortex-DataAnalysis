@@ -22,35 +22,61 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-'''
-This module describes the ComputeFeatureBase class.
-Feature modules should inherit from ComputeFeatureBase.
-'''
-import syslog
 import traceback
-from syslog import LOG_ERR
 from cerebralcortex.core.datatypes.datastream import DataStream
+from cerebralcortex.core.log_manager.log_handler import LogTypes
 from cerebralcortex.core.datatypes.stream_types import StreamTypes
-
-# Initialize logging
-syslog.openlog(ident="CerebralCortex-ComputeFeatureBase")
+import uuid
+import os
+import json
 
 class ComputeFeatureBase(object):
+    '''
+    This module describes the ComputeFeatureBase class.
+    Feature modules should inherit from ComputeFeatureBase.
+    '''
     def process(self):
         '''
         Use this method as an entry point for all your computations.
         '''
         pass
     
+    def store_stream(self,filepath, input_streams, user_id, data):
+        '''
+        This method saves the computed DataStreams from different features
+        '''
+        stream_name = str(filepath) 
+        stream_name += str(user_id) 
+        stream_name += str(self.__class__.__name__)
+        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, stream_name))
+        
+        newfilepath = os.path.join(self.CC.feature_metadata_dir, filepath)
+        self.CC.logging.log('METADATA file path %s' % (newfilepath))
+        with open(newfilepath, "r") as f:
+            metadata = f.read()
+            metadata = json.loads(metadata)
+            metadata["execution_context"]["processing_module"]["input_streams"] = input_streams
+            metadata["identifier"] = str(output_stream_id)
+            metadata["owner"] = str(user_id)
+
+            self.store(identifier=output_stream_id, owner=user_id, name=metadata["name"],
+                       data_descriptor=metadata["data_descriptor"],
+                       execution_context=metadata["execution_context"], annotations=metadata["annotations"],
+                       stream_type=StreamTypes.DATASTREAM, data=data)
+
+
+
     def store(self, identifier, owner, name, data_descriptor, execution_context,
               annotations, stream_type=StreamTypes.DATASTREAM, data=None):
         '''
         All store operations MUST be through this method.
         '''
         if not data:
-            syslog.syslog(LOG_ERR,'Null data received for storing '+ 
-                          str(traceback.format_exc()))
+            self.CC.logging.log(error_type=LogTypes.MISSING_DATA, error_message
+                                = 'Null data received for '
+                                  'saving stream from  ' + self.__class__.__name__)
             return
+        
         ds = DataStream(identifier=identifier, owner=owner, name=name, 
                         data_descriptor=data_descriptor,
                         execution_context=execution_context, 
@@ -59,7 +85,7 @@ class ComputeFeatureBase(object):
         try:
             self.CC.save_stream(ds)
         except Exception as exp:
-            syslog.syslog(LOG_ERR,self.__class__.__name__ + str(exp) + "\n" + 
+            self.CC.logging.log(self.__class__.__name__ + str(exp) + "\n" + 
                           str(traceback.format_exc()))
 
     def __init__(self, CC = None):
