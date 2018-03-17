@@ -28,25 +28,28 @@ from core.feature.motionsenseHRVdecode.util_raw_byte_decode \
     import Preprc
 
 
-def get_decoded_matrix(data):
+def get_decoded_matrix(data,row_length=22):
+    """
+    given the raw byte array containing lists it returns the decoded values
+
+    :param data: input matrix(*,22) containing raw bytes
+
+    :return: a matrix each row of which contains consecutively sequence
+    number,acclx,accly,acclz,gyrox,gyroy,gyroz,red,infrared,green leds,
+    timestamp
+    """
     ts = [i.start_time.timestamp() for i in data]
-    sample = np.zeros((len(ts),22))
+    sample = np.zeros((len(ts),row_length))
     sample[:,0] = ts;sample[:,1] = ts
     for k in range(len(ts)):
         sample[k,2:] = [np.int8(np.float(dp)) for dp in (data[k].sample.split(','))]
     ts_temp = np.array([0]+list(np.diff(ts)))
     ind = np.where(ts_temp>1)[0]
     initial = 0
-    sample_final  = [0]*11
+    sample_final  = [0]*int(row_length/2)
     for k in ind:
         sample_temp = Preprc(raw_data=sample[initial:k,:])
         sample_final = np.vstack((sample_final,sample_temp.values))
         initial = k
     return sample_final[1:,:]
 
-
-def get_common_days(user_data_collection):
-    day_list = []
-    day_list.extend(list(user_data_collection['left'].keys()))
-    day_list.extend(list(user_data_collection['right'].keys()))
-    return np.unique(day_list)

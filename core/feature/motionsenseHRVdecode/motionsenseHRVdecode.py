@@ -38,6 +38,16 @@ class DecodeHRV(ComputeFeatureBase):
 
     def get_and_save_data(self,all_streams,all_days,stream_identifier,
                           user_id,json_path):
+        """
+        all computation and storing of data
+
+        :param all_streams: all streams of a person
+        :param all_days: daylist to compute
+        :param stream_identifier: left/right wrist HRV raw stream identifier
+        :param user_id: user id
+        :param json_path: path of json file containing metadata
+        :return:
+        """
         for day in all_days:
             motionsense_raw = self.CC.get_stream(
                 all_streams[stream_identifier]["identifier"],day=day,
@@ -56,7 +66,13 @@ class DecodeHRV(ComputeFeatureBase):
 
 
 
-    def process(self, user, all_days):
+    def process(self, user:str, all_days):
+        """
+
+        :param user: user id string
+        :param all_days: list of days to compute
+
+        """
         motionsense_hrv_left_raw = \
             "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
         motionsense_hrv_right_raw = \
