@@ -1,3 +1,27 @@
+# Copyright (c) 2018, MD2K Center of Excellence
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+# list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 from scipy import signal,interpolate
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from enum import Enum
@@ -180,6 +204,15 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
     return y
 
 def bandpower(x, fs, fmin, fmax,nfft_point=1024):
+    """
+    returns the power in a frequency band of a signal
+    :param x:
+    :param fs:
+    :param fmin: low frequency
+    :param fmax: high frequency
+    :param nfft_point:
+    :return: power in low to high frequency band
+    """
     f, Pxx = scipy.signal.welch(x,
                                 fs=fs,window=signal.get_window('hamming',
                                                                len(x)),
@@ -211,7 +244,8 @@ def return_bandPassedSignal(sample,f1L,f1H,f2L,f2H,Fs=25):
     sample = np.convolve(sample,b,'same')
     return sample
 
-def return_neighbour_cycle_correlation(sample,ts,peak,valley,inspiration,fs=25):
+def return_neighbour_cycle_correlation(sample,ts,peak,valley,inspiration,
+                                       fs=25,unacceptable=-9999):
     """
     Return Neighbour Cycle correlation array of respiration cycles.
     :param sample:
@@ -226,12 +260,17 @@ def return_neighbour_cycle_correlation(sample,ts,peak,valley,inspiration,fs=25):
     cycle_quality = []
     corr_pre_cycle = [0]*len(inspiration)
     corr_post_cycle = [0]*len(inspiration)
-    corr_pre_cycle[0] = DataPoint.from_tuple(start_time=inspiration[0].start_time,end_time=inspiration[0].end_time,
-                                             sample=1)
-    corr_post_cycle[-1] = DataPoint.from_tuple(start_time=inspiration[-1].start_time,end_time=inspiration[-1].end_time,sample=-9999)
+
+    corr_pre_cycle[0] = DataPoint.from_tuple(start_time=inspiration[
+        0].start_time,end_time=inspiration[0].end_time,sample=1)
+
+    corr_post_cycle[-1] = DataPoint.from_tuple(start_time=inspiration[
+        -1].start_time,end_time=inspiration[-1].end_time,sample=unacceptable)
+
     start_time = inspiration[0].start_time.timestamp()
     end_time = inspiration[0].end_time.timestamp()
     current_cycle = sample[np.where((ts>=start_time)&(ts<end_time))[0]]
+
     for i,dp in enumerate(inspiration):
         start_time = dp.start_time.timestamp()
         end_time = dp.end_time.timestamp()
@@ -245,12 +284,14 @@ def return_neighbour_cycle_correlation(sample,ts,peak,valley,inspiration,fs=25):
                                                          sample=get_covariance(sample_temp,current_cycle))
             else:
                 corr_pre_cycle[i] = DataPoint.from_tuple(start_time=dp.start_time,end_time=dp.end_time,
-                                                         sample=-9999)
+                                                         sample=unacceptable)
             corr_post_cycle[i-1] = corr_pre_cycle[i]
         current_cycle = sample_temp
     return np.array(cycle_quality),np.array(corr_pre_cycle),np.array(corr_post_cycle)
 
-def RIPcycleAreaCalculationV2(sample,ts,peak,valley,cycle_quality,fs=25):
+def respiration_area_shape_velocity_calculation(sample, ts, peak, valley,
+                                                cycle_quality, fs=25,
+                                                unacceptable=-9999):
     """
     Calculates the area , shape and velocity features from respiration cycles
     :param sample:
@@ -265,7 +306,7 @@ def RIPcycleAreaCalculationV2(sample,ts,peak,valley,cycle_quality,fs=25):
     """
     a = deepcopy(cycle_quality)
     for i,dp in enumerate(a):
-        a[i].sample = -9999
+        a[i].sample = unacceptable
     area_Inspiration, area_Expiration, area_Respiration,area_ie_ratio =deepcopy(a), deepcopy(a), deepcopy(a), deepcopy(a)
     velocity_Inspiration, velocity_Expiration =deepcopy(a), deepcopy(a)
     shape_skew, shape_kurt=deepcopy(a), deepcopy(a)
@@ -293,7 +334,7 @@ def RIPcycleAreaCalculationV2(sample,ts,peak,valley,cycle_quality,fs=25):
         ExpLT = np.trapz([peak_ind-valley_ind1,valley_ind2-valley_ind1],[subtractPoint2,subtractPoint2])
         ExpArea = ExpUT - ExpLT
         if ExpArea < 0:
-            cycle_quality[i].sample = Quality.UNACCEPTABLE()
+            cycle_quality[i].sample = Quality.UNACCEPTABLE
             continue
         area_Inspiration[i].sample = InspArea
         area_Expiration[i].sample = ExpArea
@@ -309,7 +350,8 @@ def RIPcycleAreaCalculationV2(sample,ts,peak,valley,cycle_quality,fs=25):
     return cycle_quality,area_Inspiration,area_Expiration,area_Respiration,area_ie_ratio, \
            velocity_Inspiration,velocity_Expiration,shape_skew, shape_kurt
 
-def SpectralEntropyCalculation(sample,ts,peak,valley,cycle_quality,fs=25):
+def spectral_entropy_calculation(sample, ts, peak, valley, cycle_quality,
+                                 fs=25,unacceptable=-9999):
     """
     Calcuclates the entropy of a respiration cycle
     :param sample:
@@ -322,7 +364,7 @@ def SpectralEntropyCalculation(sample,ts,peak,valley,cycle_quality,fs=25):
     """
     a = deepcopy(cycle_quality)
     for i,dp in enumerate(a):
-        a[i].sample = -9999
+        a[i].sample = unacceptable
     entropy_array = deepcopy(a)
     ts_index = {element:i for i,element in enumerate(ts)}
     for i,dp in enumerate(cycle_quality):
@@ -337,7 +379,7 @@ def SpectralEntropyCalculation(sample,ts,peak,valley,cycle_quality,fs=25):
         entropy_array[i].sample = stats.entropy(np.abs(fftx[1:]))
     return entropy_array
 
-def calculate_power_in_frequencyBand(x,y,Fs):
+def calculate_power_in_frequency_band(x, y, Fs):
     """
     calculates power in respiration cycle from predefined frequency bands
     :param x:
@@ -356,7 +398,9 @@ def calculate_power_in_frequencyBand(x,y,Fs):
         all_band_power[0,i] = 10*np.log10(bandpower(y,Fs,frequencyBand[i,0],frequencyBand[i,1]))
     return all_band_power
 
-def SpectralEnergyCalculation(sample,ts,peak,valley,cycle_quality,fs=25):
+def spectral_energy_calculation(sample, ts, peak, valley, cycle_quality,
+                                fs=25,unacceptable=-9999,f1L=.01,f1H=.05,
+                                f2L=1.8,f2H=1.85):
     """
     calculates the spectral energy of respiration cycle
 
@@ -371,13 +415,9 @@ def SpectralEnergyCalculation(sample,ts,peak,valley,cycle_quality,fs=25):
     """
     a = deepcopy(cycle_quality)
     for i,dp in enumerate(a):
-        a[i].sample = -9999
+        a[i].sample = unacceptable
     energyX=deepcopy(a);FQ_05_2_Hz=deepcopy(a);FQ_201_4_Hz=deepcopy(a)
     FQ_401_6_Hz=deepcopy(a);FQ_601_8_Hz=deepcopy(a);FQ_801_1_Hz=deepcopy(a)
-    f1L = 0.01
-    f1H = 0.05
-    f2L = 1.8
-    f2H = 1.85
     sample = return_bandPassedSignal(sample,f1L,f1H,f2L,f2H)
     ts_index = {element:i for i,element in enumerate(ts)}
     for i,dp in enumerate(cycle_quality):
@@ -392,7 +432,8 @@ def SpectralEnergyCalculation(sample,ts,peak,valley,cycle_quality,fs=25):
         Xdft=np.fft.fft(sample_temp-np.mean(sample_temp))/len(sample_temp)
         Xdft = Xdft[:np.int64(np.floor(len(sample_temp)/2+1)+1)]
         energyX[i].sample=np.sum(np.abs(Xdft)**2)/len(sample_temp)
-        all_band_power = calculate_power_in_frequencyBand(ts_temp,sample_temp,fs)
+        all_band_power = calculate_power_in_frequency_band(ts_temp,
+                                                          sample_temp,fs)
         #         print(all_band_power)
         FQ_05_2_Hz[i].sample = all_band_power[0,0]
         FQ_201_4_Hz[i].sample = all_band_power[0,1]

@@ -22,18 +22,12 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from cerebralcortex.cerebralcortex import CerebralCortex
-from cerebralcortex.core.datatypes.datastream import DataPoint
 from core.computefeature import ComputeFeatureBase
-import numpy as np
-from datetime import datetime
 from core.feature.respirationstatistics.utils.peak_valley import \
     compute_peak_valley
 from core.feature.respirationstatistics.utils.\
     rip_cycle_feature_computation import rip_cycle_feature_computation
 
-from scipy.stats import skew,kurtosis
-from copy import deepcopy
-from scipy import stats
 from core.feature.respirationstatistics.utils.get_store import get_stream_days
 from core.feature.respirationstatistics.utils.util import *
 
@@ -66,23 +60,40 @@ for user in users:
             respiration_final = [i for i in final_respiration if i.sample>0]
             sample = np.array([i.sample for i in respiration_final])
             ts = np.array([i.start_time.timestamp() for i in respiration_final])
+
             sample_smoothed_detrened = smooth_detrend(sample,ts)
-            sample_filtered,ts_filtered,indexes = filter_bad_rip(ts,sample_smoothed_detrened)
-            respiration_final_smoothed_detrended_filtered = np.array(respiration_final)[indexes]
+
+            sample_filtered,ts_filtered,indexes =filter_bad_rip(ts,sample_smoothed_detrened)
+            respiration_final_smoothed_detrended_filtered =np.array(respiration_final)[indexes]
+
             peak,valley = compute_peak_valley(rip=respiration_final_smoothed_detrended_filtered)
+
             feature = rip_cycle_feature_computation(peak,valley)
             inspiration_duration, expiration_duration, respiration_duration, \
             inspiration_expiration_ratio, stretch= feature[2:7]
-            cycle_quality,corr_pre_cycle,corr_post_cycle = return_neighbour_cycle_correlation(sample_filtered,
-                                                                                              ts_filtered,peak,
-                                                                                              valley,
-                                                                                              inspiration_duration)
-            quality_area_velocity_shape = RIPcycleAreaCalculationV2(sample_filtered,ts_filtered,peak,valley,cycle_quality)
+
+            cycle_quality, corr_pre_cycle,corr_post_cycle = \
+                return_neighbour_cycle_correlation(sample_filtered,
+                                                   valley,
+                                                   inspiration_duration)
+            quality_area_velocity_shape = \
+                respiration_area_shape_velocity_calculation(sample_filtered,
+                                                            ts_filtered,peak,
+                                                            valley,cycle_quality)
             cycle_quality,area_Inspiration,area_Expiration, \
             area_Respiration,area_ie_ratio, \
-            velocity_Inspiration,velocity_Expiration,shape_skew, shape_kurt = quality_area_velocity_shape
-            entropy_array = SpectralEntropyCalculation(sample_filtered,ts_filtered,peak,valley,cycle_quality)
-            energyX,FQ_05_2_Hz,FQ_201_4_Hz,FQ_401_6_Hz,FQ_601_8_Hz,FQ_801_1_Hz = SpectralEnergyCalculation(sample_filtered,ts_filtered,peak,valley,cycle_quality)
+            velocity_Inspiration,velocity_Expiration, shape_skew, shape_kurt \
+                = quality_area_velocity_shape
+
+            entropy_array = spectral_entropy_calculation(sample_filtered,
+                                                         ts_filtered,
+                                                         peak,valley,
+                                                         cycle_quality)
+
+            energyX,FQ_05_2_Hz,FQ_201_4_Hz,FQ_401_6_Hz,FQ_601_8_Hz,\
+            FQ_801_1_Hz = spectral_energy_calculation(sample_filtered,ts_filtered,peak,valley,
+                             cycle_quality)
+
             conversation_feature = []
             for i,dp in enumerate(cycle_quality):
                 if dp.sample == Quality.UNACCEPTABLE:
