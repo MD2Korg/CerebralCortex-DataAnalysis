@@ -69,6 +69,9 @@ ACTIVITY_LABELS_INDEX_MAP = {"NO": 0, "LOW": 1, "WALKING": 2, "MOD": 3,
 POSTURE_LABELS_INDEX_MAP = {"lying": 0, "sitting": 1, "standing": 2}
 
 
+MADGWICKFILTER_BETA = 0.4
+
+
 ###### --------------- END constants -------------------------------------
 
 
