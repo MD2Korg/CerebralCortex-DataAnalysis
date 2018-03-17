@@ -43,6 +43,17 @@ def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
     return stream_days
 
 def store_data(filepath, input_streams, user_id, data, instance):
+    """
+    stores a datastrem given the metadata location ,input stream,user id,
+    list of datapoints and cerebral cortex instance
+
+    :param filepath:
+    :param input_streams:
+    :param user_id:
+    :param data:
+    :param instance:
+    :return:
+    """
     output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(filepath +
                                                               user_id+
                                                               "RESPIRATION"+
