@@ -244,16 +244,15 @@ def return_bandPassedSignal(sample,f1L,f1H,f2L,f2H,Fs=25):
     sample = np.convolve(sample,b,'same')
     return sample
 
-def return_neighbour_cycle_correlation(sample,ts,peak,valley,inspiration,
-                                       fs=25,unacceptable=-9999):
+def return_neighbour_cycle_correlation(sample,ts,
+                                       inspiration,
+                                       unacceptable=-9999):
     """
     Return Neighbour Cycle correlation array of respiration cycles.
     :param sample:
     :param ts:
-    :param peak:
-    :param valley:
     :param inspiration:
-    :param fs:
+
     :return: modified cycle quality,correlation with previous cycle,
     correlation with next cycle
     """
@@ -289,7 +288,7 @@ def return_neighbour_cycle_correlation(sample,ts,peak,valley,inspiration,
         current_cycle = sample_temp
     return np.array(cycle_quality),np.array(corr_pre_cycle),np.array(corr_post_cycle)
 
-def respiration_area_shape_velocity_calculation(sample, ts, peak, valley,
+def respiration_area_shape_velocity_calculation(sample, ts, peak,
                                                 cycle_quality, fs=25,
                                                 unacceptable=-9999):
     """
@@ -297,7 +296,6 @@ def respiration_area_shape_velocity_calculation(sample, ts, peak, valley,
     :param sample:
     :param ts:
     :param peak:
-    :param valley:
     :param cycle_quality:
     :param fs:
     :return: respiration cycle quality,Inspiration area,Expiration area,
@@ -350,16 +348,13 @@ def respiration_area_shape_velocity_calculation(sample, ts, peak, valley,
     return cycle_quality,area_Inspiration,area_Expiration,area_Respiration,area_ie_ratio, \
            velocity_Inspiration,velocity_Expiration,shape_skew, shape_kurt
 
-def spectral_entropy_calculation(sample, ts, peak, valley, cycle_quality,
-                                 fs=25,unacceptable=-9999):
+def spectral_entropy_calculation(sample, ts, cycle_quality,
+                                 unacceptable=-9999):
     """
     Calcuclates the entropy of a respiration cycle
     :param sample:
     :param ts:
-    :param peak:
-    :param valley:
     :param cycle_quality:
-    :param fs:
     :return: entropy of respiration cycle
     """
     a = deepcopy(cycle_quality)
@@ -379,10 +374,9 @@ def spectral_entropy_calculation(sample, ts, peak, valley, cycle_quality,
         entropy_array[i].sample = stats.entropy(np.abs(fftx[1:]))
     return entropy_array
 
-def calculate_power_in_frequency_band(x, y, Fs):
+def calculate_power_in_frequency_band(y, Fs):
     """
     calculates power in respiration cycle from predefined frequency bands
-    :param x:
     :param y:
     :param Fs:
     :return: an array of 5 represinting the power in each band
@@ -398,7 +392,7 @@ def calculate_power_in_frequency_band(x, y, Fs):
         all_band_power[0,i] = 10*np.log10(bandpower(y,Fs,frequencyBand[i,0],frequencyBand[i,1]))
     return all_band_power
 
-def spectral_energy_calculation(sample, ts, peak, valley, cycle_quality,
+def spectral_energy_calculation(sample, ts, cycle_quality,
                                 fs=25,unacceptable=-9999,f1L=.01,f1H=.05,
                                 f2L=1.8,f2H=1.85):
     """
@@ -432,8 +426,7 @@ def spectral_energy_calculation(sample, ts, peak, valley, cycle_quality,
         Xdft=np.fft.fft(sample_temp-np.mean(sample_temp))/len(sample_temp)
         Xdft = Xdft[:np.int64(np.floor(len(sample_temp)/2+1)+1)]
         energyX[i].sample=np.sum(np.abs(Xdft)**2)/len(sample_temp)
-        all_band_power = calculate_power_in_frequency_band(ts_temp,
-                                                          sample_temp,fs)
+        all_band_power = calculate_power_in_frequency_band(sample_temp,fs)
         #         print(all_band_power)
         FQ_05_2_Hz[i].sample = all_band_power[0,0]
         FQ_201_4_Hz[i].sample = all_band_power[0,1]

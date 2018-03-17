@@ -24,13 +24,6 @@ def rip_cycle_feature_computation(peaks_datastream: List[DataPoint],
     :return: RIP Feature DataStreams
     """
 
-    # TODO: This needs fixed to prevent crashing the execution pipeline
-    if peaks_datastream is None or valleys_datastream is None:
-        return None
-
-    # TODO: This needs fixed to prevent crashing the execution pipeline
-    if len(peaks_datastream) == 0 or len(valleys_datastream) == 0:
-        return None
 
     inspiration_duration = []  # 1 Inhalation duration
     expiration_duration = []  # 2 Exhalation duration
