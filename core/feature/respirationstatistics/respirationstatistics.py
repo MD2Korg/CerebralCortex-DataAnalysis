@@ -38,7 +38,7 @@ from core.feature.respirationstatistics.utils.get_store import get_stream_days
 from core.feature.respirationstatistics.utils.util import *
 
 CC = CerebralCortex()
-users = CC.get_all_users("mperf-alabsi")
+users = CC.get_all_users("mperf-buder")
 respiration_raw_autosenseble = "RESPIRATION--org.md2k.autosenseble--AUTOSENSE_BLE--CHEST"
 respiration_baseline_autosenseble = "RESPIRATION_BASELINE--org.md2k.autosenseble--AUTOSENSE_BLE--CHEST"
 for user in users:
@@ -60,5 +60,6 @@ for user in users:
             elif not rip_baseline.data:
                 final_respiration = rip_raw.data
             else:
-                final_respiration = get_recovery(rip_raw.data,rip_baseline.data,25)
-
+                final_respiration = get_recovery(rip_raw.data[1:1000],
+                                                 rip_baseline.data[1:1000],25)
+            print(final_respiration)
