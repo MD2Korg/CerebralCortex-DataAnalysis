@@ -28,6 +28,14 @@ import numpy as np
 import pandas as pd
 
 def Preprc(raw_data,flag=0):
+    """
+    Function to compute the decoded values in motionsense HRV sensors and
+    interploate the timestamps given the decoded sequence numbers
+
+    :param raw_data:
+    :param flag:
+    :return:
+    """
     # process recieved arrays (data_arr1=data, data_arr2=time,seq)
     data_arr1,data_arr2,err_pkts=process_raw_PPG(raw_data)
     seq=np.copy(data_arr2[:,1])
@@ -62,6 +70,12 @@ def Preprc(raw_data,flag=0):
     return df3
 
 def process_raw_PPG(raw_data):
+    """
+    function to decode the values from raw byte arrays
+
+    :param raw_data:
+    :return:
+    """
     data = raw_data
     Vals = data[:,2:]
     num_samples = Vals.shape[0]

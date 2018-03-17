@@ -44,6 +44,8 @@ def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
 
 def store_data(filepath, input_streams, user_id, data, instance):
     """
+    stores a datastrem given the metadata location ,input stream,user id,
+    list of datapoints and cerebral cortex instance
 
     :param filepath:
     :param input_streams:
