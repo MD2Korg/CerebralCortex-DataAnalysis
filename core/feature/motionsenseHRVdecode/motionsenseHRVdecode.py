@@ -78,6 +78,9 @@ class DecodeHRV(ComputeFeatureBase):
         motionsense_hrv_right_raw = \
             "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
 
+        if not all_days:
+            return
+
         if self.CC is not None:
             if user:
                 streams = self.CC.get_user_streams(user)
