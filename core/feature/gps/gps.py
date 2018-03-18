@@ -82,32 +82,25 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                                              max_dist_assign_centroid=self.GEOFENCE_ASSIGNING_CENTROID,
                                              centroid_name_dict=gps_groundtruth_data)
 
-                print("gps_data_clustering:", len(epoch_centroid))
-                print("gps_semantic:", len(epoch_semantic))
+                self.CC.logging.log("GPS feature storing %d "
+                                    "gps_data_clustering: for user_id %s" % 
+                                    (len(epoch_centroid), str(user)))
+                self.CC.logging.log("GPS storing %d gps_semantic: "
+                                     "for user_id %s" % 
+                                     (len(epoch_semantic), str(user)))
 
-                self.store_data("metadata/gps_data_clustering_episode_generation.json", [streams[location_stream],
-                                                                                         streams[geofence_list_stream]],
-                                user, epoch_centroid)
-                self.store_data("metadata/gps_episodes_and_semantic_location.json", [streams[location_stream],
-                                                                                     streams[geofence_list_stream]], user,
-                                epoch_semantic)
+                self.store_stream(filepath="gps_data_clustering_episode_generation.json", 
+                                  input_streams=[streams[location_stream], 
+                                                 streams[geofence_list_stream]],
+                                  user_id=user, 
+                                  data=epoch_centroid)
+                
+                self.store_stream(filepath="gps_episodes_and_semantic_location.json", 
+                                  input_streams=[streams[location_stream],
+                                                 streams[geofence_list_stream]], 
+                                  user_id=user,
+                                  data=epoch_semantic)
 
-    def store_data(self, filepath, input_streams, user_id, data):
-        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(filepath + user_id + "GPS Clustering")))
-        cur_dir = os.path.dirname(os.path.abspath(__file__))
-        newfilepath = os.path.join(cur_dir, filepath)
-        with open(newfilepath, "r") as f:
-            metadata = f.read()
-            metadata = metadata.replace("CC_INPUT_STREAM_ID_CC", input_streams[0]["identifier"])
-            metadata = metadata.replace("CC_INPUT_STREAM_NAME_CC", input_streams[0]["name"])
-            metadata = metadata.replace("CC_OUTPUT_STREAM_IDENTIFIER_CC", output_stream_id)
-            metadata = metadata.replace("CC_OWNER_CC", user_id)
-            metadata = pd.json.loads(metadata)
-            if len(data) > 0:
-                self.store(identifier=output_stream_id, owner=user_id, name=metadata["name"],
-                           data_descriptor=metadata["data_descriptor"],
-                           execution_context=metadata["execution_context"], annotations=metadata["annotations"],
-                           stream_type="datastream", data=data)
 
     def get_gps(self, gps_stream_id, user_id, all_days):
         """

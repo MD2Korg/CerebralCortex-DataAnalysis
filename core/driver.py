@@ -67,7 +67,9 @@ def process_feature_on_user(user, module, all_days, cc_config_path):
         f(user,all_days)
     except Exception as e:
         #syslog.syslog(LOG_ERR,str(e))
-        syslog.syslog(LOG_ERR, str(e) + "\n" + str(traceback.format_exc()))
+        err=str(e) + "\n" + str(traceback.format_exc())
+        print(err)
+        syslog.syslog(LOG_ERR,err) 
 
 def discover_features(feature_list):
     '''

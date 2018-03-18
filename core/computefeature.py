@@ -45,17 +45,30 @@ class ComputeFeatureBase(object):
         '''
         This method saves the computed DataStreams from different features
         '''
-        stream_name = str(filepath) 
-        stream_name += str(user_id) 
-        stream_name += str(self.__class__.__name__)
-        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, stream_name))
+        stream_str = str(filepath) 
+        stream_str += str(user_id) 
+        stream_str += str(self.__class__.__name__)
+        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, stream_str))
         
+        # creating new input_streams list with only the needed information
+        input_streams_metadata = []
+        for input_strm in input_streams:
+            if type(input_strm) != dict:
+                self.CC.logging.log('Inconsistent type found in '
+                                    'input_streams',str(input_streams))
+            stream_info = {}
+            stream_info['identifier'] = input_strm['identifier']
+            stream_info['name'] = input_strm['name']
+            input_streams_metadata.append(stream_info)
+
         newfilepath = os.path.join(self.CC.feature_metadata_dir, filepath)
         self.CC.logging.log('METADATA file path %s' % (newfilepath))
+
         with open(newfilepath, "r") as f:
             metadata = f.read()
             metadata = json.loads(metadata)
-            metadata["execution_context"]["processing_module"]["input_streams"] = input_streams
+            metadata["execution_context"]["processing_module"]["input_streams"]\
+            = input_streams_metadata
             metadata["identifier"] = str(output_stream_id)
             metadata["owner"] = str(user_id)
 
@@ -84,6 +97,8 @@ class ComputeFeatureBase(object):
                         stream_type=stream_type, data=data)
         try:
             self.CC.save_stream(ds)
+            self.CC.logging.log('Saved %d data points from %s' % 
+                                 (len(data), self.__class__.__name__))
         except Exception as exp:
             self.CC.logging.log(self.__class__.__name__ + str(exp) + "\n" + 
                           str(traceback.format_exc()))
