@@ -55,12 +55,12 @@ def Preprc(raw_data,flag=0):
 
     arr1=np.concatenate([seq.reshape((len(seq),1)),data_arr1],axis=1)
 
-    if flag==0:
-        if raw_data.all!=None:
-            df1=pd.DataFrame(arr1,columns=['Seq','AccX','AccY','AccZ','GyroX',
-                                           'GyroY','GyroZ','LED1','LED2','LED3'])
-        else:
-            return []
+
+    if raw_data.all!=None:
+        df1=pd.DataFrame(arr1,columns=['Seq','AccX','AccY','AccZ','GyroX',
+                                       'GyroY','GyroZ','LED1','LED2','LED3'])
+    else:
+        return []
 
     df1.drop_duplicates(subset=['Seq'],inplace=True)
 
