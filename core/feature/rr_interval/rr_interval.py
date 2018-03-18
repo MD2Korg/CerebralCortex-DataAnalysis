@@ -76,10 +76,20 @@ def find_window_st_et(left:List[DataPoint],
                                             window_offset=window_offset)
     return windowed_ts_list_of_dp
 
-def find_combination(data_left,
-                 data_right,
-                 data_left_sample,
-                 data_right_sample):
+def find_combination(data_left:List[DataPoint],
+                 data_right:List[DataPoint],
+                 data_left_sample:np.ndarray,
+                 data_right_sample:np.ndarray)->np.ndarray:
+    """
+    For each window of 1 minute combine left and right hand PPG signals.
+    If not possible then return the one which has less accelerometer magnitude
+
+    :param data_left:
+    :param data_right:
+    :param data_left_sample:
+    :param data_right_sample:
+    :return: (*,3) or (*,6) shaped matrix depending on the result
+    """
     ts_array_left = np.array([i.start_time.timestamp() for i in
                               data_left])
     ts_array_right = np.array([i.start_time.timestamp() for i in
@@ -111,7 +121,18 @@ def find_combination(data_left,
             data_final = data_right_sample[:,6:]
     return data_final
 
-def find_sample_from_combination_of_left_right_or_one(left,right):
+def find_sample_from_combination_of_left_right_or_one(left:List[DataPoint],
+                                                  right:List[DataPoint])-> \
+                                                  List[DataPoint]:
+    """
+    When both left and right PPG are available for the day this function
+    windows the whole day into one minute window and decides for each window
+    how to combine the left and right wrist ppg signals
+
+    :param left:
+    :param right:
+    :return:
+    """
     windowed_list_of_dp = find_window_st_et(
         left,right,window_size=60,window_offset=31)
 
