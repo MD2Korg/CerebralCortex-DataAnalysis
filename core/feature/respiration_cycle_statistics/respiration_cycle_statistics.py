@@ -51,7 +51,12 @@ class respiration_cycle_statistics(ComputeFeatureBase):
         if not final_respiration:
             return []
 
-        respiration_final = [i for i in final_respiration if i.sample>0]
+        respiration_final = [i for i in final_respiration if (not isinstance(
+            i.sample,list)) and i.sample>0]
+
+        if not respiration_final:
+            return []
+
         sample = np.array([i.sample for i in respiration_final])
         ts = np.array([i.start_time.timestamp() for i in respiration_final])
 
