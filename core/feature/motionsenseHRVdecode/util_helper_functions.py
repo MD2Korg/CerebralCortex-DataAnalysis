@@ -49,7 +49,12 @@ def get_decoded_matrix(data,row_length=22):
     sample_final  = [0]*int(row_length/2)
     for k in ind:
         sample_temp = Preprc(raw_data=sample[initial:k,:])
-        sample_final = np.vstack((sample_final,sample_temp.values))
         initial = k
+        if not sample_temp:
+            continue
+        sample_final = np.vstack((sample_final,sample_temp.values))
+
+    if np.shape(sample_final)[0] == 1:
+        return []
     return sample_final[1:,:]
 

@@ -56,6 +56,8 @@ class DecodeHRV(ComputeFeatureBase):
                 data = np.array(motionsense_raw.data)
                 offset = data[0].offset
                 decoded_sample = get_decoded_matrix(data)
+                if not decoded_sample:
+                    continue
                 final_data = []
                 for i in range(len(decoded_sample[:, 0])):
                     final_data.append(DataPoint.from_tuple(

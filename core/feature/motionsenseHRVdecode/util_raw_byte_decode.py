@@ -37,6 +37,10 @@ def Preprc(raw_data,flag=0):
     :return:
     """
     # process recieved arrays (data_arr1=data, data_arr2=time,seq)
+    if not raw_data:
+        return []
+    if raw_data.all is None:
+        return []
     data_arr1,data_arr2,err_pkts=process_raw_PPG(raw_data)
     seq=np.copy(data_arr2[:,1])
     # make Sq no. ordered
@@ -55,8 +59,10 @@ def Preprc(raw_data,flag=0):
         if raw_data.all!=None:
             df1=pd.DataFrame(arr1,columns=['Seq','AccX','AccY','AccZ','GyroX',
                                            'GyroY','GyroZ','LED1','LED2','LED3'])
+        else:
+            return []
 
-    df1.drop_duplicates(subset=['Seq'],inplace=True) #remove any redundancies
+    df1.drop_duplicates(subset=['Seq'],inplace=True)
 
     df2=pd.DataFrame(np.array(range(seq_max+1)),columns=['Seq'])
 
