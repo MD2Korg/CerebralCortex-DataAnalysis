@@ -116,21 +116,21 @@ class ActivityMarker(ComputeFeatureBase):
                                 (user))
             return
 
-                for day in all_days:
-                    posture_labels_left, activity_labels_left = self.process_activity_and_posture_marker(
-                        streams,
-                        user, day,
-                        LEFT_WRIST)
-                    posture_labels_right, activity_labels_right = self.process_activity_and_posture_marker(
-                        streams,
-                        user, day,
-                        RIGHT_WRIST)
-                    activity_labels = merge_left_right(activity_labels_left,
-                                                       activity_labels_right,
-                                                       window_size=TEN_SECONDS)
-                    posture_labels = merge_left_right(posture_labels_left,
-                                                      posture_labels_right,
-                                                      window_size=TEN_SECONDS)
+        for day in all_days:
+            posture_labels_left, activity_labels_left = self.process_activity_and_posture_marker(
+                streams,
+                user, day,
+                LEFT_WRIST)
+            posture_labels_right, activity_labels_right = self.process_activity_and_posture_marker(
+                streams,
+                user, day,
+                RIGHT_WRIST)
+            activity_labels = merge_left_right(activity_labels_left,
+                                               activity_labels_right,
+                                               window_size=TEN_SECONDS)
+            posture_labels = merge_left_right(posture_labels_left,
+                                              posture_labels_right,
+                                              window_size=TEN_SECONDS)
 
             self.store_stream(filepath="activity_type_10seconds_window.json",
                              input_streams=[streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
