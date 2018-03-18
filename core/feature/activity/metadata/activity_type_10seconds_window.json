@@ -36,5 +36,5 @@
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name":"org.md2k.data_analysis.feature.activity.wrist.10_second",
   "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "type":"1"
 }

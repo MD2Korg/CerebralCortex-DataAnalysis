@@ -24,7 +24,6 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import numpy as np
 from core.feature.activity.wrist_accelerometer_features import \
     compute_accelerometer_features
 from core.feature.activity.activity_classifier import classify_posture, \
@@ -87,15 +86,17 @@ class ActivityMarker(ComputeFeatureBase):
             return [], []
         if len(accel_stream.data) != len(gyro_stream.data):
             return [], []
+
         valid_accel_data, valid_gyro_data = check_motionsense_hrv_accel_gyroscope(
             accel_stream.data, gyro_stream.data)
         accel_stream.data = valid_accel_data
         gyro_stream.data = valid_gyro_data
 
-        gravity_filtered_accel_stream = gravityFilter_function(accel_stream,
-                                                               gyro_stream,
-                                                               sampling_freq=SAMPLING_FREQ_MOTIONSENSE_ACCEL,
-                                                               is_gyro_in_degree=IS_MOTIONSENSE_HRV_GYRO_IN_DEGREE)
+        gravity_filtered_accel_stream = \
+            gravityFilter_function(accel_stream,
+                                   gyro_stream,
+                                   sampling_freq=SAMPLING_FREQ_MOTIONSENSE_ACCEL,
+                                   is_gyro_in_degree=IS_MOTIONSENSE_HRV_GYRO_IN_DEGREE)
 
         activity_features = compute_accelerometer_features(
             gravity_filtered_accel_stream,
@@ -114,14 +115,14 @@ class ActivityMarker(ComputeFeatureBase):
                     return
 
                 for day in all_days:
-                    posture_labels_left, activity_labels_left = self.process_activity_and_posture_marker(
-                        streams,
-                        user, day,
-                        LEFT_WRIST)
-                    posture_labels_right, activity_labels_right = self.process_activity_and_posture_marker(
-                        streams,
-                        user, day,
-                        RIGHT_WRIST)
+                    posture_labels_left, activity_labels_left = \
+                        self.process_activity_and_posture_marker(streams,
+                                                                 user, day,
+                                                                 LEFT_WRIST)
+                    posture_labels_right, activity_labels_right = \
+                        self.process_activity_and_posture_marker(streams,
+                                                                 user, day,
+                                                                 RIGHT_WRIST)
                     activity_labels = merge_left_right(activity_labels_left,
                                                        activity_labels_right,
                                                        window_size=TEN_SECONDS)
@@ -137,6 +138,7 @@ class ActivityMarker(ComputeFeatureBase):
                                 streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
                                user,
                                activity_labels, "ACTIVITY TYPES", self)
+
                     store_data("metadata/posture_10seconds_window.json",
                                [streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
                                 streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
