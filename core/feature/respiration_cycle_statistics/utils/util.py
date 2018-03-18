@@ -291,7 +291,6 @@ def respiration_area_shape_velocity_calculation(sample, ts, peak,
             cycle_quality[i].sample = Quality.UNACCEPTABLE
             continue
         sample_temp = sample[valley_ind1:(valley_ind2+1)] - min(sample[valley_ind1:(valley_ind2+1)])
-        ts_temp = ts[valley_ind1:(valley_ind2+1)]
         InspUT = np.trapz(sample_temp[:peak_ind-valley_ind1+1])
         subtractPoint = min(sample_temp[:peak_ind-valley_ind1+1])
         InspLT = np.trapz([0,peak_ind-valley_ind1],[subtractPoint,subtractPoint])
@@ -391,7 +390,6 @@ def spectral_energy_calculation(sample, ts, cycle_quality,
         valley_ind2 = ts_index[dp.end_time.timestamp()]
         sample_temp = sample[valley_ind1:(valley_ind2+1)]
         sample_temp = sample_temp - min(sample_temp)
-        ts_temp = ts[valley_ind1:(valley_ind2+1)]
 
         Xdft=np.fft.fft(sample_temp-np.mean(sample_temp))/len(sample_temp)
         Xdft = Xdft[:np.int64(np.floor(len(sample_temp)/2+1)+1)]

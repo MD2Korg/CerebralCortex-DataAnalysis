@@ -37,7 +37,7 @@ feature_class_name = 'respiration_cycle_statistics'
 class respiration_cycle_statistics(ComputeFeatureBase):
 
 
-    def get_feature_matrix(self,final_respiration:List[DataPoint]):
+    def get_feature_matrix(final_respiration:List[DataPoint]):
 
         """
         all necessary computation
