@@ -171,7 +171,7 @@ def process(self, user:str, all_days):
                             final_respiration)
                         if not feature_matrix:
                             continue
-                        json_path = 'metadata/decoded_hrv_left_wrist.json'
+                        json_path = 'metadata/respiration_cycle_feature.json'
                         store_data(json_path,[streams[respiration_raw_autosenseble]],
                                    user_id, feature_matrix, self)
 

@@ -25,18 +25,18 @@
 from scipy import signal,interpolate
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from enum import Enum
-from scipy.signal import butter, lfilter
 import scipy
 import numpy as np
 from copy import deepcopy
 from scipy import stats
-
+from typing import List
 
 class Quality(Enum):
     ACCEPTABLE = 1
     UNACCEPTABLE = 0
 
-def recover_RIP_rawWithMeasuredREF_newAuto(RIP,ref,Fs):
+def recover_rip_rawwithmeasuredref(RIP:list, ref:list,
+                                   Fs)-> np.ndarray:
     """
     Recovers Respiration final signal from baseline and raw
     :param RIP: respiration raw
@@ -58,7 +58,7 @@ def recover_RIP_rawWithMeasuredREF_newAuto(RIP,ref,Fs):
     RIP_raw_measuredREF = (ref_synn_noM_LP/G_ref + RIP_synn_noM/G1)*G1
     return RIP_raw_measuredREF+m
 
-def get_recovery(rip,baseline,Fs):
+def get_recovery(rip:List[DataPoint],baseline:List[DataPoint],Fs)->List[DataPoint]:
     """
     matches respiration raw with baseline signal and returns the recovered
     signal
@@ -77,7 +77,7 @@ def get_recovery(rip,baseline,Fs):
     rip = np.array(rip)[rip_ind]
     baseline = np.array(baseline)[baseline_ind]
     recovered = \
-        recover_RIP_rawWithMeasuredREF_newAuto(
+        recover_rip_rawwithmeasuredref(
             [i.sample for i in rip],[i.sample for i in baseline],
             Fs)
     recovered_dp_list = \
@@ -85,7 +85,7 @@ def get_recovery(rip,baseline,Fs):
          for i in range(len(recovered))]
     return recovered_dp_list
 
-def smooth(y, box_pts):
+def smooth(y:list, box_pts:int)->np.ndarray:
     """
     smooths a 1d signal through convolution
     :param y: signal
@@ -173,35 +173,7 @@ def get_covariance(data1,data2):
     small_interp = f(np.linspace(1,len(small),len(big)))
     return np.corrcoef(big,small_interp)[0,1]
 
-def butter_bandpass(lowcut, highcut, fs, order=5,nyquist_constant = .5):
-    """
-    return the filter coefficients of a butterworth filter with given cutoffs
-    :param lowcut:
-    :param highcut:
-    :param fs:
-    :param order:
-    :return:
-    """
-    nyq = nyquist_constant * fs
-    low = lowcut / nyq
-    high = highcut / nyq
-    b, a = butter(order, [low, high], btype='band')
-    return b, a
 
-
-def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
-    """
-    bandpass filtering of signals with given cutoff frequencies
-    :param data:
-    :param lowcut:
-    :param highcut:
-    :param fs:
-    :param order:
-    :return:
-    """
-    b, a = butter_bandpass(lowcut, highcut, fs, order=order)
-    y = lfilter(b, a, data)
-    return y
 
 def bandpower(x, fs, fmin, fmax,nfft_point=1024):
     """
@@ -400,8 +372,6 @@ def spectral_energy_calculation(sample, ts, cycle_quality,
 
     :param sample:
     :param ts:
-    :param peak:
-    :param valley:
     :param cycle_quality:
     :param fs:
     :return: energy of respiration cycle,power between .05-.2 Hz,.201-.4 Hz,
