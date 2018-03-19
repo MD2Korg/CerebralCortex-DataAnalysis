@@ -33,7 +33,8 @@ from sklearn.preprocessing import normalize
 from core.feature.rr_interval.utils.JU_code import Bayesian_IP_memphis
 import warnings
 warnings.filterwarnings("ignore")
-# import pickle
+import pickle
+import pandas as pd
 
 def get_constants():
     data = loadmat('./utils/int_RR_dist_obj_kernel_Fs25_11clusters.mat')
@@ -141,13 +142,26 @@ def GLRT_bayesianIP_HMM(X_ppg_input,H,w_r,w_l,pks_ecg,int_RR_dist_obj):
     score = np.nanmean(score_8sec)
     return RR_interval_all_realization,score,HR
 
+def get_stress_marks_window(data,user,day,st,et):
+    for l in data:
+        if l[0]==user and str(l[1])==day:
+            # print()
+            # l[3] = datetime.utcfromtimestamp(l[3])
+            if st>=datetime.utcfromtimestamp(l[2]) and \
+                    et<=datetime.utcfromtimestamp(l[3]):
+                return l[4]
+            # if st<l[2] and et>l[2] and l[2]-st>25 and et<=l[3]:
+            #     return l[4]
+            # if st>=l[2] and et>l[3] and l[3]-st>25 and st<l[3]:
+            #     return l[4]
+    return 2
+count = 0
 CC = CerebralCortex()
 users = CC.get_all_users("mperf-alabsi")
-
-for user in users[1:2]:
+user_data_collection = pickle.load(open('data.p','rb'))
+for user in users:
     streams = CC.get_user_streams(user['identifier'])
     user_id = user["identifier"]
-    user_data_collection = {}
     if led_decode_left_wrist in streams:
         stream_days_left = get_stream_days(streams[led_decode_left_wrist]["identifier"],
                                            CC)
@@ -160,58 +174,75 @@ for user in users[1:2]:
             stream_days_right))
 
         for day in union_of_days_list:
-            if day in common_days:
-                decoded_left_raw = CC.get_stream(streams[led_decode_left_wrist][
-                                                         "identifier"],
-                                                     day=day, user_id=user_id)
-                decoded_right_raw = CC.get_stream(streams[
-                                                      led_decode_right_wrist][
-                                                     "identifier"],
-                                                 day=day, user_id=user_id)
-
-                final_windowed_data = find_sample_from_combination_of_left_right_or_one(
-                    decoded_left_raw.data,decoded_right_raw.data,
-                    window_size=window_size,window_offset=window_offset,
-                    Fs=Fs,acceptable=acceptable)
-            elif day in left_only_days:
-                decoded_left_raw = CC.get_stream(streams[led_decode_left_wrist][
-                                                     "identifier"],
-                                                 day=day, user_id=user_id)
-
-                windowed_data = window_sliding(decoded_left_raw.data,
-                                                     window_size=window_size,
-                                                     window_offset=window_offset)
-                final_windowed_data = []
-                for key in windowed_data.keys():
-                    final_windowed_data.append(DataPoint.from_tuple(
-                        start_time=key[0],
-                        end_time=key[1],
-                        sample = np.array([i.sample[6:] for i in windowed_data[
-                        key]])))
-            else:
-                decoded_right_raw = CC.get_stream(streams[
-                                                      led_decode_right_wrist][
-                                                      "identifier"],
-                                                  day=day, user_id=user_id)
-
-                windowed_data = window_sliding(decoded_right_raw.data,
-                                               window_size=window_size,
-                                               window_offset=window_offset)
-                final_windowed_data = []
-                for key in windowed_data.keys():
-                    final_windowed_data.append(DataPoint.from_tuple(
-                        start_time=key[0],
-                        end_time=key[1],
-                        sample = np.array([i.sample[6:] for i in windowed_data[
-                            key]])))
-
+            # if day in common_days:
+            #     decoded_left_raw = CC.get_stream(streams[led_decode_left_wrist][
+            #                                              "identifier"],
+            #                                          day=day, user_id=user_id)
+            #     decoded_right_raw = CC.get_stream(streams[
+            #                                           led_decode_right_wrist][
+            #                                          "identifier"],
+            #                                      day=day, user_id=user_id)
+            #
+            #     final_windowed_data = find_sample_from_combination_of_left_right_or_one(
+            #         decoded_left_raw.data,decoded_right_raw.data,
+            #         window_size=window_size,window_offset=window_offset,
+            #         Fs=Fs,acceptable=acceptable)
+            # elif day in left_only_days:
+            #     decoded_left_raw = CC.get_stream(streams[led_decode_left_wrist][
+            #                                          "identifier"],
+            #                                      day=day, user_id=user_id)
+            #
+            #     windowed_data = window_sliding(decoded_left_raw.data,
+            #                                          window_size=window_size,
+            #                                          window_offset=window_offset)
+            #     final_windowed_data = []
+            #     for key in windowed_data.keys():
+            #         final_windowed_data.append(DataPoint.from_tuple(
+            #             start_time=key[0],
+            #             end_time=key[1],
+            #             sample = np.array([i.sample[6:] for i in windowed_data[
+            #             key]])))
+            # else:
+            #     decoded_right_raw = CC.get_stream(streams[
+            #                                           led_decode_right_wrist][
+            #                                           "identifier"],
+            #                                       day=day, user_id=user_id)
+            #
+            #     windowed_data = window_sliding(decoded_right_raw.data,
+            #                                    window_size=window_size,
+            #                                    window_offset=window_offset)
+            #     final_windowed_data = []
+            #     for key in windowed_data.keys():
+            #         final_windowed_data.append(DataPoint.from_tuple(
+            #             start_time=key[0],
+            #             end_time=key[1],
+            #             sample = np.array([i.sample[6:] for i in windowed_data[
+            #                 key]])))
+            lab_stress_marks = pd.read_csv('./utils/stress.csv',header=None,
+                                           sep=',').as_matrix()
+            # print(lab_stress_marks)
+            final_windowed_data = user_data_collection[user_id][day]
             int_RR_dist_obj,H,w_l,w_r,fil_type = get_constants()
             for dp in final_windowed_data:
-                X_ppg = dp.sample
-                t_start = dp.start_time.timestamp()
-                t_end = dp.end_time.timestamp()
-                Fs_ppg = (np.shape(X_ppg)[0]/(t_end-t_start))
-                X_ppg_fil = preProcessing(X0=X_ppg,Fs=Fs_ppg,fil_type=fil_type)
-                RR_interval_all_realization,score,HR = GLRT_bayesianIP_HMM(
-                    X_ppg_fil,H,w_r,w_l,[],int_RR_dist_obj)
-                print(score,HR)
+                try:
+                    st = dp.start_time
+                    et = dp.end_time
+                    label = get_stress_marks_window(lab_stress_marks,user_id,day,st,et)
+                    if label ==2:
+                        continue
+                    X_ppg = dp.sample
+                    t_start = dp.start_time.timestamp()
+                    t_end = dp.end_time.timestamp()
+                    Fs_ppg = (np.shape(X_ppg)[0]/(t_end-t_start))
+                    X_ppg_fil = preProcessing(X0=X_ppg,Fs=Fs_ppg,fil_type=fil_type)
+                    RR_interval_all_realization,score,HR = GLRT_bayesianIP_HMM(
+                        X_ppg_fil,H,w_r,w_l,[],int_RR_dist_obj)
+                    if not list[RR_interval_all_realization]:
+                        continue
+                    data = np.array([RR_interval_all_realization,score,HR,label,
+                             user_id])
+                    np.savez('/windows/'+str(count),data)
+                except Exception:
+                    pass
+
+print(count)

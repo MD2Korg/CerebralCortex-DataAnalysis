@@ -31,3 +31,5 @@ window_size = 60
 window_offset = 31
 acceptable = .64
 
+motionsense_hrv_left_raw = \
+    "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
