@@ -88,47 +88,53 @@ def find_sample_from_combination_of_left_right_or_one(left:List[DataPoint],
     :param right:
     :return:
     """
-    windowed_list_of_dp = find_window_st_et(
-        left,right,window_size=window_size,window_offset=window_offset,Fs=Fs)
+    # windowed_list_of_dp = find_window_st_et(
+    #     left,right,window_size=window_size,window_offset=window_offset,Fs=Fs)
 
     ts_array_left = np.array([i.start_time.timestamp() for i in
                               left])
     ts_array_right = np.array([i.start_time.timestamp() for i in
                                right])
     final_window_list = []
-    for key in windowed_list_of_dp.keys():
-        index_left = np.where((ts_array_left>=key[0].timestamp())
-                              & (ts_array_left<key[1].timestamp()))[0]
+    initial = min(ts_array_left[0],ts_array_right[0])
+    while initial<=max(ts_array_left[-1],ts_array_right[-1]):
+        index_left = np.where((ts_array_left>=initial)
+                              & (ts_array_left<initial+60))[0]
         data_left = np.array(left)[index_left]
         data_left_sample = np.array([i.sample for i in data_left])
-        index_right = np.where((ts_array_right>=key[0].timestamp())
-                               & (ts_array_right<key[1].timestamp()))[0]
+        index_right = np.where((ts_array_right>=initial)
+                               & (ts_array_right<initial+60))[0]
         data_right = np.array(right)[index_right]
         data_right_sample = np.array([i.sample for i in data_right])
+        initial += 60
         if len(data_right)<=acceptable*Fs*window_size and len(
                 data_left)<=acceptable*Fs*window_size:
             continue
         elif len(data_left)<=acceptable*Fs*window_size and len(
                 data_right)>acceptable*Fs*window_size:
-            data_final = data_right_sample[:,6:]
+            data_final = {'right':data_right_sample[:,6:],'left':[]}
         elif len(data_right)<=acceptable*Fs*window_size and len(
                 data_left)>acceptable*Fs*window_size:
-            data_final = data_left_sample[:,6:]
+            data_final = {'right':[],'left':data_left_sample[:,6:]}
         else:
-            accl_mag_left = np.sum(data_left_sample[:,0]**2 +
-                                   data_left_sample[:,1]**2 +
-                                   data_left_sample[:,2]**2)
-
-            accl_mag_right = np.sum(data_right_sample[:,0]**2 +
-                                    data_right_sample[:,1]**2 +
-                                    data_right_sample[:,2]**2)
-
-            if accl_mag_left/np.shape(data_left_sample)[0] < \
-                    accl_mag_right/np.shape(data_right_sample)[0]:
-                data_final = data_left_sample[:,6:]
-            else:
-                data_final = data_right_sample[:,6:]
+            data_final = {'right':data_right_sample[:,6:],
+                          'left':data_left_sample[:,6:]}
+            # accl_mag_left = np.sum(data_left_sample[:,0]**2 +
+            #                        data_left_sample[:,1]**2 +
+            #                        data_left_sample[:,2]**2)
+            #
+            # accl_mag_right = np.sum(data_right_sample[:,0]**2 +
+            #                         data_right_sample[:,1]**2 +
+            #                         data_right_sample[:,2]**2)
+            #
+            # if accl_mag_left/np.shape(data_left_sample)[0] < \
+            #         accl_mag_right/np.shape(data_right_sample)[0]:
+            #     data_final = data_left_sample[:,6:]
+            # else:
+            #     data_final = data_right_sample[:,6:]
         final_window_list.append(DataPoint.from_tuple(
-            start_time=key[0],end_time=key[1],sample=data_final))
+            start_time=datetime.fromtimestamp(initial-60),
+            end_time=datetime.fromtimestamp(initial),
+            sample=data_final))
 
     return final_window_list

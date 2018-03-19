@@ -56,7 +56,8 @@ def store_data(filepath, input_streams, user_id, data, instance):
     """
     output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(filepath +
                                                               user_id+
-                                                              "DECODED LED")))
+                                                              "DECODED ACL"+
+                                                              "LED")))
     cur_dir = os.path.dirname(os.path.abspath(__file__))
     newfilepath = os.path.join(cur_dir,filepath)
     with open(newfilepath,"r") as f:

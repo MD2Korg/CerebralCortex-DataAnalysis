@@ -29,12 +29,14 @@ from core.feature.motionsenseHRVdecode.util_helper_functions \
     import get_decoded_matrix
 import numpy as np
 from datetime import datetime
+from cerebralcortex.cerebralcortex import CerebralCortex
 
 feature_class_name = 'DecodeHRV'
 
 
 class DecodeHRV(ComputeFeatureBase):
-
+    def __init__(self):
+        self.CC = CerebralCortex()
 
     def get_and_save_data(self,all_streams,all_days,stream_identifier,
                           user_id,json_path):
@@ -56,7 +58,7 @@ class DecodeHRV(ComputeFeatureBase):
                 data = np.array(motionsense_raw.data)
                 offset = data[0].offset
                 decoded_sample = get_decoded_matrix(data)
-                if not decoded_sample:
+                if not list(decoded_sample):
                     continue
                 final_data = []
                 for i in range(len(decoded_sample[:, 0])):
@@ -68,7 +70,7 @@ class DecodeHRV(ComputeFeatureBase):
 
 
 
-    def process(self, user:str, all_days):
+    def process(self, user, all_days):
         """
 
         :param user: user id string
@@ -85,7 +87,7 @@ class DecodeHRV(ComputeFeatureBase):
 
         if self.CC is not None:
             if user:
-                streams = self.CC.get_user_streams(user)
+                streams = self.CC.get_user_streams(user_id=user)
 
                 if streams is None:
                     return

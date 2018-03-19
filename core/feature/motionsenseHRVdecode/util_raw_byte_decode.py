@@ -37,10 +37,9 @@ def Preprc(raw_data,flag=0):
     :return:
     """
     # process recieved arrays (data_arr1=data, data_arr2=time,seq)
-    if not raw_data:
+    if not list(raw_data):
         return []
-    if raw_data.all is None:
-        return []
+
     data_arr1,data_arr2,err_pkts=process_raw_PPG(raw_data)
     seq=np.copy(data_arr2[:,1])
     # make Sq no. ordered
