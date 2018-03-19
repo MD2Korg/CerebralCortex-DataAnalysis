@@ -21,9 +21,13 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+from scipy.io import loadmat
+import numpy as np
+
 Fs = 25
 led_decode_left_wrist = "org.md2k.signalprocessing.decodedLED.leftwrist"
 led_decode_right_wrist = "org.md2k.signalprocessing.decodedLED.rightwrist"
 window_size = 60
 window_offset = 31
 acceptable = .64
+

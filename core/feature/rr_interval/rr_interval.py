@@ -22,10 +22,36 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from core.feature.rr_interval.utils.util import *
+from core.feature.rr_interval.utils.util import Fs,acceptable,window_size,\
+    window_offset,led_decode_left_wrist,led_decode_right_wrist
 from core.feature.rr_interval.utils.get_store import *
 from cerebralcortex.cerebralcortex import CerebralCortex
 from core.feature.rr_interval.utils.combine_left_right_ppg import *
+from scipy.io import loadmat
+from scipy import signal
+from pylab import *
+
+
+def get_constants():
+    data = loadmat('./utils/int_RR_dist_obj_kernel_Fs25_11clusters.mat')
+    int_RR_dist_obj = data['int_RR_dist_obj']
+    data = loadmat('./utils/H_alignedByECGpks(DelayedBy6)_win15_center8.mat')
+    H = data['H']
+    w_l = np.squeeze(data['w_l'])
+    w_r = np.squeeze(data['w_r'])
+    fil_type = 'ppg'
+    return int_RR_dist_obj,H,w_l,w_r,fil_type
+
+def preProcessing(X0,Fs,fil_type):
+    X1 = signal.detrend(X0,axis=0,type='constant')
+    if fil_type in ['ppg']:
+        b = signal.firls(65,[0,0.3*2/Fs, 0.4*2/Fs, 5*2/Fs ,5.5*2/Fs ,1],[0, 0 ,1 ,1 ,0, 0],
+                         [100*0.02,0.02,0.02])
+    else:
+        b = signal.firls(129,[0,0.3*2/Fs,0.4*2/Fs,1],[0,0,1,1],[100*0.02,0.02])
+    for i in range(np.shape(X1)[1]):
+        X1[:,i] = np.convolve(X1[:,i],b,'same')
+    return X1
 
 CC = CerebralCortex()
 users = CC.get_all_users("mperf-alabsi")
@@ -90,5 +116,10 @@ for user in users[1:2]:
                         end_time=key[1],
                         sample = np.array([i.sample[6:] for i in windowed_data[
                             key]])))
+            int_RR_dist_obj,H,w_l,w_r,fil_type = get_constants()
             for dp in final_windowed_data:
-                print(np.shape(dp.sample))
+                X_ppg = dp.sample
+                t_start = dp.start_time.timestamp()
+                t_end = dp.end_time.timestamp()
+                Fs_ppg = (np.shape(X_ppg)[0]/(t_end-t_start))
+                X_ppg_fil = preProcessing(X0=X_ppg,Fs=Fs_ppg,fil_type=fil_type)
