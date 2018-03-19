@@ -123,8 +123,7 @@ class ActivityMarker(ComputeFeatureBase):
             posture_labels = merge_left_right(posture_labels_left,
                                               posture_labels_right,
                                               window_size=TEN_SECONDS)
-            activity_labels = []
-            posture_labels = []
+
             self.CC.logging.log("activity_type_stream: %d" %
                                 (len(activity_labels)))
             self.CC.logging.log("posture_stream: %d " % (len(posture_labels)))
