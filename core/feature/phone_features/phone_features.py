@@ -11,23 +11,6 @@ from datetime import timedelta
 feature_class_name='PhoneFeatures'
 
 class PhoneFeatures(ComputeFeatureBase):
-    def store_data(filepath, input_streams, user_id, data):
-        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(filepath + user_id+"PHONE FEATURES")))
-        # TODO FIXME XXX : This is a hack, Please fixme
-        cur_dir = os.path.dirname(os.path.abspath(__file__))
-        newfilepath = os.path.join(cur_dir,filepath)
-        with open(newfilepath,"r") as f:
-            metadata = f.read()
-            metadata = metadata.replace("CC_INPUT_STREAM_ID_CC",input_streams[0]["id"])
-            metadata = metadata.replace("CC_INPUT_STREAM_NAME_CC",input_streams[0]["name"])
-            metadata = metadata.replace("CC_OUTPUT_STREAM_IDENTIFIER_CC",output_stream_id)
-            metadata = metadata.replace("CC_OWNER_CC",user_id)
-            json_metadata = json.loads(metadata)
-
-            self.store(identifier=output_stream_id, owner=user_id, name=json_metadata["name"], data_descriptor=json_metadata["data_descriptor"],
-                       execution_context=json_metadata["execution_context"], annotations=json_metadata["annotations"],
-                       stream_type=StreamTypes.DATASTREAM, data=data)
-
     def inter_event_time_list(self, data):
         if len(data)==0:
             return None
@@ -355,160 +338,161 @@ class PhoneFeatures(ComputeFeatureBase):
         return new_data
 
 
-    def all_users_data(self, study_name: str):
-
-        all_users = self.CC.get_all_users(study_name)
-
-        if all_users:
-            for user in all_users:
-                streams = self.CC.get_user_streams(user["identifier"])
-                self.process_data(user["identifier"], streams)
-        else:
-            print(study_name, "- study has 0 users.")
-
-    #['CU_CALL_DURATION--edu.dartmouth.eureka', 'CU_SMS_LENGTH--edu.dartmouth.eureka']
-
     def process_day_data(self, user_id, callstream, smsstream, input_stream1, input_stream2):
         try:
             data = self.average_inter_phone_call_sms_time_hourly(callstream, smsstream)
             if data:
-                self.store_data("metadata/average_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, self)
+                self.store_stream(filepath="average_inter_phone_call_sms_time_hourly.json",
+                                input_streams=[input_stream1, input_stream2],
+                                user_id=user_id, data=data)
         except Exception as e:
             print("Exception:", str(e))
             
         try:
             data = self.average_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
             if data:
-                self.store_data("metadata/average_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, self)
+                self.store_stream(filepath="average_inter_phone_call_sms_time_four_hourly.json",
+                                input_streams=[input_stream1, input_stream2],
+                                user_id=user_id, data=data)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.average_inter_phone_call_sms_time_daily(callstream, smsstream)
             if data:
-                self.store_data("metadata/average_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, self)
+                self.store_stream(filepath="average_inter_phone_call_sms_time_daily.json",
+                                input_streams=[input_stream1, input_stream2],
+                                user_id=user_id, data=data)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             self.data = self.variance_inter_phone_call_sms_time_daily(callstream, smsstream)
             if data:
-                self.store_data("metadata/variance_inter_phone_call_sms_time_daily.json", [input_stream1, input_stream2], user_id, data, self)
+                self.store_stream(filepath="variance_inter_phone_call_sms_time_daily.json",
+                                input_streams=[input_stream1, input_stream2],
+                                user_id=user_id, data=data)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.variance_inter_phone_call_sms_time_hourly(callstream, smsstream)
             if data:
-                self.store_data("metadata/variance_inter_phone_call_sms_time_hourly.json", [input_stream1, input_stream2], user_id, data, self)
+                self.store_stream(filepath="variance_inter_phone_call_sms_time_hourly.json",
+                                input_streams=[input_stream1, input_stream2],
+                                user_id=user_id, data=data)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.variance_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
             if data:
-                self.store_data("metadata/variance_inter_phone_call_sms_time_four_hourly.json", [input_stream1, input_stream2], user_id, data, self)
+                self.store_stream(filepath="variance_inter_phone_call_sms_time_four_hourly.json",
+                                input_streams=[input_stream1, input_stream2],
+                                user_id=user_id, data=data)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.average_inter_phone_call_time_hourly(callstream)
             if data:
-                self.store_data("metadata/average_inter_phone_call_time_hourly.json", [input_stream1], user_id, data, self)
+                self.store_stream(filepath="average_inter_phone_call_time_hourly.json",
+                                input_streams=[input_stream1], user_id=user_id,
+                                data=data)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.average_inter_phone_call_time_four_hourly(callstream)
             if data:
-                self.store_data("metadata/average_inter_phone_call_time_four_hourly.json", [input_stream1], user_id, data, self)
+                self.store_stream(filepath="average_inter_phone_call_time_four_hourly.json",
+                                input_streams=[input_stream1], user_id=user_id,
+                                data=data)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.average_inter_phone_call_time_daily(callstream)
             if data:
-                self.store_data("metadata/average_inter_phone_call_time_daily.json", [input_stream1], user_id, data, self)
+                self.store_stream(filepath="average_inter_phone_call_time_daily.json",
+                                input_streams=[input_stream1], user_id=user_id,
+                                data=data)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.average_inter_sms_time_hourly(smsstream)
             if data:
-                self.store_data("metadata/average_inter_sms_time_hourly.json", [input_stream2], user_id, data, self)
+                self.store_stream(filepath="average_inter_sms_time_hourly.json",
+                                input_streams=[input_stream2], user_id=user_id,
+                                data=data)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.average_inter_sms_time_four_hourly(smsstream)
             if data:
-                self.store_data("metadata/average_inter_sms_time_four_hourly.json", [input_stream2], user_id, data, self)
+                self.store_stream(filepath="average_inter_sms_time_four_hourly.json",
+                                input_streams=[input_stream2], user_id=user_id,
+                                data=data)
         except Exception as e:
             print("Exception:",str(e))
 
         try:
             data = self.average_inter_sms_time_daily(smsstream)
             if data:
-                self.store_data("metadata/average_inter_sms_time_daily.json", [input_stream2], user_id, data, self)
+                self.store_stream(filepath="average_inter_sms_time_daily.json",
+                                input_streams=[input_stream2], user_id=user_id,
+                                data=data)
         except Exception as e:
             print("Exception:",str(e))
 
         
         
-    def process_data(self, user_id, stream_names):
+    def process_data(self, user_id, all_user_streams, all_days):
 
-        input_stream1 = {}
-        input_stream2 = {}
+        input_stream1 = None
+        input_stream2 = None
         call_stream_name = 'CU_CALL_DURATION--edu.dartmouth.eureka'
         sms_stream_name = 'CU_SMS_LENGTH--edu.dartmouth.eureka' 
-        streams = stream_names
+        streams = all_user_streams
         days = None
-        callstream_end_days = None
-        smsstream_end_days = None
+
+        if not len(streams):
+            self.CC.logging.log('No streams found for user %s for feature %s'
+                                % (str(user_id), self.__class__.__name__))
+            return
+
         for stream_name,stream_metadata in streams.items():
             if stream_name==call_stream_name:
-                input_stream1["id"] = stream_metadata["identifier"]
-                input_stream1["name"] = stream_metadata["name"]
-                callstream_end_days = self.CC.get_stream_duration(input_stream1["id"])
+                input_stream1 = stream_metadata
             elif stream_name== sms_stream_name:
-                input_stream2["id"] = stream_metadata["identifier"]
-                input_stream2["name"] = stream_metadata["name"]
-                smsstream_end_days = self.CC.get_stream_duration(input_stream2["id"])
+                input_stream2 = stream_metadata
+
+        if not input_stream1:
+            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
+                                "USERID %s" % 
+                                (self.__class__.__name__, call_stream_name, 
+                                 str(user_id)))
+            return
+
+        if not input_stream2:
+            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
+                                "USERID %" % 
+                                (self.__class__.__name__, sms_stream_name, 
+                                 str(user_id)))
+            return
+
         
-        startdate = None
-        enddate = None
         
-        if callstream_end_days:
-            if callstream_end_days["start_time"]:
-                startdate = callstream_end_days["start_time"]
-            if callstream_end_days["end_time"]:
-                enddate = callstream_end_days["end_time"]
-            
-        if smsstream_end_days:
-            if smsstream_end_days['start_time']:
-                if startdate and smsstream_end_days['start_time'] < startdate:
-                    startdate = smsstream_end_days['start_time']
-                else:
-                    startdate = smsstream_end_days['start_time']
-            if smsstream_end_days['end_time']:
-                if enddate and smsstream_end_days['end_time'] > enddate:
-                    enddate = smsstream_end_days['end_time']
-                else:
-                    enddate = smsstream_end_days['end_time']
-
-        days = enddate - startdate
-        print(startdate, enddate, days)
-
-
-        for day in range(days.days + 2):
-            day = (startdate + timedelta(days=day)).strftime('%Y%m%d')
-            print("Processing day %s" %(str(day)))
-            callstream = self.CC.get_stream(input_stream1["id"], user_id=user_id, day=day)
-            smsstream = self.CC.get_stream(input_stream2["id"], user_id=user_id, day=day)
+        for day in all_days:
+            callstream = self.CC.get_stream(input_stream1["identifier"], user_id=user_id, day=day)
+            smsstream = self.CC.get_stream(input_stream2["identifier"], user_id=user_id, day=day)
             self.process_day_data(user_id,callstream,smsstream,input_stream1,input_stream2)
             
 
-    def process(self):
+    def process(self, user_id, all_days):
         if self.CC is not None:
             print("Processing PhoneFeatures")
-            self.all_users_data("mperf")
+            streams = self.CC.get_user_streams(user_id)
+            self.process_data(user_id, streams, all_days)

@@ -41,7 +41,7 @@ class ComputeFeatureBase(object):
         '''
         pass
     
-    def store_stream(self,filepath, input_streams, user_id, data):
+    def store_stream(self,filepath:str, input_streams:list, user_id:uuid, data:list):
         '''
         This method saves the computed DataStreams from different features
         '''
@@ -55,7 +55,9 @@ class ComputeFeatureBase(object):
         for input_strm in input_streams:
             if type(input_strm) != dict:
                 self.CC.logging.log('Inconsistent type found in '
-                                    'input_streams',str(input_streams))
+                                    'input_streams, cannot store given stream',str(input_streams))
+                return
+
             stream_info = {}
             stream_info['identifier'] = input_strm['identifier']
             stream_info['name'] = input_strm['name']
