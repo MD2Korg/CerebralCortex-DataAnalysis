@@ -24,3 +24,6 @@
 Fs = 25
 led_decode_left_wrist = "org.md2k.signalprocessing.decodedLED.leftwrist"
 led_decode_right_wrist = "org.md2k.signalprocessing.decodedLED.rightwrist"
+window_size = 60
+window_offset = 31
+acceptable = .64
