@@ -72,51 +72,6 @@ def find_window_st_et(left:List[DataPoint],
                                             window_offset=window_offset)
     return windowed_ts_list_of_dp
 
-def find_combination(data_left:List[DataPoint],
-                     data_right:List[DataPoint],
-                     data_left_sample:np.ndarray,
-                     data_right_sample:np.ndarray)->np.ndarray:
-    """
-    For each window of 1 minute combine left and right hand PPG signals.
-    If not possible then return the one which has less accelerometer magnitude
-
-    :param data_left:
-    :param data_right:
-    :param data_left_sample:
-    :param data_right_sample:
-    :return: (*,3) or (*,6) shaped matrix depending on the result
-    """
-    ts_array_left = np.array([i.start_time.timestamp() for i in
-                              data_left])
-    ts_array_right = np.array([i.start_time.timestamp() for i in
-                               data_right])
-    min_ts = max(data_left[0].start_time.timestamp(),
-                 data_right[0].start_time.timestamp())
-    max_ts = min(data_left[-1].start_time.timestamp(),
-                 data_right[-1].start_time.timestamp())
-    index_left = np.where((ts_array_left>=min_ts)
-                          & (ts_array_left<=max_ts))[0]
-    index_right = np.where((ts_array_right>=min_ts)
-                           & (ts_array_right<=max_ts))[0]
-    if len(index_left)==len(index_right):
-        data_final = np.zeros((len(index_left),6))
-        data_final[:,:3] = data_left_sample[index_left,6:]
-        data_final[:,3:] = data_right_sample[index_right,6:]
-    else:
-        accl_mag_left = np.sum(data_left_sample[0,:]**2 +
-                               data_left_sample[1,:]**2 +
-                               data_left_sample[0,:]**2)
-
-        accl_mag_right = np.sum(data_right_sample[0,:]**2 +
-                                data_right_sample[1,:]**2 +
-                                data_right_sample[0,:]**2)
-
-        if accl_mag_left < accl_mag_right:
-            data_final = data_left_sample[:,6:]
-        else:
-            data_final = data_right_sample[:,6:]
-    return data_final
-
 def find_sample_from_combination_of_left_right_or_one(left:List[DataPoint],
                                                       right:List[DataPoint],
                                                       window_size:float=60,
@@ -160,30 +115,19 @@ def find_sample_from_combination_of_left_right_or_one(left:List[DataPoint],
                 data_left)>acceptable*Fs*window_size:
             data_final = data_left_sample[:,6:]
         else:
-            difference = np.abs(len(data_left)-len(data_right))
-            if difference == 0:
-                data_final = np.zeros((len(data_left),6))
-                data_final[:,:3] = data_left_sample[:,6:]
-                data_final[:,3:] = data_right_sample[:,6:]
-            elif difference < 5:
-                data_final = find_combination(data_left,
-                                              data_right,
-                                              data_left_sample,
-                                              data_right_sample)
+            accl_mag_left = np.sum(data_left_sample[:,0]**2 +
+                                   data_left_sample[:,1]**2 +
+                                   data_left_sample[:,2]**2)
+
+            accl_mag_right = np.sum(data_right_sample[:,0]**2 +
+                                    data_right_sample[:,1]**2 +
+                                    data_right_sample[:,2]**2)
+
+            if accl_mag_left/np.shape(data_left_sample)[0] < \
+                    accl_mag_right/np.shape(data_right_sample)[0]:
+                data_final = data_left_sample[:,6:]
             else:
-                accl_mag_left = np.sum(data_left_sample[:,0]**2 +
-                                       data_left_sample[:,1]**2 +
-                                       data_left_sample[:,2]**2)
-
-                accl_mag_right = np.sum(data_right_sample[:,0]**2 +
-                                        data_right_sample[:,1]**2 +
-                                        data_right_sample[:,2]**2)
-
-                if accl_mag_left/np.shape(data_left_sample)[0] < \
-                        accl_mag_right/np.shape(data_right_sample)[0]:
-                    data_final = data_left_sample[:,6:]
-                else:
-                    data_final = data_right_sample[:,6:]
+                data_final = data_right_sample[:,6:]
         final_window_list.append(DataPoint.from_tuple(
             start_time=key[0],end_time=key[1],sample=data_final))
 
