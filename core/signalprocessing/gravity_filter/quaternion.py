@@ -44,7 +44,8 @@ class Quaternion:
         else:
             q = np.array(w_or_q)
             if len(q) != 4:
-                raise ValueError("Expecting a 4-element array or w x y z as parameters")
+                raise ValueError(
+                    "Expecting a 4-element array or w x y z as parameters")
 
         self._set_q(q)
 
@@ -89,16 +90,20 @@ class Quaternion:
             roll = -2 * np.arctan2(self[1], self[0])
             yaw = 0
         else:
-            roll = np.arctan2(2 * self[0] * self[1] - 2 * self[2] * self[3], 1 - 2 * self[1] ** 2 - 2 * self[3] ** 2)
-            yaw = np.arctan2(2 * self[0] * self[2] - 2 * self[1] * self[3], 1 - 2 * self[2] ** 2 - 2 * self[3] ** 2)
+            roll = np.arctan2(2 * self[0] * self[1] - 2 * self[2] * self[3],
+                              1 - 2 * self[1] ** 2 - 2 * self[3] ** 2)
+            yaw = np.arctan2(2 * self[0] * self[2] - 2 * self[1] * self[3],
+                             1 - 2 * self[2] ** 2 - 2 * self[3] ** 2)
         return roll, pitch, yaw
 
     def to_euler123(self):
         roll = np.arctan2(-2 * (self[2] * self[3] - self[0] * self[1]),
-                          self[0] ** 2 - self[1] ** 2 - self[2] ** 2 + self[3] ** 2)
+                          self[0] ** 2 - self[1] ** 2 - self[2] ** 2 + self[
+                              3] ** 2)
         pitch = np.arcsin(2 * (self[1] * self[3] + self[0] * self[1]))
         yaw = np.arctan2(-2 * (self[1] * self[2] - self[0] * self[3]),
-                         self[0] ** 2 + self[1] ** 2 - self[2] ** 2 - self[3] ** 2)
+                         self[0] ** 2 + self[1] ** 2 - self[2] ** 2 - self[
+                             3] ** 2)
         return roll, pitch, yaw
 
     def __mul__(self, other):
@@ -108,14 +113,18 @@ class Quaternion:
         :return:
         """
         if isinstance(other, Quaternion):
-            w = self._q[0] * other._q[0] - self._q[1] * other._q[1] - self._q[2] * other._q[2] - self._q[3] * other._q[
-                3]
-            x = self._q[0] * other._q[1] + self._q[1] * other._q[0] + self._q[2] * other._q[3] - self._q[3] * other._q[
-                2]
-            y = self._q[0] * other._q[2] - self._q[1] * other._q[3] + self._q[2] * other._q[0] + self._q[3] * other._q[
-                1]
-            z = self._q[0] * other._q[3] + self._q[1] * other._q[2] - self._q[2] * other._q[1] + self._q[3] * other._q[
-                0]
+            w = self._q[0] * other._q[0] - self._q[1] * other._q[1] - self._q[
+                2] * other._q[2] - self._q[3] * other._q[
+                    3]
+            x = self._q[0] * other._q[1] + self._q[1] * other._q[0] + self._q[
+                2] * other._q[3] - self._q[3] * other._q[
+                    2]
+            y = self._q[0] * other._q[2] - self._q[1] * other._q[3] + self._q[
+                2] * other._q[0] + self._q[3] * other._q[
+                    1]
+            z = self._q[0] * other._q[3] + self._q[1] * other._q[2] - self._q[
+                2] * other._q[1] + self._q[3] * other._q[
+                    0]
 
             return Quaternion(w, x, y, z)
         elif isinstance(other, numbers.Number):
@@ -130,7 +139,8 @@ class Quaternion:
         """
         if not isinstance(other, Quaternion):
             if len(other) != 4:
-                raise TypeError("Quaternions must be added to other quaternions or a 4-element array")
+                raise TypeError(
+                    "Quaternions must be added to other quaternions or a 4-element array")
             q = self.q + other
         else:
             q = self.q + other.q
