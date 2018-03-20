@@ -99,8 +99,10 @@ class ComputeFeatureBase(object):
                         stream_type=stream_type, data=data)
         try:
             self.CC.save_stream(ds)
-            self.CC.logging.log('Saved %d data points from %s' % 
-                                 (len(data), self.__class__.__name__))
+            self.CC.logging.log('Saved %d data points stream id %s user_id '
+                                '%s from %s' % 
+                                 (len(data), str(identifier), str(owner), 
+                                  self.__class__.__name__))
         except Exception as exp:
             self.CC.logging.log(self.__class__.__name__ + str(exp) + "\n" + 
                           str(traceback.format_exc()))
