@@ -4,3 +4,6 @@
 __pycache__
 *.pyc
 *.swp
+build/
+dist/
+MD2K_Cerebral_Cortex_DataAnalysis_compute_features.egg-info/

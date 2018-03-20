@@ -22,42 +22,91 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-'''
-This module describes the ComputeFeatureBase class.
-Feature modules should inherit from ComputeFeatureBase.
-'''
-import syslog
 import traceback
-from syslog import LOG_ERR
-from utils.config import CC_CONFIG_PATH
-from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
-
-# Initialize logging
-syslog.openlog(ident="CerebralCortex-ComputeFeatureBase")
+from cerebralcortex.core.log_manager.log_handler import LogTypes
+from cerebralcortex.core.datatypes.stream_types import StreamTypes
+import uuid
+import os
+import json
 
 class ComputeFeatureBase(object):
     '''
-    Use this method for all your computations.
+    This module describes the ComputeFeatureBase class.
+    Feature modules should inherit from ComputeFeatureBase.
     '''
     def process(self):
+        '''
+        Use this method as an entry point for all your computations.
+        '''
         pass
     
-    '''
-    All store operations MUST be through this method.
-    '''
-    def store(self,identifier,owner,name,data_descriptor,execution_context,annotations,stream_type,data):
-        ds = DataStream(identifier=identifier, owner=owner, name=name, data_descriptor=data_descriptor,
-                        execution_context=execution_context, annotations=annotations,
+    def store_stream(self,filepath:str, input_streams:list, user_id:uuid, data:list):
+        '''
+        This method saves the computed DataStreams from different features
+        '''
+        stream_str = str(filepath) 
+        stream_str += str(user_id) 
+        stream_str += str(self.__class__.__name__)
+        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, stream_str))
+        
+        # creating new input_streams list with only the needed information
+        input_streams_metadata = []
+        for input_strm in input_streams:
+            if type(input_strm) != dict:
+                self.CC.logging.log('Inconsistent type found in '
+                                    'input_streams, cannot store given stream',str(input_streams))
+                return
+
+            stream_info = {}
+            stream_info['identifier'] = input_strm['identifier']
+            stream_info['name'] = input_strm['name']
+            input_streams_metadata.append(stream_info)
+
+        newfilepath = os.path.join(self.CC.feature_metadata_dir, filepath)
+        self.CC.logging.log('METADATA file path %s' % (newfilepath))
+
+        with open(newfilepath, "r") as f:
+            metadata = f.read()
+            metadata = json.loads(metadata)
+            metadata["execution_context"]["processing_module"]["input_streams"]\
+            = input_streams_metadata
+            metadata["identifier"] = str(output_stream_id)
+            metadata["owner"] = str(user_id)
+
+            self.store(identifier=output_stream_id, owner=user_id, name=metadata["name"],
+                       data_descriptor=metadata["data_descriptor"],
+                       execution_context=metadata["execution_context"], annotations=metadata["annotations"],
+                       stream_type=StreamTypes.DATASTREAM, data=data)
+
+
+
+    def store(self, identifier, owner, name, data_descriptor, execution_context,
+              annotations, stream_type=StreamTypes.DATASTREAM, data=None):
+        '''
+        All store operations MUST be through this method.
+        '''
+        if not data:
+            self.CC.logging.log(error_type=LogTypes.MISSING_DATA, error_message
+                                = 'Null data received for '
+                                  'saving stream from  ' + self.__class__.__name__)
+            return
+        
+        ds = DataStream(identifier=identifier, owner=owner, name=name, 
+                        data_descriptor=data_descriptor,
+                        execution_context=execution_context, 
+                        annotations=annotations,
                         stream_type=stream_type, data=data)
         try:
-            print("Saving Stream",ds)
             self.CC.save_stream(ds)
+            self.CC.logging.log('Saved %d data points stream id %s user_id '
+                                '%s from %s' % 
+                                 (len(data), str(identifier), str(owner), 
+                                  self.__class__.__name__))
         except Exception as exp:
-            syslog.syslog(LOG_ERR,self.__class__.__name__ + str(exp) + "\n" + str(traceback.format_exc()))
+            self.CC.logging.log(self.__class__.__name__ + str(exp) + "\n" + 
+                          str(traceback.format_exc()))
 
-    def __init__(self):
-        self.CC = CerebralCortex(CC_CONFIG_PATH)
-
-
+    def __init__(self, CC = None):
+        self.CC = CC
 

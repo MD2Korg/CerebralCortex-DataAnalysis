@@ -17,13 +17,13 @@
         }
       ],
       "input_parameters":{
-        "geo_fence_dist":100,
+        "geo_fence_dist":2,
         "min_points_in_cluster":500,
-        "max_dist_assign_centroid":1000,
+        "max_dist_assign_centroid":1000
       }
     },
     "algorithm":{
-      "method":"https://github.com/MD2Korg/CerebralCortex-DataAnalysis/tree/master/core/markers/gps/gps_clustering.py",
+      "method":"https://github.com/MD2Korg/CerebralCortex-DataAnalysis/tree/master/core/feature/gps/gps.py",
       "authors":[
         {
           "name":"Soujanya Chatterjee",
@@ -40,5 +40,5 @@
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name":"org.md2k.data_analysis.gps_clustering_episode_generation",
   "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "type":"1"
 }
