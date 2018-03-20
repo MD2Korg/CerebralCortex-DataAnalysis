@@ -156,10 +156,10 @@ def get_stress_marks_window(data,user,day,st,et):
             # if st>=l[2] and et>l[3] and l[3]-st>25 and st<l[3]:
             #     return l[4]
     return 2
-count = 0
+count = 494
 CC = CerebralCortex()
 users = CC.get_all_users("mperf-alabsi")
-user_data_collection = {}
+user_data_collection = pickle.load(open('data2.p','rb'))
 lab_stress_marks = pd.read_csv('./utils/stress.csv',header=None,
                                sep=',').as_matrix()
 x = DecodeHRV()
@@ -168,7 +168,7 @@ for user in users:
     user_id = user["identifier"]
     if user_id not in list(lab_stress_marks[:,0]):
         continue
-    user_data_collection[user_id] = {}
+    # user_data_collection[user_id] = {}
     if led_decode_left_wrist1 in streams:
 
         stream_days_left = get_stream_days(streams[led_decode_left_wrist1][
@@ -184,55 +184,56 @@ for user in users:
             stream_days_right))
 
         for day in union_of_days_list:
-            if day in common_days:
-                decoded_left_raw = CC.get_stream(streams[
-                                                     led_decode_left_wrist1][
-                                                         "identifier"],
-                                                     day=day, user_id=user_id)
-                decoded_right_raw = CC.get_stream(streams[
-                                                      led_decode_right_wrist1][
-                                                     "identifier"],
-                                                 day=day, user_id=user_id)
+            # if day in common_days:
+            #     decoded_left_raw = CC.get_stream(streams[
+            #                                          led_decode_left_wrist1][
+            #                                              "identifier"],
+            #                                          day=day, user_id=user_id)
+            #     decoded_right_raw = CC.get_stream(streams[
+            #                                           led_decode_right_wrist1][
+            #                                          "identifier"],
+            #                                      day=day, user_id=user_id)
+            #
+            #     final_windowed_data = find_sample_from_combination_of_left_right_or_one(
+            #         decoded_left_raw.data,decoded_right_raw.data,
+            #         window_size=window_size,window_offset=window_offset,
+            #         Fs=Fs,acceptable=acceptable)
+            #     print(final_windowed_data[-1].start_time,decoded_left_raw.data[
+            #         -1].start_time,decoded_right_raw.data[-1].start_time)
+            # elif day in left_only_days:
+            #     decoded_left_raw = CC.get_stream(streams[led_decode_left_wrist][
+            #                                          "identifier"],
+            #                                      day=day, user_id=user_id)
+            #
+            #     windowed_data = window_sliding(decoded_left_raw.data,
+            #                                          window_size=window_size,
+            #                                          window_offset=window_offset)
+            #     final_windowed_data = []
+            #     for key in windowed_data.keys():
+            #         final_windowed_data.append(DataPoint.from_tuple(
+            #             start_time=key[0],
+            #             end_time=key[1],
+            #             sample = np.array([i.sample[6:] for i in windowed_data[
+            #             key]])))
+            # else:
+            #     decoded_right_raw = CC.get_stream(streams[
+            #                                           led_decode_right_wrist][
+            #                                           "identifier"],
+            #                                       day=day, user_id=user_id)
+            #
+            #     windowed_data = window_sliding(decoded_right_raw.data,
+            #                                    window_size=window_size,
+            #                                    window_offset=window_offset)
+            #     final_windowed_data = []
+            #     for key in windowed_data.keys():
+            #         final_windowed_data.append(DataPoint.from_tuple(
+            #             start_time=key[0],
+            #             end_time=key[1],
+            #             sample = np.array([i.sample[6:] for i in windowed_data[
+            #                 key]])))
 
-                final_windowed_data = find_sample_from_combination_of_left_right_or_one(
-                    decoded_left_raw.data,decoded_right_raw.data,
-                    window_size=window_size,window_offset=window_offset,
-                    Fs=Fs,acceptable=acceptable)
-                print(final_windowed_data[-1].start_time,decoded_left_raw.data[
-                    -1].start_time,decoded_right_raw.data[-1].start_time)
-            elif day in left_only_days:
-                decoded_left_raw = CC.get_stream(streams[led_decode_left_wrist][
-                                                     "identifier"],
-                                                 day=day, user_id=user_id)
-
-                windowed_data = window_sliding(decoded_left_raw.data,
-                                                     window_size=window_size,
-                                                     window_offset=window_offset)
-                final_windowed_data = []
-                for key in windowed_data.keys():
-                    final_windowed_data.append(DataPoint.from_tuple(
-                        start_time=key[0],
-                        end_time=key[1],
-                        sample = np.array([i.sample[6:] for i in windowed_data[
-                        key]])))
-            else:
-                decoded_right_raw = CC.get_stream(streams[
-                                                      led_decode_right_wrist][
-                                                      "identifier"],
-                                                  day=day, user_id=user_id)
-
-                windowed_data = window_sliding(decoded_right_raw.data,
-                                               window_size=window_size,
-                                               window_offset=window_offset)
-                final_windowed_data = []
-                for key in windowed_data.keys():
-                    final_windowed_data.append(DataPoint.from_tuple(
-                        start_time=key[0],
-                        end_time=key[1],
-                        sample = np.array([i.sample[6:] for i in windowed_data[
-                            key]])))
-
-            user_data_collection[user_id][day] = final_windowed_data
+            final_windowed_data = user_data_collection[user_id][
+                day]
             int_RR_dist_obj,H,w_l,w_r,fil_type = get_constants()
             for dp in final_windowed_data:
                 try:
@@ -309,6 +310,9 @@ for user in users:
                             count+=1
                             print(score_r)
                             print('saving right')
+                            np.savetxt('./windows1/left.csv',dp.sample['right'])
+                            print('stopppppppppppppppppppppp')
+                            break
                         elif not RR_interval_all_realization_r:
                             data = np.array([RR_interval_all_realization_l,
                                              score_l,HR_l,label,
@@ -336,4 +340,4 @@ for user in users:
                 except Exception:
                     pass
 print(count)
-pickle.dump(user_data_collection,open('data2.p','wb'))
+# pickle.dump(user_data_collection,open('data2.p','wb'))
