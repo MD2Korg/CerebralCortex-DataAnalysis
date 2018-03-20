@@ -59,8 +59,8 @@ RIGHT_WRIST = 'right_wrist'
 # Window size
 TEN_SECONDS = 10
 
-POSTURE_MODEL_FILENAME = 'core/feature/activity/models/posture_randomforest.model'
-ACTIVITY_MODEL_FILENAME = 'core/feature/activity/models/activity_level_randomforest.model'
+POSTURE_MODEL_FILENAME = 'core/resources/models/activity/posture_randomforest.model'
+ACTIVITY_MODEL_FILENAME = 'core/resources/models/activity/activity_level_randomforest.model'
 
 # Output labels
 ACTIVITY_LABELS = ["NO", "LOW", "WALKING", "MOD", "HIGH"]

@@ -23,6 +23,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import traceback
+import pkg_resources
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.log_manager.log_handler import LogTypes
 from cerebralcortex.core.datatypes.stream_types import StreamTypes
@@ -63,21 +64,20 @@ class ComputeFeatureBase(object):
             stream_info['name'] = input_strm['name']
             input_streams_metadata.append(stream_info)
 
-        newfilepath = os.path.join(self.CC.feature_metadata_dir, filepath)
-        self.CC.logging.log('METADATA file path %s' % (newfilepath))
+        metadata_file_path = '/'.join(['core','resources','metadata',filepath])
+        # FIXME
+        metadata_str = __loader__.get_data(metadata_file_path)
 
-        with open(newfilepath, "r") as f:
-            metadata = f.read()
-            metadata = json.loads(metadata)
-            metadata["execution_context"]["processing_module"]["input_streams"]\
-            = input_streams_metadata
-            metadata["identifier"] = str(output_stream_id)
-            metadata["owner"] = str(user_id)
+        metadata = json.loads(metadata_str)
+        metadata["execution_context"]["processing_module"]["input_streams"]\
+                = input_streams_metadata
+        metadata["identifier"] = str(output_stream_id)
+        metadata["owner"] = str(user_id)
 
-            self.store(identifier=output_stream_id, owner=user_id, name=metadata["name"],
-                       data_descriptor=metadata["data_descriptor"],
-                       execution_context=metadata["execution_context"], annotations=metadata["annotations"],
-                       stream_type=StreamTypes.DATASTREAM, data=data)
+        self.store(identifier=output_stream_id, owner=user_id, name=metadata["name"],
+                   data_descriptor=metadata["data_descriptor"],
+                   execution_context=metadata["execution_context"], annotations=metadata["annotations"],
+                   stream_type=StreamTypes.DATASTREAM, data=data)
 
 
 
@@ -107,6 +107,17 @@ class ComputeFeatureBase(object):
             self.CC.logging.log(self.__class__.__name__ + str(exp) + "\n" + 
                           str(traceback.format_exc()))
 
+    
     def __init__(self, CC = None):
         self.CC = CC
 
+
+def get_resource_contents(resource_name):
+    '''
+    This method returns the absolute file path in the system
+    parameters
+    filename: path to the file relative to core directory
+    return value: the absolute file path
+    '''
+    fstr = __loader__.get_data(resource_name)
+    return fstr
