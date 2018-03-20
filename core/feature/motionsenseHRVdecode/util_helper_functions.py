@@ -54,7 +54,8 @@ def get_decoded_matrix(data,row_length=22):
             continue
         sample_final = np.vstack((sample_final,sample_temp.values))
     sample_temp = Preprc(raw_data=sample[initial:,:])
-    sample_final = np.vstack((sample_final,sample_temp.values))
+    if np.shape(sample_temp)[0]>0:
+        sample_final = np.vstack((sample_final,sample_temp.values))
     if np.shape(sample_final)[0] == 1:
         return []
     return sample_final[1:,:]
