@@ -110,6 +110,7 @@ class ActivityMarker(ComputeFeatureBase):
                                 (user))
             return
 
+        self.CC.logging.log("Processing Activity for user: %s" %(user))
         for day in all_days:
             posture_labels_left, activity_labels_left = self.process_activity_and_posture_marker(streams,
                                                                                                  user, day,

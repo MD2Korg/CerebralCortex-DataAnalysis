@@ -27,6 +27,7 @@ import os
 import utils.config
 import argparse
 import traceback
+import importlib
 from datetime import datetime
 from datetime import timedelta
 
@@ -56,9 +57,10 @@ def process_features(feature_list, all_users, all_days, is_spark_job=False):
             for user in all_users:
                 process_feature_on_user(user, module, all_days, cc_config_path)
 
-def process_feature_on_user(user, module, all_days, cc_config_path):
+def process_feature_on_user(user, module_name, all_days, cc_config_path):
     try:
         cc = CerebralCortex(cc_config_path)
+        module = importlib.import_module(module_name)
         feature_class_name = getattr(module,'feature_class_name')
         feature_class = getattr(module,feature_class_name)
         feature_class_instance = feature_class(cc)
@@ -100,12 +102,9 @@ def discover_features(feature_list):
             try:
                 module_name = mod_file_path[:-3] # strip '.py'
                 module_name_dotted = module_name.replace('/','.')
-                print(module_name_dotted)
-                module = __import__(subdir)
-                
-                found_features.append(module)
+                found_features.append(module_name_dotted)
                 syslog.openlog(ident="CerebralCortex-Driver")
-                syslog.syslog('Loaded feature %s' % feature)
+                syslog.syslog('Added feature %s for importing' % feature)
                 syslog.closelog()
             except Exception as exp:
                 err = str(exp) + '\n' + str(traceback.format_exc())
@@ -199,9 +198,11 @@ def main():
             all_users = users
     except Exception as e:
         print(str(e))
+        print( str(traceback.format_exc()))
     if not all_users:
         print('No users found for the study',study_name)
         return
+
     found_features = discover_features(feature_list)
     feature_to_process = generate_feature_processing_order(found_features)
     process_features(feature_to_process, all_users, all_days, is_spark_job)
