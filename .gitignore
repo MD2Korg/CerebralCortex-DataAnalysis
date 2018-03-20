@@ -4,6 +4,3 @@
 __pycache__
 *.pyc
 *.swp
-*.p
-*.csv
-*.npz
