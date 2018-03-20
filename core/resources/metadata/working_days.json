@@ -2,7 +2,7 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"list",
+      "type":"String",
       "unit":""
     }
   ],
@@ -20,7 +20,7 @@
       }
     },
     "algorithm":{
-      "method":"core.feature.work_data.phone",
+      "method":"core.feature.office_time.WorkingDays.listing_all_work_days",
       "authors":[
         {
           "name":"Alina Zaman",
