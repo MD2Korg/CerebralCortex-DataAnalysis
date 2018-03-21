@@ -55,11 +55,12 @@ class ActivityMarker(ComputeFeatureBase):
                                              day=day,
                                              user_id=user_id,
                                              data_type=DataSet.COMPLETE)
-            day_data.extend(data_stream.data)
+            if data_stream is not None and len(data_stream.data) > 0:
+                day_data.extend(data_stream.data)
 
         day_data.sort(key=lambda x: x.start_time)
 
-        return day_data, stream_ids
+        return day_data
 
     def process_activity_and_posture_marker(self, streams, user_id, day,
                                             wrist: str,
