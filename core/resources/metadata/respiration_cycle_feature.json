@@ -1,62 +1,142 @@
 {
-  "annotations":[],
-  "data_descriptor":[
-    {
-      "type":"array of respiration cycle feature",
-      "array postion 0":"Inspiration Duration",
-      "array postion 1":"Expiration Duration",
-      "array postion 2":"Respiration Duration",
-      "array postion 3":"Ratio of Inspiration to Expiration Duration",
-      "array postion 4":"Stretch",
-      "array postion 5":"Inspiration Velocity",
-      "array postion 6":"Expiration Velocity",
-      "array postion 7":"Skewness",
-      "array postion 8":"Kurtosis",
-      "array postion 9":"Entropy",
-      "array postion 10":"Ratio of Inspiration to Expiration velocity",
-      "array postion 11":"Ratio of Inspiration to expiration area",
-      "array postion 12":"Ratio of Expiration to Respiration Duration",
-      "array postion 13":"Ratio of Respiration area to inspiration duration",
-      "array postion 14":"Power in .05-.2 Hz",
-      "array postion 15":"Power in .201-.4 Hz",
-      "array postion 16":"Power in .401-.6 Hz",
-      "array postion 17":"Power in .601-.8 Hz",
-      "array postion 18":"Power in .801-1 Hz",
-      "array postion 19":"Correlation with Previous Cycle",
-      "array postion 20":"Correlation with Next Cycle",
-      "unit":"array"
-    }
-  ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.respiration_cycle_statistics",
-      "input_streams":[
+    "annotations": [],
+    "data_descriptor": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+            "NAME": "Inspiration Duration",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": "Inspiration duration time computed from a valley to the next peak"
+        },
+        {
+            "NAME": "Expiration Duration",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": "Expiration duration time computed from a peak to the next valley"
+        },
+        {
+            "NAME": "Respiration Duration",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": "Respiration duration time computed from valley to valley"
+        },
+        {
+            "NAME": "Ratio of Inspiration to Expiration Duration",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": "Inspiration duration divided by expiration duration"
+        },
+        {
+            "NAME": "Stretch",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
+        },
+        {
+            "NAME": "Inspiration Velocity",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
+        },
+        {
+            "NAME": "Expiration Velocity",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
+        },
+        {
+            "NAME": "Skewness",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
+        },
+        {
+            "NAME": "Kurtosis",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
+        },
+        {
+            "NAME": "Entropy",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
+        },
+        {
+            "NAME": "Ratio of Inspiration to Expiration Velocity",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
+        },
+        {
+            "NAME": "Ratio of Inspiration to Expiration Area",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
+        },
+        {
+            "NAME": "Ratio of Expiration to Respiration Duration",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
+        },
+        {
+            "NAME": "Ratio of Respiration Area to Inspiration Duration",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
+        },
+        {
+            "NAME": "Power in .05-.2 Hz",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
+        },
+        {
+            "NAME": "Power in .201-.4 Hz",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
+        },
+        {
+            "NAME": "Power in .401-.6 Hz",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
+        },
+        {
+            "NAME": "Power in .601-.8 Hz",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
+        },
+        {
+            "NAME": "Power in .801-1 Hz",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
+        },
+        {
+            "NAME": "Correlation with Previous Cycle",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
+        },
+        {
+            "NAME": "Correlation with Next Cycle",
+            "DATA_TYPE": "double",
+            "DESCRIPTION": ""
         }
-      ],
-      "input_parameters":{
-        "Respiration Raw": "Respiration Raw Datastream",
-        "Respiration Baseline": "Respiration Baseline Datastream"
-      }
+    ],
+    "execution_context": {
+        "processing_module": {
+            "name": "core.feature.respiration_cycle_statistics",
+            "input_streams": [
+                {
+                    "id": "CC_INPUT_STREAM_ID_CC",
+                    "name": "CC_INPUT_STREAM_NAME_CC"
+                }
+            ],
+            "input_parameters": {
+                "Respiration Raw": "Respiration Raw Datastream",
+                "Respiration Baseline": "Respiration Baseline Datastream"
+            }
+        },
+        "algorithm": {
+            "method": "core.",
+            "authors": [
+                {
+                    "name": "Md Azim Ullah",
+                    "email": "mullah@memphis.edu"
+                }
+            ],
+            "version": "0.0.1",
+            "reference": {
+            },
+            "description": "Takes the Respiration raw and baseline datastream and combines them to get the recovered respiration.From the recovered respiration it generates an array of respiration features per respiration cycle"
+        }
     },
-    "algorithm":{
-      "method":"core.",
-      "authors":[
-        {
-          "name":"Md Azim Ullah",
-          "email":"mullah@memphis.edu"
-        }
-      ],
-      "version":"0.0.1",
-      "reference":{
-      },
-      "description":"Takes the Respiration raw and baseline datastream and combines them to get the recovered respiration.From the recovered respiration it generates an array of respiration features per respiration cycle"
-    }
-  },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.feature.respirationcyclefeature",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+    "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+    "name": "org.md2k.feature.respirationcyclefeature",
+    "owner": "CC_OWNER_CC",
+    "type": "datastream"
 }
