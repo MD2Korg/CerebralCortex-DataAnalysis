@@ -36,7 +36,7 @@ import warnings
 warnings.filterwarnings("ignore")
 import pickle
 import pandas as pd
-
+from copy import deepcopy
 def get_constants():
     data = loadmat('./utils/int_RR_dist_obj_kernel_Fs25_11clusters.mat')
     int_RR_dist_obj = data['int_RR_dist_obj']
@@ -281,20 +281,26 @@ for user in users:
                     elif np.shape(dp.sample['left'])[0]>0 and np.shape(
                             dp.sample['right'])[0]>0:
 
-                        X_ppg = dp.sample['left']
+                        X_ppg = deepcopy(dp.sample['left'])
+                        print(X_ppg)
+                        np.savetxt('./windows1/left.csv',X_ppg,delimiter=',')
                         t_start = dp.start_time.timestamp()
                         t_end = dp.end_time.timestamp()
                         Fs_ppg = (np.shape(X_ppg)[0]/(t_end-t_start))
+                        print(Fs_ppg)
                         X_ppg_fil = preProcessing(X0=X_ppg,Fs=Fs_ppg,fil_type=fil_type)
                         RR_interval_all_realization_l,score_l,\
                         HR_l = GLRT_bayesianIP_HMM(
                             X_ppg_fil,H,w_r,w_l,[],int_RR_dist_obj)
 
-                        X_ppg = dp.sample['right']
+                        X_ppg = deepcopy(dp.sample['right'])
                         t_start = dp.start_time.timestamp()
                         t_end = dp.end_time.timestamp()
                         Fs_ppg = (np.shape(X_ppg)[0]/(t_end-t_start))
+                        print(Fs_ppg)
                         X_ppg_fil = preProcessing(X0=X_ppg,Fs=Fs_ppg,fil_type=fil_type)
+
+
                         RR_interval_all_realization_r,score_r, \
                         HR_r = GLRT_bayesianIP_HMM(
                             X_ppg_fil,H,w_r,w_l,[],int_RR_dist_obj)
