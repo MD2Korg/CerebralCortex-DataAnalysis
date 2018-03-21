@@ -19,7 +19,7 @@
       "input_parameters":{
         "geo_fence_dist":2,
         "min_points_in_cluster":500,
-        "max_dist_assign_centroid":1000,
+        "max_dist_assign_centroid":1000
       }
     },
     "algorithm":{
@@ -40,5 +40,5 @@
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name":"org.md2k.data_analysis.gps_clustering_episode_generation",
   "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "type":"1"
 }

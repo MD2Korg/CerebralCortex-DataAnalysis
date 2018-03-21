@@ -1,0 +1,36 @@
+{
+  "annotations":[],
+  "data_descriptor":[
+    {
+      "type":"string",
+      "unit":"",
+      "descriptor":"The participants context based on proximity to home beacon,Values = Around_home_beacon(0),Not_around_home_beacon(1)"
+    }
+  ],
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.beacon_feature",
+      "input_streams":[],
+      "input_parameters":{
+        "window_size": "60"
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.phone_features.phone",
+      "authors":[
+        {
+          "name":"Rabin Banjade",
+          "email":"rabin.banjade@gmail.com"
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+      },
+      "description":"The participants context based on proximity to home beacon"
+    }
+  },
+  "identifier":"",
+  "name":"org.md2k.data_analysis.feature.beacon.home_beacon_context",
+  "owner":"",
+  "type":"1"
+}

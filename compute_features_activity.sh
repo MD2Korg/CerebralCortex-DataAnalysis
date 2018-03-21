@@ -15,11 +15,10 @@ export SPARK_HOME=/usr/local/spark/
 # setting of PYTHONPATH
 export PYTHONPATH=$PYTHONPATH:$DATA_ANALYSIS_PATH
 export PYTHONPATH=$PYTHONPATH:$DATA_ANALYSIS_PATH'/core/feature/activity/'
-export PYTHONPATH=$PYTHONPATH:$DATA_ANALYSIS_PATH'/core/feature/phone_features/'
 export PYTHONPATH=$PYTHONPATH:$DATA_ANALYSIS_PATH'/core/feature/gps/'
 export PYTHONPATH=$PYTHONPATH:$DATA_ANALYSIS_PATH'/core/signalprocessing/'
 export PYTHONPATH=$PYTHONPATH:$DATA_ANALYSIS_PATH'/core/signalprocessing/gravity_filter/'
-
+echo $PYTHONPATH
 # path of cc configuration path
 CC_CONFIG_FILEPATH="/md2k/code/ali/cc_config/cc_configuration.yml"
 
@@ -27,7 +26,7 @@ CC_CONFIG_FILEPATH="/md2k/code/ali/cc_config/cc_configuration.yml"
 SPARK_MASTER="local[1]"
 
 # list of features to process, leave blank to process all features
-FEATURES=""
+FEATURES="activity"
 
 # study name
 STUDY_NAME="mperf"
@@ -42,28 +41,11 @@ END_DATE="20171111"
 FEATURE_METADATA_DIR=$DATA_ANALYSIS_PATH'/core/resources/metadata'
 
 # list of usersids separated by comma. Leave blank to process all users.
-USERIDS=""
+USERIDS="247d42cf-f81c-44d2-9db8-fea69f468d58"
 
-# set to True to make use of spark parallel execution
-SPARK_JOB="True"
-
-
-if [ $SPARK_JOB == 'True' ]
-    then
-        echo 'Executing Spark job'
-        spark-submit --master $SPARK_MASTER \
-                     --conf spark.ui.port=4045 \
-                     core/driver.py -c $CC_CONFIG_FILEPATH \
-                     -s $STUDY_NAME -sd $START_DATE \
-                     -ed $END_DATE -u $USERIDS -f $FEATURES \
-                     -m $FEATURE_METADATA_DIR \
-                     -p $SPARK_JOB
-    else
-        echo 'Executing single threaded'
-        python3.6 core/driver.py -c $CC_CONFIG_FILEPATH \
-                       -s $STUDY_NAME -sd $START_DATE \
-                       -ed $END_DATE -u $USERIDS -f $FEATURES \
-                       -m $FEATURE_METADATA_DIR 
-
-fi
+spark-submit --master $SPARK_MASTER \
+             --conf spark.ui.port=4045 \
+core/driver.py -c $CC_CONFIG_FILEPATH -s $STUDY_NAME -sd $START_DATE \
+               -ed $END_DATE -u $USERIDS -f $FEATURES \
+               -m $FEATURE_METADATA_DIR
 

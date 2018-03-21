@@ -150,7 +150,6 @@ def create_all_windows(datapoint: List[DataPoint], window_size: float, window_of
 def epoch_align(ts: datetime,
                 offset: float,
                 after: bool = False,
-                # time_zone: pytz = pytz.timezone('US/Central'),
                 time_base: int = 1e6) -> datetime:
     """
     Epoch timestamp alignment based on offset
@@ -167,6 +166,35 @@ def epoch_align(ts: datetime,
     if after:
         new_timestamp += offset * time_base
 
-    #result = datetime.fromtimestamp(new_timestamp / time_base, time_zone)
-    result = datetime.fromtimestamp(new_timestamp / time_base)
+    result = datetime.fromtimestamp(new_timestamp / time_base, ts.tzinfo)
     return result
+
+def merge_consective_windows(data: OrderedDict) -> List[DataPoint]:
+    """
+    Merge two or more windows if the time difference between them is 0
+    :param data: windowed data (start-time, end-time, sample)
+    :return:
+    """
+    merged_windows = []
+    element = None
+    start = None
+    end = None
+    val = None
+    if data:
+        for key, val in data.items():
+            if element is None:
+                element = val
+                start = key[0]
+                end = key[1]
+            elif element == val and (end == key[0]):
+                element = val
+                end = key[1]
+            else:
+                merged_windows.append(DataPoint(start, end, element))
+                element = val
+                start = key[0]
+                end = key[1]
+        if val is not None:
+            merged_windows.append(DataPoint(start, end, val))
+
+    return merged_windows
