@@ -1,18 +1,70 @@
+# Copyright (c) 2018, MD2K Center of Excellence
+# - Md Shiplu Hawlader <shiplu.cse.du@gmail.com; mhwlader@memphis.edu>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+# list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from cerebralcortex.core.datatypes.stream_types import StreamTypes
 from core.computefeature import ComputeFeatureBase
 
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
 import datetime
 import numpy as np
 from datetime import timedelta
+import time
+
+from sklearn.mixture import GaussianMixture
 
 
-feature_class_name='PhoneFeatures'
+feature_class_name = 'PhoneFeatures'
+
 
 class PhoneFeatures(ComputeFeatureBase):
+
+    appcategorycache = {}
+    APPUSAGE_GAP_THRESHOLD = timedelta(minutes=2)
+
+    def get_data_by_stream_name(self, stream_name, user_id, day):
+        """
+        method to get combined data from CerebralCortex
+        :param stream_name: Name of the stream corresponding to the datastream
+        :param user_id:
+        :param day:
+        :return: combined data if there are multiple stream id
+        """
+
+        stream_ids = self.CC.get_stream_id(user_id, stream_name)
+        data = []
+        for stream in stream_ids:
+            data += self.CC.get_stream(stream['identifier'], user_id=user_id, day=day).data
+
+        return data
+
     def inter_event_time_list(self, data):
-        if len(data)==0:
+        if len(data) == 0:
             return None
 
         last_end = data[0].end_time
@@ -27,186 +79,189 @@ class PhoneFeatures(ComputeFeatureBase):
             ret.append(max(0, dif.total_seconds()))
             last_end = max(last_end, cd.end_time)
 
-        return list(map(lambda x: x/60.0, ret))
-
+        return list(map(lambda x: x / 60.0, ret))
 
     def average_inter_phone_call_sms_time_hourly(self, phonedatastream: DataStream, smsdatastream: DataStream):
 
-        if len(phonedatastream.data)+len(smsdatastream.data) <=1:
+        if len(phonedatastream) + len(smsdatastream) <= 1:
             return None
 
         tmpphonestream = phonedatastream
         tmpsmsstream = smsdatastream
-        for s in tmpphonestream.data:
+        for s in tmpphonestream:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
-        for s in tmpsmsstream.data:
+        for s in tmpsmsstream:
             s.end_time = s.start_time
 
-        combined_data = phonedatastream.data + smsdatastream.data
+        combined_data = phonedatastream + smsdatastream
 
-        combined_data.sort(key=lambda x:x.start_time)
+        combined_data.sort(key=lambda x: x.start_time)
 
         new_data = []
         for h in range(0, 24):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month, day=combined_data[0].start_time.day, hour=h)
+            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                      day=combined_data[0].start_time.day, hour=h)
             end = start + datetime.timedelta(minutes=59)
             for d in combined_data:
-                if start<=d.start_time<=end or start<=d.end_time<=end:
+                if start <= d.start_time <= end or start <= d.end_time <= end:
                     datalist.append(d)
-            if len(datalist) <=1:
+            if len(datalist) <= 1:
                 continue
-            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(self.inter_event_time_list(datalist))/(len(datalist)-1)))
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset,
+                                      sample=sum(self.inter_event_time_list(datalist)) / (len(datalist) - 1)))
 
         return new_data
-
 
     def average_inter_phone_call_sms_time_four_hourly(self, phonedatastream: DataStream, smsdatastream: DataStream):
 
-        if len(phonedatastream.data)+len(smsdatastream.data) <=1:
+        if len(phonedatastream) + len(smsdatastream) <= 1:
             return None
 
         tmpphonestream = phonedatastream
         tmpsmsstream = smsdatastream
-        for s in tmpphonestream.data:
+        for s in tmpphonestream:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
-        for s in tmpsmsstream.data:
+        for s in tmpsmsstream:
             s.end_time = s.start_time
 
-        combined_data = phonedatastream.data + smsdatastream.data
+        combined_data = phonedatastream + smsdatastream
 
-        combined_data.sort(key=lambda x:x.start_time)
+        combined_data.sort(key=lambda x: x.start_time)
 
         new_data = []
         for h in range(0, 24, 4):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month, day=combined_data[0].start_time.day, hour=h)
+            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                      day=combined_data[0].start_time.day, hour=h)
             end = start + datetime.timedelta(hours=3, minutes=59)
             for d in combined_data:
-                if start<=d.start_time<=end or start<=d.end_time<=end:
+                if start <= d.start_time <= end or start <= d.end_time <= end:
                     datalist.append(d)
-            if len(datalist) <=1:
+            if len(datalist) <= 1:
                 continue
-            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(self.inter_event_time_list(datalist))/(len(datalist)-1)))
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset,
+                                      sample=sum(self.inter_event_time_list(datalist)) / (len(datalist) - 1)))
 
         return new_data
-
-
 
     def average_inter_phone_call_sms_time_daily(self, phonedatastream: DataStream, smsdatastream: DataStream):
 
-        if len(phonedatastream.data)+len(smsdatastream.data) <=1:
+        if len(phonedatastream) + len(smsdatastream) <= 1:
             return None
 
         tmpphonestream = phonedatastream
         tmpsmsstream = smsdatastream
-        for s in tmpphonestream.data:
+        for s in tmpphonestream:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
-        for s in tmpsmsstream.data:
+        for s in tmpsmsstream:
             s.end_time = s.start_time
 
-        combined_data = phonedatastream.data + smsdatastream.data
+        combined_data = phonedatastream + smsdatastream
 
-        combined_data.sort(key=lambda x:x.start_time)
-        start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month, day=combined_data[0].start_time.day)
+        combined_data.sort(key=lambda x: x.start_time)
+        start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                       day=combined_data[0].start_time.day)
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
-        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset, sample= sum(self.inter_event_time_list(combined_data)) / (len(combined_data)-1))]
+        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset,
+                              sample=sum(self.inter_event_time_list(combined_data)) / (len(combined_data) - 1))]
 
         return new_data
-
 
     def variance_inter_phone_call_sms_time_daily(self, phonedatastream: DataStream, smsdatastream: DataStream):
 
-        if len(phonedatastream.data)+len(smsdatastream.data) <=1:
+        if len(phonedatastream) + len(smsdatastream) <= 1:
             return None
 
         tmpphonestream = phonedatastream
         tmpsmsstream = smsdatastream
-        for s in tmpphonestream.data:
+        for s in tmpphonestream:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
-        for s in tmpsmsstream.data:
+        for s in tmpsmsstream:
             s.end_time = s.start_time
 
-        combined_data = phonedatastream.data + smsdatastream.data
+        combined_data = phonedatastream + smsdatastream
 
-        combined_data.sort(key=lambda x:x.start_time)
-        start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month, day=combined_data[0].start_time.day)
+        combined_data.sort(key=lambda x: x.start_time)
+        start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                       day=combined_data[0].start_time.day)
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
 
-        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset, sample= np.var(self.inter_event_time_list(combined_data)) )]
+        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset,
+                              sample=np.var(self.inter_event_time_list(combined_data)))]
 
         return new_data
-
 
     def variance_inter_phone_call_sms_time_hourly(self, phonedatastream: DataStream, smsdatastream: DataStream):
 
-        if len(phonedatastream.data)+len(smsdatastream.data) <=1:
+        if len(phonedatastream) + len(smsdatastream) <= 1:
             return None
 
         tmpphonestream = phonedatastream
         tmpsmsstream = smsdatastream
-        for s in tmpphonestream.data:
+        for s in tmpphonestream:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
-        for s in tmpsmsstream.data:
+        for s in tmpsmsstream:
             s.end_time = s.start_time
 
-        combined_data = phonedatastream.data + smsdatastream.data
+        combined_data = phonedatastream + smsdatastream
 
-        combined_data.sort(key=lambda x:x.start_time)
+        combined_data.sort(key=lambda x: x.start_time)
 
         new_data = []
         for h in range(0, 24):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month, day=combined_data[0].start_time.day, hour=h)
+            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                      day=combined_data[0].start_time.day, hour=h)
             end = start + datetime.timedelta(minutes=59)
             for d in combined_data:
-                if start<=d.start_time<=end or start<=d.end_time<=end:
+                if start <= d.start_time <= end or start <= d.end_time <= end:
                     datalist.append(d)
-            if len(datalist) <=1:
+            if len(datalist) <= 1:
                 continue
-            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=np.var(self.inter_event_time_list(datalist))))
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset,
+                                      sample=np.var(self.inter_event_time_list(datalist))))
 
         return new_data
-
 
     def variance_inter_phone_call_sms_time_four_hourly(self, phonedatastream: DataStream, smsdatastream: DataStream):
 
-        if len(phonedatastream.data)+len(smsdatastream.data) <=1:
+        if len(phonedatastream) + len(smsdatastream) <= 1:
             return None
 
         tmpphonestream = phonedatastream
         tmpsmsstream = smsdatastream
-        for s in tmpphonestream.data:
+        for s in tmpphonestream:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
-        for s in tmpsmsstream.data:
+        for s in tmpsmsstream:
             s.end_time = s.start_time
 
-        combined_data = phonedatastream.data + smsdatastream.data
+        combined_data = phonedatastream + smsdatastream
 
-        combined_data.sort(key=lambda x:x.start_time)
+        combined_data.sort(key=lambda x: x.start_time)
 
         new_data = []
         for h in range(0, 24, 4):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month, day=combined_data[0].start_time.day, hour=h)
+            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                      day=combined_data[0].start_time.day, hour=h)
             end = start + datetime.timedelta(hours=3, minutes=59)
             for d in combined_data:
-                if start<=d.start_time<=end or start<=d.end_time<=end:
+                if start <= d.start_time <= end or start <= d.end_time <= end:
                     datalist.append(d)
-            if len(datalist) <=1:
+            if len(datalist) <= 1:
                 continue
-            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=np.var(self.inter_event_time_list(datalist))))
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset,
+                                      sample=np.var(self.inter_event_time_list(datalist))))
 
         return new_data
-
-
 
     def average_inter_phone_call_time_hourly(self, phonedatastream: DataStream):
 
-        if len(phonedatastream.data) <=1:
+        if len(phonedatastream) <= 1:
             return None
 
-        combined_data = phonedatastream.data
+        combined_data = phonedatastream
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
@@ -214,68 +269,69 @@ class PhoneFeatures(ComputeFeatureBase):
         new_data = []
         for h in range(0, 24):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month, day=combined_data[0].start_time.day, hour=h)
+            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                      day=combined_data[0].start_time.day, hour=h)
             end = start + datetime.timedelta(minutes=59)
             for d in combined_data:
-                if start<=d.start_time<=end or start<=d.end_time<=end:
+                if start <= d.start_time <= end or start <= d.end_time <= end:
                     datalist.append(d)
-            if len(datalist) <=1:
+            if len(datalist) <= 1:
                 continue
-            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(self.inter_event_time_list(datalist))/(len(datalist)-1)))
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset,
+                                      sample=sum(self.inter_event_time_list(datalist)) / (len(datalist) - 1)))
 
         return new_data
-
 
     def average_inter_phone_call_time_four_hourly(self, phonedatastream: DataStream):
 
-        if len(phonedatastream.data) <=1:
+        if len(phonedatastream) <= 1:
             return None
 
-        combined_data = phonedatastream.data
+        combined_data = phonedatastream
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
-
 
         new_data = []
         for h in range(0, 24, 4):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month, day=combined_data[0].start_time.day, hour=h)
+            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                      day=combined_data[0].start_time.day, hour=h)
             end = start + datetime.timedelta(hours=3, minutes=59)
             for d in combined_data:
-                if start<=d.start_time<=end or start<=d.end_time<=end:
+                if start <= d.start_time <= end or start <= d.end_time <= end:
                     datalist.append(d)
-            if len(datalist) <=1:
+            if len(datalist) <= 1:
                 continue
-            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(self.inter_event_time_list(datalist))/(len(datalist)-1)))
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset,
+                                      sample=sum(self.inter_event_time_list(datalist)) / (len(datalist) - 1)))
 
         return new_data
 
-
     def average_inter_phone_call_time_daily(self, phonedatastream: DataStream):
 
-        if len(phonedatastream.data) <=1:
+        if len(phonedatastream) <= 1:
             return None
 
-        combined_data = phonedatastream.data
+        combined_data = phonedatastream
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
-        start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month, day=combined_data[0].start_time.day)
+        start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                       day=combined_data[0].start_time.day)
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
-        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset, sample= sum(self.inter_event_time_list(combined_data)) / (len(combined_data)-1))]
+        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset,
+                              sample=sum(self.inter_event_time_list(combined_data)) / (len(combined_data) - 1))]
 
         return new_data
 
-
-
     def average_inter_sms_time_hourly(self, smsdatastream: DataStream):
 
-        if len(smsdatastream.data) <=1:
+        if len(smsdatastream) <= 1:
             return None
 
-        combined_data = smsdatastream.data
+        combined_data = smsdatastream
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
@@ -283,178 +339,379 @@ class PhoneFeatures(ComputeFeatureBase):
         new_data = []
         for h in range(0, 24):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month, day=combined_data[0].start_time.day, hour=h)
+            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                      day=combined_data[0].start_time.day, hour=h)
             end = start + datetime.timedelta(minutes=59)
             for d in combined_data:
-                if start<=d.start_time<=end or start<=d.end_time<=end:
+                if start <= d.start_time <= end or start <= d.end_time <= end:
                     datalist.append(d)
-            if len(datalist) <=1:
+            if len(datalist) <= 1:
                 continue
-            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(self.inter_event_time_list(datalist))/(len(datalist)-1)))
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset,
+                                      sample=sum(self.inter_event_time_list(datalist)) / (len(datalist) - 1)))
 
         return new_data
 
-
     def average_inter_sms_time_four_hourly(self, smsdatastream: DataStream):
 
-        if len(smsdatastream.data) <=1:
+        if len(smsdatastream) <= 1:
             return None
 
-        combined_data = smsdatastream.data
+        combined_data = smsdatastream
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
-
 
         new_data = []
         for h in range(0, 24, 4):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month, day=combined_data[0].start_time.day, hour=h)
+            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                      day=combined_data[0].start_time.day, hour=h)
             end = start + datetime.timedelta(hours=3, minutes=59)
             for d in combined_data:
-                if start<=d.start_time<=end or start<=d.end_time<=end:
+                if start <= d.start_time <= end or start <= d.end_time <= end:
                     datalist.append(d)
-            if len(datalist) <=1:
+            if len(datalist) <= 1:
                 continue
-            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset, sample=sum(self.inter_event_time_list(datalist))/(len(datalist)-1)))
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset,
+                                      sample=sum(self.inter_event_time_list(datalist)) / (len(datalist) - 1)))
 
         return new_data
 
-
     def average_inter_sms_time_daily(self, smsdatastream: DataStream):
 
-        if len(smsdatastream.data) <=1:
+        if len(smsdatastream) <= 1:
             return None
 
-        combined_data = smsdatastream.data
+        combined_data = smsdatastream
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
-        start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month, day=combined_data[0].start_time.day)
+        start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                       day=combined_data[0].start_time.day)
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
-        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset, sample= sum(self.inter_event_time_list(combined_data)) / (len(combined_data)-1))]
+        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset,
+                              sample=sum(self.inter_event_time_list(combined_data)) / (len(combined_data) - 1))]
 
         return new_data
 
+    def calculate_phone_outside_duration(data, phone_inside_threshold_second=60):
+        outside_data = []
+        threshold = timedelta(seconds=phone_inside_threshold_second)
+        L = len(data)
 
-    def process_day_data(self, user_id, callstream, smsstream, input_stream1, input_stream2):
+        i = 0
+        while i < L and data[i].sample == 0:
+            i += 1
+        if i == L:
+            return outside_data
+
+        start = data[i].start_time
+
+        while i < L:
+
+            while i < L and data[i].sample > 0:
+                i += 1
+            if i == L:
+                outside_data.append(DataPoint(start, data[i - 1].start_time, data[i - 1].offset, "Outside"))
+                break
+
+            cur = data[i].start_time
+            while i < L and data[i].sample == 0:
+                i += 1
+
+            if i == L or i < L and data[i].start_time - cur >= threshold:
+                outside_data.append(DataPoint(start, cur, data[0].offset, "Outside"))
+                if i < L:
+                    start = data[i].start_time
+
+        return outside_data
+
+    def get_app_category(self, appid):
+        appid = appid.strip()
+        time.sleep(0.5)
+        if appid == "com.samsung.android.messaging":
+            return [appid, "Communication", "Samsung Message", None]
+
+        url = "https://play.google.com/store/apps/details?id=" + appid
+        try:
+            response = urlopen(url)
+        except Exception:
+            return [appid, None, None, None]
+
+        soup = BeautifulSoup(response, 'html.parser')
+        text = soup.find('span', itemprop='genre')
+
+        name = soup.find('div', class_='id-app-title')
+
+        cat = soup.find('a', class_='document-subtitle category')
+        if cat:
+            category = cat.attrs['href'].split('/')[-1]
+        else:
+            category = None
+
+        if category and category.startswith('GAME_'):
+            return [appid, "Game", name.contents[0] if name else None, text.contents[0]]
+        elif text:
+            return [appid, text.contents[0], name.contents[0] if name else None, None]
+        else:
+            return [appid, None, name.contents[0] if name else None, None]
+
+    def get_appusage_duration_by_category(self, appdata, categories: list):
+        appdata = sorted(appdata, key=lambda x: x.start_time)
+        appusage = []
+
+        i = 0
+        while i< len(appdata):
+            d = appdata[i]
+            category = d.sample[1]
+            if category not in categories:
+                i += 1
+                continue
+            j = i+1
+            while j<len(appdata) and d.sample == appdata[j].sample \
+                    and appdata[j-1].start_time + self.APPUSAGE_GAP_THRESHOLD <= appdata[j].start_time:
+                j += 1
+
+            if j > i+1:
+                appusage.append([d.start_time, appdata[j-1].start_time, category])
+                i = j-1
+            i += 1
+
+        return appusage
+
+    def appusage_interval_list(self, data, appusage):
+        ret = []
+        i = 0
+        for a in appusage:
+            while i<len(data) and data[i].start_time<a[0]:
+                i += 1
+            last = 0
+            while i<len(data) and data[i].start_time <= a[1]:
+                if last > 0:
+                    ret.append(int(data[i].sample - last))
+                last = data[i].sample
+                i += 1
+        return ret
+
+    def label_appusage_intervals(self, data, appusage, intervals, interval_label):
+        ret = []
+        i = 0
+        for a in appusage:
+            while i<len(data) and data[i].start_time<a[0]:
+                i += 1
+            last = None
+            while i<len(data) and data[i].start_time <= a[1]:
+                if last:
+                    diff = (data[i].start_time - last).total_seconds()
+                    for j in range(len(interval_label)):
+                        if intervals[j][0] <= diff <= intervals[j][1]:
+                            if len(ret) > 0:
+                                last_entry = ret.pop()
+                                if last_entry.end_time == last and last_entry.sample == interval_label[j]:
+                                    ret.append(DataPoint(start_time = last_entry.start_time,
+                                                         end_time = data[i].start_time, offset = last_entry.offset,
+                                                         sample = last_entry.sample))
+                                else:
+                                    ret.append(last_entry)
+                                    ret.append(DataPoint(start_time = last, end_time = data[i].start_time,
+                                                         offset = data[i].offset, sample=interval_label[j]))
+                            else:
+                                ret.append(DataPoint(start_time = last, end_time = data[i].start_time,
+                                                     offset = data[i].offset, sample=interval_label[j]))
+                            break;
+                last = data[i].start_time
+                i += 1
+        return ret
+
+    def process_phonescreen_day_data(self, user_id, touchstream, categorystream, input_touchstream, input_categorystream):
+        touchstream = sorted(touchstream, key=lambda x: x.start_time)
+
+        appusage = self.get_appusage_duration_by_category(categorystream, ["Communication", "Productivity"])
+        tapping_gap = self.appusage_interval_list(touchstream, appusage)
+        tapping_gap = sorted(tapping_gap)
+
+        gm = GaussianMixture(n_components = 4, max_iter = 500)#, covariance_type = 'spherical')
+        X = (np.array(tapping_gap)/1000).reshape(-1, 1)
+        gm.fit(X)
+
+        P = gm.predict(X)
+        mx = np.zeros(4)
+        mn = np.full(4, np.inf)
+        for i in range(len(P)):
+            x = P[i]
+            mx[x] = max(mx[x], X[i][0])
+            mn[x] = min(mn[x], X[i][0])
+
+        intervals = []
+        for i in range(len(mx)):
+            intervals.append((mn[i], mx[i]))
+        intervals = sorted(intervals)
+
+        try:
+            data = self.label_appusage_intervals(touchstream, appusage, intervals, ["typing", "pause", "reading", "unknown"])
+            if data:
+                self.store_stream(filepath="phone_touch_type.json",
+                                  input_streams=[input_touchstream, input_categorystream],
+                                  user_id=user_id, data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+    def process_callsmsstream_day_data(self, user_id, callstream, smsstream, input_callstream, input_smsstream):
         try:
             data = self.average_inter_phone_call_sms_time_hourly(callstream, smsstream)
             if data:
                 self.store_stream(filepath="average_inter_phone_call_sms_time_hourly.json",
-                                input_streams=[input_stream1, input_stream2],
-                                user_id=user_id, data=data)
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data)
         except Exception as e:
             print("Exception:", str(e))
-            
+
         try:
             data = self.average_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
             if data:
                 self.store_stream(filepath="average_inter_phone_call_sms_time_four_hourly.json",
-                                input_streams=[input_stream1, input_stream2],
-                                user_id=user_id, data=data)
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data)
         except Exception as e:
-            print("Exception:",str(e))
+            print("Exception:", str(e))
 
         try:
             data = self.average_inter_phone_call_sms_time_daily(callstream, smsstream)
             if data:
                 self.store_stream(filepath="average_inter_phone_call_sms_time_daily.json",
-                                input_streams=[input_stream1, input_stream2],
-                                user_id=user_id, data=data)
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data)
         except Exception as e:
-            print("Exception:",str(e))
+            print("Exception:", str(e))
 
         try:
-            self.data = self.variance_inter_phone_call_sms_time_daily(callstream, smsstream)
+            data = self.variance_inter_phone_call_sms_time_daily(callstream, smsstream)
             if data:
                 self.store_stream(filepath="variance_inter_phone_call_sms_time_daily.json",
-                                input_streams=[input_stream1, input_stream2],
-                                user_id=user_id, data=data)
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data)
         except Exception as e:
-            print("Exception:",str(e))
+            print("Exception:", str(e))
 
         try:
             data = self.variance_inter_phone_call_sms_time_hourly(callstream, smsstream)
             if data:
                 self.store_stream(filepath="variance_inter_phone_call_sms_time_hourly.json",
-                                input_streams=[input_stream1, input_stream2],
-                                user_id=user_id, data=data)
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data)
         except Exception as e:
-            print("Exception:",str(e))
+            print("Exception:", str(e))
 
         try:
             data = self.variance_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
             if data:
                 self.store_stream(filepath="variance_inter_phone_call_sms_time_four_hourly.json",
-                                input_streams=[input_stream1, input_stream2],
-                                user_id=user_id, data=data)
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data)
         except Exception as e:
-            print("Exception:",str(e))
+            print("Exception:", str(e))
 
         try:
             data = self.average_inter_phone_call_time_hourly(callstream)
             if data:
                 self.store_stream(filepath="average_inter_phone_call_time_hourly.json",
-                                input_streams=[input_stream1], user_id=user_id,
-                                data=data)
+                                  input_streams=[input_callstream], user_id=user_id,
+                                  data=data)
         except Exception as e:
-            print("Exception:",str(e))
+            print("Exception:", str(e))
 
         try:
             data = self.average_inter_phone_call_time_four_hourly(callstream)
             if data:
                 self.store_stream(filepath="average_inter_phone_call_time_four_hourly.json",
-                                input_streams=[input_stream1], user_id=user_id,
-                                data=data)
+                                  input_streams=[input_callstream], user_id=user_id,
+                                  data=data)
         except Exception as e:
-            print("Exception:",str(e))
+            print("Exception:", str(e))
 
         try:
             data = self.average_inter_phone_call_time_daily(callstream)
             if data:
                 self.store_stream(filepath="average_inter_phone_call_time_daily.json",
-                                input_streams=[input_stream1], user_id=user_id,
-                                data=data)
+                                  input_streams=[input_callstream], user_id=user_id,
+                                  data=data)
         except Exception as e:
-            print("Exception:",str(e))
+            print("Exception:", str(e))
 
         try:
             data = self.average_inter_sms_time_hourly(smsstream)
             if data:
                 self.store_stream(filepath="average_inter_sms_time_hourly.json",
-                                input_streams=[input_stream2], user_id=user_id,
-                                data=data)
+                                  input_streams=[input_smsstream], user_id=user_id,
+                                  data=data)
         except Exception as e:
-            print("Exception:",str(e))
+            print("Exception:", str(e))
 
         try:
             data = self.average_inter_sms_time_four_hourly(smsstream)
             if data:
                 self.store_stream(filepath="average_inter_sms_time_four_hourly.json",
-                                input_streams=[input_stream2], user_id=user_id,
-                                data=data)
+                                  input_streams=[input_smsstream], user_id=user_id,
+                                  data=data)
         except Exception as e:
-            print("Exception:",str(e))
+            print("Exception:", str(e))
 
         try:
             data = self.average_inter_sms_time_daily(smsstream)
             if data:
                 self.store_stream(filepath="average_inter_sms_time_daily.json",
-                                input_streams=[input_stream2], user_id=user_id,
-                                data=data)
+                                  input_streams=[input_smsstream], user_id=user_id,
+                                  data=data)
         except Exception as e:
-            print("Exception:",str(e))
+            print("Exception:", str(e))
 
-        
-        
+    def process_proximity_day_data(self, user_id, proximitystream, input_proximitystream):
+        try:
+            data = self.calculate_phone_outside_duration(proximitystream)
+            if data:
+                self.store_stream(filepath="phone_outside_duration.json",
+                                  input_streams=[input_proximitystream],
+                                  user_id=user_id, data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+    def process_appcategory_day_data(self, user_id, appcategorystream, input_appcategorystream):
+        try:
+            data = []
+            for d in appcategorystream:
+                if type(d.sample) is not str:
+                    continue
+                dnew = d
+                if d.sample not in self.appcategorycache:
+                    self.appcategorycache[d.sample] = self.get_app_category(d.sample)
+
+                dnew.sample = self.appcategorycache[d.sample]
+
+                data.append(dnew)
+            if data:
+                self.store_stream(filepath="app_usage_category.json",
+                                  input_streams=[input_appcategorystream],
+                                  user_id=user_id, data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
     def process_data(self, user_id, all_user_streams, all_days):
 
-        input_stream1 = None
-        input_stream2 = None
+        input_callstream = None
+        input_smsstream = None
+        input_proximitystream = None
+        input_appusagestream = None
+        input_touchscreenstream = None
+        input_appcategorystream = None
+
         call_stream_name = 'CU_CALL_DURATION--edu.dartmouth.eureka'
-        sms_stream_name = 'CU_SMS_LENGTH--edu.dartmouth.eureka' 
+        sms_stream_name = 'CU_SMS_LENGTH--edu.dartmouth.eureka'
+        proximity_stream_name = 'PROXIMITY--org.md2k.phonesensor--PHONE'
+        appusage_stream_name = 'CU_APPUSAGE--edu.dartmouth.eureka'
+        touchescreen_stream_name = "TOUCH_SCREEN--org.md2k.phonesensor--PHONE"
+        appcategory_stream_name = "org.md2k.data_analysis.feature.phone.app_usage_category"
         streams = all_user_streams
         days = None
 
@@ -463,33 +720,74 @@ class PhoneFeatures(ComputeFeatureBase):
                                 % (str(user_id), self.__class__.__name__))
             return
 
-        for stream_name,stream_metadata in streams.items():
-            if stream_name==call_stream_name:
-                input_stream1 = stream_metadata
-            elif stream_name== sms_stream_name:
-                input_stream2 = stream_metadata
+        for stream_name, stream_metadata in streams.items():
+            if stream_name == call_stream_name:
+                input_callstream = stream_metadata
+            elif stream_name == sms_stream_name:
+                input_smsstream = stream_metadata
+            elif stream_name == proximity_stream_name:
+                input_proximitystream = stream_metadata
+            elif stream_name == appusage_stream_name:
+                input_appusagestream = stream_metadata
+            elif stream_name == touchescreen_stream_name:
+                input_touchscreenstream = stream_metadata
+            elif stream_name == appcategory_stream_name:
+                input_appcategorystream = stream_metadata
 
-        if not input_stream1:
+        if not input_callstream:
             self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
-                                "USERID %s" % 
-                                (self.__class__.__name__, call_stream_name, 
+                                "USERID %s" %
+                                (self.__class__.__name__, call_stream_name,
                                  str(user_id)))
-            return
 
-        if not input_stream2:
+        elif not input_smsstream:
             self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
-                                "USERID %" % 
-                                (self.__class__.__name__, sms_stream_name, 
+                                "USERID %" %
+                                (self.__class__.__name__, sms_stream_name,
                                  str(user_id)))
-            return
+        else:
+            for day in all_days:
+                callstream = self.get_data_by_stream_name(call_stream_name, user_id, day)
+                smsstream = self.get_data_by_stream_name(sms_stream_name, user_id, day)
+                self.process_callsmsstream_day_data(user_id, callstream, smsstream, input_callstream, input_smsstream)
 
-        
-        
-        for day in all_days:
-            callstream = self.CC.get_stream(input_stream1["identifier"], user_id=user_id, day=day)
-            smsstream = self.CC.get_stream(input_stream2["identifier"], user_id=user_id, day=day)
-            self.process_day_data(user_id,callstream,smsstream,input_stream1,input_stream2)
-            
+        if not input_proximitystream:
+            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
+                                "USERID %" %
+                                (self.__class__.__name__, proximity_stream_name,
+                                 str(user_id)))
+        else:
+            for day in all_days:
+                proximitystream = self.get_data_by_stream_name(proximity_stream_name, user_id, day)
+                self.process_proximity_day_data(user_id, proximitystream, input_proximitystream)
+
+        if not input_appusagestream:
+            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
+                                "USERID %" %
+                                (self.__class__.__name__, appusage_stream_name,
+                                 str(user_id)))
+        else:
+            for day in all_days:
+                appusagestream = self.get_data_by_stream_name(appusage_stream_name, user_id, day)
+                self.process_appcategory_day_data(user_id, appusagestream, input_appusagestream)
+
+        if not input_touchscreenstream:
+            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
+                                "USERID %s" %
+                                (self.__class__.__name__, touchescreen_stream_name,
+                                 str(user_id)))
+
+        elif not input_appcategorystream:
+            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
+                                "USERID %" %
+                                (self.__class__.__name__, appcategory_stream_name,
+                                 str(user_id)))
+        else:
+            for day in all_days:
+                touchstream = self.get_data_by_stream_name(touchescreen_stream_name, user_id, day)
+                appcategorystream  = self.get_data_by_stream_name(appcategory_stream_name, user_id, day)
+                self.process_callsmsstream_day_data(user_id, touchstream, appcategorystream, input_touchscreenstream, input_appcategorystream)
+
 
     def process(self, user_id, all_days):
         if self.CC is not None:
