@@ -24,87 +24,87 @@
         {
             "NAME": "Stretch",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "Stretch of the respiration cycle"
         },
         {
             "NAME": "Inspiration Velocity",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "Inspiration Area divided by time"
         },
         {
             "NAME": "Expiration Velocity",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "Expiration Area divided by time"
         },
         {
             "NAME": "Skewness",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "Skew of the Respiration cycle"
         },
         {
             "NAME": "Kurtosis",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "kurtosis of the Respiration cycle"
         },
         {
             "NAME": "Entropy",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "Entropy of the Respiration Cycle"
         },
         {
             "NAME": "Ratio of Inspiration to Expiration Velocity",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "Ratio of Inspiration to Expiration Velocity"
         },
         {
             "NAME": "Ratio of Inspiration to Expiration Area",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "Ratio of Inspiration to Expiration Area"
         },
         {
             "NAME": "Ratio of Expiration to Respiration Duration",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "Ratio of Expiration to Respiration Duration"
         },
         {
             "NAME": "Ratio of Respiration Area to Inspiration Duration",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "Ratio of Respiration Area to Inspiration Duration"
         },
         {
             "NAME": "Power in .05-.2 Hz",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "Power in .05-.2 Hz"
         },
         {
             "NAME": "Power in .201-.4 Hz",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "Power in .201-.4 Hz"
         },
         {
             "NAME": "Power in .401-.6 Hz",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "Power in .401-.6 Hz"
         },
         {
             "NAME": "Power in .601-.8 Hz",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "Power in .601-.8 Hz"
         },
         {
             "NAME": "Power in .801-1 Hz",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "Power in .801-1 Hz"
         },
         {
             "NAME": "Correlation with Previous Cycle",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "Correlation with Previous Respiration Cycle"
         },
         {
             "NAME": "Correlation with Next Cycle",
             "DATA_TYPE": "double",
-            "DESCRIPTION": ""
+            "DESCRIPTION": "Correlation with Next Respiration Cycle"
         }
     ],
     "execution_context": {
