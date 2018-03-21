@@ -188,7 +188,7 @@ def compute_window_features(start_time, end_time,
                      sample=feature_vector)
 
 
-def compute_accelerometer_features(accel_stream: DataStream,
+def compute_accelerometer_features(accel_data: List[DataPoint],
                                    window_size: float = 10.0):
     """ Segment data and computes feature vector for each window
     :param accel_stream:
@@ -198,7 +198,6 @@ def compute_accelerometer_features(accel_stream: DataStream,
     all_features = []
 
     cur_index = 0
-    accel_data = accel_stream.data
 
     while cur_index < len(accel_data):
         start_index = cur_index
@@ -211,7 +210,7 @@ def compute_accelerometer_features(accel_stream: DataStream,
             start_index].start_time) < win_size:
             accel_window.append(accel_data[end_index])
             end_index = end_index + 1
-            if end_index >= len(accel_stream.data):
+            if end_index >= len(accel_data):
                 break
 
         feature_vector = compute_window_features(accel_window[0].start_time,

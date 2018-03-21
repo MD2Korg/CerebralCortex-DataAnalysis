@@ -59,6 +59,14 @@ TEN_SECONDS = 10
 
 POSTURE_MODEL_FILENAME = 'core/feature/activity/models/posture_randomforest.model'
 ACTIVITY_MODEL_FILENAME = 'core/feature/activity/models/activity_level_randomforest.model'
+POSTURE_ACCEL_ONLY_MODEL_FILENAME = 'core/feature/activity/models/posture_randomforest_accelonly500.model'
+ACTIVITY_ACCEL_ONLY_MODEL_FILENAME = 'core/feature/activity/models/activity_type_randomforest_accelonly500.model'
+
+# json filename
+ACTIVITY_TYPE_10SECONDS_WINDOW = 'activity_type_10seconds_window.json'
+POSTURE_10SECONDS_WINDOW = 'posture_10seconds_window.json'
+ACTIVITY_TYPE_ACCEL_ONLY_10SECONDS_WINDOW = 'activity_type_accelonly_10seconds_window.json'
+POSTURE_ACCEL_ONLY_10SECONDS_WINDOW = 'posture_accelonly_10seconds_window.json'
 
 # Output labels
 ACTIVITY_LABELS = ["NO", "LOW", "WALKING", "MOD", "HIGH"]

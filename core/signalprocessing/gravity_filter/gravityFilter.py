@@ -31,10 +31,10 @@ from cerebralcortex.core.datatypes.datastream import DataStream
 from core.feature.activity.utils import MADGWICKFILTER_BETA
 
 
-def gravityFilter_function(accl_stream, gyro_stream, sampling_freq,
+def gravityFilter_function(accl_data, gyro_data, sampling_freq,
                            is_gyro_in_degree):
-    accl = [value.sample for value in accl_stream.data]
-    gyro = [value.sample for value in gyro_stream.data]
+    accl = [value.sample for value in accl_data]
+    gyro = [value.sample for value in gyro_data]
 
     # if gyro in degree
     if is_gyro_in_degree:
@@ -42,7 +42,7 @@ def gravityFilter_function(accl_stream, gyro_stream, sampling_freq,
                  degree_to_radian(v[2])] for v in gyro]
 
     #     Fs = 16.0
-    AHRS_motion = MadgwickAHRS(sampleperiod=(1 / sampling_freq),
+    AHRS_motion = MadgwickAHRS(sampleperiod=(1.0 / sampling_freq),
                                beta=MADGWICKFILTER_BETA)
 
     quaternion_motion = []
@@ -71,8 +71,5 @@ def gravityFilter_function(accl_stream, gyro_stream, sampling_freq,
         DataPoint(start_time=value.start_time, end_time=value.end_time,
                   offset=value.offset,
                   sample=Acc_sync_filtered[index]) for index, value in
-        enumerate(accl_stream.data)]
-    accl_filtered_stream = DataStream.from_datastream([accl_stream])
-    accl_filtered_stream.data = accl_filtered_data
-
-    return accl_filtered_stream
+        enumerate(accl_data)]
+    return accl_filtered_data

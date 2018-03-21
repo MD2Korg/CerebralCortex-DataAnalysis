@@ -29,8 +29,8 @@ from core.feature.activity.import_model_files import get_posture_model, \
 from typing import List
 
 
-def classify_posture(features: List[DataPoint]) -> List[DataPoint]:
-    clf = get_posture_model()
+def classify_posture(features: List[DataPoint], is_gravity) -> List[DataPoint]:
+    clf = get_posture_model(is_gravity)
     labels = []
     for dp in features:
         preds = clf.predict([dp.sample])
@@ -41,8 +41,8 @@ def classify_posture(features: List[DataPoint]) -> List[DataPoint]:
     return labels
 
 
-def classify_activity(features: List[DataPoint]) -> List[DataPoint]:
-    clf = get_activity_model()
+def classify_activity(features: List[DataPoint], is_gravity) -> List[DataPoint]:
+    clf = get_activity_model(is_gravity)
     labels = []
     for dp in features:
         preds = clf.predict([dp.sample])
