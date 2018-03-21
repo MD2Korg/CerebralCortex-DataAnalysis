@@ -31,6 +31,20 @@ from copy import deepcopy
 from scipy import stats
 from typing import List
 
+respiration_raw_autosenseble = \
+    "RESPIRATION--org.md2k.autosenseble--AUTOSENSE_BLE--CHEST"
+respiration_baseline_autosenseble = \
+    "RESPIRATION_BASELINE--org.md2k.autosenseble--AUTOSENSE_BLE--CHEST"
+Fs = 25
+
+def admission_control(data:List[DataPoint])->List[DataPoint]:
+    final_data = []
+    for i,dp in enumerate(data):
+        if not isinstance(dp.sample,list) and dp.sample>=0 and dp.sample<=4095:
+            final_data.append(dp)
+    return final_data
+
+
 class Quality(Enum):
     ACCEPTABLE = 1
     UNACCEPTABLE = 0
@@ -47,7 +61,8 @@ def recover_rip_rawwithmeasuredref(RIP:list, ref:list,
     """
     m = np.mean(RIP)
     ref_synn_noM = -(ref-np.mean(ref))
-    RIP_synn_noM = RIP-m
+    RIP_synn_noM = np.array(RIP)
+    RIP_synn_noM = RIP_synn_noM - m
     R_36 = 10000
     R_37 = 10000
     R_40 = 604000
@@ -55,7 +70,8 @@ def recover_rip_rawwithmeasuredref(RIP:list, ref:list,
     G_ref = -5
     b = signal.firwin(65,0.3*2/Fs,window='bartlett')
     ref_synn_noM_LP = np.convolve(np.squeeze(ref_synn_noM),b,'same')
-    RIP_raw_measuredREF = (ref_synn_noM_LP/G_ref + RIP_synn_noM/G1)*G1
+    RIP_raw_measuredREF = (ref_synn_noM_LP*G1)/G_ref + RIP_synn_noM.reshape(
+        ref_synn_noM_LP.shape)
     return RIP_raw_measuredREF+m
 
 def get_recovery(rip:List[DataPoint],baseline:List[DataPoint],Fs)->List[DataPoint]:

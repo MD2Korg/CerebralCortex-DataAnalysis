@@ -1,6 +1,6 @@
 # Copyright (c) 2018, MD2K Center of Excellence
 # All rights reserved.
-#
+# author: Md Azim Ullah, Rummana Bari
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 #
@@ -21,14 +21,12 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-from typing import List
+
 from core.computefeature import ComputeFeatureBase
 from core.feature.respiration_cycle_statistics.utils.peak_valley import \
     compute_peak_valley
 from core.feature.respiration_cycle_statistics.utils. \
     rip_cycle_feature_computation import rip_cycle_feature_computation
-from core.feature.respiration_cycle_statistics.utils.get_store import store_data
-
 from core.feature.respiration_cycle_statistics.utils.util import *
 
 feature_class_name = 'respiration_cycle_statistics'
@@ -37,7 +35,7 @@ feature_class_name = 'respiration_cycle_statistics'
 class respiration_cycle_statistics(ComputeFeatureBase):
 
 
-    def get_feature_matrix(final_respiration:List[DataPoint]):
+    def get_feature_matrix(self,final_respiration:List[DataPoint]):
 
         """
         all necessary computation
@@ -133,17 +131,15 @@ class respiration_cycle_statistics(ComputeFeatureBase):
 
 
 
-def process(self, user:str, all_days):
-        """
+    def process(self, user:str, all_days):
 
+        """
         :param user: user id string
         :param all_days: list of days to compute
 
         """
-        respiration_raw_autosenseble = \
-            "RESPIRATION--org.md2k.autosenseble--AUTOSENSE_BLE--CHEST"
-        respiration_baseline_autosenseble = \
-            "RESPIRATION_BASELINE--org.md2k.autosenseble--AUTOSENSE_BLE--CHEST"
+        if not list(all_days):
+            return
 
         if self.CC is not None:
             if user:
@@ -151,6 +147,7 @@ def process(self, user:str, all_days):
 
                 if streams is None:
                     return
+
                 user_id = user
 
                 if respiration_raw_autosenseble in streams:
@@ -167,18 +164,30 @@ def process(self, user:str, all_days):
                         if not rip_raw.data:
                             continue
                         elif not rip_baseline.data:
-                            final_respiration = rip_raw.data
+                            respiration_data = admission_control(rip_raw.data)
+                            if len(respiration_data)>0:
+                                final_respiration = respiration_data
+                            else:
+                                continue
                         else:
-                            final_respiration = get_recovery(rip_raw.data,
-                                                             rip_baseline.data,Fs=25)
+                            respiration_data = admission_control(rip_raw.data)
+                            baseline_data = admission_control(rip_baseline.data)
+                            if not respiration_data:
+                                continue
+                            elif not baseline_data:
+                                final_respiration = respiration_data
+                            else:
+                                final_respiration = get_recovery(
+                                    respiration_data,baseline_data,Fs=Fs)
 
-                        feature_matrix = self.get_feature_matrix(
-                            final_respiration)
+                        feature_matrix = self.get_feature_matrix(final_respiration)
                         if not feature_matrix:
                             continue
-                        json_path = 'metadata/respiration_cycle_feature.json'
-                        store_data(json_path,[streams[respiration_raw_autosenseble]],
-                                   user_id, feature_matrix, self)
+                        json_path = 'respiration_cycle_feature.json'
+                        self.store_stream(json_path,
+                                          [streams[respiration_raw_autosenseble]],
+                                          user_id,
+                                          feature_matrix)
 
 
 
