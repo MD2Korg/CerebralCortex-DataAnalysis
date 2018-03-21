@@ -94,12 +94,12 @@ class ActivityMarker(ComputeFeatureBase):
                 return [], []
             valid_accel_data, valid_gyro_data = check_motionsense_hrv_accel_gyroscope(
                 accel_data, gyro_data)
-            gravity_filtered_accel_stream = \
+            gravity_filtered_accel_data = \
                 gravityFilter_function(valid_accel_data,
                                        valid_gyro_data,
                                        sampling_freq=SAMPLING_FREQ_MOTIONSENSE_ACCEL,
                                        is_gyro_in_degree=IS_MOTIONSENSE_HRV_GYRO_IN_DEGREE)
-            accel_data = gravity_filtered_accel_stream.data
+            accel_data = gravity_filtered_accel_data
         else:
             accel_data = check_motionsense_hrv_accelerometer(accel_data)
 
