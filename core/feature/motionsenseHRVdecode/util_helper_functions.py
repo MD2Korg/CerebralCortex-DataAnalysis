@@ -70,7 +70,7 @@ def get_decoded_matrix(data:np.ndarray,row_length=22):
 
 def admission_control(data:List[DataPoint])->List[DataPoint]:
     final_data = []
-    for i,dp in enumerate(data):
+    for dp in data:
         if isinstance(dp.sample,str) and len(dp.sample.split(','))==20:
             final_data.append(dp)
     return final_data
