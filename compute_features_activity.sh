@@ -35,7 +35,8 @@ STUDY_NAME="mperf"
 START_DATE="20171104"
 
 # end date
-END_DATE="20171111"
+END_DATE="20171104"
+#END_DATE="20171111"
 
 # Folder containing the metadata templates for the features
 FEATURE_METADATA_DIR=$DATA_ANALYSIS_PATH'/core/resources/metadata'
@@ -46,6 +47,5 @@ USERIDS="247d42cf-f81c-44d2-9db8-fea69f468d58"
 spark-submit --master $SPARK_MASTER \
              --conf spark.ui.port=4045 \
 core/driver.py -c $CC_CONFIG_FILEPATH -s $STUDY_NAME -sd $START_DATE \
-               -ed $END_DATE -u $USERIDS -f $FEATURES \
-               -m $FEATURE_METADATA_DIR
+               -ed $END_DATE -u $USERIDS -f $FEATURES 
 

@@ -37,7 +37,6 @@ from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.util.spark_helper import get_or_create_sc
 
 cc_config_path = None
-metadata_dir = None
 
 def process_features(feature_list, all_users, all_days, is_spark_job=False):
     '''
@@ -64,8 +63,6 @@ def process_feature_on_user(user, module_name, all_days, cc_config_path):
         feature_class_name = getattr(module,'feature_class_name')
         feature_class = getattr(module,feature_class_name)
         feature_class_instance = feature_class(cc)
-        feature_class_instance.feature_metadata_dir = metadata_dir
-        cc.feature_metadata_dir = metadata_dir
         f = feature_class_instance.process
         f(user,all_days)
     except Exception as e:
@@ -142,8 +139,6 @@ def main():
                          "YYYYMMDD Format", required=True)
     parser.add_argument("-ed", "--end-date", help="End date in " 
                          "YYYYMMDD Format", required=True)
-    parser.add_argument("-m", "--metadata-dir", help="Folder path containing "
-                        "the metadata templates for the features." , required=True)
     parser.add_argument("-p", "--spark-job", help="Set to True to enable spark "
                         "parallel execution ", required=False)
     
@@ -153,7 +148,6 @@ def main():
     users = None
     start_date = None
     end_date = None
-    metadata_dir = None
     date_format = '%Y%m%d'
     is_spark_job = False
     
@@ -169,8 +163,6 @@ def main():
         start_date = datetime.strptime(args['start_date'], date_format)
     if args['end_date']:
         end_date = datetime.strptime(args['end_date'], date_format)
-    if args['metadata_dir']:
-        metadata_dir = args['metadata_dir']
     if args['spark_job']:
         is_spark_job = args['spark_job']
     
@@ -184,7 +176,6 @@ def main():
     all_users = None
     try:
         CC = CerebralCortex(cc_config_path)
-        CC.feature_metadata_dir = metadata_dir
         if not users:
             users = CC.get_all_users(study_name)
             if not users:
