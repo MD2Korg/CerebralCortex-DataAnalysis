@@ -199,3 +199,5 @@ class ActivityMarker(ComputeFeatureBase):
                                       streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
                                   user_id=user,
                                   data=posture_labels)
+
+        self.CC.logging.log("Finished processing Activity for user: %s" % (user))
