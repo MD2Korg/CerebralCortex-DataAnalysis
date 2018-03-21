@@ -57,10 +57,10 @@ RIGHT_WRIST = 'right_wrist'
 # Window size
 TEN_SECONDS = 10
 
-POSTURE_MODEL_FILENAME = 'core/feature/activity/models/posture_randomforest.model'
-ACTIVITY_MODEL_FILENAME = 'core/feature/activity/models/activity_level_randomforest.model'
-POSTURE_ACCEL_ONLY_MODEL_FILENAME = 'core/feature/activity/models/posture_randomforest_accelonly500.model'
-ACTIVITY_ACCEL_ONLY_MODEL_FILENAME = 'core/feature/activity/models/activity_type_randomforest_accelonly500.model'
+POSTURE_MODEL_FILENAME = 'core/resources/models/activity/posture_randomforest.model'
+ACTIVITY_MODEL_FILENAME = 'core/resources/models/activity/activity_level_randomforest.model'
+POSTURE_ACCEL_ONLY_MODEL_FILENAME = 'core/resources/models/activity/posture_randomforest_accelonly500.model'
+ACTIVITY_ACCEL_ONLY_MODEL_FILENAME = 'core/resources/models/activity/activity_type_randomforest_accelonly500.model'
 
 # json filename
 ACTIVITY_TYPE_10SECONDS_WINDOW = 'activity_type_10seconds_window.json'
