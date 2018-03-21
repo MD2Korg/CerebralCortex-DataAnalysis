@@ -734,6 +734,7 @@ class PhoneFeatures(ComputeFeatureBase):
             elif stream_name == appcategory_stream_name:
                 input_appcategorystream = stream_metadata
 
+        # Processing Call and SMS related features
         if not input_callstream:
             self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
                                 "USERID %s" %
@@ -751,6 +752,7 @@ class PhoneFeatures(ComputeFeatureBase):
                 smsstream = self.get_data_by_stream_name(sms_stream_name, user_id, day)
                 self.process_callsmsstream_day_data(user_id, callstream, smsstream, input_callstream, input_smsstream)
 
+        # processing proximity sensor related features
         if not input_proximitystream:
             self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
                                 "USERID %" %
@@ -761,6 +763,7 @@ class PhoneFeatures(ComputeFeatureBase):
                 proximitystream = self.get_data_by_stream_name(proximity_stream_name, user_id, day)
                 self.process_proximity_day_data(user_id, proximitystream, input_proximitystream)
 
+        # processing app usage and category related features
         if not input_appusagestream:
             self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
                                 "USERID %" %
@@ -770,7 +773,8 @@ class PhoneFeatures(ComputeFeatureBase):
             for day in all_days:
                 appusagestream = self.get_data_by_stream_name(appusage_stream_name, user_id, day)
                 self.process_appcategory_day_data(user_id, appusagestream, input_appusagestream)
-
+        
+        # Processing phone touche and typing related features
         if not input_touchscreenstream:
             self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
                                 "USERID %s" %
