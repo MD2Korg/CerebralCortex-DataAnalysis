@@ -5,13 +5,11 @@ Created on Sat Mar 10 23:19:15 2018
 @author: Nazir Saleheen, Md Azim Ullah
 """
 
-from typing import Tuple
 from typing import List
-import numpy as np
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 
 def rip_cycle_feature_computation(peaks_datastream: List[DataPoint],
-                                  valleys_datastream: List[DataPoint]) -> Tuple[List[DataPoint]]:
+                                  valleys_datastream: List[DataPoint]):
     """
     Respiration Feature Implementation. The respiration feature values are
     derived from the following paper:
@@ -51,26 +49,30 @@ def rip_cycle_feature_computation(peaks_datastream: List[DataPoint],
         valley_end_time = valleys[i+1].start_time
         
         delta = peak.start_time - valleys[i].start_time
-        inspiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=delta.total_seconds(),
+        inspiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time,
+                                                         sample=delta.total_seconds(),
                                                          end_time=valley_end_time))
-
         delta = valleys[i + 1].start_time - peak.start_time
-        expiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=delta.total_seconds(),
-                                                       end_time=valley_end_time))
-
-        delta = valleys[i + 1].start_time - valley_start_time
-        respiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=delta.total_seconds(),
+        expiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time,
+                                                        sample=delta.total_seconds(),
                                                         end_time=valley_end_time))
 
+        delta = valleys[i + 1].start_time - valley_start_time
+        respiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time,
+                                                         sample=delta.total_seconds(),
+                                                         end_time=valley_end_time))
+
         ratio = (peak.start_time - valley_start_time) / (valleys[i + 1].start_time - peak.start_time)
-        inspiration_expiration_ratio.append(DataPoint.from_tuple(start_time=valley_start_time, sample=ratio,
-                                                                end_time=valley_end_time))
+        inspiration_expiration_ratio.append(DataPoint.from_tuple(start_time=valley_start_time,
+                                                                 sample=ratio,
+                                                                 end_time=valley_end_time))
 
         value = peak.sample - valleys[i + 1].sample
-        stretch.append(DataPoint.from_tuple(start_time=valley_start_time, sample=value,
-                                           end_time=valley_end_time))
+        stretch.append(DataPoint.from_tuple(start_time=valley_start_time,
+                                            sample=value,
+                                            end_time=valley_end_time))
 
-    for i in range(len(inspiration_duration)):
+    for i,point in enumerate(inspiration_duration):
         valley_start_time = valleys[i].start_time
         valley_end_time = valleys[i+1].start_time
         if i == 0:  # Edge case

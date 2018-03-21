@@ -39,7 +39,7 @@ Fs = 25
 
 def admission_control(data:List[DataPoint])->List[DataPoint]:
     final_data = []
-    for i,dp in enumerate(data):
+    for dp in data:
         if not isinstance(dp.sample,list) and dp.sample>=0 and dp.sample<=4095:
             final_data.append(dp)
     return final_data
