@@ -1,3 +1,4 @@
+import os
 from os import path
 from pip.req import parse_requirements
 from setuptools import setup, find_packages
@@ -10,6 +11,11 @@ reqs = [str(ir.req) for ir in install_reqs]
 # Get the long description from the README file
 with open(path.join(here, 'README.md')) as f:
     long_description = f.read()
+
+datadir = os.path.join('core','resources')
+datafiles = [(d, [os.path.join(d,f) for f in files])
+                 for d, folders, files in os.walk(datadir)]
+print('AAAAAAAAAA',datafiles)
 
 setup(
     name="MD2K: Cerebral Cortex: DataAnalysis compute features",
@@ -53,5 +59,8 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     #install_requires=reqs,
 
-    entry_points={}
+    entry_points={},
+
+    #data_files = [('', ['core/resources/models/posture_randomforest.model'])]
+    data_files = datafiles
 )

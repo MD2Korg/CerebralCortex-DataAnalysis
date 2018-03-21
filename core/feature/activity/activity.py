@@ -126,6 +126,9 @@ class ActivityMarker(ComputeFeatureBase):
 
         for day in all_days:
             is_gravity = True
+            self.CC.logging.log("Processing Activity for user: %s for day %s"
+                                %(user, str(day)))
+
             posture_labels_left, activity_labels_left = \
                 self.process_activity_and_posture_marker(streams,
                                                          user, day,
@@ -136,6 +139,8 @@ class ActivityMarker(ComputeFeatureBase):
                                                          user, day,
                                                          RIGHT_WRIST,
                                                          is_gravity)
+
+
             activity_labels = merge_left_right(activity_labels_left,
                                                activity_labels_right,
                                                window_size=TEN_SECONDS)
@@ -143,9 +148,11 @@ class ActivityMarker(ComputeFeatureBase):
                                               posture_labels_right,
                                               window_size=TEN_SECONDS)
 
-            self.CC.logging.log("activity_type_stream: %d" %
+            self.CC.logging.log("is_gravity TRUE activity_type_stream: %d" %
                                 (len(activity_labels)))
-            self.CC.logging.log("posture_stream: %d " % (len(posture_labels)))
+            self.CC.logging.log("is_gravity TRUE posture_stream: %d " % 
+                                (len(posture_labels)))
+
             if len(activity_labels) > 0:
                 self.store_stream(filepath=ACTIVITY_TYPE_10SECONDS_WINDOW,
                                   input_streams=[
@@ -161,6 +168,7 @@ class ActivityMarker(ComputeFeatureBase):
                                   user_id=user,
                                   data=posture_labels)
 
+            # Calculating with accelerometer only
             is_gravity = False
             posture_labels_right, activity_labels_right = \
                 self.process_activity_and_posture_marker(streams,
@@ -170,9 +178,10 @@ class ActivityMarker(ComputeFeatureBase):
             activity_labels = activity_labels_right
             posture_labels = posture_labels_right
 
-            self.CC.logging.log("activity_type_stream: %d" %
+            self.CC.logging.log("is_gravity FALSE activity_type_stream: %d" %
                                 (len(activity_labels)))
-            self.CC.logging.log("posture_stream: %d " % (len(posture_labels)))
+            self.CC.logging.log("is_gravity FALSE posture_stream: %d " % 
+                                 (len(posture_labels)))
 
             if len(activity_labels) > 0:
                 self.store_stream(
