@@ -155,12 +155,14 @@ class respiration_cycle_statistics(ComputeFeatureBase):
                         rip_raw = self.CC.get_stream(streams[
                                                      respiration_raw_autosenseble][
                                                      "identifier"], day=day,
-                                                     user_id=user_id)
+                                                     user_id=user_id,
+                                                     localtime=False)
 
                         rip_baseline = self.CC.get_stream(streams[
                                                           respiration_baseline_autosenseble][
                                                           "identifier"],day=day,
-                                                          user_id=user_id)
+                                                          user_id=user_id,
+                                                          localtime=False)
                         if not rip_raw.data:
                             continue
                         elif not rip_baseline.data:

@@ -1,6 +1,6 @@
 # Copyright (c) 2018, MD2K Center of Excellence
 # All rights reserved.
-#
+# author: Md Azim Ullah
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 #
@@ -22,23 +22,23 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from cerebralcortex.core.datatypes.datastream import DataPoint
+
 from core.computefeature import ComputeFeatureBase
-from core.feature.motionsenseHRVdecode.util_get_store import store_data
 from core.feature.motionsenseHRVdecode.util_helper_functions \
-    import get_decoded_matrix
+    import *
 import numpy as np
+
 from datetime import datetime
-from cerebralcortex.cerebralcortex import CerebralCortex
 
 feature_class_name = 'DecodeHRV'
 
 
 class DecodeHRV(ComputeFeatureBase):
-    def __init__(self):
-        self.CC = CerebralCortex()
 
-    def get_and_save_data(self,all_streams,all_days,stream_identifier,
+    def get_and_save_data(self,
+                          all_streams,
+                          all_days,
+                          stream_identifier,
                           user_id,json_path):
         """
         all computation and storing of data
@@ -53,9 +53,10 @@ class DecodeHRV(ComputeFeatureBase):
         for day in all_days:
             motionsense_raw = self.CC.get_stream(
                 all_streams[stream_identifier]["identifier"],day=day,
-                user_id=user_id)
-            if len(motionsense_raw.data) > 0:
-                data = np.array(motionsense_raw.data)
+                user_id=user_id,localtime=False)
+            motionsense_raw_data = admission_control(motionsense_raw.data)
+            if len(motionsense_raw_data) > 0:
+                data = np.array(motionsense_raw_data)
                 offset = data[0].offset
                 decoded_sample = get_decoded_matrix(data)
                 if not list(decoded_sample):
@@ -65,8 +66,8 @@ class DecodeHRV(ComputeFeatureBase):
                     final_data.append(DataPoint.from_tuple(
                         start_time=datetime.fromtimestamp(decoded_sample[i, -1]),
                         offset=offset, sample=decoded_sample[i, 1:-1]))
-                store_data(json_path,[all_streams[stream_identifier]],
-                           user_id, final_data, self)
+                self.store_stream(json_path,[all_streams[stream_identifier]],
+                           user_id, final_data)
 
 
 
@@ -77,14 +78,8 @@ class DecodeHRV(ComputeFeatureBase):
         :param all_days: list of days to compute
 
         """
-        motionsense_hrv_left_raw = \
-            "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
-        motionsense_hrv_right_raw = \
-            "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
-
         if not all_days:
             return
-
         if self.CC is not None:
             if user:
                 streams = self.CC.get_user_streams(user_id=user)
@@ -94,14 +89,14 @@ class DecodeHRV(ComputeFeatureBase):
                 user_id = user
 
                 if motionsense_hrv_left_raw in streams:
-                    json_path = 'metadata/decoded_hrv_left_wrist.json'
+                    json_path = 'decoded_hrv_left_wrist.json'
                     self.get_and_save_data(streams,all_days,
                                            motionsense_hrv_left_raw,
                                            user_id,json_path)
 
 
                 if motionsense_hrv_right_raw in streams:
-                    json_path = 'metadata/decoded_hrv_right_wrist.json'
+                    json_path = 'decoded_hrv_right_wrist.json'
                     self.get_and_save_data(streams,all_days,
                                            motionsense_hrv_right_raw,
                                            user_id,json_path)
