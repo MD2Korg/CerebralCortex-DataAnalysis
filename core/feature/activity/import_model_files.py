@@ -26,12 +26,23 @@
 import pickle
 from sklearn.ensemble import RandomForestClassifier
 from core.feature.activity.utils import *
+from core.computefeature import get_resource_contents
+import os
 
-def get_posture_model() -> RandomForestClassifier:
-    clf = pickle.load(open(POSTURE_MODEL_FILENAME, 'rb'))
+def get_posture_model(is_gravity) -> RandomForestClassifier:
+    if is_gravity:
+        model_file_contents = get_resource_contents(POSTURE_MODEL_FILENAME)
+    else:
+        model_file_contents = get_resource_contents(POSTURE_ACCEL_ONLY_MODEL_FILENAME)
+
+    clf = pickle.loads(model_file_contents)
     return clf
 
-def get_activity_model():
-    clf = pickle.load(open(ACTIVITY_MODEL_FILENAME, 'rb'))
-    return clf
+def get_activity_model(is_gravity):
+    if is_gravity:
+        model_file_contents = get_resource_contents(ACTIVITY_MODEL_FILENAME)
+    else:
+        model_file_contents = get_resource_contents(ACTIVITY_ACCEL_ONLY_MODEL_FILENAME)
 
+    clf = pickle.loads(model_file_contents)
+    return clf
