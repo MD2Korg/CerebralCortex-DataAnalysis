@@ -131,11 +131,13 @@ class stress_from_wrist(ComputeFeatureBase):
                                                   led_decode_left_wrist][
                                                   "identifier"],
                                                   day=day,
-                                                  user_id=user_id)
+                                                  user_id=user_id,
+                                                  localtime=False)
             decoded_right_raw = self.CC.get_stream(streams[
                                                    led_decode_right_wrist][
                                                    "identifier"],
-                                                   day=day, user_id=user_id)
+                                                   day=day, user_id=user_id,
+                                                   localtime=False)
 
             if not decoded_left_raw.data and not decoded_right_raw.data:
                 continue
