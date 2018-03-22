@@ -1322,8 +1322,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                  str(user_id)))
         else:
             for day in all_days:
-                callstream = self.get_data_by_stream_name(call_stream_name, user_id, day)
-                smsstream = self.get_data_by_stream_name(sms_stream_name, user_id, day)
+                callstream = self.get_data_by_stream_name(call_stream_name, user_id, day, localtime=False)
+                smsstream = self.get_data_by_stream_name(sms_stream_name, user_id, day, localtime=False)
                 self.process_callsmsstream_day_data(user_id, callstream, smsstream, input_callstream, input_smsstream)
 
         # processing proximity sensor related features
