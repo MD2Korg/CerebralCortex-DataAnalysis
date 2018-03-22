@@ -47,7 +47,7 @@ class PhoneFeatures(ComputeFeatureBase):
     appcategorycache = {}
     APPUSAGE_GAP_THRESHOLD = timedelta(minutes=2)
 
-    def get_data_by_stream_name(self, stream_name, user_id, day, localtime=False):
+    def get_data_by_stream_name(self, stream_name, user_id, day, localtime=True):
         """
         method to get combined data from CerebralCortex
         :param stream_name: Name of the stream corresponding to the datastream
@@ -81,7 +81,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return list(map(lambda x: x / 60.0, ret))
 
-    def average_inter_phone_call_sms_time_hourly(self, phonedatastream: DataStream, smsdatastream: DataStream):
+    def average_inter_phone_call_sms_time_hourly(self, phonedatastream, smsdatastream):
 
         if len(phonedatastream) + len(smsdatastream) <= 1:
             return None
@@ -113,7 +113,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_phone_call_sms_time_four_hourly(self, phonedatastream: DataStream, smsdatastream: DataStream):
+    def average_inter_phone_call_sms_time_four_hourly(self, phonedatastream, smsdatastream):
 
         if len(phonedatastream) + len(smsdatastream) <= 1:
             return None
@@ -145,7 +145,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_phone_call_sms_time_daily(self, phonedatastream: DataStream, smsdatastream: DataStream):
+    def average_inter_phone_call_sms_time_daily(self, phonedatastream, smsdatastream):
 
         if len(phonedatastream) + len(smsdatastream) <= 1:
             return None
@@ -168,7 +168,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_phone_call_sms_time_daily(self, phonedatastream: DataStream, smsdatastream: DataStream):
+    def variance_inter_phone_call_sms_time_daily(self, phonedatastream, smsdatastream):
 
         if len(phonedatastream) + len(smsdatastream) <= 1:
             return None
@@ -192,7 +192,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_phone_call_sms_time_hourly(self, phonedatastream: DataStream, smsdatastream: DataStream):
+    def variance_inter_phone_call_sms_time_hourly(self, phonedatastream, smsdatastream):
 
         if len(phonedatastream) + len(smsdatastream) <= 1:
             return None
@@ -224,7 +224,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_phone_call_sms_time_four_hourly(self, phonedatastream: DataStream, smsdatastream: DataStream):
+    def variance_inter_phone_call_sms_time_four_hourly(self, phonedatastream, smsdatastream):
 
         if len(phonedatastream) + len(smsdatastream) <= 1:
             return None
@@ -256,7 +256,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_phone_call_time_hourly(self, phonedatastream: DataStream):
+    def average_inter_phone_call_time_hourly(self, phonedatastream):
 
         if len(phonedatastream) <= 1:
             return None
@@ -282,7 +282,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_phone_call_time_four_hourly(self, phonedatastream: DataStream):
+    def average_inter_phone_call_time_four_hourly(self, phonedatastream):
 
         if len(phonedatastream) <= 1:
             return None
@@ -308,7 +308,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_phone_call_time_daily(self, phonedatastream: DataStream):
+    def average_inter_phone_call_time_daily(self, phonedatastream):
 
         if len(phonedatastream) <= 1:
             return None
@@ -326,7 +326,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_phone_call_time_hourly(self, phonedatastream: DataStream):
+    def variance_inter_phone_call_time_hourly(self, phonedatastream):
 
         if len(phonedatastream) <= 1:
             return None
@@ -352,7 +352,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_phone_call_time_four_hourly(self, phonedatastream: DataStream):
+    def variance_inter_phone_call_time_four_hourly(self, phonedatastream):
 
         if len(phonedatastream) <= 1:
             return None
@@ -378,7 +378,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_phone_call_time_daily(self, phonedatastream: DataStream):
+    def variance_inter_phone_call_time_daily(self, phonedatastream):
 
         if len(phonedatastream) <= 1:
             return None
@@ -396,7 +396,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_sms_time_hourly(self, smsdatastream: DataStream):
+    def average_inter_sms_time_hourly(self, smsdatastream):
 
         if len(smsdatastream) <= 1:
             return None
@@ -422,7 +422,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_sms_time_four_hourly(self, smsdatastream: DataStream):
+    def average_inter_sms_time_four_hourly(self, smsdatastream):
 
         if len(smsdatastream) <= 1:
             return None
@@ -448,7 +448,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_sms_time_daily(self, smsdatastream: DataStream):
+    def average_inter_sms_time_daily(self, smsdatastream):
 
         if len(smsdatastream) <= 1:
             return None
@@ -466,7 +466,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_sms_time_hourly(self, smsdatastream: DataStream):
+    def variance_inter_sms_time_hourly(self, smsdatastream):
 
         if len(smsdatastream) <= 1:
             return None
@@ -492,7 +492,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_sms_time_four_hourly(self, smsdatastream: DataStream):
+    def variance_inter_sms_time_four_hourly(self, smsdatastream):
 
         if len(smsdatastream) <= 1:
             return None
@@ -518,7 +518,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_sms_time_daily(self, smsdatastream: DataStream):
+    def variance_inter_sms_time_daily(self, smsdatastream):
 
         if len(smsdatastream) <= 1:
             return None
@@ -536,7 +536,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_call_duration_daily(self, phonedatastream: DataStream):
+    def average_call_duration_daily(self, phonedatastream):
 
         if len(phonedatastream) < 1:
             return None
@@ -550,7 +550,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_call_duration_hourly(self, phonedatastream: DataStream):
+    def average_call_duration_hourly(self, phonedatastream):
 
         if len(phonedatastream) < 1:
             return None
@@ -580,7 +580,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_call_duration_four_hourly(self, phonedatastream: DataStream):
+    def average_call_duration_four_hourly(self, phonedatastream):
 
         if len(phonedatastream) < 1:
             return None
