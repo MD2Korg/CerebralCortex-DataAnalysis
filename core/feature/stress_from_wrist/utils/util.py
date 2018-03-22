@@ -108,7 +108,7 @@ def collect_final_windowed_data(windowed_data,offset):
             end_time=key[1],
             sample = np.array([i.sample[6:] for i in windowed_data[
                 key]]),offset=offset))
-        if np.shape(final_windowed_data[-1].sample) >= 1500:
+        if np.shape(final_windowed_data[-1].sample)[0] >= 1500:
             final_windowed_data[-1].sample = final_windowed_data[-1].sample[
                                              :1500,:]
     return final_windowed_data
