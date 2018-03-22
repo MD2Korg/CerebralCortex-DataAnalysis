@@ -68,6 +68,12 @@ def find_sample_from_combination_of_left_right_or_one(left:List[DataPoint],
         data_right = np.array(right)[index_right]
         data_right_sample = np.array([i.sample for i in data_right])
         initial += window_offset
+
+        if np.shape(data_left_sample)[0] >= 1500:
+            data_left_sample = data_left_sample[:1500,:]
+        if np.shape(data_right_sample)[0] >= 1500:
+            data_right_sample = data_right_sample[:1500,:]
+
         if len(data_right)<=acceptable*Fs*window_size and len(
                 data_left)<=acceptable*Fs*window_size:
             continue
