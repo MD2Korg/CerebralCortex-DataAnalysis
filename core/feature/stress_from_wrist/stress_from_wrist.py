@@ -28,7 +28,16 @@ import warnings
 warnings.filterwarnings("ignore")
 from core.computefeature import ComputeFeatureBase
 from dateutil.parser import parse
+from core.feature.stress_from_wrist.utils.ecg_feature_computation import \
+    ecg_feature_computation
 import json
+import math
+import numpy as np
+from scipy.stats import iqr
+from scipy.stats import skew
+from scipy.stats import kurtosis
+from scipy.stats.mstats import gmean, hmean
+from copy import deepcopy
 
 feature_class_name = 'stress_from_wrist'
 
@@ -94,6 +103,58 @@ class stress_from_wrist(ComputeFeatureBase):
                 Fs=Fs)
         return final_windowed_data
 
+    def get_nan_free_HR(self,hr_data):
+        hr_data = 60000/hr_data
+        hr_data_nan_free = []
+        for k in hr_data:
+            if not math.isnan(k) and not math.isinf(k):
+                hr_data_nan_free.append(k)
+        return hr_data_nan_free
+
+    def get_stress_feature_one_window(self,RR_Interval_Realizations,HR_list):
+        temp = np.zeros((len(RR_Interval_Realizations),20))
+        for i in range(np.shape(temp)[0]):
+            rr_final = RR_Interval_Realizations[i]*1000/25
+            temp[i,1] = np.percentile(rr_final,85)
+            temp[i,2] = np.percentile(rr_final,25)
+            temp[i,3] = np.mean(rr_final)
+            temp[i,4] = np.median(rr_final)
+            temp[i,5] = np.std(rr_final)
+            temp[i,6] = iqr(rr_final)
+            temp[i,7] = skew(rr_final)
+            temp[i,8] = kurtosis(rr_final)
+            b = np.copy(ecg_feature_computation(rr_final,
+                                                rr_final))
+            temp[i,10] = b[1]
+            temp[i,11] = b[2]
+            temp[i,12] = b[3]
+            temp[i,13] = b[4]
+            temp[i,14] = b[7]
+            temp[i,9] = b[-1]
+            temp[i,0] = np.nanmean(HR_list)
+            temp[i,15] = np.nanstd(HR_list)
+            temp[i,16] = np.nanmean(np.diff(HR_list))
+            temp[i,17] = np.nanstd(np.diff(HR_list))
+            temp[i,18] = gmean(HR_list)
+            temp[i,19] = hmean(HR_list)
+        feature = []
+        for i in range(np.shape(temp)[1]):
+            feature.append(np.median(temp[:,i]))
+        return feature
+
+    def get_feature_matrix(self,final_rr_interval_list):
+        window_features = []
+        for dp in final_rr_interval_list:
+            if len(dp.sample)==3:
+                RR_Interval_Realizations = dp.sample[0]
+                HR_list = self.get_nan_free_HR(dp.sample[2])
+                if not list(HR_list) and not list(
+                        RR_Interval_Realizations):
+                    feature = self.get_stress_feature_one_window(
+                        RR_Interval_Realizations,HR_list)
+                    window_features.append(deepcopy(dp))
+                    window_features[-1].sample = feature
+        return window_features
 
 
     def process(self, user:str, all_days):
@@ -153,6 +214,5 @@ class stress_from_wrist(ComputeFeatureBase):
                 continue
             final_rr_interval_list = get_RR_interval_score_HR_for_all(
                 final_windowed_data)
-
-
+            window_features = self.get_feature_matrix(final_rr_interval_list)
 
