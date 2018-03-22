@@ -47,7 +47,7 @@ class PhoneFeatures(ComputeFeatureBase):
     appcategorycache = {}
     APPUSAGE_GAP_THRESHOLD = timedelta(minutes=2)
 
-    def get_data_by_stream_name(self, stream_name, user_id, day):
+    def get_data_by_stream_name(self, stream_name, user_id, day, localtime=False):
         """
         method to get combined data from CerebralCortex
         :param stream_name: Name of the stream corresponding to the datastream
@@ -59,7 +59,7 @@ class PhoneFeatures(ComputeFeatureBase):
         stream_ids = self.CC.get_stream_id(user_id, stream_name)
         data = []
         for stream in stream_ids:
-            data += self.CC.get_stream(stream['identifier'], user_id=user_id, day=day).data
+            data += self.CC.get_stream(stream['identifier'], user_id=user_id, day=day, localtime=localtime).data
 
         return data
 
@@ -326,6 +326,76 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
+    def variance_inter_phone_call_time_hourly(self, phonedatastream: DataStream):
+
+        if len(phonedatastream) <= 1:
+            return None
+
+        combined_data = phonedatastream
+
+        for s in combined_data:
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
+
+        new_data = []
+        for h in range(0, 24):
+            datalist = []
+            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                      day=combined_data[0].start_time.day, hour=h)
+            end = start + datetime.timedelta(minutes=59)
+            for d in combined_data:
+                if start <= d.start_time <= end or start <= d.end_time <= end:
+                    datalist.append(d)
+            if len(datalist) <= 1:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset,
+                                      sample=np.var(self.inter_event_time_list(datalist)) ))
+
+        return new_data
+
+    def variance_inter_phone_call_time_four_hourly(self, phonedatastream: DataStream):
+
+        if len(phonedatastream) <= 1:
+            return None
+
+        combined_data = phonedatastream
+
+        for s in combined_data:
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
+
+        new_data = []
+        for h in range(0, 24, 4):
+            datalist = []
+            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                      day=combined_data[0].start_time.day, hour=h)
+            end = start + datetime.timedelta(hours=3, minutes=59)
+            for d in combined_data:
+                if start <= d.start_time <= end or start <= d.end_time <= end:
+                    datalist.append(d)
+            if len(datalist) <= 1:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset,
+                                      sample=np.var(self.inter_event_time_list(datalist)) ))
+
+        return new_data
+
+    def variance_inter_phone_call_time_daily(self, phonedatastream: DataStream):
+
+        if len(phonedatastream) <= 1:
+            return None
+
+        combined_data = phonedatastream
+
+        for s in combined_data:
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
+
+        start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                       day=combined_data[0].start_time.day)
+        end_time = start_time + datetime.timedelta(hours=23, minutes=59)
+        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset,
+                              sample=np.var(self.inter_event_time_list(combined_data)) )]
+
+        return new_data
+
     def average_inter_sms_time_hourly(self, smsdatastream: DataStream):
 
         if len(smsdatastream) <= 1:
@@ -393,6 +463,76 @@ class PhoneFeatures(ComputeFeatureBase):
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
         new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset,
                               sample=sum(self.inter_event_time_list(combined_data)) / (len(combined_data) - 1))]
+
+        return new_data
+
+    def variance_inter_sms_time_hourly(self, smsdatastream: DataStream):
+
+        if len(smsdatastream) <= 1:
+            return None
+
+        combined_data = smsdatastream
+
+        for s in combined_data:
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
+
+        new_data = []
+        for h in range(0, 24):
+            datalist = []
+            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                      day=combined_data[0].start_time.day, hour=h)
+            end = start + datetime.timedelta(minutes=59)
+            for d in combined_data:
+                if start <= d.start_time <= end or start <= d.end_time <= end:
+                    datalist.append(d)
+            if len(datalist) <= 1:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset,
+                                      sample=np.var(self.inter_event_time_list(datalist))))
+
+        return new_data
+
+    def variance_inter_sms_time_four_hourly(self, smsdatastream: DataStream):
+
+        if len(smsdatastream) <= 1:
+            return None
+
+        combined_data = smsdatastream
+
+        for s in combined_data:
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
+
+        new_data = []
+        for h in range(0, 24, 4):
+            datalist = []
+            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                      day=combined_data[0].start_time.day, hour=h)
+            end = start + datetime.timedelta(hours=3, minutes=59)
+            for d in combined_data:
+                if start <= d.start_time <= end or start <= d.end_time <= end:
+                    datalist.append(d)
+            if len(datalist) <= 1:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=combined_data[0].offset,
+                                      sample=np.var(self.inter_event_time_list(datalist))))
+
+        return new_data
+
+    def variance_inter_sms_time_daily(self, smsdatastream: DataStream):
+
+        if len(smsdatastream) <= 1:
+            return None
+
+        combined_data = smsdatastream
+
+        for s in combined_data:
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
+
+        start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
+                                       day=combined_data[0].start_time.day)
+        end_time = start_time + datetime.timedelta(hours=23, minutes=59)
+        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset,
+                              sample=np.var(self.inter_event_time_list(combined_data)) )]
 
         return new_data
 
@@ -641,6 +781,33 @@ class PhoneFeatures(ComputeFeatureBase):
             print("Exception:", str(e))
 
         try:
+            data = self.variance_inter_phone_call_time_hourly(callstream)
+            if data:
+                self.store_stream(filepath="variance_inter_phone_call_time_hourly.json",
+                                  input_streams=[input_callstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.variance_inter_phone_call_time_four_hourly(callstream)
+            if data:
+                self.store_stream(filepath="variance_inter_phone_call_time_four_hourly.json",
+                                  input_streams=[input_callstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.variance_inter_phone_call_time_daily(callstream)
+            if data:
+                self.store_stream(filepath="variance_inter_phone_call_time_daily.json",
+                                  input_streams=[input_callstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
             data = self.average_inter_sms_time_hourly(smsstream)
             if data:
                 self.store_stream(filepath="average_inter_sms_time_hourly.json",
@@ -662,6 +829,33 @@ class PhoneFeatures(ComputeFeatureBase):
             data = self.average_inter_sms_time_daily(smsstream)
             if data:
                 self.store_stream(filepath="average_inter_sms_time_daily.json",
+                                  input_streams=[input_smsstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.variance_inter_sms_time_hourly(smsstream)
+            if data:
+                self.store_stream(filepath="variance_inter_sms_time_hourly.json",
+                                  input_streams=[input_smsstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.variance_inter_sms_time_four_hourly(smsstream)
+            if data:
+                self.store_stream(filepath="variance_inter_sms_time_four_hourly.json",
+                                  input_streams=[input_smsstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.variance_inter_sms_time_daily(smsstream)
+            if data:
+                self.store_stream(filepath="variance_inter_sms_time_daily.json",
                                   input_streams=[input_smsstream], user_id=user_id,
                                   data=data)
         except Exception as e:
@@ -773,7 +967,7 @@ class PhoneFeatures(ComputeFeatureBase):
             for day in all_days:
                 appusagestream = self.get_data_by_stream_name(appusage_stream_name, user_id, day)
                 self.process_appcategory_day_data(user_id, appusagestream, input_appusagestream)
-        
+
         # Processing phone touche and typing related features
         if not input_touchscreenstream:
             self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
