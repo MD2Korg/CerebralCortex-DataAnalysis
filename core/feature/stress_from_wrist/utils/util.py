@@ -115,6 +115,9 @@ def collect_final_windowed_data(windowed_data,offset):
 
 def get_final_windowed_data(left,right,window_size=60,
                             window_offset=60,acceptable=.5,Fs=25):
+    if not left and not right:
+        return []
+
     if not left:
         offset = right[0].offset
         windowed_data = window_sliding(right,
