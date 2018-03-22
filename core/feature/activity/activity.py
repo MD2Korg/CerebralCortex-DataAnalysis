@@ -1,6 +1,5 @@
 # Copyright (c) 2018, MD2K Center of Excellence
 # - Sayma Akther <sakther@memphis.edu>
-# FIXME - No need for author name, can be obtained from the git commit logs
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,10 +23,12 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import numpy as np
-from core.feature.activity.wrist_accelerometer_features import compute_accelerometer_features
-from core.feature.activity.activity_classifier import classify_posture, classify_activity
-from core.signalprocessing.gravity_filter.gravityFilter import gravityFilter_function
+from core.feature.activity.wrist_accelerometer_features import \
+    compute_accelerometer_features
+from core.feature.activity.activity_classifier import classify_posture, \
+    classify_activity
+from core.signalprocessing.gravity_filter.gravityFilter import \
+    gravityFilter_function
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from core.feature.activity.utils import *
 from core.feature.activity.admission_control import *
@@ -46,8 +47,24 @@ class ActivityMarker(ComputeFeatureBase):
 
     """
 
-    def process_activity_and_posture_marker(self, streams, user_id, day, wrist: str):
+    def get_day_data(self, stream_name, user_id, day):
+        day_data = []
+        stream_ids = self.CC.get_stream_id(user_id, stream_name)
+        for stream_id in stream_ids:
+            data_stream = self.CC.get_stream(stream_id["identifier"],
+                                             day=day,
+                                             user_id=user_id,
+                                             data_type=DataSet.COMPLETE)
+            if data_stream is not None and len(data_stream.data) > 0:
+                day_data.extend(data_stream.data)
 
+        day_data.sort(key=lambda x: x.start_time)
+
+        return day_data
+
+    def process_activity_and_posture_marker(self, streams, user_id, day,
+                                            wrist: str,
+                                            is_gravity):
         """ Process activity and posture detection fro single wrist
         :param streams: all the streams of user with user-id
         :param user_id:
@@ -55,44 +72,42 @@ class ActivityMarker(ComputeFeatureBase):
         :return: activity labels and posture lebels for each 10 seconds window
         """
 
-        if wrist in [LEFT_WRIST] and MOTIONSENSE_HRV_ACCEL_LEFT in streams:
-            accel_stream = self.CC.get_stream(streams[MOTIONSENSE_HRV_ACCEL_LEFT]["identifier"],
-                                              day=day,
-                                              user_id=user_id,
-                                              data_type=DataSet.COMPLETE)
-            gyro_stream = self.CC.get_stream(streams[MOTIONSENSE_HRV_GYRO_LEFT]["identifier"],
-                                             day=day,
-                                             user_id=user_id,
-                                             data_type=DataSet.COMPLETE)
-        elif wrist in [RIGHT_WRIST] and MOTIONSENSE_HRV_ACCEL_RIGHT in streams:
-            accel_stream = self.CC.get_stream(streams[MOTIONSENSE_HRV_ACCEL_RIGHT]["identifier"],
-                                              day=day,
-                                              user_id=user_id, data_type=DataSet.COMPLETE)
-            gyro_stream = self.CC.get_stream(streams[MOTIONSENSE_HRV_GYRO_RIGHT]["identifier"],
-                                             day=day,
-                                             user_id=user_id, data_type=DataSet.COMPLETE)
+        if wrist in [LEFT_WRIST]:
+            accel_data = self.get_day_data(MOTIONSENSE_HRV_ACCEL_LEFT, user_id,
+                                           day)
+            gyro_data = self.get_day_data(MOTIONSENSE_HRV_GYRO_LEFT, user_id,
+                                          day)
+
+        elif wrist in [RIGHT_WRIST]:
+            accel_data = self.get_day_data(MOTIONSENSE_HRV_ACCEL_RIGHT, user_id,
+                                           day)
+            gyro_data = self.get_day_data(MOTIONSENSE_HRV_GYRO_RIGHT, user_id,
+                                          day)
         else:
             return [], []
 
-        if accel_stream is None or gyro_stream is None or \
-                len(accel_stream.data) == 0 or len(gyro_stream.data) == 0:
+        if len(accel_data) == 0 or len(gyro_data) == 0:
             return [], []
-        if len(accel_stream.data) != len(gyro_stream.data):
-            return [], []
-        valid_accel_data, valid_gyro_data = check_motionsense_hrv_accel_gyroscope(accel_stream.data, gyro_stream.data)
-        accel_stream.data = valid_accel_data
-        gyro_stream.data = valid_gyro_data
 
-        gravity_filtered_accel_stream = gravityFilter_function(accel_stream,
-                                                               gyro_stream,
-                                                               sampling_freq=SAMPLING_FREQ_MOTIONSENSE_ACCEL,
-                                                               is_gyro_in_degree=IS_MOTIONSENSE_HRV_GYRO_IN_DEGREE)
+        if is_gravity:
+            if len(accel_data) != len(gyro_data):
+                return [], []
+            valid_accel_data, valid_gyro_data = check_motionsense_hrv_accel_gyroscope(
+                accel_data, gyro_data)
+            gravity_filtered_accel_data = \
+                gravityFilter_function(valid_accel_data,
+                                       valid_gyro_data,
+                                       sampling_freq=SAMPLING_FREQ_MOTIONSENSE_ACCEL,
+                                       is_gyro_in_degree=IS_MOTIONSENSE_HRV_GYRO_IN_DEGREE)
+            accel_data = gravity_filtered_accel_data
+        else:
+            accel_data = check_motionsense_hrv_accelerometer(accel_data)
 
-        activity_features = compute_accelerometer_features(gravity_filtered_accel_stream,
+        activity_features = compute_accelerometer_features(accel_data,
                                                            window_size=TEN_SECONDS)
 
-        posture_labels = classify_posture(activity_features)
-        activity_labels = classify_activity(activity_features)
+        posture_labels = classify_posture(activity_features, is_gravity)
+        activity_labels = classify_activity(activity_features, is_gravity)
 
         return posture_labels, activity_labels
 
@@ -104,21 +119,29 @@ class ActivityMarker(ComputeFeatureBase):
             return
 
         streams = self.CC.get_user_streams(user)
-        
+
         if not streams:
             self.CC.logging.log("Activity - no streams found for user: %s" %
                                 (user))
             return
 
         for day in all_days:
+            is_gravity = True
             self.CC.logging.log("Processing Activity for user: %s for day %s"
                                 %(user, str(day)))
-            posture_labels_left, activity_labels_left = self.process_activity_and_posture_marker(streams,
-                                                                                                 user, day,
-                                                                                                 LEFT_WRIST)
-            posture_labels_right, activity_labels_right = self.process_activity_and_posture_marker(streams,
-                                                                                                   user, day,
-                                                                                                   RIGHT_WRIST)
+
+            posture_labels_left, activity_labels_left = \
+                self.process_activity_and_posture_marker(streams,
+                                                         user, day,
+                                                         LEFT_WRIST,
+                                                         is_gravity)
+            posture_labels_right, activity_labels_right = \
+                self.process_activity_and_posture_marker(streams,
+                                                         user, day,
+                                                         RIGHT_WRIST,
+                                                         is_gravity)
+
+
             activity_labels = merge_left_right(activity_labels_left,
                                                activity_labels_right,
                                                window_size=TEN_SECONDS)
@@ -126,19 +149,55 @@ class ActivityMarker(ComputeFeatureBase):
                                               posture_labels_right,
                                               window_size=TEN_SECONDS)
 
-            self.CC.logging.log("activity_type_stream: %d" %
+            self.CC.logging.log("is_gravity TRUE activity_type_stream: %d" %
                                 (len(activity_labels)))
-            self.CC.logging.log("posture_stream: %d " % (len(posture_labels)))
+            self.CC.logging.log("is_gravity TRUE posture_stream: %d " % 
+                                (len(posture_labels)))
 
-            self.store_stream(filepath="activity_type_10seconds_window.json",
-                             input_streams=[streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
-                                            streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
-                             user_id=user,
-                             data=activity_labels)
-            
-            self.store_stream(filepath="posture_10seconds_window.json",
-                             input_streams=[streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
-                                            streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
-                             user_id=user,
-                             data=posture_labels)
+            if len(activity_labels) > 0:
+                self.store_stream(filepath=ACTIVITY_TYPE_10SECONDS_WINDOW,
+                                  input_streams=[
+                                      streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
+                                      streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
+                                  user_id=user,
+                                  data=activity_labels)
 
+                self.store_stream(filepath=POSTURE_10SECONDS_WINDOW,
+                                  input_streams=[
+                                      streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
+                                      streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
+                                  user_id=user,
+                                  data=posture_labels)
+
+            # Calculating with accelerometer only
+            is_gravity = False
+            posture_labels_right, activity_labels_right = \
+                self.process_activity_and_posture_marker(streams,
+                                                         user, day,
+                                                         RIGHT_WRIST,
+                                                         is_gravity)
+            activity_labels = activity_labels_right
+            posture_labels = posture_labels_right
+
+            self.CC.logging.log("is_gravity FALSE activity_type_stream: %d" %
+                                (len(activity_labels)))
+            self.CC.logging.log("is_gravity FALSE posture_stream: %d " % 
+                                 (len(posture_labels)))
+
+            if len(activity_labels) > 0:
+                self.store_stream(
+                    filepath=ACTIVITY_TYPE_ACCEL_ONLY_10SECONDS_WINDOW,
+                    input_streams=[
+                        streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
+                        streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
+                    user_id=user,
+                    data=activity_labels)
+
+                self.store_stream(filepath=POSTURE_ACCEL_ONLY_10SECONDS_WINDOW,
+                                  input_streams=[
+                                      streams[MOTIONSENSE_HRV_ACCEL_RIGHT],
+                                      streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
+                                  user_id=user,
+                                  data=posture_labels)
+
+        self.CC.logging.log("Finished processing Activity for user: %s" % (user))

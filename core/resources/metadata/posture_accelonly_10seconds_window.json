@@ -1,0 +1,40 @@
+{
+  "annotations":[],
+  "data_descriptor":[
+    {
+      "type":"float",
+      "unit":"10 seconds window"
+    }
+  ],
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.activity",
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters":{
+        "window_size": "10seconds"
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.activity.activity_marker",
+      "authors":[
+        {
+          "name":"Sayma Akther",
+          "email":"sakther@memphis.edu"
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+      },
+      "description":"Detects posture types (LYING, SITTING, STANDING)"
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.feature.body_posture.wrist.accel_only.10_second",
+  "owner":"",
+  "type":"1"
+}
