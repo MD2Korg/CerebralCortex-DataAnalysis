@@ -69,13 +69,13 @@ def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
 
 def get_constants():
     int_RR_dist_obj = pickle.load(
-        core.computefeature.get_resource_contents(path_to_stress_files+'int_RR_dist_obj.p','rb'))
+        core.computefeature.get_resource_contents(path_to_stress_files+'int_RR_dist_obj.p'))
     H = pickle.load(
-        core.computefeature.get_resource_contents(path_to_stress_files+'H.p','rb'))
+        core.computefeature.get_resource_contents(path_to_stress_files+'H.p'))
     w_l = pickle.load(
-        core.computefeature.get_resource_contents(path_to_stress_files+'w_l.p','rb'))
+        core.computefeature.get_resource_contents(path_to_stress_files+'w_l.p'))
     w_r = pickle.load(
-        core.computefeature.get_resource_contents(path_to_stress_files+'w_r.p','rb'))
+        core.computefeature.get_resource_contents(path_to_stress_files+'w_r.p'))
     fil_type = 'ppg'
     return int_RR_dist_obj,H,w_l,w_r,fil_type
 
