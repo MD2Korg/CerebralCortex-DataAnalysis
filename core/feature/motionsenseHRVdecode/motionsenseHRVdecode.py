@@ -27,13 +27,30 @@ from core.computefeature import ComputeFeatureBase
 from core.feature.motionsenseHRVdecode.util_helper_functions \
     import *
 import numpy as np
-
+import json
+from dateutil.parser import parse
 from datetime import datetime
 
 feature_class_name = 'DecodeHRV'
 
-
 class DecodeHRV(ComputeFeatureBase):
+    def get_data_around_stress_survey(self,
+                                      all_streams,
+                                      day,
+                                      user_id,
+                                      raw_byte_array):
+        if qualtrics_identifier in all_streams:
+            data = self.CC.get_stream(all_streams[qualtrics_identifier][
+                                      'identifier'], user_id=user_id, day=day,localtime=False)
+            if len(data.data) > 0:
+                data = data.data
+                s1 = parse(json.loads(data[0].sample)["RecordedDate"])
+                final_data = []
+                for dp in raw_byte_array:
+                    if np.abs(s1.timestamp()-dp.start_time.timestamp())<=30*60:
+                        final_data.append(dp)
+                return final_data
+        return []
 
     def get_and_save_data(self,
                           all_streams,
@@ -56,9 +73,12 @@ class DecodeHRV(ComputeFeatureBase):
                 user_id=user_id,localtime=False)
             motionsense_raw_data = admission_control(motionsense_raw.data)
             if len(motionsense_raw_data) > 0:
-                data = np.array(motionsense_raw_data)
+                data = self.get_data_around_stress_survey(all_streams,
+                                                     day,
+                                                     user_id,
+                                                     motionsense_raw_data)
                 offset = data[0].offset
-                decoded_sample = get_decoded_matrix(data)
+                decoded_sample = get_decoded_matrix(np.array(data))
                 if not list(decoded_sample):
                     continue
                 final_data = []

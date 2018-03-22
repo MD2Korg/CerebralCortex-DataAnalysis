@@ -33,6 +33,8 @@ motionsense_hrv_left_raw = \
     "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
 motionsense_hrv_right_raw = \
     "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
+qualtrics_identifier = \
+    "org.md2k.data_qualtrics.feature.stress_MITRE.omnibus_stress_question.daily"
 
 
 def get_decoded_matrix(data:np.ndarray,row_length=22):
@@ -74,3 +76,5 @@ def admission_control(data:List[DataPoint])->List[DataPoint]:
         if isinstance(dp.sample,str) and len(dp.sample.split(','))==20:
             final_data.append(dp)
     return final_data
+
+
