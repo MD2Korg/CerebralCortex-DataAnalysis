@@ -4,7 +4,7 @@
     {
       "type":"string",
       "unit":"",
-      "descriptor":"The participants context based on proximity to work beacon,Values = Around_home_beacon(0),Not_around_home_beacon(1)"
+      "descriptor":"The participants context based on proximity to work beacon,Values = Not_work_beacon(0),Around_work1_beacon(1),Around_work2_beacon(2)"
     }
   ],
   "execution_context":{

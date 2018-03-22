@@ -34,9 +34,9 @@ class BeaconFeatures(ComputeFeatureBase):
             stream = self.CC.get_stream(beacon_stream_id, user_id=user_id, day=day)
 
             if (len(stream.data) > 0):
-                if (stream_name == 'BEACON--org.md2k.beacon--BEACON--HOME')
-                    self.home_beacon_context(
-                        stream.data, beacon_stream_id, beacon_stream_name, user_id)
+                if (stream_name ==
+                        'BEACON--org.md2k.beacon--BEACON--HOME'):
+                    self.home_beacon_context(stream.data, beacon_stream_id, beacon_stream_name, user_id)
 
 
 
@@ -121,7 +121,7 @@ class BeaconFeatures(ComputeFeatureBase):
     def work_beacon_context(self, beaconworkstream,input_streams, user_id):
 
         """
-        
+
         :param beaconworkstream:
         :param input_streams:
         :param user_id:
@@ -131,23 +131,29 @@ class BeaconFeatures(ComputeFeatureBase):
             beaconstream = beaconworkstream
 
             windowed_data = window.window(beaconstream, self.window_size, True)
+
             new_data = []
             for i, j in windowed_data:
                 if (len(windowed_data[i, j]) > 0):
-                    windowed_data[i,j] = "1"
+                    values = []
+                    for items in windowed_data[i,j]:
+                        values.append(items.sample)
+
+                    if ('1' in items.sample) & ('2' in items.sample):
+                        windowed_data[i,j] = "1"
+                    else:
+                        windowed_data[i,j] = values[0]
 
                 else:
                     windowed_data[i,j] ="0"
 
+            print(windowed_data)
             data = window.merge_consective_windows(windowed_data)
             for items in data:
                 new_data.append(DataPoint(start_time=items.start_time, end_time=items.end_time,
                                           offset=beaconworkstream[0].offset, sample=items.sample))
-
         try:
-            self.store_data("metadata/home_beacon_context.json",
-                            input_streams, user_id, new_data,
-                            "WORK_BEACON_CONTEXT")
+            self.store_data("metadata/home_beacon_context.json",input_streams, user_id, new_data,"WORK_BEACON_CONTEXT")
         except Exception as e:
             print("Exception:", str(e))
 
