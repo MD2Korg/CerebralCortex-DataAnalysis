@@ -33,6 +33,7 @@ import json
 feature_class_name = 'stress_from_wrist'
 
 class stress_from_wrist(ComputeFeatureBase):
+
     def get_data_around_stress_survey(self,
                                       all_streams,
                                       day,
@@ -105,44 +106,51 @@ class stress_from_wrist(ComputeFeatureBase):
         if not list(all_days):
             return
 
-        if self.CC is not None:
-            if user:
-                streams = self.CC.get_user_streams(user)
+        if self.CC is None:
+            return
 
-                if streams is None:
-                    return
+        if user is None:
+            return
 
-                user_id = user
+        streams = self.CC.get_user_streams(user)
 
-                if qualtrics_identifier not in streams:
-                    return
+        if streams is None:
+            return
 
-                if led_decode_left_wrist in streams or led_decode_right_wrist in streams:
-                    for day in all_days:
-                        decoded_left_raw = self.CC.get_stream(streams[
-                                                              led_decode_left_wrist][
-                                                              "identifier"],
-                                                              day=day,
-                                                              user_id=user_id)
-                        decoded_right_raw = self.CC.get_stream(streams[
-                                                               led_decode_right_wrist][
-                                                               "identifier"],
-                                                               day=day, user_id=user_id)
+        user_id = user
 
-                        if not decoded_left_raw.data and not decoded_right_raw.data:
-                            continue
+        if qualtrics_identifier not in streams:
+            return
 
-                        final_windowed_data = self.windowing(streams,decoded_left_raw,
-                                                             decoded_right_raw,
-                                                             user_id,
-                                                             day,window_size,
-                                                             window_offset,
-                                                             acceptable,Fs)
+        if led_decode_left_wrist not in streams and \
+                led_decode_right_wrist not in streams:
+            return
 
-                        if not final_windowed_data:
-                            continue
-                        final_rr_interval_list = get_RR_interval_score_HR_for_all(
-                            final_windowed_data)
+        for day in all_days:
+            decoded_left_raw = self.CC.get_stream(streams[
+                                                  led_decode_left_wrist][
+                                                  "identifier"],
+                                                  day=day,
+                                                  user_id=user_id)
+            decoded_right_raw = self.CC.get_stream(streams[
+                                                   led_decode_right_wrist][
+                                                   "identifier"],
+                                                   day=day, user_id=user_id)
+
+            if not decoded_left_raw.data and not decoded_right_raw.data:
+                continue
+
+            final_windowed_data = self.windowing(streams,decoded_left_raw,
+                                                 decoded_right_raw,
+                                                 user_id,
+                                                 day,window_size,
+                                                 window_offset,
+                                                 acceptable,Fs)
+
+            if not final_windowed_data:
+                continue
+            final_rr_interval_list = get_RR_interval_score_HR_for_all(
+                final_windowed_data)
 
 
 
