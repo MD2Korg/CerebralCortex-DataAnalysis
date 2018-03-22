@@ -47,7 +47,7 @@ led_decode_left_wrist = "org.md2k.feature.decodedLED.leftwrist"
 led_decode_right_wrist = "org.md2k.feature.decodedLED.rightwrist"
 motionsense_hrv_right_raw = \
     "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
-path_to_stress_files = '../../resources/stress_files/'
+path_to_stress_files = 'core/resources/stress_files/'
 qualtrics_identifier = \
     "org.md2k.data_qualtrics.feature.stress_MITRE.omnibus_stress_question.daily"
 
@@ -69,13 +69,13 @@ def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
 
 def get_constants():
     int_RR_dist_obj = pickle.load(
-        open(path_to_stress_files+'int_RR_dist_obj.p','rb'))
+        core.computefeature.get_resource_contents(path_to_stress_files+'int_RR_dist_obj.p','rb'))
     H = pickle.load(
-        open(path_to_stress_files+'H.p','rb'))
+        core.computefeature.get_resource_contents(path_to_stress_files+'H.p','rb'))
     w_l = pickle.load(
-        open(path_to_stress_files+'w_l.p','rb'))
+        core.computefeature.get_resource_contents(path_to_stress_files+'w_l.p','rb'))
     w_r = pickle.load(
-        open(path_to_stress_files+'w_r.p','rb'))
+        core.computefeature.get_resource_contents(path_to_stress_files+'w_r.p','rb'))
     fil_type = 'ppg'
     return int_RR_dist_obj,H,w_l,w_r,fil_type
 
