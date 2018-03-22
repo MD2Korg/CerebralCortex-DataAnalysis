@@ -28,26 +28,26 @@ from core.feature.activity.import_model_files import get_posture_model, \
     get_activity_model
 from typing import List
 
-
 def classify_posture(features: List[DataPoint], is_gravity) -> List[DataPoint]:
     clf = get_posture_model(is_gravity)
     labels = []
-    for dp in features:
-        preds = clf.predict([dp.sample])
-        preds = str(preds[0])
+
+    prediction_values = [dp.sample for dp in features]
+    preds = clf.predict(prediction_values)
+    for i, dp in enumerate(features):
         labels.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time,
-                                offset=dp.offset, sample=preds))
+                                offset=dp.offset, sample=str(preds[i])))
 
     return labels
-
 
 def classify_activity(features: List[DataPoint], is_gravity) -> List[DataPoint]:
     clf = get_activity_model(is_gravity)
     labels = []
-    for dp in features:
-        preds = clf.predict([dp.sample])
-        preds = str(preds[0])
+
+    prediction_values = [dp.sample for dp in features]
+    preds = clf.predict(prediction_values)
+    for i, dp in enumerate(features):
         labels.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time,
-                                offset=dp.offset, sample=preds))
+                                offset=dp.offset, sample=str(preds[i])))
 
     return labels

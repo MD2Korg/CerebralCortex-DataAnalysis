@@ -36,7 +36,6 @@ from core.computefeature import ComputeFeatureBase
 
 feature_class_name = 'ActivityMarker'
 
-
 class ActivityMarker(ComputeFeatureBase):
     """
     Detects activity and posture per 10 seconds window from
@@ -46,7 +45,7 @@ class ActivityMarker(ComputeFeatureBase):
         takes maximum as final label
 
     """
-
+    @timeit
     def get_day_data(self, stream_name, user_id, day):
         day_data = []
         stream_ids = self.CC.get_stream_id(user_id, stream_name)
@@ -62,6 +61,7 @@ class ActivityMarker(ComputeFeatureBase):
 
         return day_data
 
+    @timeit
     def process_activity_and_posture_marker(self, streams, user_id, day,
                                             wrist: str,
                                             is_gravity):
@@ -106,6 +106,8 @@ class ActivityMarker(ComputeFeatureBase):
         activity_features = compute_accelerometer_features(accel_data,
                                                            window_size=TEN_SECONDS)
 
+        print("Accel Len:",len(activity_features))
+        
         posture_labels = classify_posture(activity_features, is_gravity)
         activity_labels = classify_activity(activity_features, is_gravity)
 
