@@ -45,7 +45,7 @@ class ActivityMarker(ComputeFeatureBase):
         takes maximum as final label
 
     """
-    @timeit
+
     def get_day_data(self, stream_name, user_id, day):
         day_data = []
         stream_ids = self.CC.get_stream_id(user_id, stream_name)
@@ -61,7 +61,6 @@ class ActivityMarker(ComputeFeatureBase):
 
         return day_data
 
-    @timeit
     def process_activity_and_posture_marker(self, streams, user_id, day,
                                             wrist: str,
                                             is_gravity):
