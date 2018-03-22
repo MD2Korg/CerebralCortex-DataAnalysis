@@ -108,7 +108,7 @@ class BeaconFeatures(ComputeFeatureBase):
             data = window.merge_consective_windows(windowed_data)
             for items in data:
                 new_data.append(DataPoint(start_time=items.start_time, end_time=items.end_time,
-                                          offset=beaconworkstream[0].offset, sample=items.sample))
+                                          offset=beaconhomestream[0].offset, sample=items.sample))
 
         try:
             self.store_data("metadata/home_beacon_context.json",
