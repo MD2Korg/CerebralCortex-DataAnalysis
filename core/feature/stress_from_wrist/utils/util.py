@@ -29,8 +29,8 @@ import pickle
 import core.computefeature
 
 Fs = 25
-led_decode_left_wrist = "org.md2k.signalprocessing.decodedLED.leftwrist"
-led_decode_right_wrist = "org.md2k.signalprocessing.decodedLED.rightwrist"
+led_decode_left_wrist1 = "org.md2k.signalprocessing.decodedLED.leftwrist"
+led_decode_right_wrist1 = "org.md2k.signalprocessing.decodedLED.rightwrist"
 window_size = 60
 window_offset = 60
 acceptable = .5
@@ -38,11 +38,11 @@ label_lab = 'LABEL--org.md2k.studymperflab'
 motionsense_hrv_left_raw = \
     "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
 
-led_decode_left_wrist1 = "org.md2k.feature.decodedLED.leftwrist"
-led_decode_right_wrist1 = "org.md2k.feature.decodedLED.rightwrist"
+led_decode_left_wrist = "org.md2k.feature.decodedLED.leftwrist"
+led_decode_right_wrist = "org.md2k.feature.decodedLED.rightwrist"
 motionsense_hrv_right_raw = \
     "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
-path_to_resources = 'core/resources/stress_files/'
+path_to_resources = '../../resources/stress_files/'
 
 def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
     """

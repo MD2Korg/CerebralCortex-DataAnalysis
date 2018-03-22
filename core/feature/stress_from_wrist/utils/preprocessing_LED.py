@@ -94,7 +94,6 @@ def GLRT_bayesianIP_HMM(X_ppg_input,H,w_r,w_l,pks_ecg,int_RR_dist_obj):
     HR_perRealization = [[0]]*len(RR_interval_all_realization)
     for i in range(len(RR_interval_all_realization)):
         HR_perRealization[i] = Fs*60/np.mean(RR_interval_all_realization[i])
-    HR_bayesian = np.mean(HR_perRealization)
     HR_step = np.floor(2*Fs)
     HR_window = np.floor(8*Fs)
     HR = np.zeros((1,np.int64(np.floor((window_length-HR_window)/HR_step))))

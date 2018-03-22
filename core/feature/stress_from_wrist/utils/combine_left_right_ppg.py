@@ -45,6 +45,13 @@ def find_sample_from_combination_of_left_right_or_one(left:List[DataPoint],
     :param right:
     :return:
     """
+    if not list(left) and not list(right):
+        return []
+    elif not list(left):
+        offset = right[0].offset
+    else:
+        offset = left[0].offset
+
     ts_array_left = np.array([i.start_time.timestamp() for i in
                               left])
     ts_array_right = np.array([i.start_time.timestamp() for i in
@@ -77,6 +84,6 @@ def find_sample_from_combination_of_left_right_or_one(left:List[DataPoint],
         final_window_list.append(DataPoint.from_tuple(
             start_time=datetime.fromtimestamp(initial-window_offset),
             end_time=datetime.fromtimestamp(initial-window_offset+window_size),
-            sample=data_final))
+            sample=data_final,offset=offset))
 
     return final_window_list

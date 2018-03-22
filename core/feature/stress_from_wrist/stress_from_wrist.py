@@ -23,8 +23,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from core.feature.motionsenseHRVdecode.motionsenseHRVdecode import DecodeHRV
 from core.feature.stress_from_wrist.utils.util import Fs,acceptable,window_size, \
-    window_offset,led_decode_left_wrist,led_decode_right_wrist, \
-    led_decode_left_wrist1,led_decode_right_wrist1,get_constants,get_stream_days
+    window_offset,led_decode_left_wrist,led_decode_right_wrist,get_constants,get_stream_days
 from cerebralcortex.cerebralcortex import CerebralCortex
 from core.feature.stress_from_wrist.utils.combine_left_right_ppg import *
 import warnings
@@ -39,13 +38,13 @@ users = CC.get_all_users("mperf-alabsi")
 for user in users:
     streams = CC.get_user_streams(user['identifier'])
     user_id = user["identifier"]
-    if led_decode_left_wrist1 in streams:
+    if led_decode_left_wrist in streams:
 
-        stream_days_left = get_stream_days(streams[led_decode_left_wrist1][
+        stream_days_left = get_stream_days(streams[led_decode_left_wrist][
                                                "identifier"],
                                            CC)
 
-        stream_days_right = get_stream_days(streams[led_decode_right_wrist1][
+        stream_days_right = get_stream_days(streams[led_decode_right_wrist][
                                                 "identifier"],CC)
         common_days = list(set(stream_days_left) & set(stream_days_right))
         left_only_days = list(set(stream_days_left) - set(stream_days_right))
@@ -56,21 +55,21 @@ for user in users:
         for day in union_of_days_list:
             if day in common_days:
                 decoded_left_raw = CC.get_stream(streams[
-                                                     led_decode_left_wrist1][
+                                                     led_decode_left_wrist][
                                                          "identifier"],
-                                                     day=day, user_id=user_id)
+                                                     day=day,
+                                                 user_id=user_id)
                 decoded_right_raw = CC.get_stream(streams[
-                                                      led_decode_right_wrist1][
+                                                      led_decode_right_wrist][
                                                      "identifier"],
                                                  day=day, user_id=user_id)
-
                 final_windowed_data = find_sample_from_combination_of_left_right_or_one(
                     decoded_left_raw.data,decoded_right_raw.data,
                     window_size=window_size,window_offset=window_offset,
                     Fs=Fs,acceptable=acceptable)
             elif day in left_only_days:
                 decoded_left_raw = CC.get_stream(streams[
-                                                     led_decode_left_wrist1][
+                                                     led_decode_left_wrist][
                                                      "identifier"],
                                                  day=day, user_id=user_id)
 
@@ -86,7 +85,8 @@ for user in users:
                         key]])))
             else:
                 decoded_right_raw = CC.get_stream(streams[
-                                                      led_decode_right_wrist1][
+                                                      led_decode_right_wrist
+                                                  ][
                                                       "identifier"],
                                                   day=day, user_id=user_id)
 
@@ -101,7 +101,7 @@ for user in users:
                         sample = np.array([i.sample[6:] for i in windowed_data[
                             key]])))
 
-            print(final_windowed_data)
+            print(final_windowed_data[0].start_time,decoded_left_raw.data[0].start_time)
             int_RR_dist_obj,H,w_l,w_r,fil_type = get_constants()
 
             # for dp in final_windowed_data:
