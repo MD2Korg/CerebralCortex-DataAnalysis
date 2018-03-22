@@ -52,6 +52,48 @@ class stress_from_wrist(ComputeFeatureBase):
         return []
 
 
+    def windowing(self,streams,decoded_left_raw,decoded_right_raw,user_id,
+                  day,window_size,window_offset,acceptable,Fs):
+        if not decoded_left_raw.data:
+            right_data = \
+                self.get_data_around_stress_survey(streams,day,
+                                                   user_id,
+                                                   decoded_right_raw.data)
+            final_windowed_data = \
+                get_final_windowed_data([],
+                                        right_data,
+                                        window_size=window_size,
+                                        window_offset=window_offset)
+        elif not decoded_right_raw.data:
+            left_data = \
+                self.get_data_around_stress_survey(streams,day,
+                                                   user_id,
+                                                   decoded_left_raw.data)
+
+            final_windowed_data = get_final_windowed_data(
+                left_data,[],
+                window_size=window_size,
+                window_offset=window_offset)
+        else:
+            right_data = \
+                self.get_data_around_stress_survey(streams,day,
+                                                   user_id,
+                                                   decoded_right_raw.data)
+            left_data = \
+                self.get_data_around_stress_survey(streams,day,
+                                                   user_id,
+                                                   decoded_left_raw.data)
+
+            final_windowed_data = get_final_windowed_data(
+                left_data,
+                right_data,
+                window_size=window_size,
+                window_offset=window_offset,
+                acceptable=acceptable,
+                Fs=Fs)
+        return final_windowed_data
+
+
 
     def process(self, user:str, all_days):
 
@@ -78,55 +120,24 @@ class stress_from_wrist(ComputeFeatureBase):
                 if led_decode_left_wrist in streams or led_decode_right_wrist in streams:
                     for day in all_days:
                         decoded_left_raw = self.CC.get_stream(streams[
-                                                                  led_decode_left_wrist][
-                                                                  "identifier"],
+                                                              led_decode_left_wrist][
+                                                              "identifier"],
                                                               day=day,
                                                               user_id=user_id)
                         decoded_right_raw = self.CC.get_stream(streams[
-                                                                   led_decode_right_wrist][
-                                                                   "identifier"],
+                                                               led_decode_right_wrist][
+                                                               "identifier"],
                                                                day=day, user_id=user_id)
 
                         if not decoded_left_raw.data and not decoded_right_raw.data:
                             continue
 
-                        if not decoded_left_raw.data:
-                            right_data = \
-                                self.get_data_around_stress_survey(streams,day,
-                                                                   user_id,
-                                                                   decoded_right_raw.data)
-                            final_windowed_data = \
-                                get_final_windowed_data([],
-                                                      right_data,
-                                                      window_size=window_size,
-                                                      window_offset=window_offset)
-                        elif not decoded_right_raw.data:
-                            left_data = \
-                                self.get_data_around_stress_survey(streams,day,
-                                                                   user_id,
-                                                                   decoded_left_raw.data)
-
-                            final_windowed_data = get_final_windowed_data(
-                                left_data,[],
-                                window_size=window_size,
-                                window_offset=window_offset)
-                        else:
-                            right_data = \
-                                self.get_data_around_stress_survey(streams,day,
-                                                                   user_id,
-                                                                   decoded_right_raw.data)
-                            left_data = \
-                                self.get_data_around_stress_survey(streams,day,
-                                                                   user_id,
-                                                                   decoded_left_raw.data)
-
-                            final_windowed_data = get_final_windowed_data(
-                                left_data,
-                                right_data,
-                                window_size=window_size,
-                                window_offset=window_offset,
-                                acceptable=acceptable,
-                                Fs=Fs)
+                        final_windowed_data = self.windowing(streams,decoded_left_raw,
+                                                             decoded_right_raw,
+                                                             user_id,
+                                                             day,window_size,
+                                                             window_offset,
+                                                             acceptable,Fs)
 
                         if not final_windowed_data:
                             continue
