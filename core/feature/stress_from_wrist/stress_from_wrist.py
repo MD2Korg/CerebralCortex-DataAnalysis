@@ -22,194 +22,135 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from core.feature.stress_from_wrist.utils.util import acceptable,window_size, \
-    window_offset,led_decode_left_wrist,led_decode_right_wrist,get_constants,\
-    get_stream_days,Fs
-from cerebralcortex.cerebralcortex import CerebralCortex
-from core.feature.stress_from_wrist.utils.combine_left_right_ppg import *
+    window_offset,led_decode_left_wrist,led_decode_right_wrist, \
+    Fs,get_final_windowed_data,get_RR_interval_score_HR_for_all,qualtrics_identifier
 import warnings
 warnings.filterwarnings("ignore")
-from copy import deepcopy
-from core.feature.stress_from_wrist.utils.preprocessing_LED import *
-from core.signalprocessing.window import window_sliding
-import math
-import time
+from core.computefeature import ComputeFeatureBase
+from dateutil.parser import parse
+import json
 
-def get_sample_from_comparison(
-                            RR_interval_all_realization_r,
-                            score_r,HR_r,
-                            RR_interval_all_realization_l,
-                            score_l,HR_l):
-    if math.isnan(score_r):
-        sample =  [RR_interval_all_realization_l,
-                score_l,HR_l]
-    elif math.isnan(score_l):
-        sample =  [RR_interval_all_realization_r,
-                score_r,HR_r]
-    else:
-        if score_r<score_l:
-            sample =  [RR_interval_all_realization_r,
-                    score_r,HR_r]
+feature_class_name = 'stress_from_wrist'
+
+class stress_from_wrist(ComputeFeatureBase):
+
+    def get_data_around_stress_survey(self,
+                                      all_streams,
+                                      day,
+                                      user_id,
+                                      raw_byte_array):
+        if qualtrics_identifier in all_streams:
+            data = self.CC.get_stream(all_streams[qualtrics_identifier][
+                                          'identifier'], user_id=user_id, day=day,localtime=False)
+            if len(data.data) > 0:
+                data = data.data
+                s1 = parse(json.loads(data[0].sample)["RecordedDate"])
+                final_data = []
+                for dp in raw_byte_array:
+                    if s1.timestamp()>=dp.start_time.timestamp():
+                        final_data.append(dp)
+                return final_data
+        return []
+
+
+    def windowing(self,streams,decoded_left_raw,decoded_right_raw,user_id,
+                  day,window_size,window_offset,acceptable,Fs):
+        if not decoded_left_raw.data:
+            right_data = \
+                self.get_data_around_stress_survey(streams,day,
+                                                   user_id,
+                                                   decoded_right_raw.data)
+            final_windowed_data = \
+                get_final_windowed_data([],
+                                        right_data,
+                                        window_size=window_size,
+                                        window_offset=window_offset)
+        elif not decoded_right_raw.data:
+            left_data = \
+                self.get_data_around_stress_survey(streams,day,
+                                                   user_id,
+                                                   decoded_left_raw.data)
+
+            final_windowed_data = get_final_windowed_data(
+                left_data,[],
+                window_size=window_size,
+                window_offset=window_offset)
         else:
-            sample =  [RR_interval_all_realization_l,
-                    score_l,HR_l]
-    return sample
+            right_data = \
+                self.get_data_around_stress_survey(streams,day,
+                                                   user_id,
+                                                   decoded_right_raw.data)
+            left_data = \
+                self.get_data_around_stress_survey(streams,day,
+                                                   user_id,
+                                                   decoded_left_raw.data)
+
+            final_windowed_data = get_final_windowed_data(
+                left_data,
+                right_data,
+                window_size=window_size,
+                window_offset=window_offset,
+                acceptable=acceptable,
+                Fs=Fs)
+        return final_windowed_data
 
 
-def collect_final_windowed_data(windowed_data,offset):
-    final_windowed_data = []
-    for key in windowed_data.keys():
-        final_windowed_data.append(DataPoint.from_tuple(
-            start_time=key[0],
-            end_time=key[1],
-            sample = np.array([i.sample[6:] for i in windowed_data[
-                key]]),offset=offset))
-        if np.shape(final_windowed_data[-1].sample) >= 1500:
-            final_windowed_data[-1].sample = final_windowed_data[-1].sample[
-                                             :1500,:]
-    return final_windowed_data
 
-def get_final_windowed_data(left,right,window_size=60,
-                            window_offset=60,acceptable=.5,Fs=25):
-    if not left:
-        offset = right[0].offset
-        windowed_data = window_sliding(right,
-                                       window_size=window_size,
-                                       window_offset=window_offset)
-        final_windowed_data  = collect_final_windowed_data(windowed_data,offset)
-    elif not right:
-        offset = left[0].offset
-        windowed_data = window_sliding(left,
-                                       window_size=window_size,
-                                       window_offset=window_offset)
-        final_windowed_data  = collect_final_windowed_data(windowed_data,offset)
-    else:
-        final_windowed_data = find_sample_from_combination_of_left_right_or_one(
-            decoded_left_raw.data,decoded_right_raw.data,
-            window_size=window_size,window_offset=window_offset,
-            Fs=Fs,acceptable=acceptable)
+    def process(self, user:str, all_days):
 
-    return final_windowed_data
+        """
+        :param user: user id string
+        :param all_days: list of days to compute
 
-def get_RR_interval_score_HR(sample,st,et,int_RR_dist_obj,H,w_l,w_r,fil_type):
-    X_ppg = sample
-    t_start = st
-    t_end = et
-    Fs_ppg = (np.shape(X_ppg)[0]/(t_end-t_start))
-    X_ppg_fil = preProcessing(X0=X_ppg,Fs=Fs_ppg,fil_type=fil_type)
-    RR_interval_all_realization,score,HR = GLRT_bayesianIP_HMM(
-                    X_ppg_fil,H,w_r,w_l,[],int_RR_dist_obj)
-    return RR_interval_all_realization,score,HR
+        """
+        if not list(all_days):
+            return
 
-def get_RR_interval_score_HR_for_all(final_windowed_data):
-    int_RR_dist_obj,H,w_l,w_r,fil_type = get_constants()
-    final_rr_interval_list = []
-    for dp in final_windowed_data[:30]:
-        st = dp.start_time.timestamp()
-        et = dp.end_time.timestamp()
-        if not list(dp.sample['left']) and \
-                not list(dp.sample['right']):
-            continue
-        elif not list(dp.sample['left']):
-            try:
-                RR_interval_all_realization,score,HR = \
-                    get_RR_interval_score_HR(dp.sample['right'],
-                                             st,et,int_RR_dist_obj,
-                                             H,w_l,w_r,fil_type)
-                if not math.isnan(score):
-                    final_rr_interval_list.append(deepcopy(dp))
-                    final_rr_interval_list[-1].sample = \
-                        [RR_interval_all_realization,score,HR]
-            except Exception:
-                pass
-        elif not list(dp.sample['right']):
-            try:
-                RR_interval_all_realization,score,HR = \
-                    get_RR_interval_score_HR(dp.sample['right'],
-                                             st,et,int_RR_dist_obj,
-                                             H,w_l,w_r,fil_type)
-                if not math.isnan(score):
-                    final_rr_interval_list.append(deepcopy(dp))
-                    final_rr_interval_list[-1].sample = \
-                        [RR_interval_all_realization,score,HR]
-            except Exception:
-                pass
-        else:
-            try:
-                RR_interval_all_realization_r,score_r,HR_r = \
-                    get_RR_interval_score_HR(dp.sample['right'],
-                                             st,et,int_RR_dist_obj,
-                                             H,w_l,w_r,fil_type)
-                RR_interval_all_realization_l,score_l,HR_l = \
-                    get_RR_interval_score_HR(dp.sample['left'],
-                                             st,et,int_RR_dist_obj,
-                                             H,w_l,w_r,fil_type)
-                if math.isnan(score_r) and math.isnan(score_l):
-                    continue
-                else:
-                    final_sample = get_sample_from_comparison(
-                                              RR_interval_all_realization_r,
-                                              score_r,HR_r,
-                                              RR_interval_all_realization_l,
-                                              score_l,HR_l)
-                    final_rr_interval_list.append(deepcopy(dp))
-                    final_rr_interval_list[-1].sample = final_sample
+        if self.CC is None:
+            return
 
-            except Exception:
-                pass
-    return final_rr_interval_list
+        if user is None:
+            return
 
-CC = CerebralCortex()
-users = CC.get_all_users("mperf-alabsi")
-for user in users[1:2]:
-    streams = CC.get_user_streams(user['identifier'])
-    user_id = user["identifier"]
-    if led_decode_left_wrist in streams or led_decode_right_wrist in streams:
+        streams = self.CC.get_user_streams(user)
 
-        stream_days_left = get_stream_days(streams[led_decode_left_wrist][
-                                               "identifier"],
-                                           CC)
+        if streams is None:
+            return
 
-        stream_days_right = get_stream_days(streams[led_decode_right_wrist][
-                                                "identifier"],CC)
-        common_days = list(set(stream_days_left) & set(stream_days_right))
-        left_only_days = list(set(stream_days_left) - set(stream_days_right))
-        right_only_days = list(set(stream_days_right) - set(stream_days_left))
-        union_of_days_list = list(set(stream_days_left) | set(
-            stream_days_right))
-        st = time.time()
-        for day in union_of_days_list:
-            decoded_left_raw = CC.get_stream(streams[
-                                                 led_decode_left_wrist][
-                                                 "identifier"],
-                                             day=day,
-                                             user_id=user_id)
-            decoded_right_raw = CC.get_stream(streams[
-                                                  led_decode_right_wrist][
+        user_id = user
+
+        if qualtrics_identifier not in streams:
+            return
+
+        if led_decode_left_wrist not in streams and \
+                led_decode_right_wrist not in streams:
+            return
+
+        for day in all_days:
+            decoded_left_raw = self.CC.get_stream(streams[
+                                                  led_decode_left_wrist][
                                                   "identifier"],
-                                              day=day, user_id=user_id)
+                                                  day=day,
+                                                  user_id=user_id)
+            decoded_right_raw = self.CC.get_stream(streams[
+                                                   led_decode_right_wrist][
+                                                   "identifier"],
+                                                   day=day, user_id=user_id)
 
             if not decoded_left_raw.data and not decoded_right_raw.data:
                 continue
-            elif not decoded_left_raw.data:
-                final_windowed_data = get_final_windowed_data([],
-                                                            decoded_right_raw.data,
-                                                            window_size=window_size,
-                                                            window_offset=window_offset)
-            elif not decoded_right_raw.data:
-                final_windowed_data = get_final_windowed_data(
-                                        decoded_left_raw.data,[],
-                                        window_size=window_size,
-                                        window_offset=window_offset)
-            else:
-                final_windowed_data = get_final_windowed_data(
-                                        decoded_left_raw.data,
-                                        decoded_right_raw.data,
-                                        window_size=window_size,
-                                        window_offset=window_offset,
-                                        acceptable=acceptable,
-                                        Fs=Fs)
 
+            final_windowed_data = self.windowing(streams,decoded_left_raw,
+                                                 decoded_right_raw,
+                                                 user_id,
+                                                 day,window_size,
+                                                 window_offset,
+                                                 acceptable,Fs)
+
+            if not final_windowed_data:
+                continue
             final_rr_interval_list = get_RR_interval_score_HR_for_all(
-                                                                final_windowed_data)
-            print(final_rr_interval_list,time.time()-st)
+                final_windowed_data)
+
+
 
