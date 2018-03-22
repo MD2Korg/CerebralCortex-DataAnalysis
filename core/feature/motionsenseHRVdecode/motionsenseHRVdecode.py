@@ -77,18 +77,19 @@ class DecodeHRV(ComputeFeatureBase):
                                                      day,
                                                      user_id,
                                                      motionsense_raw_data)
-                offset = data[0].offset
-                decoded_sample = get_decoded_matrix(np.array(data))
-                if not list(decoded_sample):
-                    continue
-                final_data = []
-                for i in range(len(decoded_sample[:, 0])):
-                    final_data.append(DataPoint.from_tuple(
-                        start_time=datetime.fromtimestamp(decoded_sample[i, -1]),
-                        offset=offset, sample=decoded_sample[i, 1:-1]))
-                self.store_stream(json_path,[all_streams[stream_identifier]],
+                if len(data) > 0:
+                    offset = data[0].offset
+                    decoded_sample = get_decoded_matrix(np.array(data))
+                    if not list(decoded_sample):
+                        continue
+                    final_data = []
+                    for i in range(len(decoded_sample[:, 0])):
+                        final_data.append(DataPoint.from_tuple(
+                            start_time=datetime.fromtimestamp(decoded_sample[i, -1]),
+                            offset=offset, sample=decoded_sample[i, 1:-1]))
+                    self.store_stream(json_path,[all_streams[stream_identifier]],
                            user_id, final_data)
-
+        return
 
 
     def process(self, user, all_days):
