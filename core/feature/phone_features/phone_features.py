@@ -536,6 +536,278 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
+    def average_call_duration_daily(self, phonedatastream: DataStream):
+
+        if len(phonedatastream) < 1:
+            return None
+
+        data = phonedatastream
+
+        start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        end_time = start_time + datetime.timedelta(hours=23, minutes=59)
+        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=data[0].offset,
+                              sample=sum([d.sample for d in data]) / len(data))]
+
+        return new_data
+
+    def average_call_duration_hourly(self, phonedatastream: DataStream):
+
+        if len(phonedatastream) < 1:
+            return None
+
+        data = phonedatastream
+        for s in data:
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
+
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        for h in range(0, 24):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(minutes=59)
+            for d in data:
+                if start <= d.start_time <= end and start <= d.end_time <= end:
+                    datalist.append(d.sample)
+                elif start <= d.start_time <= end:
+                    datalist.append((end - d.start_time).total_seconds())
+                elif start <= d.end_time <= end:
+                    datalist.append((d.start_time - end).total_seconds())
+
+            if len(datalist) < 1:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=sum(datalist) / len(datalist)))
+
+        return new_data
+
+    def average_call_duration_four_hourly(self, phonedatastream: DataStream):
+
+        if len(phonedatastream) < 1:
+            return None
+
+        data = phonedatastream
+        for s in data:
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
+
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        for h in range(0, 24, 4):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(hours = 3, minutes=59)
+            for d in data:
+                if start <= d.start_time <= end and start <= d.end_time <= end:
+                    datalist.append(d.sample)
+                elif start <= d.start_time <= end:
+                    datalist.append((end - d.start_time).total_seconds())
+                elif start <= d.end_time <= end:
+                    datalist.append((d.start_time - end).total_seconds())
+
+            if len(datalist) < 1:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=sum(datalist) / len(datalist)))
+
+        return new_data
+
+    def average_sms_length_daily(self, smsdata):
+
+        if len(smsdata) < 1:
+            return None
+
+        data = smsdata
+
+        start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        end_time = start_time + datetime.timedelta(hours=23, minutes=59)
+        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=data[0].offset,
+                              sample=sum([d.sample for d in data]) / len(data))]
+
+        return new_data
+
+    def average_sms_length_hourly(self, smsdata):
+
+        if len(smsdata) < 1:
+            return None
+
+        data = smsdata
+
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        for h in range(0, 24):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            if len(datalist) < 1:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=sum(datalist) / len(datalist)))
+
+        return new_data
+
+    def average_sms_length_four_hourly(self, smsdata):
+
+        if len(smsdata) < 1:
+            return None
+
+        data = smsdata
+
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        for h in range(0, 24, 4):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(hours = 3, minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            if len(datalist) < 1:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=sum(datalist) / len(datalist)))
+
+        return new_data
+
+    def variance_sms_length_daily(self, smsdata):
+
+        if len(smsdata) < 1:
+            return None
+
+        data = smsdata
+
+        start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        end_time = start_time + datetime.timedelta(hours=23, minutes=59)
+        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=data[0].offset,
+                              sample=np.var([d.sample for d in data]))]
+
+        return new_data
+
+    def variance_sms_length_hourly(self, smsdata):
+
+        if len(smsdata) < 1:
+            return None
+
+        data = smsdata
+
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        for h in range(0, 24):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            if len(datalist) < 1:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=np.var(datalist) ))
+
+        return new_data
+
+    def variance_sms_length_four_hourly(self, smsdata):
+
+        if len(smsdata) < 1:
+            return None
+
+        data = smsdata
+
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        for h in range(0, 24, 4):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(hours = 3, minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            if len(datalist) < 1:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=np.var(datalist)))
+
+        return new_data
+
+    def variance_call_duration_daily(self, phonedatastream):
+
+        if len(phonedatastream) < 1:
+            return None
+
+        data = phonedatastream
+
+        start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        end_time = start_time + datetime.timedelta(hours=23, minutes=59)
+        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=data[0].offset,
+                              sample=np.var([d.sample for d in data]) )]
+
+        return new_data
+
+    def variance_call_duration_hourly(self, phonedatastream):
+
+        if len(phonedatastream) < 1:
+            return None
+
+        data = phonedatastream
+        for s in data:
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
+
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        for h in range(0, 24):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(minutes=59)
+            for d in data:
+                if start <= d.start_time <= end and start <= d.end_time <= end:
+                    datalist.append(d.sample)
+                elif start <= d.start_time <= end:
+                    datalist.append((end - d.start_time).total_seconds())
+                elif start <= d.end_time <= end:
+                    datalist.append((d.start_time - end).total_seconds())
+
+            if len(datalist) < 1:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=np.var(datalist) ))
+
+        return new_data
+
+    def variance_call_duration_four_hourly(self, phonedatastream):
+
+        if len(phonedatastream) < 1:
+            return None
+
+        data = phonedatastream
+        for s in data:
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
+
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        for h in range(0, 24, 4):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(hours = 3, minutes=59)
+            for d in data:
+                if start <= d.start_time <= end and start <= d.end_time <= end:
+                    datalist.append(d.sample)
+                elif start <= d.start_time <= end:
+                    datalist.append((end - d.start_time).total_seconds())
+                elif start <= d.end_time <= end:
+                    datalist.append((d.start_time - end).total_seconds())
+
+            if len(datalist) < 1:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=np.var(datalist)))
+
+        return new_data
+
     def calculate_phone_outside_duration(data, phone_inside_threshold_second=60):
         outside_data = []
         threshold = timedelta(seconds=phone_inside_threshold_second)
@@ -857,6 +1129,114 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_inter_sms_time_daily.json",
                                   input_streams=[input_smsstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.average_call_duration_daily(callstream)
+            if data:
+                self.store_stream(filepath="average_call_duration_daily.json",
+                                  input_streams=[input_callstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.average_call_duration_hourly(callstream)
+            if data:
+                self.store_stream(filepath="average_call_duration_hourly.json",
+                                  input_streams=[input_callstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.average_call_duration_four_hourly(callstream)
+            if data:
+                self.store_stream(filepath="average_call_duration_four_hourly.json",
+                                  input_streams=[input_callstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.average_sms_length_daily(smsstream)
+            if data:
+                self.store_stream(filepath="average_sms_length_daily.json",
+                                  input_streams=[input_smsstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.average_sms_length_hourly(smsstream)
+            if data:
+                self.store_stream(filepath="average_sms_length_hourly.json",
+                                  input_streams=[input_smsstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.average_sms_length_four_hourly(smsstream)
+            if data:
+                self.store_stream(filepath="average_sms_length_four_hourly.json",
+                                  input_streams=[input_smsstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.variance_sms_length_daily(smsstream)
+            if data:
+                self.store_stream(filepath="variance_sms_length_daily.json",
+                                  input_streams=[input_smsstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.variance_sms_length_hourly(smsstream)
+            if data:
+                self.store_stream(filepath="variance_sms_length_hourly.json",
+                                  input_streams=[input_smsstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.variance_sms_length_four_hourly(smsstream)
+            if data:
+                self.store_stream(filepath="variance_sms_length_four_hourly.json",
+                                  input_streams=[input_smsstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.variance_call_duration_daily(callstream)
+            if data:
+                self.store_stream(filepath="variance_call_duration_daily.json",
+                                  input_streams=[input_callstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.variance_call_duration_hourly(callstream)
+            if data:
+                self.store_stream(filepath="variance_call_duration_hourly.json",
+                                  input_streams=[input_callstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.variance_call_duration_four_hourly(callstream)
+            if data:
+                self.store_stream(filepath="variance_call_duration_four_hourly.json",
+                                  input_streams=[input_callstream], user_id=user_id,
                                   data=data)
         except Exception as e:
             print("Exception:", str(e))
