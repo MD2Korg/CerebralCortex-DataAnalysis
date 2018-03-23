@@ -73,7 +73,6 @@ class ExpectedStayingTimes(ComputeFeatureBase):
         office_staying_times = list()
         for stream_id in stream_ids:
             if stream_id["identifier"] == '11e0934a-05fd-36d7-903a-9123a2e9f19b':
-                print("This is that stream:")
                 continue
             for day in all_days:
                 work_data_stream = \

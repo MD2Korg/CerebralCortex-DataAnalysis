@@ -65,6 +65,8 @@ class ArrivalTimes(ComputeFeatureBase):
         arrival_data = []
         office_arrival_times = list()
         for stream_id in stream_ids:
+            if stream_id["identifier"] == '11e0934a-05fd-36d7-903a-9123a2e9f19b':
+                continue
             for day in all_days:
                 work_data_stream = \
                     self.CC.get_stream(stream_id["identifier"], user_id, day)
