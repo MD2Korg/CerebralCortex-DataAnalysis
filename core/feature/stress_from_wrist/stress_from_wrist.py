@@ -223,5 +223,12 @@ class stress_from_wrist(ComputeFeatureBase):
                 stress = model.predict(sample)
                 final_stress.append(deepcopy(dp))
                 final_stress[-1].sample = stress[0]
+            json_path = 'stress_wrist.json'
+            self.store_stream(json_path,
+                              [streams[led_decode_left_wrist],
+                              streams[led_decode_right_wrist]],
+                              user_id,
+                              final_stress)
+
 
 
