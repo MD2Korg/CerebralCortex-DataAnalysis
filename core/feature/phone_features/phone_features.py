@@ -1371,4 +1371,5 @@ class PhoneFeatures(ComputeFeatureBase):
         if self.CC is not None:
             print("Processing PhoneFeatures")
             streams = self.CC.get_user_streams(user_id)
-            self.process_data(user_id, streams, all_days)
+            new_all_days = [day.strftime("%Y%m%d") for day in all_days]
+            self.process_data(user_id, streams, new_all_days)
