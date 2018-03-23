@@ -18,8 +18,14 @@ from core.computefeature import ComputeFeatureBase
 from googleplaces import GooglePlaces, types, lang
 import googleplaces
 
+feature_class_name = 'GPSClusteringEpochComputation'
+
 
 class GPSClusteringEpochComputation(ComputeFeatureBase):
+    """
+    Class to compute GPS markers
+    
+    """
     INTERPOLATION_TIME = 1.0
     KM_PER_RADIAN = 6371.0088
     EPSILON_CONSTANT = 1000
@@ -55,7 +61,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
              'shopping_mall', 'furniture_store', 'supermarket',
              'home_goods_store']
     SPORTS = ['bowling_alley', 'gym']
-    #TODO no API KEY
+    # TODO no API KEY
     CENTROID_INDEX = 7
     FIVE_MINUTE_SECONDS = 300.0
     NOT_HOME_OR_WORK = 'other'
@@ -277,7 +283,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     @staticmethod
     def get_centermost_point(cluster):
         centroid = (
-        MultiPoint(cluster).centroid.x, MultiPoint(cluster).centroid.y)
+            MultiPoint(cluster).centroid.x, MultiPoint(cluster).centroid.y)
         centermost_point = min(cluster, key=lambda point: great_circle(point,
                                                                        centroid).m)
         return tuple(centermost_point)
@@ -474,7 +480,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         sem_names = self.gps_semantic_locations(centroid_name_dict,
                                                 centroid_location)
         semantic_names_arr = (
-        [sem_names[i][2] for i in range(len(centroid_location))])
+            [sem_names[i][2] for i in range(len(centroid_location))])
 
         for i in gps_datapoints:
             assign_centroid = self.get_centroid(centroid_location,
