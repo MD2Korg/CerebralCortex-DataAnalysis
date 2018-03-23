@@ -2,7 +2,7 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"String",
+      "type":"list",
       "unit":""
     }
   ],
@@ -20,7 +20,7 @@
       }
     },
     "algorithm":{
-      "method":"core.feature.office_time.WorkingDays.listing_all_work_days",
+      "method":"core.feature.office_time.ExpectedArrivalTimes.listing_all_expected_arrival_times",
       "authors":[
         {
           "name":"Alina Zaman",
@@ -30,11 +30,11 @@
       "version":"0.0.1",
       "reference":{
       },
-      "description":"Working days. The output is a list containing the date of only when a participant is at office location. The start time of entering the office location and the last time she leave the office location are stored. All of these results are parsed from gps location and beacon."
+      "description":"Expected liberal office arrival time with verdict of before, after or in expected liberal arrival time. If 9:15 is the actual arrival time then 9:30 is the expected liberal arrival time. Sample is a list with three elements as follows: 0 - Office arrival time, 1 - verdict (after_expected_liberal_time, before_expected_liberal_time, in_expected_liberal_time), 2 - deviation from the expected liberal time in minutes."
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.working_days",
+  "name":"org.md2k.data_analysis.feature.expected_liberal_office_arrival_times",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }

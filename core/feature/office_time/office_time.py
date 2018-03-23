@@ -91,13 +91,22 @@ class WorkingDays(ComputeFeatureBase):
                 start_day += timedelta(days=1)  # the next item is the next day
 
         try:
-
-            if work_data:
-                self.store_stream(filepath="working_days.json",
-                                  input_streams=[self.CC.get_stream_id(user_id)], user_id=user_id,
-                                  data=work_data)
+            if len(work_data):
+                streams = self.CC.get_user_streams(user_id)
+                for stream_name, stream_metadata in streams.items():
+                    if stream_name == GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM:
+                        self.store_stream(filepath="working_days.json",
+                                          input_streams=[stream_metadata],
+                                          user_id=user_id,
+                                          data=work_data)
+                        break
         except Exception as e:
             print("Exception:", str(e))
+            print(traceback.format_exc())
+        self.CC.logging.log('%s finished processing for user_id %s saved %d '
+                            'data points' %
+                            (self.__class__.__name__, str(user_id),
+                             len(work_data)))
 
 
     def process(self, user_id, all_days):
