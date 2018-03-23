@@ -1,5 +1,5 @@
 # Copyright (c) 2018, MD2K Center of Excellence
-# -
+# -Mithun Saha <msaha1@memphis.edu>,JEYA VIKRANTH JEYAKUMAR <vikranth94@ucla.edu>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -49,21 +49,29 @@ import scipy.io
 import keras
 
 from core.feature.typing.utils import *
+from core.computefeature import ComputeFeatureBase
 
 feature_class_name = 'TypingMarker'
 
 common_days = []
 
-motionsense_hrv_accel_right = "ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"  # FIXME
-motionsense_hrv_accel_left = "ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"  # FIXME
-motionsense_hrv_gyro_right = "GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"  # FIXME
-motionsense_hrv_gyro_left = "GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"  # FIXME
+motionsense_hrv_accel_right = "ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
+motionsense_hrv_accel_left = "ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
+motionsense_hrv_gyro_right = "GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
+motionsense_hrv_gyro_left = "GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
 
 
 class TypingMarker(ComputeFeatureBase):
     """
+    Detects Typing activity: Provides Start time and End-time of a typing session.
+    The typing session starts when the participant starts typing and ends if no key
+    is pressed for more than 10 seconds. The inference is made from the acc and gyro values of both motionsense wrist bands.
 
     """
+
+    def __init__(self):
+        CC_CONFIG_PATH = '/home/md2k/cc_configuration.yml'
+        self.CC = CerebralCortex(CC_CONFIG_PATH)
 
     def collect_data(self, dict, day, user_id):
         # this function colects user data of all stream ids for a common day
@@ -77,89 +85,56 @@ class TypingMarker(ComputeFeatureBase):
         all_data.sort(key=lambda x: x.start_time)
         return all_data
 
+    def get_common_days(self, user_id):
+        accel_right_stream_ids_with_date = {}
+        gyro_right_stream_ids_with_date = {}
+        accel_left_stream_ids_with_date = {}
+        gyro_left_stream_ids_with_date = {}
 
+        streams = self.CC.get_user_streams(user_id)  # gets all streams of one user
 
-    def process(self):
-        CC = CerebralCortex("/home/md2k/cc_configuration.yml")
-        # users = CC.get_all_users("mperf")[:20] # gets user list
-        users = ['247d42cf-f81c-44d2-9db8-fea69f468d58']
+        if streams:
+            for s in [motionsense_hrv_accel_right, motionsense_hrv_gyro_right, motionsense_hrv_accel_left,
+                      motionsense_hrv_gyro_left]:
 
-        for user in users:
+                stream_id_all = self.CC.get_stream_id(user_id,
+                                                      s)  # gets a list of dictionary of all stream ids of one stream
 
-            #     user_id = user['identifier']
-            user_id = user
+                stream_ids = []
 
-            accel_right_stream_ids_with_date = {}
-            gyro_right_stream_ids_with_date = {}
-            accel_left_stream_ids_with_date = {}
-            gyro_left_stream_ids_with_date = {}
+                for stream_id in stream_id_all:
+                    stream_ids.append(stream_id['identifier'])  # converts the dictionar to a list of stream ids
 
-            streams = CC.get_user_streams(user_id)  # gets all streams of one user
-            stream_ids_with_date = {}
+                for stream_id in stream_ids:  # for each stream id gets all the days
+                    stream_dicts = self.CC.get_stream_duration(stream_id)
+                    stream_days = []
+                    days = stream_dicts["end_time"] - stream_dicts["start_time"]
 
-            if streams:
-                for s in [motionsense_hrv_accel_right, motionsense_hrv_gyro_right, motionsense_hrv_accel_left,
-                          motionsense_hrv_gyro_left]:
+                    for day in range(days.days + 1):
+                        stream_days.append((stream_dicts["start_time"] + timedelta(days=day)).strftime('%Y%m%d'))
 
-                    stream_id_all = CC.get_stream_id(user_id,
-                                                     s)  # gets a list of dictionary of all stream ids of one stream
+                    # creates a dictionary of stream ids for each stream where each stream id contains all the dates
 
-                    stream_ids = []
+                    if s == motionsense_hrv_accel_right:
+                        accel_right_stream_ids_with_date[stream_id] = stream_days
+                    elif s == motionsense_hrv_gyro_right:
+                        gyro_right_stream_ids_with_date[stream_id] = stream_days
+                    elif s == motionsense_hrv_accel_left:
+                        accel_left_stream_ids_with_date[stream_id] = stream_days
+                    elif s == motionsense_hrv_gyro_left:
+                        gyro_left_stream_ids_with_date[stream_id] = stream_days
 
-                    for stream_id in stream_id_all:
-                        stream_ids.append(stream_id['identifier'])  # converts the dictionar to a list of stream ids
+        # creates unique days for the accelerometer left and accelerometer right
 
-                    for stream_id in stream_ids:  # for each stream id gets all the days
-                        stream_dicts = CC.get_stream_duration(stream_id)
-                        stream_days = []
-                        days = stream_dicts["end_time"] - stream_dicts["start_time"]
+        accel_right_unique_days = unique_days_of_one_stream(accel_right_stream_ids_with_date)
+        accel_left_unique_days = unique_days_of_one_stream(accel_left_stream_ids_with_date)
 
-                        for day in range(days.days + 1):
-                            stream_days.append((stream_dicts["start_time"] + timedelta(days=day)).strftime('%Y%m%d'))
+        # creates common days for the accelerometer left and accelerometer right
 
-                        # creates a dictionary of stream ids for each stream where each stream id contains all the dates
+        common_days = list(accel_right_unique_days.intersection(accel_left_unique_days))
+        common_days.sort()
 
-                        if s == motionsense_hrv_accel_right:
-                            accel_right_stream_ids_with_date[stream_id] = stream_days
-                        elif s == motionsense_hrv_gyro_right:
-                            gyro_right_stream_ids_with_date[stream_id] = stream_days
-                        elif s == motionsense_hrv_accel_left:
-                            accel_left_stream_ids_with_date[stream_id] = stream_days
-                        elif s == motionsense_hrv_gyro_left:
-                            gyro_left_stream_ids_with_date[stream_id] = stream_days
-
-            # creates unique days for the accelerometer left and accelerometer right
-
-            accel_right_unique_days = unique_days_of_one_stream(accel_right_stream_ids_with_date)
-            accel_left_unique_days = unique_days_of_one_stream(accel_left_stream_ids_with_date)
-
-            # creates common days for the accelerometer left and accelerometer right
-
-            common_days = list(accel_right_unique_days.intersection(accel_left_unique_days))
-            common_days.sort()
-
-            for day in common_days[:1]:
-                get_all_data = self.collect_data(accel_right_stream_ids_with_date, day, user_id)
-                acc_dataR = get_dataframe(get_all_data, ['time', 'arx', 'ary', 'arz'])
-
-                get_all_data = self.collect_data(gyro_right_stream_ids_with_date, day, user_id)
-                gyr_dataR = get_dataframe(get_all_data, ['time', 'grx', 'gry', 'grz'])
-
-                get_all_data = self.collect_data(accel_left_stream_ids_with_date, day, user_id)
-                acc_dataL = get_dataframe(get_all_data, ['time', 'alx', 'aly', 'alz'])
-
-                get_all_data = self.collect_data(gyro_left_stream_ids_with_date, day, user_id)
-                gyr_dataL = get_dataframe(get_all_data, ['time', 'glx', 'gly', 'glz'])
-
-                dr = pd.concat((acc_dataR[acc_dataR.columns[0:4]], gyr_dataR[gyr_dataR.columns[1:4]]), axis=1)
-                dl = pd.concat((acc_dataL[acc_dataL.columns[0:4]], gyr_dataL[gyr_dataL.columns[1:4]]), axis=1)
-
-                dataset = sync_left_right_accel(dl, dr)
-                print(dataset)
-                offset = 0
-                if len(get_all_data)>0:
-                    offset = get_all_data[0].offset
-                data = typing_episodes(dataset, offset)
+        return common_days, accel_right_stream_ids_with_date, gyro_right_stream_ids_with_date, accel_left_stream_ids_with_date, gyro_left_stream_ids_with_date
 
     def process_user_day(self, user, all_days):
         if self.CC is None:
@@ -171,14 +146,54 @@ class TypingMarker(ComputeFeatureBase):
         streams = self.CC.get_user_streams(user)
 
         if not streams:
-            self.CC.logging.log("Activity - no streams found for user: %s" %
+            self.CC.logging.log("Typing Activity - no streams found for user: %s" %
                                 (user))
             return
 
+        common_days, accel_right_stream_ids_with_date, gyro_right_stream_ids_with_date, accel_left_stream_ids_with_date, gyro_left_stream_ids_with_date = self.get_common_days(
+            user)
+        print(common_days)
         for day in all_days:
-            self.store_stream(filepath='json_file_path',
-                              input_streams=[],
-                              user_id=user,
-                              data=[])
+            if day not in common_days:
+                continue
 
-        self.CC.logging.log("Finished processing Activity for user: %s" % (user))
+            get_all_data = self.collect_data(accel_right_stream_ids_with_date, day, user)
+            if len(get_all_data) == 0:
+                continue
+            acc_dataR = get_dataframe(get_all_data, ['time', 'arx', 'ary', 'arz'])
+
+            get_all_data = self.collect_data(gyro_right_stream_ids_with_date, day, user)
+            if len(get_all_data) == 0:
+                continue
+            gyr_dataR = get_dataframe(get_all_data, ['time', 'grx', 'gry', 'grz'])
+
+            get_all_data = self.collect_data(accel_left_stream_ids_with_date, day, user)
+            if len(get_all_data) == 0:
+                continue
+            acc_dataL = get_dataframe(get_all_data, ['time', 'alx', 'aly', 'alz'])
+
+            get_all_data = self.collect_data(gyro_left_stream_ids_with_date, day, user)
+            if len(get_all_data) == 0:
+                continue
+            gyr_dataL = get_dataframe(get_all_data, ['time', 'glx', 'gly', 'glz'])
+
+            dr = pd.concat((acc_dataR[acc_dataR.columns[0:4]], gyr_dataR[gyr_dataR.columns[1:4]]), axis=1)
+            dl = pd.concat((acc_dataL[acc_dataL.columns[0:4]], gyr_dataL[gyr_dataL.columns[1:4]]), axis=1)
+
+            dataset = sync_left_right_accel(dl, dr)
+
+            offset = 0
+            if len(get_all_data) > 0:
+                offset = get_all_data[0].offset
+            data = typing_episodes(dataset, offset)
+
+            self.store_stream(filepath='typing_episode_1_sec_window.json',
+                              input_streams=[
+                                  streams[motionsense_hrv_accel_right],
+                                  streams[motionsense_hrv_gyro_right],
+                                  streams[motionsense_hrv_accel_left],
+                                  streams[motionsense_hrv_gyro_left]],
+                              user_id=user,
+                              data=data)
+
+        self.CC.logging.log("Finished processing Typing Activity for user: %s" % (user))
