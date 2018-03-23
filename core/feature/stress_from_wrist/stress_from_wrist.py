@@ -23,7 +23,8 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from core.feature.stress_from_wrist.utils.util import acceptable,window_size, \
     window_offset,led_decode_left_wrist,led_decode_right_wrist, \
-    Fs,get_final_windowed_data,get_RR_interval_score_HR_for_all,qualtrics_identifier
+    Fs,get_final_windowed_data,get_RR_interval_score_HR_for_all,\
+    qualtrics_identifier,get_model
 import warnings
 warnings.filterwarnings("ignore")
 from core.computefeature import ComputeFeatureBase
@@ -214,4 +215,13 @@ class stress_from_wrist(ComputeFeatureBase):
             final_rr_interval_list = get_RR_interval_score_HR_for_all(
                 final_windowed_data)
             window_features = self.get_feature_matrix(final_rr_interval_list)
+            model,scaler = get_model()
+            final_stress = []
+            for dp in window_features:
+                sample = np.array(dp.sample)
+                sample = scaler.transform(sample.reshape(1,-1))
+                stress = model.predict(sample)
+                final_stress.append(deepcopy(dp))
+                final_stress[-1].sample = stress[0]
+
 

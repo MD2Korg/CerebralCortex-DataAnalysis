@@ -48,6 +48,7 @@ led_decode_right_wrist = "org.md2k.feature.decodedLED.rightwrist"
 motionsense_hrv_right_raw = \
     "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
 path_to_stress_files = 'core/resources/stress_files/'
+path_to_model_files = 'core/resources/models/stress_wrist/'
 qualtrics_identifier = \
     "org.md2k.data_qualtrics.feature.stress_MITRE.omnibus_stress_question.daily"
 
@@ -64,7 +65,12 @@ def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
         stream_days.append(
             (stream_dicts["start_time"]+timedelta(days=day)).strftime('%Y%m%d'))
     return stream_days
-
+def get_model():
+    model = pickle.loads(core.computefeature.get_resource_contents(
+        path_to_model_files+'stress_model.model'))
+    scaler = pickle.loads(core.computefeature.get_resource_contents(
+        path_to_model_files+'stress_scaler.model'))
+    return model,scaler
 
 
 def get_constants():
