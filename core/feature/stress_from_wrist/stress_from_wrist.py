@@ -147,9 +147,8 @@ class stress_from_wrist(ComputeFeatureBase):
         for dp in final_rr_interval_list:
             if len(dp.sample)==3:
                 RR_Interval_Realizations = dp.sample[0]
-                HR_list = self.get_nan_free_HR(dp.sample[2])
-                if not list(HR_list) and not list(
-                        RR_Interval_Realizations):
+                HR_list = self.get_nan_free_HR(dp.sample[2][0])
+                if len(HR_list)>0 and len(RR_Interval_Realizations)>0:
                     feature = self.get_stress_feature_one_window(
                         RR_Interval_Realizations,HR_list)
                     window_features.append(deepcopy(dp))
