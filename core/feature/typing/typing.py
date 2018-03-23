@@ -136,7 +136,7 @@ class TypingMarker(ComputeFeatureBase):
 
         return common_days, accel_right_stream_ids_with_date, gyro_right_stream_ids_with_date, accel_left_stream_ids_with_date, gyro_left_stream_ids_with_date
 
-    def process_user_day(self, user, all_days):
+    def process(self, user, all_days):
         if self.CC is None:
             return
 
