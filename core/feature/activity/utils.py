@@ -97,7 +97,6 @@ def get_max_label(label1, label2):
             return label2
     return "UNDEFINED"
 
-
 def merge_left_right(left_data: List[DataPoint],
                      right_data: List[DataPoint],
                      window_size=10.0):
@@ -125,7 +124,6 @@ def merge_left_right(left_data: List[DataPoint],
                                          sample=data[index].sample))
             index = index + 1
     return merged_data
-
 
 def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
     """

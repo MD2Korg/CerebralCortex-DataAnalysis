@@ -30,7 +30,6 @@ from scipy.stats import kurtosis
 from cerebralcortex.core.datatypes.datastream import DataStream
 from core.feature.activity.utils import *
 
-
 def get_rate_of_change(timestamp, value):
     roc = 0
     cnt = 0
@@ -47,7 +46,6 @@ def get_rate_of_change(timestamp, value):
 
 def get_magnitude(ax, ay, az):
     return math.sqrt(ax * ax + ay * ay + az * az)
-
 
 def spectral_entropy(data, sampling_freq, bands=None):
     """
@@ -94,7 +92,6 @@ def peak_frequency(data):
     freqs = np.fft.fftfreq(len(w))
     return freqs.max()
 
-
 def compute_basic_features(timestamp, data):
     mean = np.mean(data)
     median = np.median(data)
@@ -107,7 +104,6 @@ def compute_basic_features(timestamp, data):
     peak_freq = peak_frequency(data)
 
     return mean, median, std, skewness, kurt, rate_of_changes, power, sp_entropy, peak_freq
-
 
 def computeFeatures(start_time, end_time, time, x, y, z, pid):
     mag = [0] * len(x)  # np.empty([len(x), 1])
@@ -138,7 +134,6 @@ def computeFeatures(start_time, end_time, time, x, y, z, pid):
          z_sp_entropy, z_peak_freq])
 
     return f
-
 
 def compute_window_features(start_time, end_time,
                             data: List[DataPoint]) -> DataPoint:
@@ -186,7 +181,6 @@ def compute_window_features(start_time, end_time,
 
     return DataPoint(start_time=start_time, end_time=end_time, offset=offset,
                      sample=feature_vector)
-
 
 def compute_accelerometer_features(accel_data: List[DataPoint],
                                    window_size: float = 10.0):

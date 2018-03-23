@@ -36,7 +36,6 @@ from core.computefeature import ComputeFeatureBase
 
 feature_class_name = 'ActivityMarker'
 
-
 class ActivityMarker(ComputeFeatureBase):
     """
     Detects activity and posture per 10 seconds window from
@@ -106,6 +105,8 @@ class ActivityMarker(ComputeFeatureBase):
         activity_features = compute_accelerometer_features(accel_data,
                                                            window_size=TEN_SECONDS)
 
+        print("Accel Len:",len(activity_features))
+        
         posture_labels = classify_posture(activity_features, is_gravity)
         activity_labels = classify_activity(activity_features, is_gravity)
 
