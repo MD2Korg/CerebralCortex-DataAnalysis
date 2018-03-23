@@ -79,6 +79,7 @@ def get_constants():
     fil_type = 'ppg'
     return int_RR_dist_obj,H,w_l,w_r,fil_type
 
+
 def get_sample_from_comparison(
         RR_interval_all_realization_r,
         score_r,HR_r,
@@ -100,17 +101,18 @@ def get_sample_from_comparison(
     return sample
 
 
-def collect_final_windowed_data(windowed_data,offset):
+def collect_final_windowed_data(windowed_data,offset,hand1,hand2):
     final_windowed_data = []
     for key in windowed_data.keys():
-        final_windowed_data.append(DataPoint.from_tuple(
-            start_time=key[0],
-            end_time=key[1],
-            sample = np.array([i.sample[6:] for i in windowed_data[
-                key]]),offset=offset))
-        if np.shape(final_windowed_data[-1].sample)[0] >= 1500:
-            final_windowed_data[-1].sample = final_windowed_data[-1].sample[
-                                             :1500,:]
+        if len(windowed_data[key])>.5*25*60:
+            final_windowed_data.append(DataPoint.from_tuple(
+                start_time=key[0],
+                end_time=key[1],
+                sample = {hand1:np.array([i.sample[6:] for i in windowed_data[key]]),hand2:[]},
+                offset=offset))
+            if np.shape(final_windowed_data[-1].sample[hand1])[0] >= 1500:
+                final_windowed_data[-1].sample[hand1] = final_windowed_data[-1].sample[hand1][
+                                                        :1500,:]
     return final_windowed_data
 
 def get_final_windowed_data(left,right,window_size=60,
@@ -123,13 +125,13 @@ def get_final_windowed_data(left,right,window_size=60,
         windowed_data = window_sliding(right,
                                        window_size=window_size,
                                        window_offset=window_offset)
-        final_windowed_data  = collect_final_windowed_data(windowed_data,offset)
+        final_windowed_data  = collect_final_windowed_data(windowed_data,offset,'right','left')
     elif not right:
         offset = left[0].offset
         windowed_data = window_sliding(left,
                                        window_size=window_size,
                                        window_offset=window_offset)
-        final_windowed_data  = collect_final_windowed_data(windowed_data,offset)
+        final_windowed_data  = collect_final_windowed_data(windowed_data,offset,'left','right')
     else:
         final_windowed_data = find_sample_from_combination_of_left_right_or_one(
             left,right,
@@ -154,11 +156,13 @@ def get_RR_interval_score_HR_for_all(final_windowed_data):
     for dp in final_windowed_data:
         st = dp.start_time.timestamp()
         et = dp.end_time.timestamp()
-        if not list(dp.sample['left']) and \
-                not list(dp.sample['right']):
+        if len(dp.sample['left'])==0 and \
+                len(dp.sample['right'])==0:
             continue
-        elif not list(dp.sample['left']):
+        if len(dp.sample['left'])==0:
             try:
+
+                print(dp.sample['right'])
                 RR_interval_all_realization,score,HR = \
                     get_RR_interval_score_HR(dp.sample['right'],
                                              st,et,int_RR_dist_obj,
@@ -169,10 +173,10 @@ def get_RR_interval_score_HR_for_all(final_windowed_data):
                         [RR_interval_all_realization,score,HR]
             except Exception:
                 pass
-        elif not list(dp.sample['right']):
+        elif len(dp.sample['right'])==0:
             try:
                 RR_interval_all_realization,score,HR = \
-                    get_RR_interval_score_HR(dp.sample['right'],
+                    get_RR_interval_score_HR(dp.sample['left'],
                                              st,et,int_RR_dist_obj,
                                              H,w_l,w_r,fil_type)
                 if not math.isnan(score):
