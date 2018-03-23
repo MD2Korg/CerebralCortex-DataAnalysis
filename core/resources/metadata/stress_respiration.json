@@ -9,7 +9,7 @@
   ],
   "execution_context":{
     "processing_module":{
-      "name":"core.feature.stress_from_wrist",
+      "name":"core.feature.stress_from_respiration",
       "input_streams":[
         {
           "id":"CC_INPUT_STREAM_ID_CC",
@@ -21,7 +21,7 @@
       }
     },
     "algorithm":{
-      "method":"core.feature.stress_from_wrist.stress_from_wrist",
+      "method":"core.feature.stress_from_respiration.stress_from_respiration",
       "authors":[
         {
           "name":"Md Azim Ullah",
@@ -31,11 +31,11 @@
       "version":"0.0.1",
       "reference":{
       },
-      "description":"Assigns each one minute window as stress or not-stress through calculating RR interval statistics calculated from wrist ppg"
+      "description":"Assigns each one minute window as stress or not-stress through calculating cycle based statistics of respiration signal"
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.stress.wrist.60seconds",
+  "name":"org.md2k.data_analysis.feature.stress.respiration.60seconds",
   "owner":"",
   "type":"1"
 }

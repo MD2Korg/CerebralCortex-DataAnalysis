@@ -24,13 +24,13 @@
 from core.computefeature import ComputeFeatureBase
 import numpy as np
 from core.signalprocessing.window import window_sliding
-from cerebralcortex.core.datatypes.datapoint import DataPoint
 from core.feature.stress_from_respiration.utils.util import *
 feature_class_name = 'stress_from_respiration'
 
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 
-class stress_from_respiration():
+class stress_from_respiration(ComputeFeatureBase):
+
     def process(self, user:str, all_days):
 
         """
@@ -59,15 +59,17 @@ class stress_from_respiration():
 
         for day in all_days:
             respiration_cycle_stream = self.CC.get_stream(streams[
-                                                              respiration_cycle_feature][
-                                                              "identifier"],
-                                                          day=day,
-                                                          user_id=user_id,
-                                                          localtime=False)
-            if len(respiration_cycle_stream.data) < 60:
+                                                      respiration_cycle_feature][
+                                                      "identifier"],
+                                                      day=day,
+                                                      user_id=user_id,
+                                                      localtime=False)
+            if len(respiration_cycle_stream.data) < window_size:
                 continue
             offset = respiration_cycle_stream.data[0].offset
-            windowed_data = window_sliding(respiration_cycle_stream.data,window_size=60,window_offset=60)
+            windowed_data = window_sliding(respiration_cycle_stream.data,
+                                           window_size=window_size,
+                                           window_offset=window_offset)
             final_stress = []
             model,scaler = get_model()
             for key in windowed_data.keys():
@@ -84,4 +86,8 @@ class stress_from_respiration():
                                                              end_time=et,
                                                              sample=stress[0],
                                                              offset=offset))
-            print(final_stress)
+            json_path = 'stress_respiration.json'
+            self.store_stream(json_path,
+                              [streams[respiration_cycle_feature]],
+                              user_id,
+                              final_stress)

@@ -25,8 +25,9 @@
 import pickle
 import core.computefeature
 respiration_cycle_feature = "org.md2k.feature.respirationcyclefeature"
-path_to_model_files = 'core/resources/models/stress_wrist/'
-
+path_to_model_files = 'core/resources/models/stress_respiration/'
+window_size = 60
+window_offset = 60
 def get_model():
     model = pickle.loads(core.computefeature.get_resource_contents(
         path_to_model_files+'stress_model_respiration.model'))
