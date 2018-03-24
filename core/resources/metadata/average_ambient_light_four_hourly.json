@@ -3,12 +3,12 @@
   "data_descriptor":[
     {
       "type":"float",
-      "unit":"minute"
+      "unit":"lux"
     }
   ],
   "execution_context":{
     "processing_module":{
-      "name":"variance_call_duration_hourly",
+      "name":"average_ambient_light_four_hourly",
       "input_streams":[
         {
           "id":"CC_INPUT_STREAM_ID_CC",
@@ -16,7 +16,7 @@
         }
       ],
       "input_parameters":{
-        "window_size": "1hour"
+        "window_size": "4hours"
       }
     },
     "algorithm":{
@@ -30,11 +30,11 @@
       "version":"0.0.1",
       "reference":{
       },
-      "description":"The variance of phone call duration in minutes for each one hour window in a day"
+      "description":"The average ambient light in lux for each four hour window in a day"
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.phone.call_duration.hour.variance",
+  "name":"org.md2k.data_analysis.feature.phone.ambient_light.four_hour.average",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }

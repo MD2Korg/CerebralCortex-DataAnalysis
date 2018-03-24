@@ -35,6 +35,7 @@ import datetime
 import numpy as np
 from datetime import timedelta
 import time
+import copy
 
 from sklearn.mixture import GaussianMixture
 
@@ -808,6 +809,120 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
+    def average_ambient_light_daily(self, lightdata, frequency = 16, minimum = 40):
+        if len(lightdata) < frequency * 24 * 60 * 60 * minimum / 100:
+            return None
+        start_time = datetime.datetime.combine(lightdata[0].start_time.date(), datetime.datetime.min.time())
+        end_time = start_time + datetime.timedelta(hours = 23, minutes = 59)
+        return [DataPoint(start_time, end_time, lightdata[0].offset, np.mean([x.sample for x in lightdata]))]
+
+    def average_ambient_light_hourly(self, lightdata, frequency = 16, minimum = 40):
+
+        if len(lightdata) < 1:
+            return None
+
+        data = lightdata
+
+        new_data = []
+        tmp_time = copy.deepcopy(data[0].start_time)
+        tmp_time = tmp_time.replace(hour = 0, minute = 0, second = 0, microsecond = 0)
+        for h in range(0, 24):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            if len(datalist) < frequency * 60 * 60 * minimum / 100:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=np.mean(datalist) ))
+
+        return new_data
+
+    def average_ambient_light_four_hourly(self, lightdata, frequency = 16, minimum = 40):
+
+        if len(lightdata) < 1:
+            return None
+
+        data = lightdata
+
+        new_data = []
+        tmp_time = copy.deepcopy(data[0].start_time)
+        tmp_time = tmp_time.replace(hour = 0, minute = 0, second = 0, microsecond = 0)
+        for h in range(0, 24, 4):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(hours = 3, minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            if len(datalist) < frequency * 4 * 60 * 60 * minimum / 100:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=np.mean(datalist) ))
+
+        return new_data
+
+    def variance_ambient_light_daily(self, lightdata, frequency = 16, minimum = 40):
+        if len(lightdata) < frequency * 24 * 60 * 60 * minimum / 100:
+            return None
+        start_time = datetime.datetime.combine(lightdata[0].start_time.date(), datetime.datetime.min.time())
+        end_time = start_time + datetime.timedelta(hours = 23, minutes = 59)
+        return [DataPoint(start_time, end_time, lightdata[0].offset, np.var([x.sample for x in lightdata]))]
+
+    def variance_ambient_light_hourly(self, lightdata, frequency = 16, minimum = 40):
+
+        if len(lightdata) < 1:
+            return None
+
+        data = lightdata
+
+        new_data = []
+        tmp_time = copy.deepcopy(data[0].start_time)
+        tmp_time = tmp_time.replace(hour = 0, minute = 0, second = 0, microsecond = 0)
+        for h in range(0, 24):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            if len(datalist) < frequency * 60 * 60 * minimum / 100:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=np.var(datalist) ))
+
+        return new_data
+
+    def variance_ambient_light_four_hourly(self, lightdata, frequency = 16, minimum = 40):
+
+        if len(lightdata) < 1:
+            return None
+
+        data = lightdata
+
+        new_data = []
+        tmp_time = copy.deepcopy(data[0].start_time)
+        tmp_time = tmp_time.replace(hour = 0, minute = 0, second = 0, microsecond = 0)
+        for h in range(0, 24, 4):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(hours = 3, minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            if len(datalist) < frequency * 4 * 60 * 60 * minimum / 100:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=np.var(datalist) ))
+
+        return new_data
+
     def calculate_phone_outside_duration(data, phone_inside_threshold_second=60):
         outside_data = []
         threshold = timedelta(seconds=phone_inside_threshold_second)
@@ -1241,6 +1356,61 @@ class PhoneFeatures(ComputeFeatureBase):
         except Exception as e:
             print("Exception:", str(e))
 
+    def process_light_day_data(self, user_id, lightdata, input_lightstream):
+        try:
+            data = self.average_ambient_light_daily(lightdata)
+            if data:
+                self.store_stream(filepath="average_ambient_light_daily.json",
+                                  input_streams=[input_lightstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.average_ambient_light_hourly(lightdata)
+            if data:
+                self.store_stream(filepath="average_ambient_light_hourly.json",
+                                  input_streams=[input_lightstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.average_ambient_light_four_hourly(lightdata)
+            if data:
+                self.store_stream(filepath="average_ambient_light_four_hourly.json",
+                                  input_streams=[input_lightstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.variance_ambient_light_daily(lightdata)
+            if data:
+                self.store_stream(filepath="variance_ambient_light_daily.json",
+                                  input_streams=[input_lightstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.variance_ambient_light_hourly(lightdata)
+            if data:
+                self.store_stream(filepath="variance_ambient_light_hourly.json",
+                                  input_streams=[input_lightstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
+        try:
+            data = self.variance_ambient_light_four_hourly(lightdata)
+            if data:
+                self.store_stream(filepath="variance_ambient_light_four_hourly.json",
+                                  input_streams=[input_lightstream], user_id=user_id,
+                                  data=data)
+        except Exception as e:
+            print("Exception:", str(e))
+
     def process_proximity_day_data(self, user_id, proximitystream, input_proximitystream):
         try:
             data = self.calculate_phone_outside_duration(proximitystream)
@@ -1279,6 +1449,7 @@ class PhoneFeatures(ComputeFeatureBase):
         input_appusagestream = None
         input_touchscreenstream = None
         input_appcategorystream = None
+        input_lightstream = None
 
         call_stream_name = 'CU_CALL_DURATION--edu.dartmouth.eureka'
         sms_stream_name = 'CU_SMS_LENGTH--edu.dartmouth.eureka'
@@ -1286,6 +1457,7 @@ class PhoneFeatures(ComputeFeatureBase):
         appusage_stream_name = 'CU_APPUSAGE--edu.dartmouth.eureka'
         touchescreen_stream_name = "TOUCH_SCREEN--org.md2k.phonesensor--PHONE"
         appcategory_stream_name = "org.md2k.data_analysis.feature.phone.app_usage_category"
+        light_stream_name = 'AMBIENT_LIGHT--org.md2k.phonesensor--PHONE'
         streams = all_user_streams
         days = None
 
@@ -1307,6 +1479,8 @@ class PhoneFeatures(ComputeFeatureBase):
                 input_touchscreenstream = stream_metadata
             elif stream_name == appcategory_stream_name:
                 input_appcategorystream = stream_metadata
+            elif stream_name == light_stream_name:
+                input_lightstream = stream_metadata
 
         # Processing Call and SMS related features
         if not input_callstream:
@@ -1365,6 +1539,18 @@ class PhoneFeatures(ComputeFeatureBase):
                 touchstream = self.get_data_by_stream_name(touchescreen_stream_name, user_id, day)
                 appcategorystream  = self.get_data_by_stream_name(appcategory_stream_name, user_id, day)
                 self.process_callsmsstream_day_data(user_id, touchstream, appcategorystream, input_touchscreenstream, input_appcategorystream)
+
+        # Processing ambient light related features
+
+        if not input_lightstream:
+            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
+                                "USERID %" %
+                                (self.__class__.__name__, light_stream_name,
+                                 str(user_id)))
+        else:
+            for day in all_days:
+                lightstream = self.get_data_by_stream_name(light_stream_name, user_id, day)
+                self.process_light_day_data(user_id, lightstream, input_lightstream)
 
 
     def process(self, user_id, all_days):
