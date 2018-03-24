@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DATA_ANALYSIS_PATH='/cerebralcortex/code/anand/CerebralCortex-DataAnalysis'
+#DATA_ANALYSIS_PATH='/cerebralcortex/code/anand/CerebralCortex-DataAnalysis'
 # Python3 path
 export PYSPARK_PYTHON=/usr/bin/python3.6
 
@@ -30,7 +30,7 @@ USERIDS="a28665d0-c10f-4f3e-946a-2b37b8799621"
 
 SPARK_MASTER="spark://dagobah10dot.memphis.edu:7077"
 
-PY_FILES="/cerebralcortex/code/anand/CerebralCortex/dist/MD2K_Cerebral_Cortex-2.0.0-py3.6.egg,dist/MD2K_Cerebral_Cortex_DataAnalysis_compute_features-2.2.1-py3.6.egg"
+PY_FILES="/home/nndugudi/md2k/CerebralCortex/dist/MD2K_Cerebral_Cortex-2.0.0-py3.6.egg,dist/MD2K_Cerebral_Cortex_DataAnalysis_compute_features-2.2.1-py3.6.egg"
 
 SPARK_UI_PORT=4066
 
@@ -49,11 +49,11 @@ if [ $SPARK_JOB == 'True' ]
                      core/driver.py -c $CC_CONFIG_FILEPATH \
                      -s $STUDY_NAME -sd $START_DATE \
                      -ed $END_DATE -u $USERIDS -f $FEATURES \
-                     -m $FEATURE_METADATA_DIR \
                      -p $MAX_CORES
     else
         echo 'Executing single threaded'
-        export PYTHONPATH=.:$PYTHONPATH
+        export PYTHONPATH=.:"/home/nndugudi/md2k/CerebralCortex/dist/MD2K_Cerebral_Cortex-2.0.0-py3.6.egg":$PYTHONPATH
+        echo $PYTHONPATH
         python3.6 core/driver.py -c $CC_CONFIG_FILEPATH \
                        -s $STUDY_NAME -sd $START_DATE \
                        -ed $END_DATE -u $USERIDS -f $FEATURES \

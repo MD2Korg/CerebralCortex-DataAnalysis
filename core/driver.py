@@ -30,7 +30,7 @@ import traceback
 import importlib
 from datetime import datetime
 from datetime import timedelta
-
+from random import shuffle
 import syslog
 from syslog import LOG_ERR
 from cerebralcortex.cerebralcortex import CerebralCortex
@@ -45,14 +45,38 @@ def process_features(feature_list, all_users, all_days, num_cores=1):
     '''
     for module in feature_list:
         if num_cores > 1:
+            print('Driver: Spark job')
             spark_context = get_or_create_sc(type="sparkContext")
-            rdd = spark_context.parallelize(all_users,num_cores)
-            results = rdd.map(
-                lambda user: process_feature_on_user(user, module, all_days, 
-                                                     cc_config_path))
-            results.count()
+            if 'gps' in str(module):
+                '''
+                # FIXME # TODO Currently only GPS feature computes features on a
+                range of days. Need to find a better way if there are other
+                modules that also works on range of days.
+                '''
+                print('MODULE',module)
+                rdd = spark_context.parallelize(all_users,num_cores)
+                results = rdd.map(
+                    lambda user: process_feature_on_user(user, module, all_days, 
+                                                         cc_config_path))
+                results.count()
+            else:
+                print('MODULE',module)
+                parallelize_per_day = []
+                for usr in all_users:
+                    for day in all_days:
+                        parallelize_per_day.append((usr,[day]))
+
+                shuffle(parallelize_per_day)
+                rdd = spark_context.parallelize(parallelize_per_day, num_cores)
+                results = rdd.map(
+                    lambda user_day: process_feature_on_user(user_day[0],
+                                                             module, user_day[1], 
+                                                             cc_config_path))
+                results.count()
+
             spark_context.stop()
         else:
+            print('Driver: single threaded')
             for user in all_users:
                 process_feature_on_user(user, module, all_days, cc_config_path)
 
@@ -139,7 +163,8 @@ def main():
                          "YYYYMMDD Format", required=True)
     parser.add_argument("-ed", "--end-date", help="End date in " 
                          "YYYYMMDD Format", required=True)
-    parser.add_argument("-p", "--num-cores", help="Set to True to enable spark "
+    parser.add_argument("-p", "--num-cores", type=int, help="Set a number "
+                        "greater than 1 to enable spark "
                         "parallel execution ", required=False)
     
     args = vars(parser.parse_args())

@@ -1,6 +1,8 @@
 import os
+import datetime
 import json
 import uuid
+import traceback
 from cerebralcortex.core.util.data_types import DataPoint
 from core.computefeature import ComputeFeatureBase
 from core.signalprocessing.window import window
@@ -120,15 +122,24 @@ class BeaconFeatures(ComputeFeatureBase):
                                           offset=beaconhomestream[0].offset,
                                           sample=items.sample))
 
-        try:
+            try:
 
-            self.store_stream(filepath="home_beacon_context.json",
-                              input_streams= input_streams,
-                              user_id=user,
-                              data=new_data)
+                self.store_stream(filepath="home_beacon_context.json",
+                                  input_streams= input_streams,
+                                  user_id=user_id,
+                                  data=new_data)
+                self.CC.logging.log('%s %s home_beacon_context stored %d ' 
+                                    'DataPoints for user %s ' 
+                                    % (str(datetime.datetime.now()),
+                                       self.__class__.__name__,
+                                       len(new_data), str(user_id)))
 
-        except Exception as e:
-            self.CC.logging.log("Exception:", str(e))
+            except Exception as e:
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(str(traceback.format_exc()))
+        else:
+            self.CC.logging.log("No home beacon streams found for user %s"%
+                                str(user_id))
 
 
 
@@ -162,7 +173,6 @@ class BeaconFeatures(ComputeFeatureBase):
                 else:
                     windowed_data[i, j] = "0"
 
-            print(windowed_data)
             data = merge_consective_windows(windowed_data)
             for items in data:
                 new_data.append(DataPoint(start_time=items.start_time,
@@ -170,15 +180,25 @@ class BeaconFeatures(ComputeFeatureBase):
                                           offset=beaconworkstream[0].offset,
                                           sample=items.sample))
 
-        try:
+            try:
 
-            self.store_stream(filepath="work_beacon_context.json",
-                              input_streams= input_streams,
-                              user_id=user,
-                              data=new_data)
+                self.store_stream(filepath="work_beacon_context.json",
+                                  input_streams= input_streams,
+                                  user_id=user_id,
+                                  data=new_data)
+                self.CC.logging.log('%s %s work_beacon_context stored %d '
+                                    'DataPoints for user %s ' 
+                                    % (str(datetime.datetime.now()),
+                                       self.__class__.__name__,
+                                       len(new_data), str(user_id)))
 
-        except Exception as e:
-            self.CC.logging.log("Exception:", str(e))
+            except Exception as e:
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(str(traceback.format_exc()))
+        else:
+            self.CC.logging.log("No work beacon streams found for user %s"%
+                                 str(user_id))
+
 
 
 
@@ -201,6 +221,12 @@ class BeaconFeatures(ComputeFeatureBase):
             return
 
         for day in all_days:
+            self.CC.logging.log('%s %s started processing for user %s day %s' 
+                                 % (str(datetime.datetime.now()),
+                                    self.__class__.__name__,
+                                    str(user), 
+                                    str(day)))
+
             self.mark_beacons(streams, self.beacon_homestream, user, day)
             self.merge_work_beacons(streams, self.beacon_workstream1,
                                     self.beacon_workstream2, user, day)
