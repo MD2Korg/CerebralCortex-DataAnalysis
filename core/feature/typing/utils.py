@@ -1,11 +1,7 @@
 from cerebralcortex.cerebralcortex import CerebralCortex
 from pprint import pprint
-from scipy.io import savemat
 from datetime import timedelta, datetime
-from collections import OrderedDict
 from cerebralcortex.core.util.data_types import DataPoint
-from collections import OrderedDict
-from typing import List
 from sklearn import ensemble
 from collections import Counter
 from keras.models import Sequential
@@ -13,15 +9,11 @@ from keras.layers import Conv2D, MaxPooling2D, LSTM, Dense, Dropout, Flatten
 from keras.layers.core import Permute, Reshape
 from keras import backend as K
 from keras.models import load_model
+from typing import List
 
-import math
-import datetime
-import pandas as pd
-import pytz
-import numpy as np
-import matplotlib.pyplot as plt
 import scipy.io
-import keras
+import pandas as pd
+import numpy as np
 from core.computefeature import get_resource_contents
 
 TYPING_MODEL_FILENAME = 'core/resources/models/typing/Convbn_LSTM_100.h5'
@@ -87,13 +79,14 @@ def typing_episodes(dataset, offset):
             st = datetime.fromtimestamp(int(float(start_time[i])))
             et = datetime.fromtimestamp(int(float(end_time[i])))
             data.append(DataPoint(start_time=st, end_time=et, offset=offset, sample='Typing'))
-            print(
-                'Start time : {0:f} , End Time: {1:f} , Label: Typing'.format(float(start_time[i]), float(end_time[i])))
+            print(st, et, offset, 'Typing')
+
     else:
         print("no typing")
     return data
 
 
+# coded by JEYA VIKRANTH JEYAKUMAR
 def _data_reshaping(X_va, network_type):
     _, win_len, dim = X_va.shape
 
@@ -104,7 +97,7 @@ def _data_reshaping(X_va, network_type):
 
     return X_va
 
-
+# coded by JEYA VIKRANTH JEYAKUMAR
 def sync_left_right_accel(dl, dr):
     # this function syncs the datafarems of left and right accelerometers
 
@@ -123,7 +116,7 @@ def sync_left_right_accel(dl, dr):
     time_l = time_l[time_l >= max_val]
     time_r = time_r[time_r >= max_val]
 
-    n_values = time_l.shape[0] - time_r.shape[0]
+    n_values = np.abs(time_l.shape[0] - time_r.shape[0])
     d = dr_new.shape[1]
 
     if time_l.shape[0] > time_r.shape[0]:
