@@ -43,7 +43,7 @@ class ComputeFeatureBase(object):
         pass
     
     def store_stream(self,filepath:str, input_streams:list, user_id:uuid,
-                     data:list, localtime=True):
+                     data:list, changetoUTC=True):
         '''
         This method saves the computed DataStreams from different features
         '''
@@ -78,12 +78,13 @@ class ComputeFeatureBase(object):
         self.store(identifier=output_stream_id, owner=user_id, name=metadata["name"],
                    data_descriptor=metadata["data_descriptor"],
                    execution_context=metadata["execution_context"], annotations=metadata["annotations"],
-                   stream_type=StreamTypes.DATASTREAM, data=data)
+                   stream_type=StreamTypes.DATASTREAM, data=data, changetoUTC)
 
 
 
     def store(self, identifier, owner, name, data_descriptor, execution_context,
-              annotations, stream_type=StreamTypes.DATASTREAM, data=None):
+              annotations, stream_type=StreamTypes.DATASTREAM, data=None,
+              changetoUTC=True):
         '''
         All store operations MUST be through this method.
         '''
@@ -99,7 +100,7 @@ class ComputeFeatureBase(object):
                         annotations=annotations,
                         stream_type=stream_type, data=data)
         try:
-            self.CC.save_stream(ds)
+            self.CC.save_stream(ds, changetoUTC)
             self.CC.logging.log('Saved %d data points stream id %s user_id '
                                 '%s from %s' % 
                                  (len(data), str(identifier), str(owner), 

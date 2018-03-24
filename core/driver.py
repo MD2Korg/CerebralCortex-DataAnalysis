@@ -38,15 +38,15 @@ from cerebralcortex.core.util.spark_helper import get_or_create_sc
 
 cc_config_path = None
 
-def process_features(feature_list, all_users, all_days, is_spark_job=False):
+def process_features(feature_list, all_users, all_days, num_cores=1):
     '''
     This method runs the processing pipeline for each of
     the features in the list.
     '''
     for module in feature_list:
-        if is_spark_job:
+        if num_cores > 1:
             spark_context = get_or_create_sc(type="sparkContext")
-            rdd = spark_context.parallelize(all_users)
+            rdd = spark_context.parallelize(all_users,num_cores)
             results = rdd.map(
                 lambda user: process_feature_on_user(user, module, all_days, 
                                                      cc_config_path))
@@ -139,7 +139,7 @@ def main():
                          "YYYYMMDD Format", required=True)
     parser.add_argument("-ed", "--end-date", help="End date in " 
                          "YYYYMMDD Format", required=True)
-    parser.add_argument("-p", "--spark-job", help="Set to True to enable spark "
+    parser.add_argument("-p", "--num-cores", help="Set to True to enable spark "
                         "parallel execution ", required=False)
     
     args = vars(parser.parse_args())
@@ -149,7 +149,7 @@ def main():
     start_date = None
     end_date = None
     date_format = '%Y%m%d'
-    is_spark_job = False
+    num_cores = 1 # default single threaded
     
     if args['feature_list']:
         feature_list = args['feature_list'].split(',')
@@ -163,12 +163,12 @@ def main():
         start_date = datetime.strptime(args['start_date'], date_format)
     if args['end_date']:
         end_date = datetime.strptime(args['end_date'], date_format)
-    if args['spark_job']:
-        is_spark_job = args['spark_job']
+    if args['num_cores']:
+        num_cores = args['num_cores']
     
     all_days = []
     while True:
-        all_days.append(start_date.strftime('%Y%m%d'))
+        all_days.append(start_date.strftime(date_format))
         start_date += timedelta(days = 1)
         if start_date > end_date : break
 
@@ -196,7 +196,7 @@ def main():
 
     found_features = discover_features(feature_list)
     feature_to_process = generate_feature_processing_order(found_features)
-    process_features(feature_to_process, all_users, all_days, is_spark_job)
+    process_features(feature_to_process, all_users, all_days, num_cores)
     
 if __name__ == '__main__':
     main()
