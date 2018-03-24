@@ -50,7 +50,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
     def get_data_by_stream_name(self, stream_name, user_id, day, localtime=True):
         """
-        method to get combined data from CerebralCortex
+        method to get combined data from CerebralCortex as there can be multiple stream id for same stream
         :param stream_name: Name of the stream corresponding to the datastream
         :param user_id:
         :param day:
@@ -65,6 +65,11 @@ class PhoneFeatures(ComputeFeatureBase):
         return data
 
     def inter_event_time_list(self, data):
+        """
+        Helper function to find inter event gaps
+        :param data:
+        :return:
+        """
         if len(data) == 0:
             return None
 
@@ -83,6 +88,12 @@ class PhoneFeatures(ComputeFeatureBase):
         return list(map(lambda x: x / 60.0, ret))
 
     def average_inter_phone_call_sms_time_hourly(self, phonedatastream, smsdatastream):
+        """
+
+        :param phonedatastream:
+        :param smsdatastream:
+        :return:
+        """
 
         if len(phonedatastream) + len(smsdatastream) <= 1:
             return None
@@ -99,10 +110,12 @@ class PhoneFeatures(ComputeFeatureBase):
         combined_data.sort(key=lambda x: x.start_time)
 
         new_data = []
+
+        tmp_time = copy.deepcopy(combined_data[0].start_time)
+        tmp_time = tmp_time.replace(hour=0, minute=0, second=0, microsecond=0)
         for h in range(0, 24):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                      day=combined_data[0].start_time.day, hour=h)
+            start = tmp_time.replace(hour=h)
             end = start + datetime.timedelta(minutes=59)
             for d in combined_data:
                 if start <= d.start_time <= end or start <= d.end_time <= end:
@@ -131,10 +144,11 @@ class PhoneFeatures(ComputeFeatureBase):
         combined_data.sort(key=lambda x: x.start_time)
 
         new_data = []
+        tmp_time = copy.deepcopy(combined_data[0].start_time)
+        tmp_time = tmp_time.replace(hour=0, minute=0, second=0, microsecond=0)
         for h in range(0, 24, 4):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                      day=combined_data[0].start_time.day, hour=h)
+            start = tmp_time.replace(hour=h)
             end = start + datetime.timedelta(hours=3, minutes=59)
             for d in combined_data:
                 if start <= d.start_time <= end or start <= d.end_time <= end:
@@ -162,7 +176,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         combined_data.sort(key=lambda x: x.start_time)
         start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                       day=combined_data[0].start_time.day)
+                                       day=combined_data[0].start_time.day, tzinfo=combined_data[0].start_time.tzinfo)
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
         new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset,
                               sample=sum(self.inter_event_time_list(combined_data)) / (len(combined_data) - 1))]
@@ -185,7 +199,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         combined_data.sort(key=lambda x: x.start_time)
         start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                       day=combined_data[0].start_time.day)
+                                       day=combined_data[0].start_time.day, tzinfo=combined_data[0].start_time.tzinfo)
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
 
         new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset,
@@ -210,10 +224,11 @@ class PhoneFeatures(ComputeFeatureBase):
         combined_data.sort(key=lambda x: x.start_time)
 
         new_data = []
+        tmp_time = copy.deepcopy(combined_data[0].start_time)
+        tmp_time = tmp_time.replace(hour=0, minute=0, second=0, microsecond=0)
         for h in range(0, 24):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                      day=combined_data[0].start_time.day, hour=h)
+            start = tmp_time.replace(hour=h)
             end = start + datetime.timedelta(minutes=59)
             for d in combined_data:
                 if start <= d.start_time <= end or start <= d.end_time <= end:
@@ -242,10 +257,11 @@ class PhoneFeatures(ComputeFeatureBase):
         combined_data.sort(key=lambda x: x.start_time)
 
         new_data = []
+        tmp_time = copy.deepcopy(combined_data[0].start_time)
+        tmp_time = tmp_time.replace(hour=0, minute=0, second=0, microsecond=0)
         for h in range(0, 24, 4):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                      day=combined_data[0].start_time.day, hour=h)
+            start = tmp_time.replace(hour=h)
             end = start + datetime.timedelta(hours=3, minutes=59)
             for d in combined_data:
                 if start <= d.start_time <= end or start <= d.end_time <= end:
@@ -268,10 +284,11 @@ class PhoneFeatures(ComputeFeatureBase):
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
+        tmp_time = copy.deepcopy(combined_data[0].start_time)
+        tmp_time = tmp_time.replace(hour=0, minute=0, second=0, microsecond=0)
         for h in range(0, 24):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                      day=combined_data[0].start_time.day, hour=h)
+            start = tmp_time.replace(hour=h)
             end = start + datetime.timedelta(minutes=59)
             for d in combined_data:
                 if start <= d.start_time <= end or start <= d.end_time <= end:
@@ -294,10 +311,11 @@ class PhoneFeatures(ComputeFeatureBase):
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
+        tmp_time = copy.deepcopy(combined_data[0].start_time)
+        tmp_time = tmp_time.replace(hour=0, minute=0, second=0, microsecond=0)
         for h in range(0, 24, 4):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                      day=combined_data[0].start_time.day, hour=h)
+            start = tmp_time.replace(hour=h)
             end = start + datetime.timedelta(hours=3, minutes=59)
             for d in combined_data:
                 if start <= d.start_time <= end or start <= d.end_time <= end:
@@ -320,7 +338,7 @@ class PhoneFeatures(ComputeFeatureBase):
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                       day=combined_data[0].start_time.day)
+                                       day=combined_data[0].start_time.day, tzinfo=combined_data[0].start_time.tzinfo)
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
         new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset,
                               sample=sum(self.inter_event_time_list(combined_data)) / (len(combined_data) - 1))]
@@ -338,10 +356,11 @@ class PhoneFeatures(ComputeFeatureBase):
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
+        tmp_time = copy.deepcopy(combined_data[0].start_time)
+        tmp_time = tmp_time.replace(hour=0, minute=0, second=0, microsecond=0)
         for h in range(0, 24):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                      day=combined_data[0].start_time.day, hour=h)
+            start = tmp_time.replace(hour=h)
             end = start + datetime.timedelta(minutes=59)
             for d in combined_data:
                 if start <= d.start_time <= end or start <= d.end_time <= end:
@@ -364,10 +383,11 @@ class PhoneFeatures(ComputeFeatureBase):
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
+        tmp_time = copy.deepcopy(combined_data[0].start_time)
+        tmp_time = tmp_time.replace(hour=0, minute=0, second=0, microsecond=0)
         for h in range(0, 24, 4):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                      day=combined_data[0].start_time.day, hour=h)
+            start = tmp_time.replace(hour=h)
             end = start + datetime.timedelta(hours=3, minutes=59)
             for d in combined_data:
                 if start <= d.start_time <= end or start <= d.end_time <= end:
@@ -390,7 +410,7 @@ class PhoneFeatures(ComputeFeatureBase):
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                       day=combined_data[0].start_time.day)
+                                       day=combined_data[0].start_time.day, tzinfo=combined_data[0].start_time.tzinfo)
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
         new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset,
                               sample=np.var(self.inter_event_time_list(combined_data)) )]
@@ -408,10 +428,11 @@ class PhoneFeatures(ComputeFeatureBase):
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
+        tmp_time = copy.deepcopy(combined_data[0].start_time)
+        tmp_time = tmp_time.replace(hour=0, minute=0, second=0, microsecond=0)
         for h in range(0, 24):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                      day=combined_data[0].start_time.day, hour=h)
+            start = tmp_time.replace(hour=h)
             end = start + datetime.timedelta(minutes=59)
             for d in combined_data:
                 if start <= d.start_time <= end or start <= d.end_time <= end:
@@ -434,10 +455,11 @@ class PhoneFeatures(ComputeFeatureBase):
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
+        tmp_time = copy.deepcopy(combined_data[0].start_time)
+        tmp_time = tmp_time.replace(hour=0, minute=0, second=0, microsecond=0)
         for h in range(0, 24, 4):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                      day=combined_data[0].start_time.day, hour=h)
+            start = tmp_time.replace(hour=h)
             end = start + datetime.timedelta(hours=3, minutes=59)
             for d in combined_data:
                 if start <= d.start_time <= end or start <= d.end_time <= end:
@@ -460,7 +482,7 @@ class PhoneFeatures(ComputeFeatureBase):
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                       day=combined_data[0].start_time.day)
+                                       day=combined_data[0].start_time.day, tzinfo=combined_data[0].start_time.tzinfo)
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
         new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset,
                               sample=sum(self.inter_event_time_list(combined_data)) / (len(combined_data) - 1))]
@@ -478,10 +500,11 @@ class PhoneFeatures(ComputeFeatureBase):
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
+        tmp_time = copy.deepcopy(combined_data[0].start_time)
+        tmp_time = tmp_time.replace(hour=0, minute=0, second=0, microsecond=0)
         for h in range(0, 24):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                      day=combined_data[0].start_time.day, hour=h)
+            start = tmp_time.replace(hour=h)
             end = start + datetime.timedelta(minutes=59)
             for d in combined_data:
                 if start <= d.start_time <= end or start <= d.end_time <= end:
@@ -504,10 +527,11 @@ class PhoneFeatures(ComputeFeatureBase):
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
+        tmp_time = copy.deepcopy(combined_data[0].start_time)
+        tmp_time = tmp_time.replace(hour=0, minute=0, second=0, microsecond=0)
         for h in range(0, 24, 4):
             datalist = []
-            start = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                      day=combined_data[0].start_time.day, hour=h)
+            start = tmp_time.replace(hour=h)
             end = start + datetime.timedelta(hours=3, minutes=59)
             for d in combined_data:
                 if start <= d.start_time <= end or start <= d.end_time <= end:
@@ -530,7 +554,7 @@ class PhoneFeatures(ComputeFeatureBase):
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
-                                       day=combined_data[0].start_time.day)
+                                       day=combined_data[0].start_time.day, tzinfo=combined_data[0].start_time.tzinfo)
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
         new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=combined_data[0].offset,
                               sample=np.var(self.inter_event_time_list(combined_data)) )]
@@ -545,6 +569,7 @@ class PhoneFeatures(ComputeFeatureBase):
         data = phonedatastream
 
         start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        start_time = start_time.replace(tzinfo=data[0].start_time.tzinfo)
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
         new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=data[0].offset,
                               sample=sum([d.sample for d in data]) / len(data))]
@@ -556,12 +581,13 @@ class PhoneFeatures(ComputeFeatureBase):
         if len(phonedatastream) < 1:
             return None
 
-        data = phonedatastream
+        data = copy.deepcopy(phonedatastream)
         for s in data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
         tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
         for h in range(0, 24):
             datalist = []
             start = tmp_time.replace(hour = h)
@@ -586,12 +612,13 @@ class PhoneFeatures(ComputeFeatureBase):
         if len(phonedatastream) < 1:
             return None
 
-        data = phonedatastream
+        data = copy.deepcopy(phonedatastream)
         for s in data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
         tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
         for h in range(0, 24, 4):
             datalist = []
             start = tmp_time.replace(hour = h)
@@ -619,6 +646,7 @@ class PhoneFeatures(ComputeFeatureBase):
         data = smsdata
 
         start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        start_time = start_time.replace(tzinfo=data[0].start_time.tzinfo)
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
         new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=data[0].offset,
                               sample=sum([d.sample for d in data]) / len(data))]
@@ -634,6 +662,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         new_data = []
         tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
         for h in range(0, 24):
             datalist = []
             start = tmp_time.replace(hour = h)
@@ -658,6 +687,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         new_data = []
         tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
         for h in range(0, 24, 4):
             datalist = []
             start = tmp_time.replace(hour = h)
@@ -681,6 +711,7 @@ class PhoneFeatures(ComputeFeatureBase):
         data = smsdata
 
         start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        start_time = start_time.replace(tzinfo=data[0].start_time.tzinfo)
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
         new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=data[0].offset,
                               sample=np.var([d.sample for d in data]))]
@@ -696,6 +727,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         new_data = []
         tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
         for h in range(0, 24):
             datalist = []
             start = tmp_time.replace(hour = h)
@@ -720,6 +752,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         new_data = []
         tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
         for h in range(0, 24, 4):
             datalist = []
             start = tmp_time.replace(hour = h)
@@ -743,6 +776,7 @@ class PhoneFeatures(ComputeFeatureBase):
         data = phonedatastream
 
         start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        start_time = start_time.replace(tzinfo=data[0].start_time.tzinfo)
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
         new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=data[0].offset,
                               sample=np.var([d.sample for d in data]) )]
@@ -754,12 +788,13 @@ class PhoneFeatures(ComputeFeatureBase):
         if len(phonedatastream) < 1:
             return None
 
-        data = phonedatastream
+        data = copy.deepcopy(phonedatastream)
         for s in data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
         tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
         for h in range(0, 24):
             datalist = []
             start = tmp_time.replace(hour = h)
@@ -784,12 +819,13 @@ class PhoneFeatures(ComputeFeatureBase):
         if len(phonedatastream) < 1:
             return None
 
-        data = phonedatastream
+        data = copy.deepcopy(phonedatastream)
         for s in data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
         tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
         for h in range(0, 24, 4):
             datalist = []
             start = tmp_time.replace(hour = h)
@@ -809,14 +845,15 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_ambient_light_daily(self, lightdata, frequency = 16, minimum = 40):
-        if len(lightdata) < frequency * 24 * 60 * 60 * minimum / 100:
+    def average_ambient_light_daily(self, lightdata, frequency = 16, minimum_data_percent = 40):
+        if len(lightdata) < frequency * 24 * 60 * 60 * minimum_data_percent / 100:
             return None
         start_time = datetime.datetime.combine(lightdata[0].start_time.date(), datetime.datetime.min.time())
+        start_time = start_time.replace(tzinfo=lightdata[0].start_time.tzinfo)
         end_time = start_time + datetime.timedelta(hours = 23, minutes = 59)
         return [DataPoint(start_time, end_time, lightdata[0].offset, np.mean([x.sample for x in lightdata]))]
 
-    def average_ambient_light_hourly(self, lightdata, frequency = 16, minimum = 40):
+    def average_ambient_light_hourly(self, lightdata, data_frequency = 16, minimum_data_percent = 40):
 
         if len(lightdata) < 1:
             return None
@@ -834,14 +871,14 @@ class PhoneFeatures(ComputeFeatureBase):
                 if start <= d.start_time <= end:
                     datalist.append(d.sample)
 
-            if len(datalist) < frequency * 60 * 60 * minimum / 100:
+            if len(datalist) < data_frequency * 60 * 60 * minimum_data_percent / 100:
                 continue
             new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
                                       sample=np.mean(datalist) ))
 
         return new_data
 
-    def average_ambient_light_four_hourly(self, lightdata, frequency = 16, minimum = 40):
+    def average_ambient_light_four_hourly(self, lightdata, data_frequency = 16, minimum_data_percent = 40):
 
         if len(lightdata) < 1:
             return None
@@ -859,21 +896,22 @@ class PhoneFeatures(ComputeFeatureBase):
                 if start <= d.start_time <= end:
                     datalist.append(d.sample)
 
-            if len(datalist) < frequency * 4 * 60 * 60 * minimum / 100:
+            if len(datalist) < data_frequency * 4 * 60 * 60 * minimum_data_percent / 100:
                 continue
             new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
                                       sample=np.mean(datalist) ))
 
         return new_data
 
-    def variance_ambient_light_daily(self, lightdata, frequency = 16, minimum = 40):
-        if len(lightdata) < frequency * 24 * 60 * 60 * minimum / 100:
+    def variance_ambient_light_daily(self, lightdata, data_frequency = 16, minimum_data_percent = 40):
+        if len(lightdata) < data_frequency * 24 * 60 * 60 * minimum_data_percent / 100:
             return None
         start_time = datetime.datetime.combine(lightdata[0].start_time.date(), datetime.datetime.min.time())
+        start_time = start_time.replace(tzinfo=lightdata[0].start_time.tzinfo)
         end_time = start_time + datetime.timedelta(hours = 23, minutes = 59)
         return [DataPoint(start_time, end_time, lightdata[0].offset, np.var([x.sample for x in lightdata]))]
 
-    def variance_ambient_light_hourly(self, lightdata, frequency = 16, minimum = 40):
+    def variance_ambient_light_hourly(self, lightdata, data_frequency = 16, minimum_data_percent = 40):
 
         if len(lightdata) < 1:
             return None
@@ -885,20 +923,20 @@ class PhoneFeatures(ComputeFeatureBase):
         tmp_time = tmp_time.replace(hour = 0, minute = 0, second = 0, microsecond = 0)
         for h in range(0, 24):
             datalist = []
-            start = tmp_time.replace(hour = h)
+            start = tmp_time.replace(hour=h)
             end = start + datetime.timedelta(minutes=59)
             for d in data:
                 if start <= d.start_time <= end:
                     datalist.append(d.sample)
 
-            if len(datalist) < frequency * 60 * 60 * minimum / 100:
+            if len(datalist) < data_frequency * 60 * 60 * minimum_data_percent / 100:
                 continue
             new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
                                       sample=np.var(datalist) ))
 
         return new_data
 
-    def variance_ambient_light_four_hourly(self, lightdata, frequency = 16, minimum = 40):
+    def variance_ambient_light_four_hourly(self, lightdata, data_frequency=16, minimum_data_percent=40):
 
         if len(lightdata) < 1:
             return None
@@ -907,7 +945,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         new_data = []
         tmp_time = copy.deepcopy(data[0].start_time)
-        tmp_time = tmp_time.replace(hour = 0, minute = 0, second = 0, microsecond = 0)
+        tmp_time = tmp_time.replace(hour=0, minute=0, second=0, microsecond=0)
         for h in range(0, 24, 4):
             datalist = []
             start = tmp_time.replace(hour = h)
@@ -916,7 +954,7 @@ class PhoneFeatures(ComputeFeatureBase):
                 if start <= d.start_time <= end:
                     datalist.append(d.sample)
 
-            if len(datalist) < frequency * 4 * 60 * 60 * minimum / 100:
+            if len(datalist) < data_frequency * 4 * 60 * 60 * minimum_data_percent / 100:
                 continue
             new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
                                       sample=np.var(datalist) ))
