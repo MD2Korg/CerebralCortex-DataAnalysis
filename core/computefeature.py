@@ -42,7 +42,8 @@ class ComputeFeatureBase(object):
         '''
         pass
     
-    def store_stream(self,filepath:str, input_streams:list, user_id:uuid, data:list):
+    def store_stream(self,filepath:str, input_streams:list, user_id:uuid,
+                     data:list, localtime=True):
         '''
         This method saves the computed DataStreams from different features
         '''
