@@ -24,32 +24,12 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from cerebralcortex.cerebralcortex import CerebralCortex
-from pprint import pprint
-from scipy.io import savemat
 from datetime import timedelta, datetime
-from collections import OrderedDict
 from cerebralcortex.core.util.data_types import DataPoint
-from collections import OrderedDict
-from typing import List
-from sklearn import ensemble
-from collections import Counter
-from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D, LSTM, Dense, Dropout, Flatten
-from keras.layers.core import Permute, Reshape
-from keras import backend as K
-from keras.models import load_model
-
-import math
-import datetime
-import pandas as pd
-import pytz
-import numpy as np
-import matplotlib.pyplot as plt
-import scipy.io
-import keras
-
 from core.feature.typing.utils import *
 from core.computefeature import ComputeFeatureBase
+
+import pandas as pd
 
 feature_class_name = 'TypingMarker'
 
@@ -69,9 +49,9 @@ class TypingMarker(ComputeFeatureBase):
 
     """
 
-    def __init__(self):
-        CC_CONFIG_PATH = '/home/md2k/cc_configuration.yml'
-        self.CC = CerebralCortex(CC_CONFIG_PATH)
+    # def __init__(self):
+    #     CC_CONFIG_PATH = '/home/md2k/cc_configuration.yml'
+    #     self.CC = CerebralCortex(CC_CONFIG_PATH)
 
     def collect_data(self, dict, day, user_id):
         # this function colects user data of all stream ids for a common day

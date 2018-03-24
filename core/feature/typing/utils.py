@@ -22,7 +22,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io
 import keras
+from core.computefeature import get_resource_contents
 
+TYPING_MODEL_FILENAME = 'core/resources/models/typing/Convbn_LSTM_100.h5'
 
 def typing_episodes(dataset, offset):
     # this function detects typing episodes
@@ -46,7 +48,8 @@ def typing_episodes(dataset, offset):
     X_test0 = data_slide[z:]
 
     # Load Trained Model
-    model = load_model('Trained_Models/Typing_Detection/Convbn_LSTM_100.h5')
+    # model = load_model(TYPING_MODEL_FILENAME)
+    model = load_model(get_resource_contents(TYPING_MODEL_FILENAME))
     network_type = 'ConvLSTM'
     _, win_len, dim = X_test0.shape
 
