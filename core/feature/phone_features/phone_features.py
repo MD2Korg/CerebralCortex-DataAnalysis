@@ -1129,7 +1129,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_inter_phone_call_sms_time_hourly.json",
                                   input_streams=[input_callstream, input_smsstream],
-                                  user_id=user_id, data=data)
+                                  user_id=user_id, data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1138,7 +1138,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_inter_phone_call_sms_time_four_hourly.json",
                                   input_streams=[input_callstream, input_smsstream],
-                                  user_id=user_id, data=data)
+                                  user_id=user_id, data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1147,7 +1147,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_inter_phone_call_sms_time_daily.json",
                                   input_streams=[input_callstream, input_smsstream],
-                                  user_id=user_id, data=data)
+                                  user_id=user_id, data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1156,7 +1156,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_inter_phone_call_sms_time_daily.json",
                                   input_streams=[input_callstream, input_smsstream],
-                                  user_id=user_id, data=data)
+                                  user_id=user_id, data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1165,7 +1165,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_inter_phone_call_sms_time_hourly.json",
                                   input_streams=[input_callstream, input_smsstream],
-                                  user_id=user_id, data=data)
+                                  user_id=user_id, data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1174,7 +1174,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_inter_phone_call_sms_time_four_hourly.json",
                                   input_streams=[input_callstream, input_smsstream],
-                                  user_id=user_id, data=data)
+                                  user_id=user_id, data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1183,7 +1183,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_inter_phone_call_time_hourly.json",
                                   input_streams=[input_callstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1192,7 +1192,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_inter_phone_call_time_four_hourly.json",
                                   input_streams=[input_callstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1201,7 +1201,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_inter_phone_call_time_daily.json",
                                   input_streams=[input_callstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1210,7 +1210,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_inter_phone_call_time_hourly.json",
                                   input_streams=[input_callstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1219,7 +1219,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_inter_phone_call_time_four_hourly.json",
                                   input_streams=[input_callstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1228,7 +1228,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_inter_phone_call_time_daily.json",
                                   input_streams=[input_callstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1237,7 +1237,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_inter_sms_time_hourly.json",
                                   input_streams=[input_smsstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1246,7 +1246,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_inter_sms_time_four_hourly.json",
                                   input_streams=[input_smsstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1255,7 +1255,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_inter_sms_time_daily.json",
                                   input_streams=[input_smsstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1264,7 +1264,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_inter_sms_time_hourly.json",
                                   input_streams=[input_smsstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1273,7 +1273,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_inter_sms_time_four_hourly.json",
                                   input_streams=[input_smsstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1282,7 +1282,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_inter_sms_time_daily.json",
                                   input_streams=[input_smsstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1291,7 +1291,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_call_duration_daily.json",
                                   input_streams=[input_callstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1300,7 +1300,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_call_duration_hourly.json",
                                   input_streams=[input_callstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1309,7 +1309,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_call_duration_four_hourly.json",
                                   input_streams=[input_callstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1318,7 +1318,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_sms_length_daily.json",
                                   input_streams=[input_smsstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1327,7 +1327,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_sms_length_hourly.json",
                                   input_streams=[input_smsstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1336,7 +1336,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_sms_length_four_hourly.json",
                                   input_streams=[input_smsstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1345,7 +1345,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_sms_length_daily.json",
                                   input_streams=[input_smsstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1354,7 +1354,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_sms_length_hourly.json",
                                   input_streams=[input_smsstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1363,7 +1363,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_sms_length_four_hourly.json",
                                   input_streams=[input_smsstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1372,7 +1372,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_call_duration_daily.json",
                                   input_streams=[input_callstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1381,7 +1381,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_call_duration_hourly.json",
                                   input_streams=[input_callstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1390,7 +1390,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_call_duration_four_hourly.json",
                                   input_streams=[input_callstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1400,7 +1400,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_ambient_light_daily.json",
                                   input_streams=[input_lightstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1409,7 +1409,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_ambient_light_hourly.json",
                                   input_streams=[input_lightstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1418,7 +1418,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="average_ambient_light_four_hourly.json",
                                   input_streams=[input_lightstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1427,7 +1427,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_ambient_light_daily.json",
                                   input_streams=[input_lightstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1436,7 +1436,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_ambient_light_hourly.json",
                                   input_streams=[input_lightstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1445,7 +1445,7 @@ class PhoneFeatures(ComputeFeatureBase):
             if data:
                 self.store_stream(filepath="variance_ambient_light_four_hourly.json",
                                   input_streams=[input_lightstream], user_id=user_id,
-                                  data=data)
+                                  data=data, localtime=False)
         except Exception as e:
             print("Exception:", str(e))
 
@@ -1587,7 +1587,7 @@ class PhoneFeatures(ComputeFeatureBase):
                                  str(user_id)))
         else:
             for day in all_days:
-                lightstream = self.get_data_by_stream_name(light_stream_name, user_id, day)
+                lightstream = self.get_data_by_stream_name(light_stream_name, user_id, day, localtime=False)
                 self.process_light_day_data(user_id, lightstream, input_lightstream)
 
 
