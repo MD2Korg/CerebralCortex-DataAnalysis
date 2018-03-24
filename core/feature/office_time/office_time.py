@@ -29,6 +29,10 @@ from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
 from core.computefeature import ComputeFeatureBase
+from arrival_time import ArrivalTimes
+from staying_time import StayingTimes
+from expected_arrival_time import ExpectedArrivalTimes
+from expected_staying_time import ExpectedStayingTimes
 
 import pprint as pp
 import numpy as np
@@ -113,3 +117,15 @@ class WorkingDays(ComputeFeatureBase):
         if self.CC is not None:
             print("Processing Working Days")
             self.listing_all_work_days(user_id)
+
+            arrival_data_feature = ArrivalTimes(self.CC)
+            arrival_data_feature.process(user_id, all_days)
+
+            expected_arrival_data_feature = ExpectedArrivalTimes(self.CC)
+            expected_arrival_data_feature.process(user_id, all_days)
+
+            staying_time_data_feature = StayingTimes(self.CC)
+            staying_time_data_feature.process(user_id, all_days)
+
+            expected_staying_time_data_feature = ExpectedStayingTimes(self.CC)
+            expected_staying_time_data_feature.process(user_id, all_days)
