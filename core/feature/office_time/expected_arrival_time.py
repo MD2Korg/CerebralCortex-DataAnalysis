@@ -41,6 +41,9 @@ import math
 
 feature_class_name = 'ExpectedArrivalTimes'
 Working_Days_STREAM = "org.md2k.data_analysis.feature.working_days"
+MEDIAN_ABSOLUTE_DEVIATION_MULTIPLIER = 1.4826
+OUTLIER_DETECTION_MULTIPLIER = 3
+
 
 class ExpectedArrivalTimes(ComputeFeatureBase):
     """
@@ -85,7 +88,19 @@ class ExpectedArrivalTimes(ComputeFeatureBase):
                     sample = []
                     temp = DataPoint(data.start_time, data.end_time, data.offset, sample)
                     expected_conservative_arrival_data.append(temp)
-        actual_time = np.mean(office_arrival_times)
+        median = np.median(office_arrival_times)
+        mad_arrival_times = []
+        for arrival_time in office_arrival_times:
+            # mad = median absolute deviation
+            mad_arrival_times.append(abs(arrival_time - median))
+        median2 = np.median(mad_arrival_times)
+        mad_value = median2 * MEDIAN_ABSOLUTE_DEVIATION_MULTIPLIER
+        outlier_border = mad_value * OUTLIER_DETECTION_MULTIPLIER
+        outlier_removed_office_arrival_times = []
+        for arrival_time in office_arrival_times:
+            if arrival_time > (median - outlier_border) and arrival_time < (median + outlier_border):
+                outlier_removed_office_arrival_times.append(arrival_time)
+        actual_time = np.mean(outlier_removed_office_arrival_times)
         actual_minute = int(actual_time%60)
         actual_hour = int(actual_time/60)
         conservative_hour = actual_hour

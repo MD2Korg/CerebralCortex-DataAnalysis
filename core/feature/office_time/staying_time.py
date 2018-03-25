@@ -41,6 +41,8 @@ import math
 
 feature_class_name = 'StayingTimes'
 Working_Days_STREAM = "org.md2k.data_analysis.feature.working_days"
+MEDIAN_ABSOLUTE_DEVIATION_MULTIPLIER = 1.4826
+OUTLIER_DETECTION_MULTIPLIER = 3
 
 class StayingTimes(ComputeFeatureBase):
     """
@@ -81,8 +83,20 @@ class StayingTimes(ComputeFeatureBase):
                     temp = DataPoint(data.start_time, data.end_time, data.offset, sample)
                     temp.sample.append(staying_time)
                     staying_time_data.append(temp)
-        mean = np.mean(office_staying_times)
-        standard_deviation = np.std(office_staying_times)
+        median = np.median(office_staying_times)
+        mad_office_staying_times = []
+        for staying_time in office_staying_times:
+            # mad = median absolute deviation
+            mad_office_staying_times.append(abs(staying_time - median))
+        median2 = np.median(mad_office_staying_times)
+        mad_value = median2 * MEDIAN_ABSOLUTE_DEVIATION_MULTIPLIER
+        outlier_border = mad_value * OUTLIER_DETECTION_MULTIPLIER
+        outlier_removed_office_staying_times = []
+        for staying_time in office_staying_times:
+            if staying_time > (median - outlier_border) and staying_time < (median + outlier_border):
+                outlier_removed_office_staying_times.append(staying_time)
+        mean = np.mean(outlier_removed_office_staying_times)
+        standard_deviation = np.std(outlier_removed_office_staying_times)
         for data in staying_time_data:
             staying_time = data.sample[0]
             if staying_time > mean + standard_deviation:
