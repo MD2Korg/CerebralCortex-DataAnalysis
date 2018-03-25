@@ -619,7 +619,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                     m_start_date = gps_data[i + 1][0]
 
         n_start_date = gps_datapoints[0][2]
-        for i in range(len(gps_datapoints[:10000]) - 1):
+        for i in range(len(gps_datapoints) - 1):
             if self.haversine(gps_datapoints[i][self.LONGITUDE],
                               gps_datapoints[i][self.LATITUDE],
                               gps_datapoints[i + 1][self.LONGITUDE],
