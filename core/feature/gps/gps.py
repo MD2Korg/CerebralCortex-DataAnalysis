@@ -47,7 +47,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     CENTROID_LONGITUDE = 4
     OFFSET_INDEX = 6
     GROUND_STRING_LENGTH = 3
-    MODEL_FILE_PATH = 'core/resources/models/gps/model.pkl'
+    MODEL_FILE_PATH = 'core/feature/gps/semantic_location_model.pkl'
     UNDEFINED = 'UNDEFINED'
     RESTAURANT = ['restaurant', 'bar']
     SCHOOL = ['school', 'book_store', 'library']
@@ -63,7 +63,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     SPORTS = ['bowling_alley', 'gym']
     # TODO no API KEY
     CENTROID_INDEX = 7
-    FIVE_MINUTE_SECONDS = 300.0
+    FIVE_MINUTE_SECONDS = 600.0
     NOT_HOME_OR_WORK = 'other'
 
     def process(self, user, all_days):
@@ -114,18 +114,68 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                                              self.GEOFENCE_ASSIGNING_CENTROID,
                                              centroid_name_dict=
                                              gps_groundtruth_data)
-                # if gps_groundtruth_data:
-                #     self.store_stream(filepath="gps_episodes_and_semantic_location.json",
-                #                       input_streams=[streams[location_stream], streams[geofence_list_stream]],
-                #                       user_id=user, data=epoch_semantic)
-                #     self.store_data("metadata/gps_data_clustering_episode_generation.json", [streams[location_stream],
-                #                                                                              streams[geofence_list_stream]],
-                #                     user['identifier'],epoch_centroid)
-                # else:
-                #     self.store_data("metadata/gps_episodes_and_semantic_location.json", [streams[location_stream]],
-                #                     user['identifier'],epoch_semantic)
-                #     self.store_data("metadata/gps_data_clustering_episode_generation.json", [streams[location_stream]],
-                #                     user['identifier'],epoch_centroid)
+                if gps_groundtruth_data:
+                    self.store_stream(filepath="gps_data_centroid_index.json",
+                                      input_streams=[streams[location_stream],
+                                                     streams[
+                                                         geofence_list_stream
+                                                     ]],
+                                      user_id=user,
+                                      data=epoch_id, localtime=False)
+                    self.store_stream(
+                        filepath="gps_data_clustering_episode_generation.json",
+                        input_streams=[streams[location_stream],
+                                       streams[geofence_list_stream]],
+                        user_id=user,
+                        data=epoch_centroid, localtime=False)
+
+                    self.store_stream(
+                        filepath=
+                        "gps_episodes_and_semantic_location_user_marked.json",
+                        input_streams=[streams[location_stream],
+                                       streams[geofence_list_stream]],
+                        user_id=user,
+                        data=epoch_semantic, localtime=False)
+
+                    self.store_stream(
+                        filepath=
+                        "gps_episodes_and_semantic_location_from_model.json",
+                        input_streams=[streams[location_stream],
+                                       streams[geofence_list_stream]],
+                        user_id=user,
+                        data=epoch_semantic_model, localtime=False)
+
+                    self.store_stream(
+                        filepath=
+                        "gps_episodes_and_semantic_location_from_places.json",
+                        input_streams=[streams[location_stream],
+                                       streams[geofence_list_stream]],
+                        user_id=user,
+                        data=epoch_place_annotation, localtime=False)
+                else:
+                    self.store_stream(filepath="gps_data_centroid_index.json",
+                                      input_streams=[streams[location_stream]],
+                                      user_id=user,
+                                      data=epoch_id, localtime=False)
+                    self.store_stream(
+                        filepath="gps_data_clustering_episode_generation.json",
+                        input_streams=[streams[location_stream]],
+                        user_id=user,
+                        data=epoch_centroid, localtime=False)
+
+                    self.store_stream(
+                        filepath=
+                        "gps_episodes_and_semantic_location_from_model.json",
+                        input_streams=[streams[location_stream]],
+                        user_id=user,
+                        data=epoch_semantic_model, localtime=False)
+
+                    self.store_stream(
+                        filepath=
+                        "gps_episodes_and_semantic_location_from_places.json",
+                        input_streams=[streams[location_stream]],
+                        user_id=user,
+                        data=epoch_place_annotation, localtime=False)
 
     def find_interesting_places(self, latitude, longitude, api_key,
                                 geofence_radius):
@@ -170,7 +220,9 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         if gps_stream_id:
             for day in all_days:
                 stream = self.CC.get_stream(gps_stream_id, user_id=user_id,
-                                            day=day, data_type=DataSet.COMPLETE)
+                                            day=day,
+                                            data_type=DataSet.COMPLETE,
+                                            localtime=False)
                 data_for_a_day = stream.data
                 data_for_all_days.append(data_for_a_day)
         extracted_gps_data = []
@@ -208,7 +260,9 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         if geofence_stream_id:
             for day in all_days:
                 stream = self.CC.get_stream(geofence_stream_id, user_id=user_id,
-                                            day=day, data_type=DataSet.COMPLETE)
+                                            day=day,
+                                            data_type=DataSet.COMPLETE,
+                                            localtime=False)
                 data_for_a_day = stream.data
                 data_for_all_days.append(data_for_a_day)
 
@@ -564,7 +618,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                     m_start_date = gps_data[i + 1][0]
 
         n_start_date = gps_datapoints[0][2]
-        for i in range(len(gps_datapoints[:1000]) - 1):
+        for i in range(len(gps_datapoints[:10000]) - 1):
             if self.haversine(gps_datapoints[i][self.LONGITUDE],
                               gps_datapoints[i][self.LATITUDE],
                               gps_datapoints[i + 1][self.LONGITUDE],
@@ -587,11 +641,6 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                     n_start_date = gps_datapoints[i + 1][2]
                 else:
                     n_start_date = gps_datapoints[i + 1][2]
-        print(gps_epoch_with_centroid_index[:50])
-        print(gps_epoch_with_centroid[:50])
-        print(gps_epoch_with_semantic_location[:50])
-        print(gps_epoch_model_semantic_location[:50])
-        print(gps_epoch_with_place_annotation[:50])
         return gps_epoch_with_centroid_index, gps_epoch_with_centroid, \
                gps_epoch_with_semantic_location, \
                gps_epoch_model_semantic_location, \
