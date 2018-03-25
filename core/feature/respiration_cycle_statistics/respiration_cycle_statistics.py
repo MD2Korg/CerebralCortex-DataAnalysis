@@ -189,7 +189,7 @@ class respiration_cycle_statistics(ComputeFeatureBase):
                         self.store_stream(json_path,
                                           [streams[respiration_raw_autosenseble]],
                                           user_id,
-                                          feature_matrix)
+                                          feature_matrix,localtime=False)
 
 
 
