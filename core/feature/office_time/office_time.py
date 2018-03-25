@@ -43,6 +43,7 @@ import json
 feature_class_name = 'WorkingDays'
 GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM = "org.md2k.data_analysis.gps_episodes_and_semantic_location"
 
+
 class WorkingDays(ComputeFeatureBase):
     """
     Produce feature from gps location Only the days marked as "Work" in
@@ -103,14 +104,14 @@ class WorkingDays(ComputeFeatureBase):
                         current_day = d.start_time.date()
 
                     work_end_time = d.end_time
-        #print(work_data)
+        # print(work_data)
         try:
             if len(work_data):
                 streams = self.CC.get_user_streams(user_id)
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM:
                         # print(stream_metadata)
-                        print("Going to pickle the file: ",work_data)
+                        print("Going to pickle the file: ", work_data)
 
                         self.store_stream(filepath="working_days.json",
                                           input_streams=[stream_metadata],
@@ -124,7 +125,6 @@ class WorkingDays(ComputeFeatureBase):
                             'data points' %
                             (self.__class__.__name__, str(user_id),
                              len(work_data)))
-
 
     def process(self, user_id, all_days):
         if self.CC is not None:
