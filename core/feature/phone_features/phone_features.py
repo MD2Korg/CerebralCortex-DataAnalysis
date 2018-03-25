@@ -46,8 +46,6 @@ feature_class_name = 'PhoneFeatures'
 
 class PhoneFeatures(ComputeFeatureBase):
 
-    APPUSAGE_GAP_THRESHOLD = timedelta(minutes=2)
-
     def get_data_by_stream_name(self, stream_name, user_id, day, localtime=True):
         """
         method to get combined data from CerebralCortex as there can be multiple stream id for same stream
@@ -87,25 +85,27 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return list(map(lambda x: x / 60.0, ret))
 
-    def average_inter_phone_call_sms_time_hourly(self, phonedatastream, smsdatastream):
+    def average_inter_phone_call_sms_time_hourly(self, phonedata, smsdata):
         """
-
-        :param phonedatastream:
-        :param smsdatastream:
+        Average time (in minutes) between two consecutive events (call and sms)
+        for each hour window. If there is not enough data for a window then
+        there will be no data point for that window.
+        :param phonedata:
+        :param smsdata:
         :return:
         """
 
-        if len(phonedatastream) + len(smsdatastream) <= 1:
+        if len(phonedata) + len(smsdata) <= 1:
             return None
 
-        tmpphonestream = phonedatastream
-        tmpsmsstream = smsdatastream
+        tmpphonestream = phonedata
+        tmpsmsstream = smsdata
         for s in tmpphonestream:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
         for s in tmpsmsstream:
             s.end_time = s.start_time
 
-        combined_data = phonedatastream + smsdatastream
+        combined_data = phonedata + smsdata
 
         combined_data.sort(key=lambda x: x.start_time)
 
@@ -127,19 +127,26 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_phone_call_sms_time_four_hourly(self, phonedatastream, smsdatastream):
-
-        if len(phonedatastream) + len(smsdatastream) <= 1:
+    def average_inter_phone_call_sms_time_four_hourly(self, phonedata, smsdata):
+        """
+        Average time (in minutes) between two consecutive events (call and sms)
+        for each four hour window. If there is not enough data for a window then
+        there will be no data point for that window.
+        :param phonedata:
+        :param smsdata:
+        :return:
+        """
+        if len(phonedata) + len(smsdata) <= 1:
             return None
 
-        tmpphonestream = phonedatastream
-        tmpsmsstream = smsdatastream
+        tmpphonestream = phonedata
+        tmpsmsstream = smsdata
         for s in tmpphonestream:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
         for s in tmpsmsstream:
             s.end_time = s.start_time
 
-        combined_data = phonedatastream + smsdatastream
+        combined_data = phonedata + smsdata
 
         combined_data.sort(key=lambda x: x.start_time)
 
@@ -160,19 +167,25 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_phone_call_sms_time_daily(self, phonedatastream, smsdatastream):
-
-        if len(phonedatastream) + len(smsdatastream) <= 1:
+    def average_inter_phone_call_sms_time_daily(self, phonedata, smsdata):
+        """
+        Average time (in minutes) between two consecutive events (call and sms)
+        for whole day. If there is not enough data then it will return None.
+        :param phonedata:
+        :param smsdata:
+        :return:
+        """
+        if len(phonedata) + len(smsdata) <= 1:
             return None
 
-        tmpphonestream = phonedatastream
-        tmpsmsstream = smsdatastream
+        tmpphonestream = phonedata
+        tmpsmsstream = smsdata
         for s in tmpphonestream:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
         for s in tmpsmsstream:
             s.end_time = s.start_time
 
-        combined_data = phonedatastream + smsdatastream
+        combined_data = phonedata + smsdata
 
         combined_data.sort(key=lambda x: x.start_time)
         start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
@@ -183,19 +196,25 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_phone_call_sms_time_daily(self, phonedatastream, smsdatastream):
-
-        if len(phonedatastream) + len(smsdatastream) <= 1:
+    def variance_inter_phone_call_sms_time_daily(self, phonedata, smsdata):
+        """
+        Variance of time (in minutes) between two consecutive events (call and sms)
+        for whole day. If there is not enough data then it will return None.
+        :param phonedata:
+        :param smsdata:
+        :return:
+        """
+        if len(phonedata) + len(smsdata) <= 1:
             return None
 
-        tmpphonestream = phonedatastream
-        tmpsmsstream = smsdatastream
+        tmpphonestream = phonedata
+        tmpsmsstream = smsdata
         for s in tmpphonestream:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
         for s in tmpsmsstream:
             s.end_time = s.start_time
 
-        combined_data = phonedatastream + smsdatastream
+        combined_data = phonedata + smsdata
 
         combined_data.sort(key=lambda x: x.start_time)
         start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
@@ -207,19 +226,26 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_phone_call_sms_time_hourly(self, phonedatastream, smsdatastream):
-
-        if len(phonedatastream) + len(smsdatastream) <= 1:
+    def variance_inter_phone_call_sms_time_hourly(self, phonedata, smsdata):
+        """
+        Variance of time (in minutes) between two consecutive events (call and sms)
+        for each hour window. If there is not enough data for a window then
+        there will be no data point for that window.
+        :param phonedata:
+        :param smsdata:
+        :return:
+        """
+        if len(phonedata) + len(smsdata) <= 1:
             return None
 
-        tmpphonestream = phonedatastream
-        tmpsmsstream = smsdatastream
+        tmpphonestream = phonedata
+        tmpsmsstream = smsdata
         for s in tmpphonestream:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
         for s in tmpsmsstream:
             s.end_time = s.start_time
 
-        combined_data = phonedatastream + smsdatastream
+        combined_data = phonedata + smsdata
 
         combined_data.sort(key=lambda x: x.start_time)
 
@@ -240,19 +266,26 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_phone_call_sms_time_four_hourly(self, phonedatastream, smsdatastream):
-
-        if len(phonedatastream) + len(smsdatastream) <= 1:
+    def variance_inter_phone_call_sms_time_four_hourly(self, phonedata, smsdata):
+        """
+        Variance of time (in minutes) between two consecutive events (call and sms)
+        for each four hour window. If there is not enough data for a window then
+        there will be no data point for that window.
+        :param phonedata:
+        :param smsdata:
+        :return:
+        """
+        if len(phonedata) + len(smsdata) <= 1:
             return None
 
-        tmpphonestream = phonedatastream
-        tmpsmsstream = smsdatastream
+        tmpphonestream = phonedata
+        tmpsmsstream = smsdata
         for s in tmpphonestream:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
         for s in tmpsmsstream:
             s.end_time = s.start_time
 
-        combined_data = phonedatastream + smsdatastream
+        combined_data = phonedata + smsdata
 
         combined_data.sort(key=lambda x: x.start_time)
 
@@ -273,12 +306,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_phone_call_time_hourly(self, phonedatastream):
-
-        if len(phonedatastream) <= 1:
+    def average_inter_phone_call_time_hourly(self, phonedata):
+        """
+        Average time (in minutes) between two consecutive call for each hour window.
+        If there is not enough data for a window then there will be no data point for that window.
+        :param phonedata:
+        :return:
+        """
+        if len(phonedata) <= 1:
             return None
 
-        combined_data = phonedatastream
+        combined_data = phonedata
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
@@ -300,12 +338,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_phone_call_time_four_hourly(self, phonedatastream):
-
-        if len(phonedatastream) <= 1:
+    def average_inter_phone_call_time_four_hourly(self, phonedata):
+        """
+        Average time (in minutes) between two consecutive call for each four hour window.
+        If there is not enough data for a window then there will be no data point for that window.
+        :param phonedata:
+        :return:
+        """
+        if len(phonedata) <= 1:
             return None
 
-        combined_data = phonedatastream
+        combined_data = phonedata
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
@@ -327,12 +370,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_phone_call_time_daily(self, phonedatastream):
-
-        if len(phonedatastream) <= 1:
+    def average_inter_phone_call_time_daily(self, phonedata):
+        """
+        Average time (in minutes) between two consecutive call for a whole day.
+        If there is not enough data for the day then it will return None.
+        :param phonedata:
+        :return:
+        """
+        if len(phonedata) <= 1:
             return None
 
-        combined_data = phonedatastream
+        combined_data = phonedata
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
@@ -345,12 +393,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_phone_call_time_hourly(self, phonedatastream):
-
-        if len(phonedatastream) <= 1:
+    def variance_inter_phone_call_time_hourly(self, phonedata):
+        """
+        Variance of time (in minutes) between two consecutive call for each hour window.
+        If there is not enough data for a window then there will be no data point for that window.
+        :param phonedata:
+        :return:
+        """
+        if len(phonedata) <= 1:
             return None
 
-        combined_data = phonedatastream
+        combined_data = phonedata
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
@@ -372,12 +425,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_phone_call_time_four_hourly(self, phonedatastream):
-
-        if len(phonedatastream) <= 1:
+    def variance_inter_phone_call_time_four_hourly(self, phonedata):
+        """
+        Variance of time (in minutes) between two consecutive call for each four hour window.
+        If there is not enough data for a window then there will be no data point for that window.
+        :param phonedata:
+        :return:
+        """
+        if len(phonedata) <= 1:
             return None
 
-        combined_data = phonedatastream
+        combined_data = phonedata
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
@@ -399,12 +457,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_phone_call_time_daily(self, phonedatastream):
-
-        if len(phonedatastream) <= 1:
+    def variance_inter_phone_call_time_daily(self, phonedata):
+        """
+        Average time (in minutes) between two consecutive call for a day.
+        If there is not enough data for the day then it will return None.
+        :param phonedata:
+        :return:
+        """
+        if len(phonedata) <= 1:
             return None
 
-        combined_data = phonedatastream
+        combined_data = phonedata
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
@@ -417,12 +480,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_sms_time_hourly(self, smsdatastream):
-
-        if len(smsdatastream) <= 1:
+    def average_inter_sms_time_hourly(self, smsdata):
+        """
+        Average time (in minutes) between two consecutive sms for each hour window.
+        If there is not enough data for a window then there will be no data point for that window.
+        :param smsdata:
+        :return:
+        """
+        if len(smsdata) <= 1:
             return None
 
-        combined_data = smsdatastream
+        combined_data = smsdata
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
@@ -444,12 +512,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_sms_time_four_hourly(self, smsdatastream):
-
-        if len(smsdatastream) <= 1:
+    def average_inter_sms_time_four_hourly(self, smsdata):
+        """
+        Average time (in minutes) between two consecutive sms for each four hour window.
+        If there is not enough data for a window then there will be no data point for that window.
+        :param smsdata:
+        :return:
+        """
+        if len(smsdata) <= 1:
             return None
 
-        combined_data = smsdatastream
+        combined_data = smsdata
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
@@ -471,12 +544,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_sms_time_daily(self, smsdatastream):
-
-        if len(smsdatastream) <= 1:
+    def average_inter_sms_time_daily(self, smsdata):
+        """
+        Average time (in minutes) between two consecutive sms for a day.
+        If there is not enough data for the day then it will return None.
+        :param smsdata:
+        :return:
+        """
+        if len(smsdata) <= 1:
             return None
 
-        combined_data = smsdatastream
+        combined_data = smsdata
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
@@ -489,12 +567,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_sms_time_hourly(self, smsdatastream):
-
-        if len(smsdatastream) <= 1:
+    def variance_inter_sms_time_hourly(self, smsdata):
+        """
+        Variance of time (in minutes) between two consecutive sms for each hour window.
+        If there is not enough data for a window then there will be no data point for that window.
+        :param smsdata:
+        :return:
+        """
+        if len(smsdata) <= 1:
             return None
 
-        combined_data = smsdatastream
+        combined_data = smsdata
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
@@ -516,12 +599,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_sms_time_four_hourly(self, smsdatastream):
-
-        if len(smsdatastream) <= 1:
+    def variance_inter_sms_time_four_hourly(self, smsdata):
+        """
+        Average time (in minutes) between two consecutive sms for each four hour window.
+        If there is not enough data for a window then there will be no data point for that window.
+        :param smsdata:
+        :return:
+        """
+        if len(smsdata) <= 1:
             return None
 
-        combined_data = smsdatastream
+        combined_data = smsdata
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
@@ -543,12 +631,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_inter_sms_time_daily(self, smsdatastream):
-
-        if len(smsdatastream) <= 1:
+    def variance_inter_sms_time_daily(self, smsdata):
+        """
+        Average time (in minutes) between two consecutive sms for a day.
+        If there is not enough data for that day, then it will return None.
+        :param smsdata:
+        :return:
+        """
+        if len(smsdata) <= 1:
             return None
 
-        combined_data = smsdatastream
+        combined_data = smsdata
 
         for s in combined_data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
@@ -561,12 +654,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_call_duration_daily(self, phonedatastream):
-
-        if len(phonedatastream) < 1:
+    def average_call_duration_daily(self, phonedata):
+        """
+        Average time (in minutes) spent in call in a day. If there is not enough data
+        for that day then it will return None.
+        :param phonedata:
+        :return:
+        """
+        if len(phonedata) < 1:
             return None
 
-        data = phonedatastream
+        data = phonedata
 
         start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
         start_time = start_time.replace(tzinfo=data[0].start_time.tzinfo)
@@ -576,12 +674,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_call_duration_hourly(self, phonedatastream):
-
-        if len(phonedatastream) < 1:
+    def average_call_duration_hourly(self, phonedata):
+        """
+        Average time (in minutes) spent in call for each hour window. If there is not enough data
+        for any window then there will no data point for that window.
+        :param phonedata:
+        :return:
+        """
+        if len(phonedata) < 1:
             return None
 
-        data = copy.deepcopy(phonedatastream)
+        data = copy.deepcopy(phonedata)
         for s in data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
@@ -607,12 +710,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_call_duration_four_hourly(self, phonedatastream):
-
-        if len(phonedatastream) < 1:
+    def average_call_duration_four_hourly(self, phonedata):
+        """
+        Average time (in minutes) spent in call for each four hour window. If there is not enough data
+        for any window then there will no data point for that window.
+        :param phonedata:
+        :return:
+        """
+        if len(phonedata) < 1:
             return None
 
-        data = copy.deepcopy(phonedatastream)
+        data = copy.deepcopy(phonedata)
         for s in data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
@@ -639,7 +747,12 @@ class PhoneFeatures(ComputeFeatureBase):
         return new_data
 
     def average_sms_length_daily(self, smsdata):
-
+        """
+        Average sms length for a day. If there is not enough data for that day
+        then it will return None.
+        :param smsdata:
+        :return:
+        """
         if len(smsdata) < 1:
             return None
 
@@ -654,7 +767,12 @@ class PhoneFeatures(ComputeFeatureBase):
         return new_data
 
     def average_sms_length_hourly(self, smsdata):
-
+        """
+        Average sms length for each hour window. If there is not enough data
+        for any window then there will no data point for that window.
+        :param smsdata:
+        :return:
+        """
         if len(smsdata) < 1:
             return None
 
@@ -679,7 +797,12 @@ class PhoneFeatures(ComputeFeatureBase):
         return new_data
 
     def average_sms_length_four_hourly(self, smsdata):
-
+        """
+        Average sms length for each four hour window. If there is not enough data
+        for any window then there will no data point for that window.
+        :param smsdata:
+        :return:
+        """
         if len(smsdata) < 1:
             return None
 
@@ -704,7 +827,12 @@ class PhoneFeatures(ComputeFeatureBase):
         return new_data
 
     def variance_sms_length_daily(self, smsdata):
-
+        """
+        Variance of sms length for a day. If there is not enough data
+        for that day, then it will return None.
+        :param smsdata:
+        :return:
+        """
         if len(smsdata) < 1:
             return None
 
@@ -719,7 +847,12 @@ class PhoneFeatures(ComputeFeatureBase):
         return new_data
 
     def variance_sms_length_hourly(self, smsdata):
-
+        """
+        Variance of sms length for each hour window. If there is not enough data
+        for any window then there will no data point for that window.
+        :param smsdata:
+        :return:
+        """
         if len(smsdata) < 1:
             return None
 
@@ -744,7 +877,12 @@ class PhoneFeatures(ComputeFeatureBase):
         return new_data
 
     def variance_sms_length_four_hourly(self, smsdata):
-
+        """
+        Variance of sms length for each four hour window. If there is not enough data
+        for any window then there will no data point for that window.
+        :param smsdata:
+        :return:
+        """
         if len(smsdata) < 1:
             return None
 
@@ -768,12 +906,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_call_duration_daily(self, phonedatastream):
-
-        if len(phonedatastream) < 1:
+    def variance_call_duration_daily(self, phonedata):
+        """
+        Variance of call duration in minutes for a day. If there is not enough data
+        for that day then it will return None.
+        :param phonedata:
+        :return:
+        """
+        if len(phonedata) < 1:
             return None
 
-        data = phonedatastream
+        data = phonedata
 
         start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
         start_time = start_time.replace(tzinfo=data[0].start_time.tzinfo)
@@ -783,12 +926,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_call_duration_hourly(self, phonedatastream):
-
-        if len(phonedatastream) < 1:
+    def variance_call_duration_hourly(self, phonedata):
+        """
+        Variance of call duration in minutes for each hour window. If there is not enough data
+        for any window then there will no data point for that window.
+        :param phonedata:
+        :return:
+        """
+        if len(phonedata) < 1:
             return None
 
-        data = copy.deepcopy(phonedatastream)
+        data = copy.deepcopy(phonedata)
         for s in data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
@@ -814,12 +962,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_call_duration_four_hourly(self, phonedatastream):
-
-        if len(phonedatastream) < 1:
+    def variance_call_duration_four_hourly(self, phonedata):
+        """
+        Variance of call duration in minutes for each four hour window. If there is not enough data
+        for any window then there will no data point for that window.
+        :param phonedata:
+        :return:
+        """
+        if len(phonedata) < 1:
             return None
 
-        data = copy.deepcopy(phonedatastream)
+        data = copy.deepcopy(phonedata)
         for s in data:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
@@ -845,16 +998,31 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_ambient_light_daily(self, lightdata, frequency = 16, minimum_data_percent = 40):
-        if len(lightdata) < frequency * 24 * 60 * 60 * minimum_data_percent / 100:
+    def average_ambient_light_daily(self, lightdata, data_frequency=16, minimum_data_percent=40):
+        """
+        Average ambient light (in flux) for a day. If the input light data is less than minimum_data_percent%
+        which is default 40%, it will return None.
+        :param lightdata:
+        :param data_frequency: How many data point should generate in a second
+        :param minimum_data_percent: Minimum percent of data should be available
+        :return:
+        """
+        if len(lightdata) < data_frequency * 24 * 60 * 60 * minimum_data_percent / 100:
             return None
         start_time = datetime.datetime.combine(lightdata[0].start_time.date(), datetime.datetime.min.time())
         start_time = start_time.replace(tzinfo=lightdata[0].start_time.tzinfo)
         end_time = start_time + datetime.timedelta(hours = 23, minutes = 59)
         return [DataPoint(start_time, end_time, lightdata[0].offset, np.mean([x.sample for x in lightdata]))]
 
-    def average_ambient_light_hourly(self, lightdata, data_frequency = 16, minimum_data_percent = 40):
-
+    def average_ambient_light_hourly(self, lightdata, data_frequency=16, minimum_data_percent=40):
+        """
+        Average ambient light (in flux) for each hour window in a day. If the input light data is less than minimum_data_percent%
+        which is default 40%, in a window then it will not generate any data point for that window.
+        :param lightdata:
+        :param data_frequency: How many data point should generate in a second
+        :param minimum_data_percent: Minimum percent of data should be available
+        :return:
+        """
         if len(lightdata) < 1:
             return None
 
@@ -878,8 +1046,16 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_ambient_light_four_hourly(self, lightdata, data_frequency = 16, minimum_data_percent = 40):
-
+    def average_ambient_light_four_hourly(self, lightdata, data_frequency=16, minimum_data_percent=40):
+        """
+        Average ambient light (in flux) for each four hour window in a day. If the input light data is less than
+        minimum_data_percent%, which is default 40%, in a window then it will not generate any data point for that
+         window.
+        :param lightdata:
+        :param data_frequency: How many data point should generate in a second
+        :param minimum_data_percent: Minimum percent of data should be available
+        :return:
+        """
         if len(lightdata) < 1:
             return None
 
@@ -903,7 +1079,15 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def variance_ambient_light_daily(self, lightdata, data_frequency = 16, minimum_data_percent = 40):
+    def variance_ambient_light_daily(self, lightdata, data_frequency=16, minimum_data_percent=40):
+        """
+        Variance of ambient light (in flux) for a day. If the input light data is less than minimum_data_percent%
+        which is default 40%, it will return None.
+        :param lightdata:
+        :param data_frequency: How many data point should generate in a second
+        :param minimum_data_percent: Minimum percent of data should be available
+        :return:
+        """
         if len(lightdata) < data_frequency * 24 * 60 * 60 * minimum_data_percent / 100:
             return None
         start_time = datetime.datetime.combine(lightdata[0].start_time.date(), datetime.datetime.min.time())
@@ -911,8 +1095,15 @@ class PhoneFeatures(ComputeFeatureBase):
         end_time = start_time + datetime.timedelta(hours = 23, minutes = 59)
         return [DataPoint(start_time, end_time, lightdata[0].offset, np.var([x.sample for x in lightdata]))]
 
-    def variance_ambient_light_hourly(self, lightdata, data_frequency = 16, minimum_data_percent = 40):
-
+    def variance_ambient_light_hourly(self, lightdata, data_frequency=16, minimum_data_percent=40):
+        """
+        Variance of ambient light (in flux) for each hour window in a day. If the input light data is less than
+         minimum_data_percent%, which is default 40%, in a window then it will not generate any data point for that window.
+        :param lightdata:
+        :param data_frequency: How many data point should generate in a second
+        :param minimum_data_percent: Minimum percent of data should be available
+        :return:
+        """
         if len(lightdata) < 1:
             return None
 
@@ -937,7 +1128,15 @@ class PhoneFeatures(ComputeFeatureBase):
         return new_data
 
     def variance_ambient_light_four_hourly(self, lightdata, data_frequency=16, minimum_data_percent=40):
-
+        """
+        Variance of ambient light (in flux) for each four hour window in a day. If the input light data is
+        less than minimum_data_percent%, which is default 40%, in a window then it will not generate any data
+         point for that window.
+        :param lightdata:
+        :param data_frequency: How many data point should generate in a second
+        :param minimum_data_percent: Minimum percent of data should be available
+        :return:
+        """
         if len(lightdata) < 1:
             return None
 
@@ -961,7 +1160,16 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def calculate_phone_outside_duration(data, phone_inside_threshold_second=60):
+    def calculate_phone_outside_duration(self, data, phone_inside_threshold_second=60):
+        """
+        Finds the duration (start_time and end_time) of phone outside (not in pocket or parse).
+        It uses a threshold (phone_inside_threshold_second), such that, if there is a duration of
+        at least this amount of consecutive time the phone proximity is 0, then this will be a
+        period of phone inside.
+        :param data:
+        :param phone_inside_threshold_second:
+        :return:
+        """
         outside_data = []
         threshold = timedelta(seconds=phone_inside_threshold_second)
         L = len(data)
@@ -993,8 +1201,17 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return outside_data
 
+    # lru_cache is used to cache the result of this function
     @lru_cache(maxsize=256)
     def get_app_category(self, appid):
+        """
+        Fetch and parse the google play store page of the android app
+        and return the category. If there are multiple category it will
+        return the first one in the webpage. Only for the GAME category
+        it will return the sub-category also.
+        :param appid: package name of an app
+        :return: [package_name, category, app_name, sub_category]
+        """
         appid = appid.strip()
         time.sleep(1.0)
         if appid == "com.samsung.android.messaging":
@@ -1024,11 +1241,21 @@ class PhoneFeatures(ComputeFeatureBase):
         else:
             return [appid, None, name.contents[0] if name else None, None]
 
-    def get_appusage_duration_by_category(self, appdata, categories: list):
+    def get_appusage_duration_by_category(self, appdata, categories: list, appusage_gap_threshold_seconds=120):
+        """
+        Given the app category, it will return the list of duration when the app was used.
+        It is assumed that if the gap between two consecutive data points with same app usage
+        is within the appusage_gap_threshold_seconds time then, the app usage is in same session.
+        :param appdata:
+        :param categories:
+        :param appusage_gap_threshold_seconds:
+        :return:
+        """
         appdata = sorted(appdata, key=lambda x: x.start_time)
         appusage = []
 
         i = 0
+        threshold = timedelta(seconds=appusage_gap_threshold_seconds)
         while i< len(appdata):
             d = appdata[i]
             category = d.sample[1]
@@ -1037,7 +1264,7 @@ class PhoneFeatures(ComputeFeatureBase):
                 continue
             j = i+1
             while j<len(appdata) and d.sample == appdata[j].sample \
-                    and appdata[j-1].start_time + self.APPUSAGE_GAP_THRESHOLD <= appdata[j].start_time:
+                    and appdata[j-1].start_time + threshold <= appdata[j].start_time:
                 j += 1
 
             if j > i+1:
@@ -1048,6 +1275,12 @@ class PhoneFeatures(ComputeFeatureBase):
         return appusage
 
     def appusage_interval_list(self, data, appusage):
+        """
+        Helper function to get screen touch gap between appusage
+        :param data:
+        :param appusage:
+        :return:
+        """
         ret = []
         i = 0
         for a in appusage:
@@ -1062,6 +1295,14 @@ class PhoneFeatures(ComputeFeatureBase):
         return ret
 
     def label_appusage_intervals(self, data, appusage, intervals, interval_label):
+        """
+        Helper function to label screen touch in a fixed app category usage
+        :param data:
+        :param appusage:
+        :param intervals:
+        :param interval_label:
+        :return:
+        """
         ret = []
         i = 0
         for a in appusage:
@@ -1091,7 +1332,19 @@ class PhoneFeatures(ComputeFeatureBase):
                 i += 1
         return ret
 
-    def process_phonescreen_day_data(self, user_id, touchstream, categorystream, input_touchstream, input_categorystream):
+    def process_phonescreen_day_data(self, user_id, touchstream, categorystream, \
+                                     input_touchstream, input_categorystream):
+        """
+        Analyze the phone touch screen gap to find typing, pause between typing, reading
+        and unknown sessions. It uses the Gaussian Mixture algorithm to find different peaks
+        in a mixture of 4 different gaussian distribution of screen touch gap.
+        :param user_id:
+        :param touchstream:
+        :param categorystream:
+        :param input_touchstream:
+        :param input_categorystream:
+        :return:
+        """
         touchstream = sorted(touchstream, key=lambda x: x.start_time)
 
         appusage = self.get_appusage_duration_by_category(categorystream, ["Communication", "Productivity"])
@@ -1125,6 +1378,15 @@ class PhoneFeatures(ComputeFeatureBase):
             print("Exception:", str(e))
 
     def process_callsmsstream_day_data(self, user_id, callstream, smsstream, input_callstream, input_smsstream):
+        """
+        Process all the call and sms related features and store them as datastreams.
+        :param user_id:
+        :param callstream:
+        :param smsstream:
+        :param input_callstream:
+        :param input_smsstream:
+        :return:
+        """
         try:
             data = self.average_inter_phone_call_sms_time_hourly(callstream, smsstream)
             if data:
@@ -1396,6 +1658,14 @@ class PhoneFeatures(ComputeFeatureBase):
             print("Exception:", str(e))
 
     def process_light_day_data(self, user_id, lightdata, input_lightstream):
+        """
+        Process all the ambient light related features and store the output
+        streams.
+        :param user_id:
+        :param lightdata:
+        :param input_lightstream:
+        :return:
+        """
         try:
             data = self.average_ambient_light_daily(lightdata)
             if data:
@@ -1461,6 +1731,13 @@ class PhoneFeatures(ComputeFeatureBase):
             print("Exception:", str(e))
 
     def process_appcategory_day_data(self, user_id, appcategorystream, input_appcategorystream):
+        """
+        process all app category related features.
+        :param user_id:
+        :param appcategorystream:
+        :param input_appcategorystream:
+        :return:
+        """
         try:
             data = []
             for d in appcategorystream:
@@ -1469,7 +1746,7 @@ class PhoneFeatures(ComputeFeatureBase):
                 dnew = d
                 dnew.sample = self.get_app_category(d.sample)
                 data.append(dnew)
-                
+
             if data:
                 self.store_stream(filepath="app_usage_category.json",
                                   input_streams=[input_appcategorystream],
@@ -1478,7 +1755,15 @@ class PhoneFeatures(ComputeFeatureBase):
             print("Exception:", str(e))
 
     def process_data(self, user_id, all_user_streams, all_days):
-
+        """
+        Getting all the necessary input datastreams for a user
+        and run all feature processing modules for all the days
+        of the user.
+        :param user_id:
+        :param all_user_streams:
+        :param all_days:
+        :return:
+        """
         input_callstream = None
         input_smsstream = None
         input_proximitystream = None
