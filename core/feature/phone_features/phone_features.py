@@ -36,6 +36,7 @@ import numpy as np
 from datetime import timedelta
 import time
 import copy
+from functools import lru_cache
 
 from sklearn.mixture import GaussianMixture
 
@@ -45,7 +46,6 @@ feature_class_name = 'PhoneFeatures'
 
 class PhoneFeatures(ComputeFeatureBase):
 
-    appcategorycache = {}
     APPUSAGE_GAP_THRESHOLD = timedelta(minutes=2)
 
     def get_data_by_stream_name(self, stream_name, user_id, day, localtime=True):
@@ -993,9 +993,10 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return outside_data
 
+    @lru_cache(maxsize=256)
     def get_app_category(self, appid):
         appid = appid.strip()
-        time.sleep(0.5)
+        time.sleep(1.0)
         if appid == "com.samsung.android.messaging":
             return [appid, "Communication", "Samsung Message", None]
 
@@ -1466,12 +1467,9 @@ class PhoneFeatures(ComputeFeatureBase):
                 if type(d.sample) is not str:
                     continue
                 dnew = d
-                if d.sample not in self.appcategorycache:
-                    self.appcategorycache[d.sample] = self.get_app_category(d.sample)
-
-                dnew.sample = self.appcategorycache[d.sample]
-
+                dnew.sample = self.get_app_category(d.sample)
                 data.append(dnew)
+                
             if data:
                 self.store_stream(filepath="app_usage_category.json",
                                   input_streams=[input_appcategorystream],
