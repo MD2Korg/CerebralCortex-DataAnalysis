@@ -46,6 +46,11 @@ feature_class_name = 'PhoneFeatures'
 
 class PhoneFeatures(ComputeFeatureBase):
 
+    def get_filtered_data(self, data, admission_controll = None):
+        if admission_controll is None:
+            return data
+        return [d for d in data if admission_controll(d.sample)]
+
     def get_data_by_stream_name(self, stream_name, user_id, day, localtime=True):
         """
         method to get combined data from CerebralCortex as there can be multiple stream id for same stream
@@ -94,12 +99,12 @@ class PhoneFeatures(ComputeFeatureBase):
         :param smsdata:
         :return:
         """
-
-        if len(phonedata) + len(smsdata) <= 1:
+        tmpphonestream = self.get_filtered_data(phonedata)
+        tmpsmsstream = self.get_filtered_data(smsdata)
+        if len(tmpphonestream) + len(tmpsmsstream) <= 1:
             return None
 
-        tmpphonestream = phonedata
-        tmpsmsstream = smsdata
+
         for s in tmpphonestream:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
         for s in tmpsmsstream:
@@ -136,11 +141,10 @@ class PhoneFeatures(ComputeFeatureBase):
         :param smsdata:
         :return:
         """
-        if len(phonedata) + len(smsdata) <= 1:
+        tmpphonestream = self.get_filtered_data(phonedata)
+        tmpsmsstream = self.get_filtered_data(smsdata)
+        if len(tmpphonestream) + len(tmpsmsstream) <= 1:
             return None
-
-        tmpphonestream = phonedata
-        tmpsmsstream = smsdata
         for s in tmpphonestream:
             s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
         for s in tmpsmsstream:
@@ -1818,7 +1822,9 @@ class PhoneFeatures(ComputeFeatureBase):
         else:
             for day in all_days:
                 callstream = self.get_data_by_stream_name(call_stream_name, user_id, day, localtime=False)
+                callstream = self.get_filtered_data(callstream, lambda x: type(x) is float)
                 smsstream = self.get_data_by_stream_name(sms_stream_name, user_id, day, localtime=False)
+                smsstream = self.get_filtered_data(smsstream, lambda x: type(x) is float)
                 self.process_callsmsstream_day_data(user_id, callstream, smsstream, input_callstream, input_smsstream)
 
         # processing proximity sensor related features
@@ -1830,6 +1836,7 @@ class PhoneFeatures(ComputeFeatureBase):
         else:
             for day in all_days:
                 proximitystream = self.get_data_by_stream_name(proximity_stream_name, user_id, day)
+                proximitystream = self.get_filtered_data(proximitystream, lambda x: type(x) is float)
                 self.process_proximity_day_data(user_id, proximitystream, input_proximitystream)
 
         # processing app usage and category related features
@@ -1841,6 +1848,7 @@ class PhoneFeatures(ComputeFeatureBase):
         else:
             for day in all_days:
                 appusagestream = self.get_data_by_stream_name(appusage_stream_name, user_id, day)
+                appusagestream = self.get_filtered_data(appusagestream, lambda x: type(x) is str)
                 self.process_appcategory_day_data(user_id, appusagestream, input_appusagestream)
 
         # Processing phone touche and typing related features
@@ -1858,7 +1866,9 @@ class PhoneFeatures(ComputeFeatureBase):
         else:
             for day in all_days:
                 touchstream = self.get_data_by_stream_name(touchescreen_stream_name, user_id, day)
+                touchstream = self.get_filtered_data(touchstream, lambda x: type(x) is float)
                 appcategorystream  = self.get_data_by_stream_name(appcategory_stream_name, user_id, day)
+                appcategorystream = self.get_filtered_data(appcategorystream, lambda x: (type(x) is list and len(x)==4))
                 self.process_callsmsstream_day_data(user_id, touchstream, appcategorystream, input_touchscreenstream, input_appcategorystream)
 
         # Processing ambient light related features
@@ -1870,7 +1880,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                  str(user_id)))
         else:
             for day in all_days:
-                lightstream = self.get_data_by_stream_name(light_stream_name, user_id, day, localtime=False)
+                lightstream = self.get_data_by._stream_name(light_stream_name, user_id, day, localtime=False)
+                lightstream = self.get_filtered_data(lightstream, lambda x: type(x) is float)
                 self.process_light_day_data(user_id, lightstream, input_lightstream)
 
 
