@@ -28,7 +28,6 @@ from datetime import timedelta
 from typing import List
 
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-from core.feature.puffmarker.PUFFMARKER_CONSTANTS import *
 
 
 def get_smoking_wrist(only_puff_list, start_index, end_index):
@@ -73,8 +72,10 @@ def generate_smoking_episode(puff_labels) -> List[DataPoint]:
         if temp_index >= len(only_puffs):
             break
         while (((only_puffs[temp_index].start_time - dp.start_time <= timedelta(
-                    seconds=MINIMUM_TIME_DIFFERENCE_FIRST_AND_LAST_PUFFS))
-                 | (only_puffs[temp_index].start_time - prev.start_time < timedelta(seconds=MINIMUM_INTER_PUFF_DURATION)))):
+                seconds=MINIMUM_TIME_DIFFERENCE_FIRST_AND_LAST_PUFFS))
+                | (only_puffs[
+                       temp_index].start_time - prev.start_time < timedelta(
+                    seconds=MINIMUM_INTER_PUFF_DURATION)))):
             prev = only_puffs[temp_index]
             temp_index = temp_index + 1
             if temp_index >= len(only_puffs):
@@ -82,9 +83,10 @@ def generate_smoking_episode(puff_labels) -> List[DataPoint]:
         temp_index = temp_index - 1
         if (temp_index - cur_index + 1) >= MINIMUM_PUFFS_IN_EPISODE:
             wrist = get_smoking_wrist(only_puffs, cur_index, temp_index)
-            smoking_episode_data.append(DataPoint(start_time=only_puffs[cur_index].start_time,
-                                                  end_time=only_puffs[temp_index].start_time,
-                                                  sample=wrist))
+            smoking_episode_data.append(
+                DataPoint(start_time=only_puffs[cur_index].start_time,
+                          end_time=only_puffs[temp_index].start_time,
+                          sample=wrist))
 
             cur_index = temp_index + 1
         else:

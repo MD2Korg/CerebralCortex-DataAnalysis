@@ -30,10 +30,10 @@ from typing import List
 import numpy as np
 
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-from cerebralcortex.core.datatypes.datastream import DataStream
-from core.feature.puffmarker.util import moving_average_convergence_divergence, smooth
-from core.feature.puffmarker.wrist_candidate_filter import filter_with_duration, filter_with_roll_pitch
-from core.signalprocessing.vector import magnitude
+from core.feature.puffmarker.util import moving_average_convergence_divergence, \
+    smooth, magnitude
+from core.feature.puffmarker.wrist_candidate_filter import filter_with_duration, \
+    filter_with_roll_pitch
 
 
 def calculate_roll_pitch_yaw(accel_data: List[DataPoint]):
@@ -56,7 +56,9 @@ def calculate_roll(accel_data: List[DataPoint]):
         ay = dp.sample[1]
         az = dp.sample[2]
         rll = 180 * math.atan2(ax, math.sqrt(ay * ay + az * az)) / math.pi
-        roll_list.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, offset=dp.offset, sample=rll))
+        roll_list.append(
+            DataPoint(start_time=dp.start_time, end_time=dp.end_time,
+                      offset=dp.offset, sample=rll))
 
     return roll_list
 
@@ -67,7 +69,9 @@ def calculate_pitch(accel_data: List[DataPoint]):
         ay = dp.sample[1]
         az = dp.sample[2]
         ptch = 180 * math.atan2(-ay, -az) / math.pi
-        pitch_list.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, offset=dp.offset, sample=ptch))
+        pitch_list.append(
+            DataPoint(start_time=dp.start_time, end_time=dp.end_time,
+                      offset=dp.offset, sample=ptch))
 
     return pitch_list
 
@@ -78,7 +82,9 @@ def calculate_yaw(accel_data: List[DataPoint]):
         ax = dp.sample[0]
         ay = dp.sample[1]
         yw = 180 * math.atan2(ay, ax) / math.pi
-        yaw_list.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time, offset=dp.offset, sample=yw))
+        yaw_list.append(
+            DataPoint(start_time=dp.start_time, end_time=dp.end_time,
+                      offset=dp.offset, sample=yw))
 
     return yaw_list
 
@@ -92,7 +98,8 @@ def compute_basic_statistical_features(data):
     return mean, median, sd, quartile
 
 
-def compute_candidate_features(gyr_intersections, gyr_mag_stream, roll_list, pitch_list, yaw_list):
+def compute_candidate_features(gyr_intersections, gyr_mag_data, roll_list,
+                               pitch_list, yaw_list):
     '''
     Computes feature vector for single hand-to-mouth gesture. Mainly statistical features of hand orientation
     :param gyr_intersections:
@@ -103,7 +110,7 @@ def compute_candidate_features(gyr_intersections, gyr_mag_stream, roll_list, pit
     :return:
     '''
     all_features = []
-    offset = gyr_mag_stream.data[0].offset
+    offset = gyr_mag_data[0].offset
 
     for I in gyr_intersections:
         start_time = I.start_time
@@ -112,18 +119,25 @@ def compute_candidate_features(gyr_intersections, gyr_mag_stream, roll_list, pit
         end_index = I.sample[1]
 
         temp_roll = [roll_list[i].sample for i in range(start_index, end_index)]
-        temp_pitch = [pitch_list[i].sample for i in range(start_index, end_index)]
+        temp_pitch = [pitch_list[i].sample for i in
+                      range(start_index, end_index)]
         temp_yaw = [yaw_list[i].sample for i in range(start_index, end_index)]
 
-        Gmag_sub = [gyr_mag_stream.data[i].sample for i in range(start_index, end_index)]
+        Gmag_sub = [gyr_mag_data[i].sample for i in
+                    range(start_index, end_index)]
 
-        duration = 1000 * (end_time - start_time).total_seconds()   # convert to milliseconds
+        duration = 1000 * (
+                end_time - start_time).total_seconds()  # convert to milliseconds
 
-        roll_mean, roll_median, roll_sd, roll_quartile = compute_basic_statistical_features(temp_roll)
-        pitch_mean, pitch_median, pitch_sd, pitch_quartile = compute_basic_statistical_features(temp_pitch)
-        yaw_mean, yaw_median, yaw_sd, yaw_quartile = compute_basic_statistical_features(temp_yaw)
+        roll_mean, roll_median, roll_sd, roll_quartile = compute_basic_statistical_features(
+            temp_roll)
+        pitch_mean, pitch_median, pitch_sd, pitch_quartile = compute_basic_statistical_features(
+            temp_pitch)
+        yaw_mean, yaw_median, yaw_sd, yaw_quartile = compute_basic_statistical_features(
+            temp_yaw)
 
-        gyro_mean, gyro_median, gyro_sd, gyro_quartile = compute_basic_statistical_features(Gmag_sub)
+        gyro_mean, gyro_median, gyro_sd, gyro_quartile = compute_basic_statistical_features(
+            Gmag_sub)
 
         feature_vector = [duration,
                           roll_mean, roll_median, roll_sd, roll_quartile,
@@ -131,25 +145,31 @@ def compute_candidate_features(gyr_intersections, gyr_mag_stream, roll_list, pit
                           yaw_mean, yaw_median, yaw_sd, yaw_quartile,
                           gyro_mean, gyro_median, gyro_sd, gyro_quartile]
 
-        all_features.append(DataPoint(start_time=start_time, end_time=end_time, offset=offset, sample=feature_vector))
+        all_features.append(
+            DataPoint(start_time=start_time, end_time=end_time, offset=offset,
+                      sample=feature_vector))
 
     return all_features
 
 
-def compute_wrist_features(accel_stream: DataStream, gyro_stream: DataStream,
+def compute_wrist_features(accel_data: List[DataPoint],
+                           gyro_data: List[DataPoint],
                            fast_moving_avg_size=13, slow_moving_avg_size=131):
-    gyr_mag_stream = magnitude(gyro_stream)
+    gyr_mag_data = magnitude(gyro_data)
 
-    roll_list, pitch_list, yaw_list = calculate_roll_pitch_yaw(accel_stream.data)
+    roll_list, pitch_list, yaw_list = calculate_roll_pitch_yaw(accel_data)
 
-    gyr_mag_800 = smooth(gyr_mag_stream, fast_moving_avg_size)
-    gyr_mag_8000 = smooth(gyr_mag_stream, slow_moving_avg_size)
+    gyr_mag_800 = smooth(gyr_mag_data, fast_moving_avg_size)
+    gyr_mag_8000 = smooth(gyr_mag_data, slow_moving_avg_size)
 
-    gyr_intersections = moving_average_convergence_divergence(gyr_mag_8000, gyr_mag_800, 0, 4)
+    gyr_intersections = moving_average_convergence_divergence(gyr_mag_8000,
+                                                              gyr_mag_800, 0, 4)
 
     gyr_intersections = filter_with_duration(gyr_intersections)
-    gyr_intersections = filter_with_roll_pitch(gyr_intersections, roll_list, pitch_list)
+    gyr_intersections = filter_with_roll_pitch(gyr_intersections, roll_list,
+                                               pitch_list)
 
-    all_features = compute_candidate_features(gyr_intersections, gyr_mag_stream, roll_list, pitch_list, yaw_list)
+    all_features = compute_candidate_features(gyr_intersections, gyr_mag_data,
+                                              roll_list, pitch_list, yaw_list)
 
     return all_features

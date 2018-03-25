@@ -1,8 +1,6 @@
 import numbers
-from typing import List
 
-from cerebralcortex.core.datatypes.datapoint import DataPoint
-from core.feature.puffmarker.PUFFMARKER_CONSTANTS import *
+from core.feature.puffmarker.util import *
 
 
 def is_valid_motionsense_hrv_accelerometer(dp: DataPoint):
@@ -66,10 +64,10 @@ def check_motionsense_hrv_gyroscope(gyro_data):
     '''
     Check valid gyroscope data stream
     :param gyro_data:
-    :return: valid_accel_data
+    :return: valid_gyro_data
     '''
-    valid_accel_data = []
+    valid_gyro_data = []
     for dp in gyro_data:
         if is_valid_motionsense_hrv_gyroscope(dp):
-            valid_accel_data.append(dp)
-    return valid_accel_data
+            valid_gyro_data.append(dp)
+    return valid_gyro_data

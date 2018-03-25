@@ -2,8 +2,7 @@ import pickle
 
 from sklearn.ensemble import RandomForestClassifier
 
-from cerebralcortex.core.datatypes.datastream import DataPoint
-from core.feature.puffmarker.PUFFMARKER_CONSTANTS import *
+from core.feature.puffmarker.util import *
 
 
 def get_posture_model() -> RandomForestClassifier:
@@ -16,6 +15,7 @@ def classify_puffs(features):
     labels = []
     for dp in features:
         predicted_label = clf.predict([dp.sample])
+        predicted_label = int(str(predicted_label))
         labels.append(
             DataPoint(start_time=dp.start_time, offset=dp.offset,
                       end_time=dp.end_time, sample=predicted_label))

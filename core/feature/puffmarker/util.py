@@ -30,29 +30,100 @@ from datetime import timedelta
 from typing import List
 
 import numpy as np
+from numpy.linalg import norm
 
 import core.signalprocessing.vector as vector
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-from cerebralcortex.core.datatypes.datastream import DataStream
+
+study_name = 'mperf'
+
+# Sampling frequency
+SAMPLING_FREQ_RIP = 21.33
+SAMPLING_FREQ_MOTIONSENSE_ACCEL = 25
+SAMPLING_FREQ_MOTIONSENSE_GYRO = 25
+
+# MACD (moving average convergence divergence) related threshold
+FAST_MOVING_AVG_SIZE = 20
+SLOW_MOVING_AVG_SIZE = 205
+
+# Hand orientation related threshold
+MIN_ROLL = -20
+MAX_ROLL = 65
+MIN_PITCH = -125
+MAX_PITCH = -40
+
+# MotionSense sample range
+MIN_MSHRV_ACCEL = -2.5
+MAX_MSHRV_ACCEL = 2.5
+
+MIN_MSHRV_GYRO = -250
+MAX_MSHRV_GYRO = 250
+
+# Puff label
+PUFF_LABEL_RIGHT = 2
+PUFF_LABEL_LEFT = 1
+NO_PUFF = 0
+
+# Input stream names required for puffmarker
+MOTIONSENSE_HRV_ACCEL_LEFT_STREAMNAME = "ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
+MOTIONSENSE_HRV_GYRO_LEFT_STREAMNAME = "GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
+MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME = "ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
+MOTIONSENSE_HRV_GYRO_RIGHT_STREAMNAME = "GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
+
+PUFFMARKER_MODEL_FILENAME = 'core/resources/models/puffmarker/model_file/puffmarker_wrist_randomforest.model'
+
+# Outputs stream names
+PUFFMARKER_WRIST_SMOKING_EPISODE = "org.md2k.data_analysis.feature.puffmarker.smoking_episode"
+PUFFMARKER_WRIST_SMOKING_PUFF = "org.md2k.data_analysis.feature.puffmarker.smoking_puff"
+
+# smoking episode
+MINIMUM_TIME_DIFFERENCE_FIRST_AND_LAST_PUFFS = 7 * 60  # seconds
+MINIMUM_INTER_PUFF_DURATION = 5  # seconds
+MINIMUM_PUFFS_IN_EPISODE = 4
 
 
-def smooth(datastream: DataStream,
-           span: int = 5) -> DataStream:
+CONV_R = [[0, 1, 0],
+          [-1, 0, 0],
+          [0, 0, 1]]
+CONV_L = [[0, 1, 0],
+          [1, 0, 0],
+          [0, 0, 1]]
+# sample = [x, y, z]
+# new_sample = [np.dot(CONV[0],sample), np.dot(CONV[1],sample), np.dot(CONV[2],sample)]
+
+
+
+def magnitude(data: List[DataPoint]) -> List[DataPoint]:
+    """
+
+    :param datastream:
+    :return:
+    """
+    if data is None or len(data) == 0:
+        result = []
+        return result
+
+    result_data = [DataPoint(start_time=value.start_time, offset=value.offset,
+                             sample=norm(value.sample)) for value in data]
+
+    return result_data
+
+
+def smooth(data: List[DataPoint],
+           span: int = 5) -> List[DataPoint]:
     if span % 2 == 0:
         span = span + 1
 
-    data = datastream.data
     data_smooth = vector.smooth(data, span)
 
-    data_smooth_stream = DataStream.from_datastream([datastream])
-    data_smooth_stream.data = data_smooth
-    return data_smooth_stream
+    return data_smooth
 
 
-def moving_average_convergence_divergence(slow_moving_average_data: DataStream
-                                          , fast_moving_average_data: DataStream
-                                          , THRESHOLD: float, near: int):
+def moving_average_convergence_divergence(
+        slow_moving_average_data: List[DataPoint]
+        , fast_moving_average_data: List[DataPoint]
+        , THRESHOLD: float, near: int):
     '''
     Generates intersection points of two moving average signals
     :param slow_moving_average_data:
@@ -61,8 +132,10 @@ def moving_average_convergence_divergence(slow_moving_average_data: DataStream
     :param near: # of nearest point to ignore
     :return:
     '''
-    slow_moving_average = np.array([data.sample for data in slow_moving_average_data.data])
-    fast_moving_average = np.array([data.sample for data in fast_moving_average_data.data])
+    slow_moving_average = np.array(
+        [data.sample for data in slow_moving_average_data])
+    fast_moving_average = np.array(
+        [data.sample for data in fast_moving_average_data])
 
     index_list = [0] * len(slow_moving_average)
     cur_index = 0
@@ -88,10 +161,11 @@ def moving_average_convergence_divergence(slow_moving_average_data: DataStream
         for index in range(0, cur_index, 2):
             start_index = index_list[index]
             end_index = index_list[index + 1]
-            start_time = slow_moving_average_data.data[start_index].start_time
-            end_time = slow_moving_average_data.data[end_index].start_time
+            start_time = slow_moving_average_data[start_index].start_time
+            end_time = slow_moving_average_data[end_index].start_time
             intersection_points.append(
-                DataPoint(start_time=start_time, end_time=end_time, sample=[index_list[index], index_list[index + 1]]))
+                DataPoint(start_time=start_time, end_time=end_time,
+                          sample=[index_list[index], index_list[index + 1]]))
 
     return intersection_points
 
@@ -105,24 +179,32 @@ def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
     stream_days = []
     days = stream_dicts["end_time"] - stream_dicts["start_time"]
     for day in range(days.days + 1):
-        stream_days.append((stream_dicts["start_time"] + timedelta(days=day)).strftime('%Y%m%d'))
+        stream_days.append(
+            (stream_dicts["start_time"] + timedelta(days=day)).strftime(
+                '%Y%m%d'))
     return stream_days
 
 
 def store_data(filepath, input_streams, user_id, data, instance):
-    output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(filepath + user_id + "SMOKING EPISODE")))
+    output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(
+        filepath + user_id + "SMOKING EPISODE")))
 
     cur_dir = os.path.dirname(os.path.abspath(__file__))
     new_file_path = os.path.join(cur_dir, filepath)
     with open(new_file_path, "r") as f:
         metadata = f.read()
-        metadata = metadata.replace("CC_INPUT_STREAM_ID_CC", input_streams[0].identifier)
-        metadata = metadata.replace("CC_INPUT_STREAM_NAME_CC", input_streams[0].name)
-        metadata = metadata.replace("CC_OUTPUT_STREAM_IDENTIFIER_CC", output_stream_id)
+        metadata = metadata.replace("CC_INPUT_STREAM_ID_CC",
+                                    input_streams[0].identifier)
+        metadata = metadata.replace("CC_INPUT_STREAM_NAME_CC",
+                                    input_streams[0].name)
+        metadata = metadata.replace("CC_OUTPUT_STREAM_IDENTIFIER_CC",
+                                    output_stream_id)
         metadata = metadata.replace("CC_OWNER_CC", user_id)
         metadata = json.loads(metadata)
 
-        instance.store(identifier=output_stream_id, owner=user_id, name=metadata["name"],
+        instance.store(identifier=output_stream_id, owner=user_id,
+                       name=metadata["name"],
                        data_descriptor=metadata["data_descriptor"],
-                       execution_context=metadata["execution_context"], annotations=metadata["annotations"],
+                       execution_context=metadata["execution_context"],
+                       annotations=metadata["annotations"],
                        stream_type="datastream", data=data)
