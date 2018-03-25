@@ -17,6 +17,7 @@ import datetime
 from core.computefeature import ComputeFeatureBase
 from googleplaces import GooglePlaces, types, lang
 import googleplaces
+from core.computefeature import get_resource_contents
 
 feature_class_name = 'GPSClusteringEpochComputation'
 
@@ -47,7 +48,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     CENTROID_LONGITUDE = 4
     OFFSET_INDEX = 6
     GROUND_STRING_LENGTH = 3
-    MODEL_FILE_PATH = 'core/feature/gps/semantic_location_model.pkl'
+    MODEL_FILE_PATH = 'core/resources/models/gps/semantic_location_model.pkl'
     UNDEFINED = 'UNDEFINED'
     RESTAURANT = ['restaurant', 'bar']
     SCHOOL = ['school', 'book_store', 'library']
@@ -495,7 +496,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         :return:
         """
         modelFilePath = self.MODEL_FILE_PATH
-        model = pickle.load(open(modelFilePath, 'rb'))
+        model = pickle.loads(get_resource_contents(modelFilePath))
         featuresM = self.getFeatures(timestampEntry, timestampExit)
         featuresM = np.vstack((featuresM, featuresM))
         result = model.predict(featuresM)
@@ -632,7 +633,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                         self.FIVE_MINUTE_SECONDS:
                     sample_centroid = self.find_interesting_places(
                         gps_datapoints[i][self.LATITUDE],
-                        gps_datapoints[i][self.LONGITUDE], self.API_KEY,
+                        gps_datapoints[i][self.LONGITUDE], self.gps_api_key,
                         self.MINIMUM_POINTS_IN_CLUSTER)
                     dp_centroid = DataPoint(n_start_date, n_end_date,
                                             gps_datapoints[i][3],
