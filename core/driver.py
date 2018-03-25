@@ -30,30 +30,53 @@ import traceback
 import importlib
 from datetime import datetime
 from datetime import timedelta
-
+from random import shuffle
 import syslog
 from syslog import LOG_ERR
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.util.spark_helper import get_or_create_sc
 
 cc_config_path = None
-metadata_dir = None
 
-def process_features(feature_list, all_users, all_days, is_spark_job=False):
+def process_features(feature_list, all_users, all_days, num_cores=1):
     '''
     This method runs the processing pipeline for each of
     the features in the list.
     '''
     for module in feature_list:
-        if is_spark_job:
+        if num_cores > 1:
+            print('Driver: Spark job')
             spark_context = get_or_create_sc(type="sparkContext")
-            rdd = spark_context.parallelize(all_users)
-            results = rdd.map(
-                lambda user: process_feature_on_user(user, module, all_days, 
-                                                     cc_config_path))
-            results.count()
+            if 'gps' in str(module):
+                '''
+                # FIXME # TODO Currently only GPS feature computes features on a
+                range of days. Need to find a better way if there are other
+                modules that also works on range of days.
+                '''
+                print('MODULE',module)
+                rdd = spark_context.parallelize(all_users,num_cores)
+                results = rdd.map(
+                    lambda user: process_feature_on_user(user, module, all_days, 
+                                                         cc_config_path))
+                results.count()
+            else:
+                print('MODULE',module)
+                parallelize_per_day = []
+                for usr in all_users:
+                    for day in all_days:
+                        parallelize_per_day.append((usr,[day]))
+
+                shuffle(parallelize_per_day)
+                rdd = spark_context.parallelize(parallelize_per_day, num_cores)
+                results = rdd.map(
+                    lambda user_day: process_feature_on_user(user_day[0],
+                                                             module, user_day[1], 
+                                                             cc_config_path))
+                results.count()
+
             spark_context.stop()
         else:
+            print('Driver: single threaded')
             for user in all_users:
                 process_feature_on_user(user, module, all_days, cc_config_path)
 
@@ -64,8 +87,6 @@ def process_feature_on_user(user, module_name, all_days, cc_config_path):
         feature_class_name = getattr(module,'feature_class_name')
         feature_class = getattr(module,feature_class_name)
         feature_class_instance = feature_class(cc)
-        feature_class_instance.feature_metadata_dir = metadata_dir
-        cc.feature_metadata_dir = metadata_dir
         f = feature_class_instance.process
         f(user,all_days)
     except Exception as e:
@@ -142,9 +163,8 @@ def main():
                          "YYYYMMDD Format", required=True)
     parser.add_argument("-ed", "--end-date", help="End date in " 
                          "YYYYMMDD Format", required=True)
-    parser.add_argument("-m", "--metadata-dir", help="Folder path containing "
-                        "the metadata templates for the features." , required=True)
-    parser.add_argument("-p", "--spark-job", help="Set to True to enable spark "
+    parser.add_argument("-p", "--num-cores", type=int, help="Set a number "
+                        "greater than 1 to enable spark "
                         "parallel execution ", required=False)
     
     args = vars(parser.parse_args())
@@ -153,9 +173,8 @@ def main():
     users = None
     start_date = None
     end_date = None
-    metadata_dir = None
     date_format = '%Y%m%d'
-    is_spark_job = False
+    num_cores = 1 # default single threaded
     
     if args['feature_list']:
         feature_list = args['feature_list'].split(',')
@@ -169,14 +188,12 @@ def main():
         start_date = datetime.strptime(args['start_date'], date_format)
     if args['end_date']:
         end_date = datetime.strptime(args['end_date'], date_format)
-    if args['metadata_dir']:
-        metadata_dir = args['metadata_dir']
-    if args['spark_job']:
-        is_spark_job = args['spark_job']
+    if args['num_cores']:
+        num_cores = args['num_cores']
     
     all_days = []
     while True:
-        all_days.append(start_date.strftime('%Y%m%d'))
+        all_days.append(start_date.strftime(date_format))
         start_date += timedelta(days = 1)
         if start_date > end_date : break
 
@@ -184,7 +201,6 @@ def main():
     all_users = None
     try:
         CC = CerebralCortex(cc_config_path)
-        CC.feature_metadata_dir = metadata_dir
         if not users:
             users = CC.get_all_users(study_name)
             if not users:
@@ -205,7 +221,7 @@ def main():
 
     found_features = discover_features(feature_list)
     feature_to_process = generate_feature_processing_order(found_features)
-    process_features(feature_to_process, all_users, all_days, is_spark_job)
+    process_features(feature_to_process, all_users, all_days, num_cores)
     
 if __name__ == '__main__':
     main()

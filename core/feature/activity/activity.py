@@ -36,7 +36,6 @@ from core.computefeature import ComputeFeatureBase
 
 feature_class_name = 'ActivityMarker'
 
-
 class ActivityMarker(ComputeFeatureBase):
     """
     Detects activity and posture per 10 seconds window from
@@ -55,11 +54,12 @@ class ActivityMarker(ComputeFeatureBase):
                                              day=day,
                                              user_id=user_id,
                                              data_type=DataSet.COMPLETE)
-            day_data.extend(data_stream.data)
+            if data_stream is not None and len(data_stream.data) > 0:
+                day_data.extend(data_stream.data)
 
         day_data.sort(key=lambda x: x.start_time)
 
-        return day_data, stream_ids
+        return day_data
 
     def process_activity_and_posture_marker(self, streams, user_id, day,
                                             wrist: str,
@@ -93,18 +93,20 @@ class ActivityMarker(ComputeFeatureBase):
                 return [], []
             valid_accel_data, valid_gyro_data = check_motionsense_hrv_accel_gyroscope(
                 accel_data, gyro_data)
-            gravity_filtered_accel_stream = \
+            gravity_filtered_accel_data = \
                 gravityFilter_function(valid_accel_data,
                                        valid_gyro_data,
                                        sampling_freq=SAMPLING_FREQ_MOTIONSENSE_ACCEL,
                                        is_gyro_in_degree=IS_MOTIONSENSE_HRV_GYRO_IN_DEGREE)
-            accel_data = gravity_filtered_accel_stream.data
+            accel_data = gravity_filtered_accel_data
         else:
             accel_data = check_motionsense_hrv_accelerometer(accel_data)
 
         activity_features = compute_accelerometer_features(accel_data,
                                                            window_size=TEN_SECONDS)
 
+        print("Accel Len:",len(activity_features))
+        
         posture_labels = classify_posture(activity_features, is_gravity)
         activity_labels = classify_activity(activity_features, is_gravity)
 
@@ -198,3 +200,5 @@ class ActivityMarker(ComputeFeatureBase):
                                       streams[MOTIONSENSE_HRV_GYRO_RIGHT]],
                                   user_id=user,
                                   data=posture_labels)
+
+        self.CC.logging.log("Finished processing Activity for user: %s" % (user))
