@@ -32,8 +32,6 @@ from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 
 ###### --------------- start constants -------------------------------------
-study_name = 'mperf'
-
 # Sampling frequency
 SAMPLING_FREQ_MOTIONSENSE_ACCEL = 25.0
 SAMPLING_FREQ_MOTIONSENSE_GYRO = 25.0
@@ -59,15 +57,27 @@ RIGHT_WRIST = 'right_wrist'
 # Window size
 TEN_SECONDS = 10
 
-POSTURE_MODEL_FILENAME = 'core/feature/activity/models/posture_randomforest.model'
-ACTIVITY_MODEL_FILENAME = 'core/feature/activity/models/activity_level_randomforest.model'
+POSTURE_MODEL_FILENAME = 'core/resources/models/activity/posture_randomforest.model'
+ACTIVITY_MODEL_FILENAME = 'core/resources/models/activity/activity_level_randomforest.model'
+POSTURE_ACCEL_ONLY_MODEL_FILENAME = 'core/resources/models/activity/posture_randomforest_accelonly500.model'
+ACTIVITY_ACCEL_ONLY_MODEL_FILENAME = 'core/resources/models/activity/activity_type_randomforest_accelonly500.model'
+
+# json filename
+ACTIVITY_TYPE_10SECONDS_WINDOW = 'activity_type_10seconds_window.json'
+POSTURE_10SECONDS_WINDOW = 'posture_10seconds_window.json'
+ACTIVITY_TYPE_ACCEL_ONLY_10SECONDS_WINDOW = 'activity_type_accelonly_10seconds_window.json'
+POSTURE_ACCEL_ONLY_10SECONDS_WINDOW = 'posture_accelonly_10seconds_window.json'
 
 # Output labels
 ACTIVITY_LABELS = ["NO", "LOW", "WALKING", "MOD", "HIGH"]
 POSTURE_LABELS = ["lying", "sitting", "standing"]
 
-ACTIVITY_LABELS_INDEX_MAP = {"NO": 0, "LOW": 1, "WALKING": 2, "MOD": 3, "HIGH": 4}
+ACTIVITY_LABELS_INDEX_MAP = {"NO": 0, "LOW": 1, "WALKING": 2, "MOD": 3,
+                             "HIGH": 4}
 POSTURE_LABELS_INDEX_MAP = {"lying": 0, "sitting": 1, "standing": 2}
+
+
+MADGWICKFILTER_BETA = 0.4
 
 
 ###### --------------- END constants -------------------------------------
@@ -75,7 +85,8 @@ POSTURE_LABELS_INDEX_MAP = {"lying": 0, "sitting": 1, "standing": 2}
 
 def get_max_label(label1, label2):
     if label1 in ACTIVITY_LABELS and label2 in ACTIVITY_LABELS:
-        if ACTIVITY_LABELS_INDEX_MAP[label1] > ACTIVITY_LABELS_INDEX_MAP[label2]:
+        if ACTIVITY_LABELS_INDEX_MAP[label1] > ACTIVITY_LABELS_INDEX_MAP[
+            label2]:
             return label1
         else:
             return label2
@@ -85,7 +96,6 @@ def get_max_label(label1, label2):
         else:
             return label2
     return "UNDEFINED"
-
 
 def merge_left_right(left_data: List[DataPoint],
                      right_data: List[DataPoint],
@@ -99,7 +109,8 @@ def merge_left_right(left_data: List[DataPoint],
     index = 0
     while index < len(data) - 1:
         if data[index].start_time + win_size > data[index + 1].start_time:
-            updated_label = get_max_label(data[index].sample, data[index + 1].sample)
+            updated_label = get_max_label(data[index].sample,
+                                          data[index + 1].sample)
             merged_data.append(DataPoint(start_time=data[index].start_time,
                                          end_time=data[index].end_time,
                                          offset=data[index].offset,
@@ -114,4 +125,40 @@ def merge_left_right(left_data: List[DataPoint],
             index = index + 1
     return merged_data
 
+def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
+    """
+    Returns a list of days (string format: YearMonthDay (e.g., 20171206)
+    :param stream_id:
+    """
+    stream_dicts = CC.get_stream_duration(stream_id)
+    stream_days = []
+    days = stream_dicts["end_time"] - stream_dicts["start_time"]
+    for day in range(days.days + 1):
+        stream_days.append(
+            (stream_dicts["start_time"] + timedelta(days=day)).strftime(
+                '%Y%m%d'))
+    return stream_days
 
+
+def store_data(filepath, input_streams, user_id, data, str_sufix, instance):
+    output_stream_id = str(
+        uuid.uuid3(uuid.NAMESPACE_DNS, str(filepath + user_id + str_sufix)))
+    cur_dir = os.path.dirname(os.path.abspath(__file__))
+    newfilepath = os.path.join(cur_dir, filepath)
+    with open(newfilepath, "r") as f:
+        metadata = f.read()
+        metadata = metadata.replace("CC_INPUT_STREAM_ID_CC",
+                                    input_streams[0]["identifier"])
+        metadata = metadata.replace("CC_INPUT_STREAM_NAME_CC",
+                                    input_streams[0]["name"])
+        metadata = metadata.replace("CC_OUTPUT_STREAM_IDENTIFIER_CC",
+                                    output_stream_id)
+        metadata = metadata.replace("CC_OWNER_CC", user_id)
+        metadata = json.loads(metadata)
+
+        instance.store(identifier=output_stream_id, owner=user_id,
+                       name=metadata["name"],
+                       data_descriptor=metadata["data_descriptor"],
+                       execution_context=metadata["execution_context"],
+                       annotations=metadata["annotations"],
+                       stream_type="datastream", data=data)

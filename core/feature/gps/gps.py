@@ -1,8 +1,12 @@
 import uuid
+import pickle
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
+from pprint import pprint
+from scipy.io import savemat
+import datetime
 import numpy as np, pandas as pd
-import os
+import time, os
 from math import radians, cos, sin, asin, sqrt
 from sklearn.cluster import DBSCAN
 from geopy.distance import great_circle
@@ -11,21 +15,31 @@ from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 import datetime
 from core.computefeature import ComputeFeatureBase
+from googleplaces import GooglePlaces, types, lang
+import googleplaces
+from core.computefeature import get_resource_contents
 
 feature_class_name = 'GPSClusteringEpochComputation'
 
 
 class GPSClusteringEpochComputation(ComputeFeatureBase):
+    """
+    Class to compute GPS markers
+    
+    """
     INTERPOLATION_TIME = 1.0
     KM_PER_RADIAN = 6371.0088
     EPSILON_CONSTANT = 1000
-    GPS_ACCURACY_THRESHOLD = 41
+    GPS_ACCURACY_THRESHOLD = 41.0
     GEO_FENCE_DISTANCE = 2
     MINIMUM_POINTS_IN_CLUSTER = 500
+    DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
     GEOFENCE_ASSIGNING_CENTROID = 1000
+    EPOCH_THRESHOLD = 0.5
     LATITUDE = 0
     LONGITUDE = 1
     ACCURACY = -1
+    GPS_DATA_THRESHOLD = 100
     OFFSET = -1
     GPS_SAMPLE_LENGTH = 6
     IN_SECONDS = 60
@@ -34,7 +48,24 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     CENTROID_LONGITUDE = 4
     OFFSET_INDEX = 6
     GROUND_STRING_LENGTH = 3
+    MODEL_FILE_PATH = 'core/resources/models/gps/semantic_location_model.pkl'
     UNDEFINED = 'UNDEFINED'
+    RESTAURANT = ['restaurant', 'bar']
+    SCHOOL = ['school', 'book_store', 'library']
+    PLACE_OF_WORSHIP = ['church', 'hindu_temple', 'mosque']
+    ENTERTAINMENT = ['zoo', 'amusement_park', 'aquarium', 'art_gallery',
+                     'bowling_alley', 'movie_theater', 'museum',
+                     'night_club', 'casino']
+    STORE = ['jewelry_store', 'store', 'bicycle_store', 'movie_rental',
+             'car_rental', 'pet_store', 'clothing_store',
+             'convenience_store', 'department_store', 'shoe_store',
+             'shopping_mall', 'furniture_store', 'supermarket',
+             'home_goods_store']
+    SPORTS = ['bowling_alley', 'gym']
+    # TODO no API KEY
+    CENTROID_INDEX = 7
+    FIVE_MINUTE_SECONDS = 600.0
+    NOT_HOME_OR_WORK = 'other'
 
     def process(self, user, all_days):
         """
@@ -42,10 +73,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         """
         location_stream = 'LOCATION--org.md2k.phonesensor--PHONE'
         geofence_list_stream = 'GEOFENCE--LIST--org.md2k.phonesensor--PHONE'
-
         if self.CC is not None:
-            # self.CC.logging.log('GPS processing %s ' %(str(user)))
-            # users = [{'username': 'mperf_9040', 'identifier': '397c6457-0954-4cd2-995c-2fbeb6c72097'}]
             streams = self.CC.get_user_streams(user)
             gps_data_all_streams = []
             gps_groundtruth_data = {}
@@ -55,9 +83,8 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                     stream_ids = self.CC.get_stream_id(user, stream_name)
                     for stream_id in stream_ids:
                         geofence_stream_id = stream_id["identifier"]
-                        gps_groundtruth_d = self.gps_groundtruth(geofence_stream_id, user, all_days)
-                        if not gps_groundtruth_d:
-                            continue
+                        gps_groundtruth_d = self.gps_groundtruth(
+                            geofence_stream_id, user, all_days)
                         gps_groundtruth_data.update(gps_groundtruth_d)
                 if location_stream in stream_name:
                     stream_ids = self.CC.get_stream_id(user, stream_name)
@@ -68,39 +95,118 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                             continue
                         gps_data_all_streams.extend(data)
 
-            if not gps_data_all_streams and not gps_groundtruth_data:
+            if len(gps_data_all_streams) < self.GPS_DATA_THRESHOLD:
                 self.CC.logging.log('if not gps_data_all_streams and not '
-                                    'gps_groundtruth_data ' +str(user))
+                                    'gps_groundtruth_data ' + str(user))
                 return
             else:
-                gps_data_admission_controlled = self.gps_admission_control(gps_data_all_streams)
-                interpolated_gps_data = self.gps_interpolation(gps_data=gps_data_admission_controlled)
-                epoch_centroid, epoch_semantic = \
+                gps_data_admission_controlled = self.gps_admission_control(
+                    gps_data_all_streams)
+                interpolated_gps_data = self.gps_interpolation(
+                    gps_data=gps_data_admission_controlled)
+                epoch_id, epoch_centroid, epoch_semantic, epoch_semantic_model, \
+                epoch_place_annotation = \
                     self.get_gps_data_format(interpolated_gps_data,
-                                             geo_fence_distance=self.GEO_FENCE_DISTANCE,
-                                             min_points_in_cluster=self.MINIMUM_POINTS_IN_CLUSTER,
-                                             max_dist_assign_centroid=self.GEOFENCE_ASSIGNING_CENTROID,
-                                             centroid_name_dict=gps_groundtruth_data)
+                                             geo_fence_distance=
+                                             self.GEO_FENCE_DISTANCE,
+                                             min_points_in_cluster
+                                             =self.MINIMUM_POINTS_IN_CLUSTER,
+                                             max_dist_assign_centroid=
+                                             self.GEOFENCE_ASSIGNING_CENTROID,
+                                             centroid_name_dict=
+                                             gps_groundtruth_data)
+                if gps_groundtruth_data:
+                    self.store_stream(filepath="gps_data_centroid_index.json",
+                                      input_streams=[streams[location_stream],
+                                                     streams[
+                                                         geofence_list_stream
+                                                     ]],
+                                      user_id=user,
+                                      data=epoch_id, localtime=False)
+                    self.store_stream(
+                        filepath="gps_data_clustering_episode_generation.json",
+                        input_streams=[streams[location_stream],
+                                       streams[geofence_list_stream]],
+                        user_id=user,
+                        data=epoch_centroid, localtime=False)
 
-                self.CC.logging.log("GPS feature storing %d "
-                                    "gps_data_clustering: for user_id %s" % 
-                                    (len(epoch_centroid), str(user)))
-                self.CC.logging.log("GPS storing %d gps_semantic: "
-                                     "for user_id %s" % 
-                                     (len(epoch_semantic), str(user)))
+                    self.store_stream(
+                        filepath=
+                        "gps_episodes_and_semantic_location_user_marked.json",
+                        input_streams=[streams[location_stream],
+                                       streams[geofence_list_stream]],
+                        user_id=user,
+                        data=epoch_semantic, localtime=False)
 
-                self.store_stream(filepath="gps_data_clustering_episode_generation.json", 
-                                  input_streams=[streams[location_stream], 
-                                                 streams[geofence_list_stream]],
-                                  user_id=user, 
-                                  data=epoch_centroid)
-                
-                self.store_stream(filepath="gps_episodes_and_semantic_location.json", 
-                                  input_streams=[streams[location_stream],
-                                                 streams[geofence_list_stream]], 
-                                  user_id=user,
-                                  data=epoch_semantic)
+                    self.store_stream(
+                        filepath=
+                        "gps_episodes_and_semantic_location_from_model.json",
+                        input_streams=[streams[location_stream],
+                                       streams[geofence_list_stream]],
+                        user_id=user,
+                        data=epoch_semantic_model, localtime=False)
 
+                    self.store_stream(
+                        filepath=
+                        "gps_episodes_and_semantic_location_from_places.json",
+                        input_streams=[streams[location_stream],
+                                       streams[geofence_list_stream]],
+                        user_id=user,
+                        data=epoch_place_annotation, localtime=False)
+                else:
+                    self.store_stream(filepath="gps_data_centroid_index.json",
+                                      input_streams=[streams[location_stream]],
+                                      user_id=user,
+                                      data=epoch_id, localtime=False)
+                    self.store_stream(
+                        filepath="gps_data_clustering_episode_generation.json",
+                        input_streams=[streams[location_stream]],
+                        user_id=user,
+                        data=epoch_centroid, localtime=False)
+
+                    self.store_stream(
+                        filepath=
+                        "gps_episodes_and_semantic_location_from_model.json",
+                        input_streams=[streams[location_stream]],
+                        user_id=user,
+                        data=epoch_semantic_model, localtime=False)
+
+                    self.store_stream(
+                        filepath=
+                        "gps_episodes_and_semantic_location_from_places.json",
+                        input_streams=[streams[location_stream]],
+                        user_id=user,
+                        data=epoch_place_annotation, localtime=False)
+
+    def find_interesting_places(self, latitude, longitude, api_key,
+                                geofence_radius):
+        """
+        Obtain the list of interesting places near a coordinate
+        :param latitude: float
+        :param longitude: float
+        :param api_key: string
+        :param geofence_radius: float
+        :return: 
+        """
+        google_places = GooglePlaces(api_key)
+        places_type_list = [self.RESTAURANT, self.SCHOOL, self.PLACE_OF_WORSHIP,
+                            self.ENTERTAINMENT, self.STORE,
+                            self.SPORTS]
+        return_list = []
+        for places_list in places_type_list:
+            place_list_length = 0
+            for a_place in places_list:
+                query_res = google_places.nearby_search(
+                    lat_lng={'lat': latitude, 'lng': longitude},
+                    keyword=a_place,
+                    radius=geofence_radius)
+                for place in query_res.places:
+                    place_list_length += 1
+            if place_list_length:
+                return_list.append('yes')
+            else:
+                return_list.append('no')
+        return return_list
 
     def get_gps(self, gps_stream_id, user_id, all_days):
         """
@@ -108,12 +214,16 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         :param all_days:
         :param gps_stream_id: String
         :param user_id: String
-        :return: List (of gps datapoints for the that gps_stream_id for that user_id)
+        :return: List (of gps datapoints for the that gps_stream_id for that
+        user_id)
         """
         data_for_all_days = []
         if gps_stream_id:
             for day in all_days:
-                stream = self.CC.get_stream(gps_stream_id, user_id=user_id, day=day, data_type=DataSet.COMPLETE)
+                stream = self.CC.get_stream(gps_stream_id, user_id=user_id,
+                                            day=day,
+                                            data_type=DataSet.COMPLETE,
+                                            localtime=False)
                 data_for_a_day = stream.data
                 data_for_all_days.append(data_for_a_day)
         extracted_gps_data = []
@@ -125,8 +235,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                     extracted_gps_data.append(data)
         return extracted_gps_data
 
-    @staticmethod
-    def gps_admission_control(gps_data):
+    def gps_admission_control(self, gps_data):
         """
          Filter out spurious data
         :param gps_data: List
@@ -134,7 +243,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         """
         gps_data_control = []
         for gps in gps_data:
-            if isinstance(gps.sample, list):
+            if isinstance(gps.sample, list) and len(gps.sample) == 6:
                 gps_data_control.append(gps)
             else:
                 continue
@@ -143,19 +252,21 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     def gps_groundtruth(self, geofence_stream_id, user_id, all_days):
         """
          Obtain gps locations marked by users
-        :param all_days:
         :param geofence_stream_id: String
         :param user_id: String
-        :return: Dictionary (key - semantic names, values - Corresponding co-ordinates)
+        :return: Dictionary (key - semantic names, values - Corresponding
+        co-ordinates)
         """
         data_for_all_days = []
         if geofence_stream_id:
             for day in all_days:
-                stream = self.CC.get_stream(geofence_stream_id,
-                                            user_id=user_id, day=day,
-                                            data_type=DataSet.COMPLETE)
+                stream = self.CC.get_stream(geofence_stream_id, user_id=user_id,
+                                            day=day,
+                                            data_type=DataSet.COMPLETE,
+                                            localtime=False)
                 data_for_a_day = stream.data
                 data_for_all_days.append(data_for_a_day)
+
         extracted_semantic_name = {}
         if not data_for_all_days:
             extracted_semantic_name = {}
@@ -163,10 +274,17 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
             for all_data in data_for_all_days:
                 for data in all_data:
                     if isinstance(data.sample, str) and '#' in data.sample:
-                        for i in range(1, len(data.sample.split('#')), self.GROUND_STRING_LENGTH):
+                        for i in range(1, len(data.sample.split('#')),
+                                       self.GROUND_STRING_LENGTH):
+                            if len(data.sample.split(
+                                    '#')) % self.GROUND_STRING_LENGTH != 0:
+                                extracted_semantic_name = {}
+                                continue
                             semantic_gps_data = np.array(
-                                [float(data.sample.split('#')[i]), float(data.sample.split('#')[i + 1])])
-                            extracted_semantic_name[data.sample.split('#')[i - 1]] = semantic_gps_data
+                                [float(data.sample.split('#')[i]),
+                                 float(data.sample.split('#')[i + 1])])
+                            extracted_semantic_name[data.sample.split('#')[
+                                i - 1]] = semantic_gps_data
                     else:
                         continue
         return extracted_semantic_name
@@ -185,8 +303,11 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
             next_time_point = gps_data[i + 1].start_time
             dp = DataPoint(curr_time_point, None, curr_offset, curr_sample)
             interpolated_data.append(dp)
-            while ((next_time_point - curr_time_point).total_seconds() / self.IN_SECONDS) > self.INTERPOLATION_TIME:
-                new_start_time = curr_time_point + datetime.timedelta(seconds=self.IN_SECONDS)
+            while ((
+                           next_time_point - curr_time_point).total_seconds()
+                   / self.IN_SECONDS) > self.INTERPOLATION_TIME:
+                new_start_time = curr_time_point + datetime.timedelta(
+                    seconds=self.IN_SECONDS)
                 new_sample = curr_sample
                 new_offset = curr_offset
                 dp = DataPoint(new_start_time, None, new_offset, new_sample)
@@ -194,34 +315,36 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                 interpolated_data.append(dp)
         return interpolated_data
 
-    def haversine(self, first_longitude, first_latitude, second_longitude, second_latitude):
+    def haversine(self, lon1, lat1, lon2, lat2):
         """
         Calculate the great circle distance between two points
         on the earth (specified in decimal degrees)
-        :param first_longitude: Float
-        :param first_latitude: Float
-        :param second_longitude: Float
-        :param second_latitude: Float
+        :param lon1: Float
+        :param lat1: Float
+        :param lon2: Float
+        :param lat2: Float
         :return: Float (Distance in km)
         """
         # convert decimal degrees to radians
-        first_longitude, first_latitude, second_longitude, second_latitude = \
-            map(radians, [first_longitude, first_latitude, second_longitude, second_latitude])
+        lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
         # haversine formula
-        dlon = second_longitude - first_longitude
-        dlat = second_latitude - first_latitude
-        a = sin(dlat / 2) ** 2 + cos(first_latitude) * cos(second_latitude) * sin(dlon / 2) ** 2
+        dlon = lon2 - lon1
+        dlat = lat2 - lat1
+        a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
         c = 2 * asin(sqrt(a))
         km = self.KM_PER_RADIAN * c
         return km
 
     @staticmethod
     def get_centermost_point(cluster):
-        centroid = (MultiPoint(cluster).centroid.x, MultiPoint(cluster).centroid.y)
-        centermost_point = min(cluster, key=lambda point: great_circle(point, centroid).m)
+        centroid = (
+            MultiPoint(cluster).centroid.x, MultiPoint(cluster).centroid.y)
+        centermost_point = min(cluster, key=lambda point: great_circle(point,
+                                                                       centroid).m)
         return tuple(centermost_point)
 
-    def get_gps_clusters(self, interpolated_gps_data, geo_fence_distance, min_points_in_cluster):
+    def get_gps_clusters(self, interpolated_gps_data, geo_fence_distance,
+                         min_points_in_cluster):
         """
          Computes the clusters
         :param interpolated_gps_data: List
@@ -232,19 +355,23 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         arr_latitude = []
         arr_longitude = []
         for gps_info in interpolated_gps_data:
-            if gps_info.sample[-1] < self.GPS_ACCURACY_THRESHOLD:
-                arr_latitude.append(gps_info.sample[0])
-                arr_longitude.append(gps_info.sample[1])
+            if gps_info.sample[self.ACCURACY] < self.GPS_ACCURACY_THRESHOLD:
+                arr_latitude.append(gps_info.sample[self.LATITUDE])
+                arr_longitude.append(gps_info.sample[self.LONGITUDE])
             else:
                 continue
-        dataframe = pd.DataFrame({'Latitude': arr_latitude, 'Longitude': arr_longitude})
+        dataframe = pd.DataFrame(
+            {'Latitude': arr_latitude, 'Longitude': arr_longitude})
         coords = dataframe.as_matrix(columns=['Latitude', 'Longitude'])
-        epsilon = geo_fence_distance / (self.EPSILON_CONSTANT * self.KM_PER_RADIAN)
-        db = DBSCAN(eps=epsilon, min_samples=min_points_in_cluster, algorithm='ball_tree', metric='haversine').fit(
+        epsilon = geo_fence_distance / (
+                self.EPSILON_CONSTANT * self.KM_PER_RADIAN)
+        db = DBSCAN(eps=epsilon, min_samples=min_points_in_cluster,
+                    algorithm='ball_tree', metric='haversine').fit(
             np.radians(coords))
         cluster_labels = db.labels_
         num_clusters = len(set(cluster_labels))
-        clusters = pd.Series([coords[cluster_labels == n] for n in range(-1, num_clusters)])
+        clusters = pd.Series(
+            [coords[cluster_labels == n] for n in range(-1, num_clusters)])
         clusters = clusters.apply(lambda y: np.nan if len(y) == 0 else y)
         clusters.dropna(how='any', inplace=True)
         centermost_points = clusters.map(self.get_centermost_point)
@@ -262,7 +389,8 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         Assigns semantic name to a centroid
         :param semantic_groundtruth: Dictionary
         :param centorids_coord: List
-        :return: List of centroids with their corresponding semantic names, if found
+        :return: List of centroids with their corresponding semantic names, if
+        found
         """
         candidate_names = []
         semantic_name_list = []
@@ -270,46 +398,117 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         for key, value in semantic_groundtruth.items():
             candidate_names.append(key)
         for i in centorids_coord:
-            semantic_name_list.append([i[self.LATITUDE], i[self.LONGITUDE], self.UNDEFINED])
+            semantic_name_list.append(
+                [i[self.LATITUDE], i[self.LONGITUDE], self.UNDEFINED])
             dist = []
             all_index = []
             for key, value in semantic_groundtruth.items():
                 dist.append(
-                    self.haversine(i[self.LONGITUDE], i[self.LATITUDE], value[self.LONGITUDE], value[self.LATITUDE]))
+                    self.haversine(i[self.LONGITUDE], i[self.LATITUDE],
+                                   value[self.LONGITUDE], value[self.LATITUDE]))
             for j in dist:
-                if j < self.GEOFENCE_ASSIGNING_CENTROID / (2 * self.GEOFENCE_ASSIGNING_CENTROID):
+                if j < self.GEOFENCE_ASSIGNING_CENTROID / (
+                        2 * self.GEOFENCE_ASSIGNING_CENTROID):
                     all_index.append(dist.index(j))
             for index in all_index:
                 semantic_name_list[centroid_index][2] = candidate_names[index]
             centroid_index += 1
         return semantic_name_list
 
-    def get_centroid(self, centroids, c_name, lat, long, max_dist_assign_centroid):
+    def get_centroid(self, centroids, c_name, lat, long,
+                     max_dist_assign_centroid):
         """
-         Obtain the nearest centroid and semantic name for a given location co-ordinate
+         Obtain the nearest centroid and semantic name for a given location
+         co-ordinate
         :param centroids: List
         :param c_name: List
         :param lat: Float
         :param long: Float
         :param max_dist_assign_centroid: Constant
-        :return: List of centroid and semantic name assigned to the given GPS datapoint
+        :return: List of centroid and semantic name assigned to the given GPS
+        datapoint
         """
         dist = []
-        gps_centroids = [(c[self.LATITUDE], c[self.LONGITUDE]) for c in centroids]
+        gps_centroids = [(c[self.LATITUDE], c[self.LONGITUDE]) for c in
+                         centroids]
         for i in gps_centroids:
-            dist.append(self.haversine(long, lat, i[self.LONGITUDE], i[self.LATITUDE]))
+            dist.append(
+                self.haversine(long, lat, i[self.LONGITUDE], i[self.LATITUDE]))
         min_dist = np.min(dist)
-        if min_dist < max_dist_assign_centroid / self.GEOFENCE_ASSIGNING_CENTROID:
+        if min_dist < max_dist_assign_centroid / \
+                self.GEOFENCE_ASSIGNING_CENTROID:
             index = dist.index(min_dist)
-            gps_pt_name = [gps_centroids[index], c_name[index]]
+            gps_pt_name = [gps_centroids[index], c_name[index], index]
             return list(gps_pt_name)
         else:
-            return list([(-1, -1), self.UNDEFINED])
+            return list([(-1, -1), self.UNDEFINED, -1])
 
-    def get_gps_data_format(self, interpolated_gps_data, geo_fence_distance, min_points_in_cluster,
+    def utc_unix_time(self, strinddate):
+        s = strinddate[:19]
+        d = strinddate[-5:-3]
+        utc = datetime.datetime.strptime(s, self.DATE_FORMAT)
+        unix_t = utc.timestamp() * 1000 - int(d) * 60 * 60000
+        return unix_t
+
+    def getHourOfDay(self, timestamp):
+        """
+        Get Time of day
+        :param timestamp: unixtimestamp
+        :return:
+        """
+        tm = time.localtime(timestamp / 1000)
+        hourOfDay = tm.tm_hour + tm.tm_min / 60.0 + tm.tm_sec / 3600.0
+        return hourOfDay
+
+    def getDayOfWeek(self, timestamp):
+        """
+        Get Day of Week
+        :param timestamp: unixtimestamp
+        :return:
+        """
+        # """day of week, range [0, 6], Monday is 0"""
+        tm = time.localtime(timestamp / 1000)
+        return tm.tm_wday
+
+    def getFeatures(self, timestampEntry, timestampExit):
+        """
+        Compute features for semantic assignment model
+        :param timestampEntry: unixtimestamp
+        :param timestampExit: unixtimestamp
+        :return:
+        """
+        featuresM = []
+        hodEntry = self.getHourOfDay(timestampEntry)
+        hodExit = self.getHourOfDay(timestampExit)
+        dow = self.getDayOfWeek(timestampEntry)
+        featuresM.append(dow)
+        featuresM.append(hodEntry)
+        featuresM.append(hodExit)
+        featuresM.append((timestampExit - timestampEntry) / (60 * 60000))
+        featuresM.append((timestampExit - timestampEntry) / (2 * 60 * 60000))
+        return featuresM
+
+    def predictLabel(self, timestampEntry, timestampExit):
+        """
+        Predict label from model
+        :param timestampEntry: unixtimestamp
+        :param timestampExit: unixtimestamp
+        :return:
+        """
+        modelFilePath = self.MODEL_FILE_PATH
+        model = pickle.loads(get_resource_contents(modelFilePath))
+        featuresM = self.getFeatures(timestampEntry, timestampExit)
+        featuresM = np.vstack((featuresM, featuresM))
+        result = model.predict(featuresM)
+        result = result[0]
+        return result
+
+    def get_gps_data_format(self, interpolated_gps_data, geo_fence_distance,
+                            min_points_in_cluster,
                             max_dist_assign_centroid,
                             centroid_name_dict):
         """
+
         :param interpolated_gps_data: List
         :param geo_fence_distance: Constant
         :param min_points_in_cluster: Constant
@@ -319,38 +518,131 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         """
         gps_data = []
         gps_epoch_with_centroid = []
+        gps_epoch_with_centroid_index = []
         gps_epoch_with_semantic_location = []
-        centroid_location = self.get_gps_clusters(interpolated_gps_data, geo_fence_distance, min_points_in_cluster)
-        gps_datapoints = [(dp.sample[self.LATITUDE], dp.sample[self.LONGITUDE], dp.start_time, dp.offset) for dp in
+        gps_epoch_with_place_annotation = []
+        gps_epoch_model_semantic_location = []
+
+        centroid_location = self.get_gps_clusters(interpolated_gps_data,
+                                                  geo_fence_distance,
+                                                  min_points_in_cluster)
+        gps_datapoints = [(dp.sample[self.LATITUDE], dp.sample[self.LONGITUDE],
+                           dp.start_time, dp.offset) for dp in
                           interpolated_gps_data
-                          if dp.sample[self.ACCURACY] < self.GPS_ACCURACY_THRESHOLD]
-        sem_names = self.gps_semantic_locations(centroid_name_dict, centroid_location)
-        semantic_names_arr = ([sem_names[i][2] for i in range(len(centroid_location))])
+                          if dp.sample[
+                              self.ACCURACY] < self.GPS_ACCURACY_THRESHOLD]
+
+        sem_names = self.gps_semantic_locations(centroid_name_dict,
+                                                centroid_location)
+        semantic_names_arr = (
+            [sem_names[i][2] for i in range(len(centroid_location))])
+
         for i in gps_datapoints:
-            assign_centroid = self.get_centroid(centroid_location, semantic_names_arr, i[self.LATITUDE],
+            assign_centroid = self.get_centroid(centroid_location,
+                                                semantic_names_arr,
+                                                i[self.LATITUDE],
                                                 i[self.LONGITUDE],
                                                 max_dist_assign_centroid)
-            gps_data.append([i[2], i[self.LATITUDE], i[self.LONGITUDE], assign_centroid[0][self.LATITUDE],
+            gps_data.append([i[2], i[self.LATITUDE], i[self.LONGITUDE],
+                             assign_centroid[0][self.LATITUDE],
                              assign_centroid[0][self.LONGITUDE],
-                             assign_centroid[1], i[self.OFFSET]])
-        start_date = gps_data[0][0]
-        gps_epoch_with_centroid.append(DataPoint(start_date, None, gps_data[0][self.OFFSET_INDEX],
-                                                 [gps_data[0][self.CENTROID_LATITUDE],
-                                                  gps_data[0][self.CENTROID_LONGITUDE]]))
-        gps_epoch_with_semantic_location.append(DataPoint(start_date, None, gps_data[0][self.OFFSET_INDEX],
-                                                          [gps_data[0][self.SEMANTIC_NAMES_INDEX]]))
+                             assign_centroid[1], i[self.OFFSET],
+                             assign_centroid[2]])
+
+        # If we have user marked location
+        if centroid_name_dict:
+            start_date = gps_data[0][0]
+            for i in range(len(gps_data) - 1):
+                if self.haversine(gps_data[i][self.CENTROID_LONGITUDE],
+                                  gps_data[i][self.CENTROID_LATITUDE],
+                                  gps_data[i + 1][self.CENTROID_LONGITUDE],
+                                  gps_data[i + 1][
+                                      self.CENTROID_LATITUDE]) <= \
+                        self.EPOCH_THRESHOLD:
+                    continue
+                else:
+                    end_date = gps_data[i][0]
+                    sample_semantic_names = [
+                        gps_data[i][self.SEMANTIC_NAMES_INDEX]]
+                    dp_semantic_location = DataPoint(start_date, end_date,
+                                                     gps_data[i][
+                                                         self.OFFSET_INDEX],
+                                                     sample_semantic_names)
+                    gps_epoch_with_semantic_location.append(
+                        dp_semantic_location)
+                    start_date = gps_data[i + 1][0]
+
+        # Semantic location from model
+        m_start_date = gps_data[0][0]
         for i in range(len(gps_data) - 1):
-            if (gps_data[i + 1][self.CENTROID_LATITUDE] - gps_data[i][self.CENTROID_LATITUDE] == 0.0 and
-                    gps_data[i + 1][self.CENTROID_LONGITUDE] - gps_data[i][self.CENTROID_LONGITUDE] == 0.0):
+            if self.haversine(gps_data[i][self.CENTROID_LONGITUDE],
+                              gps_data[i][self.CENTROID_LATITUDE],
+                              gps_data[i + 1][self.CENTROID_LONGITUDE],
+                              gps_data[i + 1][
+                                  self.CENTROID_LATITUDE]) <= \
+                    self.EPOCH_THRESHOLD:
                 continue
             else:
-                end_date = gps_data[i][0]
-                sample_centroid = [gps_data[i][self.CENTROID_LATITUDE], gps_data[i][self.CENTROID_LONGITUDE]]
-                sample_semantic_names = [gps_data[i][self.SEMANTIC_NAMES_INDEX]]
-                dp_centroid = DataPoint(start_date, end_date, gps_data[i][self.OFFSET_INDEX], sample_centroid)
+                m_end_date = gps_data[i][0]
+                sample_centroid_index = [gps_data[i][self.CENTROID_INDEX]]
+                sample_centroid = [gps_data[i][self.CENTROID_INDEX],
+                                   gps_data[i][self.CENTROID_LATITUDE],
+                                   gps_data[i][self.CENTROID_LONGITUDE]]
+                dp_centroid = DataPoint(m_start_date, m_end_date,
+                                        gps_data[i][self.OFFSET_INDEX],
+                                        sample_centroid)
+                dp_centroid_index = DataPoint(m_start_date, m_end_date,
+                                              gps_data[i][self.OFFSET_INDEX],
+                                              sample_centroid_index)
+                gps_epoch_with_centroid_index.append(dp_centroid_index)
                 gps_epoch_with_centroid.append(dp_centroid)
-                dp_semantic_location = DataPoint(start_date, end_date, gps_data[i][self.OFFSET_INDEX],
-                                                 sample_semantic_names)
-                gps_epoch_with_semantic_location.append(dp_semantic_location)
-                start_date = gps_data[i + 1][0]
-        return gps_epoch_with_centroid, gps_epoch_with_semantic_location
+                if (
+                        m_end_date - m_start_date).total_seconds() > \
+                        self.FIVE_MINUTE_SECONDS:
+                    if gps_data[i][self.CENTROID_LATITUDE] == -1 and \
+                            gps_data[i][self.CENTROID_LONGITUDE] == -1:
+                        sample_semantic_names = self.UNDEFINED
+                    else:
+                        sample_semantic_names = self.predictLabel(
+                            self.utc_unix_time(str(m_start_date)),
+                            self.utc_unix_time(str(m_end_date)))
+                        if sample_semantic_names == self.NOT_HOME_OR_WORK:
+                            sample_semantic_names = self.UNDEFINED
+                    dp_semantic_location = DataPoint(m_start_date, m_end_date,
+                                                     gps_data[i][
+                                                         self.OFFSET_INDEX],
+                                                     sample_semantic_names)
+                    gps_epoch_model_semantic_location.append(
+                        dp_semantic_location)
+                    m_start_date = gps_data[i + 1][0]
+                else:
+                    m_start_date = gps_data[i + 1][0]
+
+        n_start_date = gps_datapoints[0][2]
+        for i in range(len(gps_datapoints) - 1):
+            if self.haversine(gps_datapoints[i][self.LONGITUDE],
+                              gps_datapoints[i][self.LATITUDE],
+                              gps_datapoints[i + 1][self.LONGITUDE],
+                              gps_datapoints[i + 1][
+                                  self.LATITUDE]) <= self.EPOCH_THRESHOLD:
+                continue
+            else:
+                n_end_date = gps_datapoints[i][2]
+                if (
+                        n_end_date - n_start_date).total_seconds() > \
+                        self.FIVE_MINUTE_SECONDS:
+                    sample_centroid = self.find_interesting_places(
+                        gps_datapoints[i][self.LATITUDE],
+                        gps_datapoints[i][self.LONGITUDE], self.gps_api_key,
+                        self.MINIMUM_POINTS_IN_CLUSTER)
+                    dp_centroid = DataPoint(n_start_date, n_end_date,
+                                            gps_datapoints[i][3],
+                                            sample_centroid)
+                    gps_epoch_with_place_annotation.append(dp_centroid)
+                    n_start_date = gps_datapoints[i + 1][2]
+                else:
+                    n_start_date = gps_datapoints[i + 1][2]
+        return gps_epoch_with_centroid_index, gps_epoch_with_centroid, \
+               gps_epoch_with_semantic_location, \
+               gps_epoch_model_semantic_location, \
+               gps_epoch_with_place_annotation

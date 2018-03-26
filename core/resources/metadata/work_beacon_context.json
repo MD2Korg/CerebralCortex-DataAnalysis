@@ -1,0 +1,42 @@
+{
+  "annotations":[],
+  "data_descriptor":[
+    {
+      "type":"string",
+      "unit":"",
+      "descriptor":"The participants context based on proximity to work beacon,Values = Not_work_beacon(0),Around_work1_beacon(1),Around_work2_beacon(2)"
+    }
+  ],
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.work_beacon_feature",
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters":{
+        "window_size": "1minute"
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.work_beacon_context.beacon",
+      "authors":[
+        {
+          "name":"Rabin Banjade",
+          "email":"rabin.banjade@gmail.com"
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+      },
+      "description":"The participants' context based on proximity to work beacon1 or work beacon 2"
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.feature.beacon.work_beacon_context",
+  "owner":"CC_OWNER_CC",
+  "type":"1"
+}
+
