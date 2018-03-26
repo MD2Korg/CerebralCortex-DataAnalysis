@@ -1354,10 +1354,14 @@ class PhoneFeatures(ComputeFeatureBase):
         :param input_categorystream:
         :return:
         """
+        MINIMUM_SCREEN_TAPPING_DATA = 10
         touchstream = sorted(touchstream, key=lambda x: x.start_time)
 
         appusage = self.get_appusage_duration_by_category(categorystream, ["Communication", "Productivity"])
         tapping_gap = self.appusage_interval_list(touchstream, appusage)
+        if len(tapping_gap) < MINIMUM_SCREEN_TAPPING_DATA:
+            print("Not enough screen touch data")
+            return
         tapping_gap = sorted(tapping_gap)
 
         gm = GaussianMixture(n_components = 4, max_iter = 500)#, covariance_type = 'spherical')
