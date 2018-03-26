@@ -1354,7 +1354,7 @@ class PhoneFeatures(ComputeFeatureBase):
         :param input_categorystream:
         :return:
         """
-        MINIMUM_SCREEN_TAPPING_DATA = 10
+        MINIMUM_SCREEN_TAPPING_DATA = 50
         touchstream = sorted(touchstream, key=lambda x: x.start_time)
 
         appusage = self.get_appusage_duration_by_category(categorystream, ["Communication", "Productivity"])
