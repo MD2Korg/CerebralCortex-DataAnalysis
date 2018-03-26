@@ -116,7 +116,7 @@ class SleepDurations(ComputeFeatureBase):
                 self.store_stream(filepath="sleep_duration.json",
                                   input_streams=input_streams,
                                   user_id=user_id,
-                                  data=sleep_duration_data)
+                                  data=sleep_duration_data, localtime = False)
         except Exception as e:
             print("Exception:", str(e))
             print(traceback.format_exc())

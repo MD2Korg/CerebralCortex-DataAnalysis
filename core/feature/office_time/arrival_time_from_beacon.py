@@ -28,7 +28,7 @@ from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
-from core.computefeature import ComputeFeatureBase
+#from core.computefeature import ComputeFeatureBase
 
 import pprint as pp
 import numpy as np
@@ -39,25 +39,26 @@ import json
 import traceback
 import math
 
-feature_class_name = 'ArrivalTimes'
-Working_Days_STREAM = "org.md2k.data_analysis.feature.working_days"
+feature_class_name = 'ArrivalTimesFromBeacon'
+Working_Days_STREAM = "org.md2k.data_analysis.feature.working_days_from_beacon"
 MEDIAN_ABSOLUTE_DEVIATION_MULTIPLIER = 1.4826
 OUTLIER_DETECTION_MULTIPLIER = 3
 
-class ArrivalTimes(ComputeFeatureBase):
+class ArrivalTimesFromBeacon(ComputeFeatureBase):
     """
     Produce feature from the days when a participant was in office from stream
-    "org.md2k.data_analysis.feature.working_days". For office arrival time the first
-    time of entering in office location according to gps location is considered and only
-    the hour and minute are taken for calculation. Usual arrival time is calculated from
-    these data. And here usual time is a range of time. Each day's arrival_time is
-    marked as usual or before_time or after_time """
+    "org.md2k.data_analysis.feature.working_days_from_beacon". For office arrival time
+    the first time of entering in his office's beacon range according to beacon data
+    location is considered and only the hour and minute are taken for calculation. Usual
+    arrival time is calculated from these data. And here usual time is a range of time.
+    Each day's arrival_time is marked as usual or before_time or after_time """
 
-    def listing_all_arrival_times(self, user_id, all_days):
+    def listing_all_arrival_times_from_beacon(self, user_id, all_days):
         """
-        Produce and save the list of work_day's arrival_time at office from
-        "org.md2k.data_analysis.feature.working_days" stream and marked each
-        day's arrival_time as usual or before_time or after_time """
+        Produce and save the list of work_day's arrival_time at office's beacon
+        from "org.md2k.data_analysis.feature.working_days_from_beacon" stream and
+        marked each day's arrival_time as usual or before_time or after_time
+        """
 
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
@@ -67,8 +68,6 @@ class ArrivalTimes(ComputeFeatureBase):
         arrival_data = []
         office_arrival_times = list()
         for stream_id in stream_ids:
-            if stream_id["identifier"] == '11e0934a-05fd-36d7-903a-9123a2e9f19b':
-                continue
             for day in all_days:
                 work_data_stream = \
                     self.CC.get_stream(stream_id["identifier"], user_id, day)
@@ -111,7 +110,10 @@ class ArrivalTimes(ComputeFeatureBase):
                 streams = self.CC.get_user_streams(user_id)
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == Working_Days_STREAM:
-                        self.store_stream(filepath="arrival_time.json",
+                        # print(stream_metadata)
+                        print("Going to pickle the file: ",arrival_data)
+
+                        self.store_stream(filepath="arrival_time_from_beacon.json",
                                           input_streams=[stream_metadata],
                                           user_id=user_id,
                                           data=arrival_data)
@@ -125,5 +127,5 @@ class ArrivalTimes(ComputeFeatureBase):
                              len(arrival_data)))
     def process(self, user_id, all_days):
         if self.CC is not None:
-            self.CC.logging.log("Processing Arrival Times")
-            self.listing_all_arrival_times(user_id, all_days)
+            self.CC.logging.log("Processing Arrival Times From Beacon")
+            self.listing_all_arrival_times_from_beacon(user_id, all_days)

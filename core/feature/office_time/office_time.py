@@ -51,7 +51,7 @@ class WorkingDays(ComputeFeatureBase):
     taken.  Among these days, the first time of entering in office location
     according to gps location is taken as arrival time and the last time of
     leaving office office location according to gps location is taken as
-    departure time Ofiice arrival time are marked as usual or before_time or
+    departure time Office arrival time are marked as usual or before_time or
     after_time and staying time is also marked as usual, more_than_usual or
     less_than_usual """
 

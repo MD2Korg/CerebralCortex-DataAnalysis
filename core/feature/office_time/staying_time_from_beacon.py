@@ -28,7 +28,7 @@ from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
-from core.computefeature import ComputeFeatureBase
+#from core.computefeature import ComputeFeatureBase
 
 import pprint as pp
 import numpy as np
@@ -39,82 +39,85 @@ import json
 import traceback
 import math
 
-feature_class_name = 'ArrivalTimes'
-Working_Days_STREAM = "org.md2k.data_analysis.feature.working_days"
+feature_class_name = 'StayingTimesFromBeacon'
+Working_Days_STREAM = "org.md2k.data_analysis.feature.working_days_from_beacon"
 MEDIAN_ABSOLUTE_DEVIATION_MULTIPLIER = 1.4826
 OUTLIER_DETECTION_MULTIPLIER = 3
 
-class ArrivalTimes(ComputeFeatureBase):
+class StayingTimesFromBeacon(ComputeFeatureBase):
     """
-    Produce feature from the days when a participant was in office from stream
-    "org.md2k.data_analysis.feature.working_days". For office arrival time the first
-    time of entering in office location according to gps location is considered and only
-    the hour and minute are taken for calculation. Usual arrival time is calculated from
-    these data. And here usual time is a range of time. Each day's arrival_time is
-    marked as usual or before_time or after_time """
+    Produce feature from the days when a participant was around office beacon from stream
+    "org.md2k.data_analysis.feature.working_days_from_beacon". The time extent between the first
+    arrival time in beacon range and last time of leaving is taken as staying time. Usual staying
+    time is calculated from these data. And here usual staying time is a range of time. each day's
+    staying_time is marked as usual_staying_time or more_than_usual or less_than_usual """
 
-    def listing_all_arrival_times(self, user_id, all_days):
+    def listing_all_staying_times_from_beacon(self, user_id, all_days):
         """
-        Produce and save the list of work_day's arrival_time at office from
-        "org.md2k.data_analysis.feature.working_days" stream and marked each
-        day's arrival_time as usual or before_time or after_time """
+        Produce and save the list of work_day's staying_time at office according to beacon from
+        "org.md2k.data_analysis.feature.working_days_from_beacon" stream and marked each day's
+        staying_time as Usual_staying_time or More_than_usual or Less_than_usual. All staying time
+        is saved in minute. """
 
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
 
         stream_ids = self.CC.get_stream_id(user_id,
                                            Working_Days_STREAM)
-        arrival_data = []
-        office_arrival_times = list()
+        staying_time_data = []
+        office_staying_times = list()
         for stream_id in stream_ids:
-            if stream_id["identifier"] == '11e0934a-05fd-36d7-903a-9123a2e9f19b':
-                continue
             for day in all_days:
                 work_data_stream = \
                     self.CC.get_stream(stream_id["identifier"], user_id, day)
 
                 for data in work_data_stream.data:
                     arrival_time = data.start_time.hour*60+data.start_time.minute
-                    office_arrival_times.append(arrival_time)
+                    leave_time = data.end_time.hour*60 + data.end_time.minute
+                    staying_time = leave_time - arrival_time
+                    office_staying_times.append(staying_time)
                     sample = []
                     temp = DataPoint(data.start_time, data.end_time, data.offset, sample)
-                    arrival_data.append(temp)
-        median = np.median(office_arrival_times)
-        mad_arrival_times = []
-        for arrival_time in office_arrival_times:
+                    temp.sample.append(staying_time)
+                    staying_time_data.append(temp)
+        median = np.median(office_staying_times)
+        mad_office_staying_times = []
+        for staying_time in office_staying_times:
             # mad = median absolute deviation
-            mad_arrival_times.append(abs(arrival_time - median))
-        median2 = np.median(mad_arrival_times)
+            mad_office_staying_times.append(abs(staying_time - median))
+        median2 = np.median(mad_office_staying_times)
         mad_value = median2 * MEDIAN_ABSOLUTE_DEVIATION_MULTIPLIER
         outlier_border = mad_value * OUTLIER_DETECTION_MULTIPLIER
-        outlier_removed_office_arrival_times = []
-        for arrival_time in office_arrival_times:
-            if arrival_time > (median - outlier_border) and arrival_time < (median + outlier_border):
-                outlier_removed_office_arrival_times.append(arrival_time)
-        mean = np.mean(outlier_removed_office_arrival_times)
-        standard_deviation = np.std(outlier_removed_office_arrival_times)
-        for data in arrival_data:
-            arrival_time = data.start_time.hour*60 + data.start_time.minute
-            data.sample.append(data.start_time.time())
-            if arrival_time > mean+standard_deviation:
-                data.sample.append("after_usual_time")
-                data.sample.append(math.ceil(arrival_time-(mean+standard_deviation)))
-            elif arrival_time < mean-standard_deviation:
-                data.sample.append("before_usual_time")
-                data.sample.append(math.ceil(mean-standard_deviation-arrival_time))
-            elif arrival_time < mean+standard_deviation and arrival_time > mean-standard_deviation:
-                data.sample.append("usual_time")
+        outlier_removed_office_staying_times = []
+        for staying_time in office_staying_times:
+            if staying_time > (median - outlier_border) and staying_time < (median + outlier_border):
+                outlier_removed_office_staying_times.append(staying_time)
+        mean = np.mean(outlier_removed_office_staying_times)
+        standard_deviation = np.std(outlier_removed_office_staying_times)
+        for data in staying_time_data:
+            staying_time = data.sample[0]
+            if staying_time > mean + standard_deviation:
+                data.sample.append("more_than_usual")
+                data.sample.append(math.ceil(staying_time-(mean+standard_deviation)))
+            elif staying_time < mean-standard_deviation:
+                data.sample.append("less_than_usual")
+                data.sample.append(math.ceil(mean-standard_deviation-staying_time))
+            elif staying_time < mean+standard_deviation and staying_time > mean-standard_deviation:
+                data.sample.append("usual_staying_time")
                 data.sample.append(0)
-        #print(arrival_data)
+        #print(staying_time_data)
         try:
-            if len(arrival_data):
+            if len(staying_time_data):
                 streams = self.CC.get_user_streams(user_id)
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == Working_Days_STREAM:
-                        self.store_stream(filepath="arrival_time.json",
+                        # print(stream_metadata)
+                        print("Going to pickle the file: ",staying_time_data)
+
+                        self.store_stream(filepath="staying_time_from_beacon.json",
                                           input_streams=[stream_metadata],
                                           user_id=user_id,
-                                          data=arrival_data)
+                                          data=staying_time_data)
                         break
         except Exception as e:
             print("Exception:", str(e))
@@ -122,8 +125,8 @@ class ArrivalTimes(ComputeFeatureBase):
         self.CC.logging.log('%s finished processing for user_id %s saved %d '
                             'data points' %
                             (self.__class__.__name__, str(user_id),
-                             len(arrival_data)))
+                             len(staying_time_data)))
     def process(self, user_id, all_days):
         if self.CC is not None:
-            self.CC.logging.log("Processing Arrival Times")
-            self.listing_all_arrival_times(user_id, all_days)
+            self.CC.logging.log("Processing Staying Times From Beacon")
+            self.listing_all_staying_times_from_beacon(user_id, all_days)
