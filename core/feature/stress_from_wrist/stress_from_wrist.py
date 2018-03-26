@@ -28,10 +28,10 @@ from core.feature.stress_from_wrist.utils.util import acceptable,window_size, \
 import warnings
 warnings.filterwarnings("ignore")
 from core.computefeature import ComputeFeatureBase
-from dateutil.parser import parse
+from dateutil import tz
+from datetime import timedelta
 from core.feature.stress_from_wrist.utils.ecg_feature_computation import \
     ecg_feature_computation
-import json
 import math
 import numpy as np
 from scipy.stats import iqr
@@ -48,16 +48,20 @@ class stress_from_wrist(ComputeFeatureBase):
                                       all_streams,
                                       day,
                                       user_id,
-                                      raw_byte_array):
+                                      raw_byte_array,
+                                      offset):
         if qualtrics_identifier in all_streams:
             data = self.CC.get_stream(all_streams[qualtrics_identifier][
                                           'identifier'], user_id=user_id, day=day,localtime=False)
             if len(data.data) > 0:
                 data = data.data
-                s1 = parse(json.loads(data[0].sample)["RecordedDate"])
+                s1 = data[0].end_time
+                tzlocal = tz.tzoffset('IST', offset/1000)
+                s1 = s1.replace(tzinfo=tzlocal)
                 final_data = []
                 for dp in raw_byte_array:
-                    if s1.timestamp()>=dp.start_time.timestamp():
+                    if s1>dp.start_time and dp.start_time+timedelta(
+                            minutes=41)>s1:
                         final_data.append(dp)
                 return final_data
         return []
@@ -66,34 +70,41 @@ class stress_from_wrist(ComputeFeatureBase):
     def windowing(self,streams,decoded_left_raw,decoded_right_raw,user_id,
                   day,window_size,window_offset,acceptable,Fs):
         if not decoded_left_raw.data:
+            offset = decoded_right_raw.data[0].offset
             right_data = \
                 self.get_data_around_stress_survey(streams,day,
                                                    user_id,
-                                                   decoded_right_raw.data)
+                                                   decoded_right_raw.data,
+                                                   offset)
             final_windowed_data = \
                 get_final_windowed_data([],
                                         right_data,
                                         window_size=window_size,
                                         window_offset=window_offset)
         elif not decoded_right_raw.data:
+            offset = decoded_left_raw.data[0].offset
             left_data = \
                 self.get_data_around_stress_survey(streams,day,
                                                    user_id,
-                                                   decoded_left_raw.data)
+                                                   decoded_left_raw.data,
+                                                   offset)
 
             final_windowed_data = get_final_windowed_data(
                 left_data,[],
                 window_size=window_size,
                 window_offset=window_offset)
         else:
+            offset = decoded_left_raw.data[0].offset
             right_data = \
                 self.get_data_around_stress_survey(streams,day,
                                                    user_id,
-                                                   decoded_right_raw.data)
+                                                   decoded_right_raw.data,
+                                                   offset)
             left_data = \
                 self.get_data_around_stress_survey(streams,day,
                                                    user_id,
-                                                   decoded_left_raw.data)
+                                                   decoded_left_raw.data,
+                                                   offset)
 
             final_windowed_data = get_final_windowed_data(
                 left_data,
@@ -193,12 +204,12 @@ class stress_from_wrist(ComputeFeatureBase):
                                                   "identifier"],
                                                   day=day,
                                                   user_id=user_id,
-                                                  localtime=False)
+                                                  localtime=True)
             decoded_right_raw = self.CC.get_stream(streams[
                                                    led_decode_right_wrist][
                                                    "identifier"],
                                                    day=day, user_id=user_id,
-                                                   localtime=False)
+                                                   localtime=True)
 
             if not decoded_left_raw.data and not decoded_right_raw.data:
                 continue
