@@ -74,6 +74,7 @@ class ComputeFeatureBase(object):
                 = input_streams_metadata
         metadata["identifier"] = str(output_stream_id)
         metadata["owner"] = str(user_id)
+        self.CC.loggin.log('%s called store_stream.'%(sys._getframe(1)))
 
         self.store(identifier=output_stream_id, owner=user_id, name=metadata["name"],
                    data_descriptor=metadata["data_descriptor"],
