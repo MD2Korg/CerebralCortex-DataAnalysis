@@ -1222,7 +1222,7 @@ class PhoneFeatures(ComputeFeatureBase):
         :return: [package_name, category, app_name, sub_category]
         """
         appid = appid.strip()
-        time.sleep(1.0)
+        time.sleep(2.0)
         if appid == "com.samsung.android.messaging":
             return [appid, "Communication", "Samsung Message", None]
 
@@ -1244,11 +1244,11 @@ class PhoneFeatures(ComputeFeatureBase):
             category = None
 
         if category and category.startswith('GAME_'):
-            return [appid, "Game", name.contents[0] if name else None, text.contents[0]]
+            return [appid, "Game", str(name.contents[0]) if name else None, str(text.contents[0])]
         elif text:
-            return [appid, text.contents[0], name.contents[0] if name else None, None]
+            return [appid, str(text.contents[0]), str(name.contents[0]) if name else None, None]
         else:
-            return [appid, None, name.contents[0] if name else None, None]
+            return [appid, None, str(name.contents[0]) if name else None, None]
 
     def get_appusage_duration_by_category(self, appdata, categories: list, appusage_gap_threshold_seconds=120):
         """
