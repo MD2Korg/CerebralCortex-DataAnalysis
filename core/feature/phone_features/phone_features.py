@@ -47,10 +47,10 @@ feature_class_name = 'PhoneFeatures'
 
 class PhoneFeatures(ComputeFeatureBase):
 
-    def get_filtered_data(self, data, admission_controll = None):
-        if admission_controll is None:
+    def get_filtered_data(self, data, admission_control = None):
+        if admission_control is None:
             return data
-        return [d for d in data if admission_controll(d.sample)]
+        return [d for d in data if admission_control(d.sample)]
 
     def get_data_by_stream_name(self, stream_name, user_id, day, localtime=True):
         """
