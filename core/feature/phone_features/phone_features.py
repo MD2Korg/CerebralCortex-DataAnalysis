@@ -111,7 +111,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
 
         for s in tmpphonestream:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
         for s in tmpsmsstream:
             s.end_time = s.start_time
 
@@ -151,7 +151,7 @@ class PhoneFeatures(ComputeFeatureBase):
         if len(tmpphonestream) + len(tmpsmsstream) <= 1:
             return None
         for s in tmpphonestream:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
         for s in tmpsmsstream:
             s.end_time = s.start_time
 
@@ -190,7 +190,7 @@ class PhoneFeatures(ComputeFeatureBase):
         tmpphonestream = phonedata
         tmpsmsstream = smsdata
         for s in tmpphonestream:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
         for s in tmpsmsstream:
             s.end_time = s.start_time
 
@@ -219,7 +219,7 @@ class PhoneFeatures(ComputeFeatureBase):
         tmpphonestream = phonedata
         tmpsmsstream = smsdata
         for s in tmpphonestream:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
         for s in tmpsmsstream:
             s.end_time = s.start_time
 
@@ -250,7 +250,7 @@ class PhoneFeatures(ComputeFeatureBase):
         tmpphonestream = phonedata
         tmpsmsstream = smsdata
         for s in tmpphonestream:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
         for s in tmpsmsstream:
             s.end_time = s.start_time
 
@@ -290,7 +290,7 @@ class PhoneFeatures(ComputeFeatureBase):
         tmpphonestream = phonedata
         tmpsmsstream = smsdata
         for s in tmpphonestream:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
         for s in tmpsmsstream:
             s.end_time = s.start_time
 
@@ -328,7 +328,7 @@ class PhoneFeatures(ComputeFeatureBase):
         combined_data = phonedata
 
         for s in combined_data:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
         tmp_time = copy.deepcopy(combined_data[0].start_time)
@@ -360,7 +360,7 @@ class PhoneFeatures(ComputeFeatureBase):
         combined_data = phonedata
 
         for s in combined_data:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
         tmp_time = copy.deepcopy(combined_data[0].start_time)
@@ -392,7 +392,7 @@ class PhoneFeatures(ComputeFeatureBase):
         combined_data = phonedata
 
         for s in combined_data:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
                                        day=combined_data[0].start_time.day, tzinfo=combined_data[0].start_time.tzinfo)
@@ -415,7 +415,7 @@ class PhoneFeatures(ComputeFeatureBase):
         combined_data = phonedata
 
         for s in combined_data:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
         tmp_time = copy.deepcopy(combined_data[0].start_time)
@@ -447,7 +447,7 @@ class PhoneFeatures(ComputeFeatureBase):
         combined_data = phonedata
 
         for s in combined_data:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
         tmp_time = copy.deepcopy(combined_data[0].start_time)
@@ -479,7 +479,7 @@ class PhoneFeatures(ComputeFeatureBase):
         combined_data = phonedata
 
         for s in combined_data:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
                                        day=combined_data[0].start_time.day, tzinfo=combined_data[0].start_time.tzinfo)
@@ -502,7 +502,7 @@ class PhoneFeatures(ComputeFeatureBase):
         combined_data = smsdata
 
         for s in combined_data:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
         tmp_time = copy.deepcopy(combined_data[0].start_time)
@@ -534,7 +534,7 @@ class PhoneFeatures(ComputeFeatureBase):
         combined_data = smsdata
 
         for s in combined_data:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
         tmp_time = copy.deepcopy(combined_data[0].start_time)
@@ -566,7 +566,7 @@ class PhoneFeatures(ComputeFeatureBase):
         combined_data = smsdata
 
         for s in combined_data:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
                                        day=combined_data[0].start_time.day, tzinfo=combined_data[0].start_time.tzinfo)
@@ -589,7 +589,7 @@ class PhoneFeatures(ComputeFeatureBase):
         combined_data = smsdata
 
         for s in combined_data:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
         tmp_time = copy.deepcopy(combined_data[0].start_time)
@@ -621,7 +621,7 @@ class PhoneFeatures(ComputeFeatureBase):
         combined_data = smsdata
 
         for s in combined_data:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
         tmp_time = copy.deepcopy(combined_data[0].start_time)
@@ -653,7 +653,7 @@ class PhoneFeatures(ComputeFeatureBase):
         combined_data = smsdata
 
         for s in combined_data:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         start_time = datetime.datetime(year=combined_data[0].start_time.year, month=combined_data[0].start_time.month,
                                        day=combined_data[0].start_time.day, tzinfo=combined_data[0].start_time.tzinfo)
@@ -695,7 +695,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         data = copy.deepcopy(phonedata)
         for s in data:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
         tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
@@ -731,7 +731,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         data = copy.deepcopy(phonedata)
         for s in data:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
         tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
@@ -947,7 +947,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         data = copy.deepcopy(phonedata)
         for s in data:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
         tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
@@ -983,7 +983,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
         data = copy.deepcopy(phonedata)
         for s in data:
-            s.end_time = s.start_time + datetime.timedelta(seconds=int(s.sample))
+            s.end_time = s.start_time + datetime.timedelta(seconds=s.sample)
 
         new_data = []
         tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
@@ -1883,6 +1883,18 @@ class PhoneFeatures(ComputeFeatureBase):
                 proximitystream = self.get_filtered_data(proximitystream, lambda x: (type(x) is float and x>=0))
                 self.process_proximity_day_data(user_id, proximitystream, input_proximitystream)
 
+        # Processing ambient light related features
+        if not input_lightstream:
+            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
+                                "USERID %s" %
+                                (self.__class__.__name__, light_stream_name,
+                                 str(user_id)))
+        else:
+            for day in all_days:
+                lightstream = self.get_data_by_stream_name(light_stream_name, user_id, day, localtime=False)
+                lightstream = self.get_filtered_data(lightstream, lambda x: (type(x) is float and x>=0))
+                self.process_light_day_data(user_id, lightstream, input_lightstream)
+
         # processing app usage and category related features
         if not input_appusagestream:
             self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
@@ -1913,20 +1925,7 @@ class PhoneFeatures(ComputeFeatureBase):
                 touchstream = self.get_filtered_data(touchstream, lambda x: (type(x) is float and x>=0))
                 appcategorystream  = self.get_data_by_stream_name(appcategory_stream_name, user_id, day)
                 appcategorystream = self.get_filtered_data(appcategorystream, lambda x: (type(x) is list and len(x)==4))
-                self.process_callsmsstream_day_data(user_id, touchstream, appcategorystream, input_touchscreenstream, input_appcategorystream)
-
-        # Processing ambient light related features
-
-        if not input_lightstream:
-            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
-                                "USERID %s" %
-                                (self.__class__.__name__, light_stream_name,
-                                 str(user_id)))
-        else:
-            for day in all_days:
-                lightstream = self.get_data_by_stream_name(light_stream_name, user_id, day, localtime=False)
-                lightstream = self.get_filtered_data(lightstream, lambda x: (type(x) is float and x>=0))
-                self.process_light_day_data(user_id, lightstream, input_lightstream)
+                self.process_phonescreen_day_data(user_id, touchstream, appcategorystream, input_touchscreenstream, input_appcategorystream)
 
 
     def process(self, user_id, all_days):
