@@ -1865,7 +1865,7 @@ class PhoneFeatures(ComputeFeatureBase):
         streams = all_user_streams
         days = None
 
-        if not len(streams):
+        if not streams or not len(streams):
             self.CC.logging.log('No streams found for user %s for feature %s'
                                 % (str(user_id), self.__class__.__name__))
             return
