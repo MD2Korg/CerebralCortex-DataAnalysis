@@ -67,7 +67,8 @@ class PhoneFeatures(ComputeFeatureBase):
             if stream is not None:
                 ds = self.CC.get_stream(stream['identifier'], user_id=user_id, day=day, localtime=localtime)
                 if ds is not None:
-                    data += ds.data
+                    if ds.data is not None:
+                        data += ds.data
 
         return data
 
