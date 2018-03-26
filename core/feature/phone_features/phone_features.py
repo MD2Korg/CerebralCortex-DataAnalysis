@@ -69,7 +69,8 @@ class PhoneFeatures(ComputeFeatureBase):
                 if ds is not None:
                     if ds.data is not None:
                         data += ds.data
-        data = sorted(data, key=lambda x: x.start_time)
+        if len(stream_ids)>1:
+            data = sorted(data, key=lambda x: x.start_time)
         return data
 
     def inter_event_time_list(self, data):
