@@ -128,7 +128,7 @@ class BeaconFeatures(ComputeFeatureBase):
                 self.store_stream(filepath="home_beacon_context.json",
                                   input_streams= input_streams,
                                   user_id=user_id,
-                                  data=new_data)
+                                  data=new_data, localtime = False)
                 self.CC.logging.log('%s %s home_beacon_context stored %d ' 
                                     'DataPoints for user %s ' 
                                     % (str(datetime.datetime.now()),
@@ -176,10 +176,7 @@ class BeaconFeatures(ComputeFeatureBase):
                 else:
                     windowed_data[i, j] = "0"
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 5fc0834763f8b0603d1861aeef80260bddf13a99
             data = merge_consective_windows(windowed_data)
             for items in data:
                 new_data.append(DataPoint(start_time=items.start_time,
@@ -192,7 +189,7 @@ class BeaconFeatures(ComputeFeatureBase):
                 self.store_stream(filepath="work_beacon_context.json",
                                   input_streams= input_streams,
                                   user_id=user_id,
-                                  data=new_data)
+                                  data=new_data, localtime = False)
                 self.CC.logging.log('%s %s work_beacon_context stored %d '
                                     'DataPoints for user %s ' 
                                     % (str(datetime.datetime.now()),
