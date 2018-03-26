@@ -90,4 +90,4 @@ class stress_from_respiration(ComputeFeatureBase):
             self.store_stream(json_path,
                               [streams[respiration_cycle_feature]],
                               user_id,
-                              final_stress)
+                              final_stress,localtime=False)
