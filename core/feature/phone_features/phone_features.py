@@ -1341,8 +1341,34 @@ class PhoneFeatures(ComputeFeatureBase):
                 i += 1
         return ret
 
+    def process_phonescreen_all_day_data(self, user_id, all_days, touchescreen_stream_name, appcategory_stream_name):
+        MIN_TAP_DATA = 100
+        td = []
+        appd = []
+        for day in all_days:
+            touchstream = self.get_data_by_stream_name(touchescreen_stream_name, user_id, day)
+            touchstream = self.get_filtered_data(touchstream, lambda x: (type(x) is float and x>1000000000.0))
+            td += touchstream
+            appcategorystream  = self.get_data_by_stream_name(appcategory_stream_name, user_id, day)
+            appcategorystream = self.get_filtered_data(appcategorystream, lambda x: (type(x) is list and len(x)==4))
+            appd += appcategorystream
+
+        td = sorted(td, key=lambda x: x.start_time)
+
+        appusage = self.get_appusage_duration_by_category(appd, ["Communication", "Productivity"])
+        tapping_gap = self.appusage_interval_list(td, appusage)
+        if len(tapping_gap) < MIN_TAP_DATA:
+            print("Not enough screen touch data")
+            return None
+        tapping_gap = sorted(tapping_gap)
+
+        gm = GaussianMixture(n_components = 4, max_iter = 500)#, covariance_type = 'spherical')
+        X = (np.array(tapping_gap)/1000).reshape(-1, 1)
+        gm.fit(X)
+        return gm
+
     def process_phonescreen_day_data(self, user_id, touchstream, categorystream, \
-                                     input_touchstream, input_categorystream):
+                                     input_touchstream, input_categorystream, gm):
         """
         Analyze the phone touch screen gap to find typing, pause between typing, reading
         and unknown sessions. It uses the Gaussian Mixture algorithm to find different peaks
@@ -1354,19 +1380,21 @@ class PhoneFeatures(ComputeFeatureBase):
         :param input_categorystream:
         :return:
         """
-        MINIMUM_SCREEN_TAPPING_DATA = 50
         touchstream = sorted(touchstream, key=lambda x: x.start_time)
 
         appusage = self.get_appusage_duration_by_category(categorystream, ["Communication", "Productivity"])
         tapping_gap = self.appusage_interval_list(touchstream, appusage)
-        if len(tapping_gap) < MINIMUM_SCREEN_TAPPING_DATA:
+        #         if len(tapping_gap) < 50:
+        #             print("Not enough screen touch data")
+        #             return
+        tapping_gap = sorted(tapping_gap)
+        if len(tapping_gap)==0:
             print("Not enough screen touch data")
             return
-        tapping_gap = sorted(tapping_gap)
 
-        gm = GaussianMixture(n_components = 4, max_iter = 500)#, covariance_type = 'spherical')
+        #gm = GaussianMixture(n_components = 4, max_iter = 500)#, covariance_type = 'spherical')
         X = (np.array(tapping_gap)/1000).reshape(-1, 1)
-        gm.fit(X)
+        #gm.fit(X)
 
         P = gm.predict(X)
         mx = np.zeros(4)
@@ -1382,8 +1410,10 @@ class PhoneFeatures(ComputeFeatureBase):
         intervals = sorted(intervals)
 
         try:
-            data = self.label_appusage_intervals(touchstream, appusage, intervals, ["typing", "pause", "reading", "unknown"])
+            data = self.label_appusage_intervals(touchstream, appusage, intervals,
+                                                 ["typing", "pause", "reading", "unknown"])
             if data:
+                print(data)
                 self.store_stream(filepath="phone_touch_type.json",
                                   input_streams=[input_touchstream, input_categorystream],
                                   user_id=user_id, data=data)
@@ -1924,12 +1954,17 @@ class PhoneFeatures(ComputeFeatureBase):
                                 (self.__class__.__name__, appcategory_stream_name,
                                  str(user_id)))
         else:
-            for day in all_days:
-                touchstream = self.get_data_by_stream_name(touchescreen_stream_name, user_id, day)
-                touchstream = self.get_filtered_data(touchstream, lambda x: (type(x) is float and x>=0))
-                appcategorystream  = self.get_data_by_stream_name(appcategory_stream_name, user_id, day)
-                appcategorystream = self.get_filtered_data(appcategorystream, lambda x: (type(x) is list and len(x)==4))
-                self.process_phonescreen_day_data(user_id, touchstream, appcategorystream, input_touchscreenstream, input_appcategorystream)
+            gm = self.process_phonescreen_all_day_data(user_id, all_days, touchescreen_stream_name,
+                                                       appcategory_stream_name)
+            if gm:
+                for day in all_days:
+                    touchstream = self.get_data_by_stream_name(touchescreen_stream_name, user_id, day)
+                    touchstream = self.get_filtered_data(touchstream, lambda x: (type(x) is float and x>=0))
+                    appcategorystream  = self.get_data_by_stream_name(appcategory_stream_name, user_id, day)
+                    appcategorystream = self.get_filtered_data(appcategorystream,
+                                                               lambda x: (type(x) is list and len(x)==4))
+                    self.process_phonescreen_day_data(user_id, touchstream, appcategorystream, input_touchscreenstream,
+                                                      input_appcategorystream, gm)
 
 
     def process(self, user_id, all_days):
