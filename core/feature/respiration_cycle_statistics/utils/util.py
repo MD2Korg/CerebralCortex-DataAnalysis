@@ -202,9 +202,9 @@ def bandpower(x, fs, fmin, fmax,nfft_point=1024):
     :return: power in low to high frequency band
     """
     f, Pxx = scipy.signal.welch(x,
-                                fs=fs,window=signal.get_window('hamming',
-                                                               len(x)),
-                                nfft=nfft_point,return_onesided=False)
+                                fs=fs,
+                                window=signal.get_window('hamming',len(x)),
+                                return_onesided=False)
     ind_min = scipy.argmax(f > fmin) - 1
     ind_max = scipy.argmax(f > fmax) - 1
     return scipy.trapz(Pxx[ind_min: ind_max+1], f[ind_min: ind_max+1])
