@@ -64,7 +64,10 @@ class PhoneFeatures(ComputeFeatureBase):
         stream_ids = self.CC.get_stream_id(user_id, stream_name)
         data = []
         for stream in stream_ids:
-            data += self.CC.get_stream(stream['identifier'], user_id=user_id, day=day, localtime=localtime).data
+            if stream is not None:
+                ds = self.CC.get_stream(stream['identifier'], user_id=user_id, day=day, localtime=localtime)
+                if ds is not None:
+                    data += ds.data
 
         return data
 
