@@ -28,6 +28,7 @@ import os
 import json
 import uuid
 import argparse
+import pytz
 from datetime import datetime
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
@@ -120,6 +121,9 @@ files_to_process.append((IGTB,IGTB_METADATA))
 # Map that contains the user 
 user_id_mappings={}
 
+# Timezone in which all times are recorded
+centraltz=pytz.timezone('US/Central')
+
 
 # CC intialization
 CC = CerebralCortex(CC_CONFIG_PATH)
@@ -170,21 +174,35 @@ def process_feature(file_path, metadata_path):
         
         user_id = user_id_mappings[row[0]]
         start_time = datetime.strptime(row[1], '%m/%d/%Y %H:%M')
+        start_time = centraltz.localize(start_time)
         
         # handling the different format of the IGTB file
         if IGTB not in file_path:
             end_time = datetime.strptime(row[2], '%m/%d/%Y %H:%M')
         else:
-            end_time = start_time
+            end_time = datetime(year=start_time.year, month=start_time.month,
+                                day=start_time.day, hour=start_time.hour,
+                                minute=start_time.minute)
             start_column_number = 2    
+
+        end_time = centraltz.localize(end_time)
+
+        utc_offset = end_time.utcoffset().seconds
         
+        #convert times to UTC
+        start_time = start_time - start_time.utcoffset()
+        end_time = end_time - end_time.utcoffset()
+        start_time = start_time.replace(tzinfo=None)
+        end_time = end_time.replace(tzinfo=None)
+
         sample = {}
         
         for idx in range(start_column_number, len(row)):
             sample[header_row[idx]] = row[idx]
         
         sample_str = json.dumps(sample)
-        dp = DataPoint(start_time=start_time, end_time=end_time, offset=0, sample=sample_str) 
+        dp = DataPoint(start_time=start_time, end_time=end_time,
+                       offset=utc_offset, sample=sample_str) 
         
         if user_id not in feature_data:
             feature_data[user_id] = []
@@ -195,7 +213,8 @@ def process_feature(file_path, metadata_path):
     metadata = json.loads(metadata)
     
     for user in feature_data:
-        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str( metadata_path + user + file_path)))
+        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(
+            metadata['name'] + user + file_path)))
         ds = DataStream(identifier=output_stream_id, owner=user, name=metadata['name'], data_descriptor=\
                 metadata['data_descriptor'], execution_context=metadata['execution_context'], annotations=\
                 metadata['annotations'], stream_type='datastream', data=feature_data[user]) 
