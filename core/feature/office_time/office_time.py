@@ -34,6 +34,12 @@ from staying_time import StayingTimes
 from expected_arrival_time import ExpectedArrivalTimes
 from expected_staying_time import ExpectedStayingTimes
 
+from work_days_from_beacon import WorkingDaysFromBeacon
+from arrival_time_from_beacon import ArrivalTimesFromBeacon
+from staying_time_from_beacon import StayingTimesFromBeacon
+from expected_arrival_time_beacon import ExpectedArrivalTimesFromBeacon
+from expected_staying_time_from_beacon import ExpectedStayingTimesFromBeacon
+
 import pprint as pp
 import numpy as np
 import pdb
@@ -128,17 +134,35 @@ class WorkingDays(ComputeFeatureBase):
 
     def process(self, user_id, all_days):
         if self.CC is not None:
-            self.CC.logging.log("Processing Working Days")
-            self.listing_all_work_days(user_id, all_days)
+            # # Office Time Calculation from GPS
+            # self.CC.logging.log("Processing Working Days")
+            # self.listing_all_work_days(user_id, all_days)
+            #
+            # arrival_data_feature = ArrivalTimes(self.CC)
+            # arrival_data_feature.process(user_id, all_days)
+            #
+            # expected_arrival_data_feature = ExpectedArrivalTimes(self.CC)
+            # expected_arrival_data_feature.process(user_id, all_days)
+            #
+            # staying_time_data_feature = StayingTimes(self.CC)
+            # staying_time_data_feature.process(user_id, all_days)
+            #
+            # expected_staying_time_data_feature = ExpectedStayingTimes(self.CC)
+            # expected_staying_time_data_feature.process(user_id, all_days)
 
-            arrival_data_feature = ArrivalTimes(self.CC)
-            arrival_data_feature.process(user_id, all_days)
+            # Office Time Calculation from Beacon
+            working_days_from_beacon_feature =  WorkingDaysFromBeacon(self.CC)
+            self.listing_all_work_days_from_beacon(user_id, all_days)
 
-            expected_arrival_data_feature = ExpectedArrivalTimes(self.CC)
-            expected_arrival_data_feature.process(user_id, all_days)
+            arrival_data_from_beacon_feature = ArrivalTimesFromBeacon(self.CC)
+            arrival_data_from_beacon_feature.process(user_id, all_days)
 
-            staying_time_data_feature = StayingTimes(self.CC)
-            staying_time_data_feature.process(user_id, all_days)
+            expected_arrival_data_from_beacon_feature = ExpectedArrivalTimesFromBeacon(self.CC)
+            expected_arrival_data_from_beacon_feature.process(user_id, all_days)
 
-            expected_staying_time_data_feature = ExpectedStayingTimes(self.CC)
-            expected_staying_time_data_feature.process(user_id, all_days)
+            staying_time_data_from_beacon_feature = StayingTimesFromBeacon(self.CC)
+            staying_time_data_from_beacon_feature.process(user_id, all_days)
+
+            expected_staying_time_data_from_beacon_feature = ExpectedStayingTimesFromBeacon(self.CC)
+            expected_staying_time_data_from_beacon_feature.process(user_id, all_days)
+

@@ -29,7 +29,7 @@ from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
 from core.computefeature import ComputeFeatureBase
-from core.feature.sleep_duration.SleepDurationPrediction import SleepDurationPredictor
+from SleepDurationPrediction import SleepDurationPredictor
 
 import pprint as pp
 import numpy as np
@@ -73,7 +73,7 @@ class SleepDurations(ComputeFeatureBase):
             sleep = SleepDurationPredictor(self.CC)
             sleep_date = datetime.strptime(day, "%Y%m%d")
             sleep_duration = sleep.get_sleep_duration(user_id, sleep_date)
-            print(sleep_duration)
+            #  print(sleep_duration)
             if sleep_duration:
                 sleep_duration_data.append(sleep_duration)
                 sleep_durations.append(sleep_duration.sample[0])
@@ -108,10 +108,11 @@ class SleepDurations(ComputeFeatureBase):
             input_streams = []
             if len(sleep_duration_data):
                 streams = self.CC.get_user_streams(user_id)
-                for stream_name, stream_metadata in streams.items():
-                    if stream_name in input_stream_names:
-                        input_streams.append(stream_metadata)
-                        #print("Going to pickle the file: ",sleep_duration_data)
+                if streams:
+                    for stream_name, stream_metadata in streams.items():
+                        if stream_name in input_stream_names:
+                            input_streams.append(stream_metadata)
+                            #print("Going to pickle the file: ",sleep_duration_data)
 
                 self.store_stream(filepath="sleep_duration.json",
                                   input_streams=input_streams,
@@ -124,7 +125,6 @@ class SleepDurations(ComputeFeatureBase):
                             'data points' %
                             (self.__class__.__name__, str(user_id),
                              len(sleep_duration_data)))
-        
     def process(self, user_id, all_days):
         if self.CC is not None:
             self.CC.logging.log("Processing Sleep Durations")

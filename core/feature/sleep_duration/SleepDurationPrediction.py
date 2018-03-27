@@ -34,7 +34,7 @@ import numpy
 from datetime import datetime, timedelta, timezone, tzinfo
 
 
-from core.feature.sleep_duration.SleepUnsupervisedPredictor import SleepUnsupervisedPredictor
+from SleepUnsupervisedPredictor import SleepUnsupervisedPredictor
 
 # Sleep duration calculatation works from 8 PM (12 - 4) to 8 PM (12 + 20)
 DAY_START_HOUR = -4;
@@ -102,6 +102,9 @@ class SleepDurationPredictor:
         """
         start_time, end_time = self.get_time_range(day)
         streams = self.CC.get_user_streams(user_id = user_id)
+        if streams is None:
+            return None
+        flag = 0
         for stream_name,stream_metadata in streams.items():
             if stream_name=='ACTIVITY_TYPE--org.md2k.phonesensor--PHONE':
                 activity_data = self.get_data('ACTIVITY_TYPE--org.md2k.phonesensor--PHONE', user_id, \
@@ -110,6 +113,7 @@ class SleepDurationPredictor:
 
                 if len(activity_data)<100:
                     return None
+                flag += 1
                 if activity_data:
                     st = start_time.replace(tzinfo=timezone(timedelta(milliseconds=activity_data[0].offset)))
                 activity_still =  numpy.full(int((end_time - start_time).total_seconds()), True, dtype=bool)
@@ -141,7 +145,7 @@ class SleepDurationPredictor:
                     if idx>last_time:
                         screen_off[last_time:idx] = val
                     last_time = idx
-
+                flag += 1
                 if len(screen_data)>0:
                     scr = screen_data[-1]
                     if scr.sample.strip() == "true":
@@ -161,6 +165,7 @@ class SleepDurationPredictor:
                 if audio_data:
                     st = start_time.replace(tzinfo=timezone(timedelta(milliseconds=audio_data[0].offset)))
                 cnt = 0
+                flag += 1
                 for ad in audio_data:
                     idx = int((ad.start_time - st).total_seconds())
                     audio_amp[idx] = max(audio_amp[idx], ad.sample)
@@ -171,6 +176,7 @@ class SleepDurationPredictor:
 
                 if len(light_data)<1000:
                     return None
+                flag += 1
                 light_readings =  numpy.zeros(int((end_time - start_time).total_seconds()), dtype=float)
                 if light_data:
                     st = start_time.replace(tzinfo=timezone(timedelta(milliseconds=light_data[0].offset)))
@@ -178,6 +184,8 @@ class SleepDurationPredictor:
                     idx = int((ld.start_time - st).total_seconds())
                     light_readings[idx] = max(light_readings[idx], ld.sample)
 
+        if flag < 4:
+            return None
         sleep_predictor = SleepUnsupervisedPredictor()
         longest_start_idx, longest_end_idx, max_idx = sleep_predictor.predict(audio_amp, light_readings, activity_still, screen_off);
         sleep_duration = (longest_end_idx - longest_start_idx) / 8.0
