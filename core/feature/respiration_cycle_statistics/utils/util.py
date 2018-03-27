@@ -74,6 +74,7 @@ def recover_rip_rawwithmeasuredref(RIP:list, ref:list,
         ref_synn_noM_LP.shape)
     return RIP_raw_measuredREF+m
 
+
 def get_recovery(rip:List[DataPoint],baseline:List[DataPoint],Fs)->List[DataPoint]:
     """
     matches respiration raw with baseline signal and returns the recovered
@@ -97,7 +98,8 @@ def get_recovery(rip:List[DataPoint],baseline:List[DataPoint],Fs)->List[DataPoin
             [i.sample for i in rip],[i.sample for i in baseline],
             Fs)
     recovered_dp_list = \
-        [DataPoint.from_tuple(start_time=rip[i].start_time,sample=recovered[i])
+        [DataPoint.from_tuple(start_time=rip[i].start_time,sample=recovered[i],
+                              offset=rip[i].offset)
          for i in range(len(recovered))]
     return recovered_dp_list
 
