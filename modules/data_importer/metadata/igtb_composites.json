@@ -29,7 +29,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_qualtrics.feature.igtb_composites.igtb",
+  "name":"org.md2k.data_qualtrics.feature.v2.igtb_composites.igtb",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }

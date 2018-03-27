@@ -37,6 +37,7 @@ from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.util.spark_helper import get_or_create_sc
 
 cc_config_path = None
+gps_key = None
 
 def process_features(feature_list, all_users, all_days, num_cores=1):
     '''
@@ -87,6 +88,10 @@ def process_feature_on_user(user, module_name, all_days, cc_config_path):
         feature_class_name = getattr(module,'feature_class_name')
         feature_class = getattr(module,feature_class_name)
         feature_class_instance = feature_class(cc)
+        
+        if gps_key is not None:
+            feature_class_instance.gps_api_key = gps_key
+
         f = feature_class_instance.process
         f(user,all_days)
     except Exception as e:
@@ -148,6 +153,7 @@ def generate_feature_processing_order(feature_list):
 def main():
     global cc_config_path
     global metadata_dir
+    global gps_key
     # Get the list of the features to process
     parser = argparse.ArgumentParser(description='CerebralCortex '
                                      'Feature Processing Driver')
@@ -166,6 +172,8 @@ def main():
     parser.add_argument("-p", "--num-cores", type=int, help="Set a number "
                         "greater than 1 to enable spark "
                         "parallel execution ", required=False)
+    parser.add_argument("-k", "--gps-key", help="GPS API " 
+                         "key", required=False)
     
     args = vars(parser.parse_args())
     feature_list = None
@@ -190,6 +198,8 @@ def main():
         end_date = datetime.strptime(args['end_date'], date_format)
     if args['num_cores']:
         num_cores = args['num_cores']
+    if args['gps_key']:
+        gps_key = args['gps_key']
     
     all_days = []
     while True:

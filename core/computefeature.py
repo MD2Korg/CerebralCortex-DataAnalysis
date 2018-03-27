@@ -30,6 +30,7 @@ from cerebralcortex.core.datatypes.stream_types import StreamTypes
 import uuid
 import os
 import json
+import sys
 
 class ComputeFeatureBase(object):
     '''
@@ -74,6 +75,8 @@ class ComputeFeatureBase(object):
                 = input_streams_metadata
         metadata["identifier"] = str(output_stream_id)
         metadata["owner"] = str(user_id)
+        self.CC.logging.log('%s called '
+                            'store_stream.'%(sys._getframe(1).f_code.co_name))
 
         self.store(identifier=output_stream_id, owner=user_id, name=metadata["name"],
                    data_descriptor=metadata["data_descriptor"],
