@@ -29,7 +29,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_qualtrics.feature.v2.personality_BFI_10.biweekly",
+  "name":"org.md2k.data_qualtrics.feature.v3.personality_BFI_10.biweekly",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }

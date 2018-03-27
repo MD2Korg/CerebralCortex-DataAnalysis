@@ -33,7 +33,9 @@ from datetime import datetime
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.cerebralcortex import CerebralCortex
+import cerebralcortex.cerebralcortex
 
+print('-'*10,os.path.abspath(cerebralcortex.__file__))
 
 
 CC_CONFIG_PATH = '/home/vagrant/CerebralCortex-DockerCompose/cc_config_file/cc_vagrant_configuration.yml'
@@ -184,16 +186,14 @@ def process_feature(file_path, metadata_path):
                                 day=start_time.day, hour=start_time.hour,
                                 minute=start_time.minute)
             start_column_number = 2    
-
-        end_time = centraltz.localize(end_time)
-
-        utc_offset = end_time.utcoffset().seconds
         
-        #convert times to UTC
-        start_time = start_time - start_time.utcoffset()
-        end_time = end_time - end_time.utcoffset()
-        start_time = start_time.replace(tzinfo=None)
-        end_time = end_time.replace(tzinfo=None)
+        if IGTB not in file_path:
+            end_time = centraltz.localize(end_time)
+
+        utc_offset = start_time.utcoffset().seconds * -1000
+        # -1000 - DataPoint expects offset to be in milliseconds and negative is
+        # to account for being west of UTC
+        
 
         sample = {}
         
@@ -211,16 +211,22 @@ def process_feature(file_path, metadata_path):
 
     metadata = mf.read()
     metadata = json.loads(metadata)
+    metadata_name = metadata['name']
+    metadata_name = metadata_name.replace('feature.v3','feature.v4')
     
     for user in feature_data:
         output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(
-            metadata['name'] + user + file_path)))
-        ds = DataStream(identifier=output_stream_id, owner=user, name=metadata['name'], data_descriptor=\
-                metadata['data_descriptor'], execution_context=metadata['execution_context'], annotations=\
-                metadata['annotations'], stream_type='datastream', data=feature_data[user]) 
+            metadata_name + user + file_path)))
+        ds = DataStream(identifier=output_stream_id, owner=user, 
+                        name=metadata_name, 
+                        data_descriptor= metadata['data_descriptor'], 
+                        execution_context=metadata['execution_context'], 
+                        annotations= metadata['annotations'], 
+                        stream_type=1,
+                        data=feature_data[user]) 
         #print(str(user),str(output_stream_id),len(feature_data[user]))   	 
         try:
-            CC.save_stream(ds)
+            CC.save_stream(ds, localtime=True)
         except Exception as e:
             print(e)
     f.close()

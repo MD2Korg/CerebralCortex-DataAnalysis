@@ -29,7 +29,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_qualtrics.feature.v2.physical_activity_MITRE_physical_activity_assessment.3_or_4_per_week",
+  "name":"org.md2k.data_qualtrics.feature.v3.physical_activity_MITRE_physical_activity_assessment.3_or_4_per_week",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }
