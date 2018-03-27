@@ -29,7 +29,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_qualtrics.feature.task_performance_IRB.3_per_week",
+  "name":"org.md2k.data_qualtrics.feature.v2.task_performance_IRB.3_per_week",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }
