@@ -1885,7 +1885,6 @@ class PhoneFeatures(ComputeFeatureBase):
                 input_appcategorystream = stream_metadata
             elif stream_name == light_stream_name:
                 input_lightstream = stream_metadata
-        '''
         # Processing Call and SMS related features
         if not input_callstream:
             self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
@@ -1929,7 +1928,6 @@ class PhoneFeatures(ComputeFeatureBase):
                 lightstream = self.get_data_by_stream_name(light_stream_name, user_id, day, localtime=False)
                 lightstream = self.get_filtered_data(lightstream, lambda x: (type(x) is float and x>=0))
                 self.process_light_day_data(user_id, lightstream, input_lightstream)
-        '''
         # processing app usage and category related features
         if not input_appusagestream:
             self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
