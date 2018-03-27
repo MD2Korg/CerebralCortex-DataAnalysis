@@ -56,6 +56,7 @@ class BeaconFeatures(ComputeFeatureBase):
         """
 
         input_streams = []
+        new_data = []
 
         if stream1_name in streams:
 
