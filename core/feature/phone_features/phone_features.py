@@ -1359,7 +1359,7 @@ class PhoneFeatures(ComputeFeatureBase):
         appusage = self.get_appusage_duration_by_category(appd, ["Communication", "Productivity"])
         tapping_gap = self.appusage_interval_list(td, appusage)
         if len(tapping_gap) < MIN_TAP_DATA:
-            print("Not enough screen touch data")
+            self.CC.logging.log("Not enough screen touch data")
             return None
         tapping_gap = sorted(tapping_gap)
 
@@ -1386,11 +1386,11 @@ class PhoneFeatures(ComputeFeatureBase):
         appusage = self.get_appusage_duration_by_category(categorystream, ["Communication", "Productivity"])
         tapping_gap = self.appusage_interval_list(touchstream, appusage)
         #         if len(tapping_gap) < 50:
-        #             print("Not enough screen touch data")
+        #             self.CC.logging.log("Not enough screen touch data")
         #             return
         tapping_gap = sorted(tapping_gap)
         if len(tapping_gap)==0:
-            print("Not enough screen touch data")
+            self.CC.logging.log("Not enough screen touch data")
             return
 
         #gm = GaussianMixture(n_components = 4, max_iter = 500)#, covariance_type = 'spherical')
@@ -1414,13 +1414,12 @@ class PhoneFeatures(ComputeFeatureBase):
             data = self.label_appusage_intervals(touchstream, appusage, intervals,
                                                  ["typing", "pause", "reading", "unknown"])
             if data:
-                print(data)
                 self.store_stream(filepath="phone_touch_type.json",
                                   input_streams=[input_touchstream, input_categorystream],
                                   user_id=user_id, data=data)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
     def process_callsmsstream_day_data(self, user_id, callstream, smsstream, input_callstream, input_smsstream):
         """
@@ -1439,8 +1438,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream, input_smsstream],
                                   user_id=user_id, data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.average_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
@@ -1449,8 +1448,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream, input_smsstream],
                                   user_id=user_id, data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.average_inter_phone_call_sms_time_daily(callstream, smsstream)
@@ -1459,8 +1458,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream, input_smsstream],
                                   user_id=user_id, data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_inter_phone_call_sms_time_daily(callstream, smsstream)
@@ -1469,8 +1468,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream, input_smsstream],
                                   user_id=user_id, data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_inter_phone_call_sms_time_hourly(callstream, smsstream)
@@ -1479,8 +1478,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream, input_smsstream],
                                   user_id=user_id, data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_inter_phone_call_sms_time_four_hourly(callstream, smsstream)
@@ -1489,8 +1488,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream, input_smsstream],
                                   user_id=user_id, data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.average_inter_phone_call_time_hourly(callstream)
@@ -1499,8 +1498,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.average_inter_phone_call_time_four_hourly(callstream)
@@ -1509,8 +1508,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.average_inter_phone_call_time_daily(callstream)
@@ -1519,8 +1518,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_inter_phone_call_time_hourly(callstream)
@@ -1529,8 +1528,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_inter_phone_call_time_four_hourly(callstream)
@@ -1539,8 +1538,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_inter_phone_call_time_daily(callstream)
@@ -1549,8 +1548,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.average_inter_sms_time_hourly(smsstream)
@@ -1559,8 +1558,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_smsstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.average_inter_sms_time_four_hourly(smsstream)
@@ -1569,8 +1568,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_smsstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.average_inter_sms_time_daily(smsstream)
@@ -1579,8 +1578,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_smsstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_inter_sms_time_hourly(smsstream)
@@ -1589,8 +1588,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_smsstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_inter_sms_time_four_hourly(smsstream)
@@ -1599,8 +1598,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_smsstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_inter_sms_time_daily(smsstream)
@@ -1609,8 +1608,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_smsstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.average_call_duration_daily(callstream)
@@ -1619,8 +1618,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.average_call_duration_hourly(callstream)
@@ -1629,8 +1628,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.average_call_duration_four_hourly(callstream)
@@ -1639,8 +1638,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.average_sms_length_daily(smsstream)
@@ -1649,8 +1648,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_smsstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.average_sms_length_hourly(smsstream)
@@ -1659,8 +1658,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_smsstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.average_sms_length_four_hourly(smsstream)
@@ -1669,8 +1668,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_smsstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_sms_length_daily(smsstream)
@@ -1679,8 +1678,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_smsstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_sms_length_hourly(smsstream)
@@ -1689,8 +1688,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_smsstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_sms_length_four_hourly(smsstream)
@@ -1699,8 +1698,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_smsstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_call_duration_daily(callstream)
@@ -1709,8 +1708,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_call_duration_hourly(callstream)
@@ -1719,8 +1718,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_call_duration_four_hourly(callstream)
@@ -1729,8 +1728,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_callstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
     def process_light_day_data(self, user_id, lightdata, input_lightstream):
         """
@@ -1748,8 +1747,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_lightstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.average_ambient_light_hourly(lightdata)
@@ -1758,8 +1757,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_lightstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.average_ambient_light_four_hourly(lightdata)
@@ -1768,8 +1767,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_lightstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_ambient_light_daily(lightdata)
@@ -1778,8 +1777,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_lightstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_ambient_light_hourly(lightdata)
@@ -1788,8 +1787,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_lightstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.variance_ambient_light_four_hourly(lightdata)
@@ -1798,8 +1797,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_lightstream], user_id=user_id,
                                   data=data, localtime=False)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
     def process_proximity_day_data(self, user_id, proximitystream, input_proximitystream):
         try:
@@ -1809,8 +1808,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_proximitystream],
                                   user_id=user_id, data=data)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
     def process_appcategory_day_data(self, user_id, appcategorystream, input_appcategorystream):
         """
@@ -1834,8 +1833,8 @@ class PhoneFeatures(ComputeFeatureBase):
                                   input_streams=[input_appcategorystream],
                                   user_id=user_id, data=data)
         except Exception as e:
-            print("Exception:", str(e))
-            print(str(traceback.format_exc()))
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
     def process_data(self, user_id, all_user_streams, all_days):
         """
@@ -1968,6 +1967,6 @@ class PhoneFeatures(ComputeFeatureBase):
 
     def process(self, user_id, all_days):
         if self.CC is not None:
-            print("Processing PhoneFeatures")
+            self.CC.logging.log("Processing PhoneFeatures")
             streams = self.CC.get_user_streams(user_id)
             self.process_data(user_id, streams, all_days)
