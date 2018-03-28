@@ -27,9 +27,8 @@ from core.computefeature import ComputeFeatureBase
 from core.feature.motionsenseHRVdecode.util_helper_functions \
     import *
 import numpy as np
-import json
-from dateutil.parser import parse
-from datetime import datetime
+from dateutil import tz
+from datetime import datetime,timedelta
 
 feature_class_name = 'DecodeHRV'
 
@@ -38,16 +37,19 @@ class DecodeHRV(ComputeFeatureBase):
                                       all_streams,
                                       day,
                                       user_id,
-                                      raw_byte_array):
+                                      raw_byte_array,
+                                      offset):
         if qualtrics_identifier in all_streams:
             data = self.CC.get_stream(all_streams[qualtrics_identifier][
                                       'identifier'], user_id=user_id, day=day,localtime=False)
             if len(data.data) > 0:
                 data = data.data
-                s1 = parse(json.loads(data[0].sample)["RecordedDate"])
+                s1 = data[0].end_time
+                tzlocal = tz.tzoffset('IST', offset/1000)
+                s1 = s1.replace(tzinfo=tzlocal)
                 final_data = []
                 for dp in raw_byte_array:
-                    if np.abs(s1.timestamp()-dp.start_time.timestamp())<=30*60:
+                    if s1>dp.start_time and dp.start_time+timedelta(minutes=60)>s1:
                         final_data.append(dp)
                 return final_data
         return []
@@ -70,25 +72,27 @@ class DecodeHRV(ComputeFeatureBase):
         for day in all_days:
             motionsense_raw = self.CC.get_stream(
                 all_streams[stream_identifier]["identifier"],day=day,
-                user_id=user_id,localtime=False)
+                user_id=user_id,localtime=True)
             motionsense_raw_data = admission_control(motionsense_raw.data)
             if len(motionsense_raw_data) > 0:
+                offset = motionsense_raw_data[0].offset
                 data = self.get_data_around_stress_survey(all_streams,
                                                      day,
                                                      user_id,
-                                                     motionsense_raw_data)
+                                                     motionsense_raw_data,
+                                                     offset)
                 if len(data) > 0:
-                    offset = data[0].offset
                     decoded_sample = get_decoded_matrix(np.array(data))
                     if not list(decoded_sample):
                         continue
                     final_data = []
+                    tzlocal = tz.tzoffset('IST',0)
                     for i in range(len(decoded_sample[:, 0])):
                         final_data.append(DataPoint.from_tuple(
-                            start_time=datetime.fromtimestamp(decoded_sample[i, -1]),
+                            start_time=datetime.fromtimestamp(decoded_sample[i, -1]).replace(tzinfo=tzlocal),
                             offset=offset, sample=decoded_sample[i, 1:-1]))
                     self.store_stream(json_path,[all_streams[stream_identifier]],
-                           user_id, final_data)
+                           user_id, final_data,localtime=False)
         return
 
 
