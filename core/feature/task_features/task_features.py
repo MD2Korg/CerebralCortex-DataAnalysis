@@ -9,7 +9,11 @@ feature_class_name = 'TaskFeatures'
 
 class TaskFeatures(ComputeFeatureBase):
     """
-....
+    Detects start and end sessions of postures like sitting and standing
+    in office context and around office beacon context in a day. Also it detects
+    activity sessions like walking against the same office and office beacon
+    context for the same day. Computes fraction of posture and activity against
+    total office and office beacon context on hourly basis.
     """
 
     # def __init__(self):
@@ -47,22 +51,28 @@ class TaskFeatures(ComputeFeatureBase):
             return
 
         for day in all_days:
+            posture_with_time = {}
+            activity_with_time = {}
+            office_with_time = {}
+            beacon_with_time = {}
+            offset = 0
 
             # gets all posture datapoints
             get_all_data = self.get_day_data(posture_stream_name,
                                              user, day)
-            if len(get_all_data) != 0:  # creates a dictionary of start and end times
+            if len(get_all_data) != 0: #creates a dictionary of start,end times
                 posture_with_time = process_data(get_all_data)
+                offset = get_all_data[0].offset
 
             # gets all activity datapoints
             get_all_data = self.get_day_data(activity_stream_name, user, day)
-
-            if len(get_all_data) != 0:  # creates a dictionary of start and end times
+            if len(get_all_data) != 0: #creates a dictionary of start,end times
                 activity_with_time = process_data(get_all_data)
+                offset = get_all_data[0].offset
 
             # gets all office datapoints
             get_all_data = self.get_day_data(office_stream_name, user, day)
-            if len(get_all_data) != 0:  # creates a dictionary of start and end times
+            if len(get_all_data) != 0: #creates a dictionary of start,end times
                 office_with_time = process_data(get_all_data)
 
             # gets all beacon datapoints
@@ -84,9 +94,6 @@ class TaskFeatures(ComputeFeatureBase):
                 beacon_with_time = process_data(updatedlist)
 
             # get the time offset for the dataset
-            offset = 0
-            if len(get_all_data) > 0:
-                offset = get_all_data[0].offset
 
             target_total_time, posture_office = output_stream(posture_with_time,
                                                               office_with_time,
@@ -96,7 +103,6 @@ class TaskFeatures(ComputeFeatureBase):
                 self.store_stream(filepath='posture_office_context_daily.json',
                                   input_streams=[
                                       streams[posture_stream_name],
-                                      streams[beacon_stream_name],
                                       streams[office_stream_name]],
                                   user_id=user,
                                   data=posture_office)

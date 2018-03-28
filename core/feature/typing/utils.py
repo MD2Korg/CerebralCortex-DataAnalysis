@@ -39,6 +39,7 @@ from typing import List
 import scipy.io
 import pandas as pd
 import numpy as np
+import numbers
 from core.computefeature import get_resource_contents
 
 TYPING_MODEL_FILENAME = 'core/resources/models/typing/Convbn_LSTM_100.h5'
@@ -219,6 +220,17 @@ def unique_days_of_one_stream(dict):
     merged_dates_set = set(merged_dates)
     return merged_dates_set
 
+def isvalid(dp):
+
+    if not isinstance(dp.sample, List):
+        return False
+
+
+    for v in dp.sample:
+        if not isinstance(v, numbers.Real):
+            return False
+
+    return True
 
 def get_dataframe(data: List[DataPoint], var_name):
     """
@@ -232,8 +244,11 @@ def get_dataframe(data: List[DataPoint], var_name):
     # this function takes a list of datapoints and make them into a dataframe
     if len(data) == 0:
         return None
+
+
     D = [[v.start_time.timestamp(), v.sample[0], v.sample[1], v.sample[2]]
-         for v in data]
+         for v in data if isvalid(v)]
+
     data_frame = pd.DataFrame(D, columns=var_name)
 
     return data_frame

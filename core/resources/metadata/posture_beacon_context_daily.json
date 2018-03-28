@@ -2,8 +2,8 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"float",
-      "unit":"minute"
+      "type":"string",
+      "unit":""
     }
   ],
   "execution_context":{

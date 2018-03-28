@@ -16,7 +16,7 @@ import numpy as np
 posture_stream_name = 'org.md2k.data_analysis.feature.body_posture.wrist.10_second'
 activity_stream_name = 'org.md2k.data_analysis.feature.activity.wrist.10_seconds'
 office_stream_name = 'org.md2k.data_analysis.gps_episodes_and_semantic_location'
-beacon_stream_name = 'org.md2k.data_analysis.feature.beacon.home_beacon_office'
+beacon_stream_name = 'org.md2k.data_analysis.feature.beacon.work_beacon_context'
 
 
 def target_in_fraction_of_context(target_total_time,
@@ -56,8 +56,8 @@ def target_in_fraction_of_context(target_total_time,
 
         outputstream.append(datapoint)
         print("Start_Time:", context_start_time, "End_Time:",
-              context_end_time, context, " total time:", total_context_time,
-              target, " total time:", target_total_time[target],
+              context_end_time, context, "total time:", total_context_time,
+              target, "total time:", target_total_time[target],
               "fraction per hour: ",
               target_total_time[target] / total_context_time * 60)
 
@@ -65,9 +65,9 @@ def target_in_fraction_of_context(target_total_time,
 def output_stream(targetconstruct_with_time, context_with_time,
                   offset, context_type):
     """
-    This function compares time intervals of posture, activity with time
-    intervals of office and beacon, to find overlapping time windows to
-    extract time intervals in which posture/activity occurs in office/around
+    This function compares time intervals of posture or activity with time
+    intervals of office or beacon, to find overlapping time windows to
+    extract time intervals, in which posture/activity occurs in office/around
     work beacon.
     :param targetconstruct_with_time: a dictionary of posture/activity intervals
     :param context_with_time: a dictionary of office/beacon intervals
@@ -118,9 +118,7 @@ def unique_days_of_one_stream(dict):
      list.
     :param user_id:dictionary of each stream
     :return: a set of dates of all the stream ids of one stream
-
     """
-
     merged_dates = []
 
     for stream_id in dict:
