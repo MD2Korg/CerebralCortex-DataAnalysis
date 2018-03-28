@@ -35,8 +35,8 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.beacon.home_beacon_context",
+  "name":"org.md2k.data_analysis.feature.beacon.work_beacon_context",
   "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "type":"1"
 }
 
