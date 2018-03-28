@@ -2,7 +2,7 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"String",
+      "type":"string",
       "unit":""
     }
   ],
@@ -20,7 +20,7 @@
       }
     },
     "algorithm":{
-      "method":"core.feature.office_time.WorkingDays.listing_all_work_days",
+      "method":"core.feature.office_time.WorkingDaysFromBeacon.listing_all_work_days_from_beacon",
       "authors":[
         {
           "name":"Alina Zaman",
@@ -30,11 +30,11 @@
       "version":"0.0.1",
       "reference":{
       },
-      "description":"Working days. The output is a list containing the date of only when a participant is at office location. The start time of entering the office location and the last time she leave the office location are stored. All of these results are parsed from gps location and beacon."
+      "description":"Working days. The output is a list containing the date of only when a participant was near beacon. The start time of entering in beacon zone and the last time she leave the beacon zone are stored. All of these results are parsed from beacon data."
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.working_days",
+  "name":"org.md2k.data_analysis.feature.working_days_from beacon",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }
