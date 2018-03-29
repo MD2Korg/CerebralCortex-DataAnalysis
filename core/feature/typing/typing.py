@@ -235,7 +235,7 @@ class TypingMarker(ComputeFeatureBase):
                 offset = get_all_data[0].offset
 
             # gets the typying episdoes information
-            data = typing_episodes(dataset, offset)
+            data = typing_episodes(dataset, offset, self.CC)
 
             self.store_stream(filepath='typing_episode_800_milisec_window.json',
                               input_streams=[

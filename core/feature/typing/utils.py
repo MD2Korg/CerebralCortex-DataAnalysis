@@ -40,6 +40,9 @@ import scipy.io
 import pandas as pd
 import numpy as np
 import numbers
+import tempfile
+import os
+
 from core.computefeature import get_resource_contents
 
 TYPING_MODEL_FILENAME = 'core/resources/models/typing/Convbn_LSTM_100.h5'
@@ -48,7 +51,7 @@ WINDOW_SIZE = 20 #for a 800ms window (at 25Hz we get a value every 40ms.
 STRIDE = 5 #we make a prediction every 200ms
 
 # coded by JEYA VIKRANTH JEYAKUMAR
-def typing_episodes(dataset, offset):
+def typing_episodes(dataset, offset, CC):
 
     """
     This function detects typing episodes.
@@ -85,7 +88,13 @@ def typing_episodes(dataset, offset):
     X_test0 = data_slide[z:]
 
     # Load Trained Model
-    model = load_model(TYPING_MODEL_FILENAME)
+    # model = load_model(TYPING_MODEL_FILENAME)
+
+    tmpfile = tempfile.NamedTemporaryFile(delete=True)
+    tmpfile.write(get_resource_contents(TYPING_MODEL_FILENAME))
+    model = load_model(os.path.realpath(tmpfile.name))
+    tmpfile.close()
+
     network_type = 'ConvLSTM'
     _, win_len, dim = X_test0.shape
 
@@ -132,7 +141,7 @@ def typing_episodes(dataset, offset):
                                   sample='Typing'))
 
     else:
-        print("No typing episode found for this dataset.")
+        CC.logging.log("No typing episode found for this dataset.")
     return data
 
 
@@ -220,18 +229,6 @@ def unique_days_of_one_stream(dict):
     merged_dates_set = set(merged_dates)
     return merged_dates_set
 
-def isvalid(dp):
-
-    if not isinstance(dp.sample, List):
-        return False
-
-
-    for v in dp.sample:
-        if not isinstance(v, numbers.Real):
-            return False
-
-    return True
-
 def get_dataframe(data: List[DataPoint], var_name):
     """
     This function takes a list of datapoints for each stream
@@ -244,10 +241,23 @@ def get_dataframe(data: List[DataPoint], var_name):
     # this function takes a list of datapoints and make them into a dataframe
     if len(data) == 0:
         return None
+    D = []
 
+    for v in data:
+        if type(v.sample) != list or len(v.sample) != 3:
+            continue
 
-    D = [[v.start_time.timestamp(), v.sample[0], v.sample[1], v.sample[2]]
-         for v in data if isvalid(v)]
+        for index in range(len(v.sample)):
+            if type(v.sample[index]) == str:
+            #    print("string Data:",v.sample)
+                v.sample[index] = v.sample[index].replace('\x00','0')
+                try:
+                    v.sample[index] = float(v.sample[index])
+                except:
+                    v.sample[index] = 0
+             #   print("converted data:",v.sample)
+
+        D.append([v.start_time.timestamp(), v.sample[0], v.sample[1], v.sample[2]])
 
     data_frame = pd.DataFrame(D, columns=var_name)
 
