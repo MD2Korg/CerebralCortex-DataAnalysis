@@ -28,11 +28,14 @@ import os
 import json
 import uuid
 import argparse
+import pytz
 from datetime import datetime
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.cerebralcortex import CerebralCortex
+import cerebralcortex.cerebralcortex
 
+print('-'*10,os.path.abspath(cerebralcortex.__file__))
 
 
 CC_CONFIG_PATH = '/home/vagrant/CerebralCortex-DockerCompose/cc_config_file/cc_vagrant_configuration.yml'
@@ -120,6 +123,9 @@ files_to_process.append((IGTB,IGTB_METADATA))
 # Map that contains the user 
 user_id_mappings={}
 
+# Timezone in which all times are recorded
+centraltz=pytz.timezone('US/Central')
+
 
 # CC intialization
 CC = CerebralCortex(CC_CONFIG_PATH)
@@ -170,21 +176,33 @@ def process_feature(file_path, metadata_path):
         
         user_id = user_id_mappings[row[0]]
         start_time = datetime.strptime(row[1], '%m/%d/%Y %H:%M')
+        start_time = centraltz.localize(start_time)
         
         # handling the different format of the IGTB file
         if IGTB not in file_path:
             end_time = datetime.strptime(row[2], '%m/%d/%Y %H:%M')
         else:
-            end_time = start_time
+            end_time = datetime(year=start_time.year, month=start_time.month,
+                                day=start_time.day, hour=start_time.hour,
+                                minute=start_time.minute)
             start_column_number = 2    
         
+        if IGTB not in file_path:
+            end_time = centraltz.localize(end_time)
+
+        utc_offset = start_time.utcoffset().seconds * -1000
+        # -1000 - DataPoint expects offset to be in milliseconds and negative is
+        # to account for being west of UTC
+        
+
         sample = {}
         
         for idx in range(start_column_number, len(row)):
             sample[header_row[idx]] = row[idx]
         
         sample_str = json.dumps(sample)
-        dp = DataPoint(start_time=start_time, end_time=end_time, offset=0, sample=sample_str) 
+        dp = DataPoint(start_time=start_time, end_time=end_time,
+                       offset=utc_offset, sample=sample_str) 
         
         if user_id not in feature_data:
             feature_data[user_id] = []
@@ -193,15 +211,22 @@ def process_feature(file_path, metadata_path):
 
     metadata = mf.read()
     metadata = json.loads(metadata)
+    metadata_name = metadata['name']
+    metadata_name = metadata_name.replace('feature.v3','feature.v4')
     
     for user in feature_data:
-        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str( metadata_path + user + file_path)))
-        ds = DataStream(identifier=output_stream_id, owner=user, name=metadata['name'], data_descriptor=\
-                metadata['data_descriptor'], execution_context=metadata['execution_context'], annotations=\
-                metadata['annotations'], stream_type='datastream', data=feature_data[user]) 
+        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(
+            metadata_name + user + file_path)))
+        ds = DataStream(identifier=output_stream_id, owner=user, 
+                        name=metadata_name, 
+                        data_descriptor= metadata['data_descriptor'], 
+                        execution_context=metadata['execution_context'], 
+                        annotations= metadata['annotations'], 
+                        stream_type=1,
+                        data=feature_data[user]) 
         #print(str(user),str(output_stream_id),len(feature_data[user]))   	 
         try:
-            CC.save_stream(ds)
+            CC.save_stream(ds, localtime=True)
         except Exception as e:
             print(e)
     f.close()

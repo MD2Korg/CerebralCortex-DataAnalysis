@@ -30,6 +30,7 @@ from cerebralcortex.core.datatypes.stream_types import StreamTypes
 import uuid
 import os
 import json
+import sys
 
 class ComputeFeatureBase(object):
     '''
@@ -49,8 +50,6 @@ class ComputeFeatureBase(object):
         '''
         stream_str = str(filepath) 
         stream_str += str(user_id) 
-        stream_str += str(self.__class__.__name__)
-        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, stream_str))
         
         # creating new input_streams list with only the needed information
         input_streams_metadata = []
@@ -70,10 +69,17 @@ class ComputeFeatureBase(object):
         metadata_str = __loader__.get_data(metadata_file_path)
 
         metadata = json.loads(metadata_str)
+        
+        stream_str += str(self.__class__.__name__)
+        stream_str += str(metadata)
+
+        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, stream_str))
         metadata["execution_context"]["processing_module"]["input_streams"]\
                 = input_streams_metadata
         metadata["identifier"] = str(output_stream_id)
         metadata["owner"] = str(user_id)
+        self.CC.logging.log('%s called '
+                            'store_stream.'%(sys._getframe(1).f_code.co_name))
 
         self.store(identifier=output_stream_id, owner=user_id, name=metadata["name"],
                    data_descriptor=metadata["data_descriptor"],
