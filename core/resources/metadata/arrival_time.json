@@ -1,0 +1,40 @@
+{
+  "annotations":[],
+  "data_descriptor":[
+    {
+      "type":"list",
+      "unit":""
+    }
+  ],
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.office_time",
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters":{
+
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.office_time.ArrivalTimes.listing_all_arrival_times",
+      "authors":[
+        {
+          "name":"Alina Zaman",
+          "email":"alina.cse@gmail.com"
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+      },
+      "description":"Office arrival time with verdict of before, after or usual arriving. Sample is a list with three elements as follows: 0 - Office arrival time, 1 - verdict (after_usual_time, before_usual_time, usual_time), 2 - deviation from the usual range of time in minutes."
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.feature.office_arrival_times",
+  "owner":"CC_OWNER_CC",
+  "type":"datastream"
+}

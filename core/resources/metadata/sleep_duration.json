@@ -1,0 +1,41 @@
+{
+  "annotations":[],
+  "data_descriptor":[
+    {
+      "type":"list",
+      "unit":""
+    }
+  ],
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.sleep_duration",
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters":{
+
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.sleep.SleepDurations.listing_all_sleep_durations",
+      "authors":[
+        {
+          "name":"Alina Zaman",
+          "email":"alina.cse@gmail.com"
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+        "paper": "http://ieeexplore.ieee.org/document/6563918/"
+      },
+      "description":"Sleep duration with verdict of usual, more than usual or less than usual sleep duration. Sample is a list with three elements as follows: 0 - Sleep duration in hours, 1 - verdict (more_than_usual, less_than_usual, usual_sleep_duration), 2 - deviation from the usual sleep duration in hours."
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.feature.sleep_durations",
+  "owner":"CC_OWNER_CC",
+  "type":"datastream"
+}
