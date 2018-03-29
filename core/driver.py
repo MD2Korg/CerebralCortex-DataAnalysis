@@ -48,13 +48,14 @@ def process_features(feature_list, all_users, all_days, num_cores=1):
         if num_cores > 1:
             print('Driver: Spark job')
             spark_context = get_or_create_sc(type="sparkContext")
-            if 'gps' in str(module):
+            if 'gps' in str(module) or 'sleep_duration_analysis' in str(module):
                 '''
                 # FIXME # TODO Currently only GPS feature computes features on a
                 range of days. Need to find a better way if there are other
                 modules that also works on range of days.
                 '''
-                print('MODULE',module)
+                print('-'*120)
+                print('MODULE parallelized on only users',module)
                 rdd = spark_context.parallelize(all_users,num_cores)
                 results = rdd.map(
                     lambda user: process_feature_on_user(user, module, all_days, 

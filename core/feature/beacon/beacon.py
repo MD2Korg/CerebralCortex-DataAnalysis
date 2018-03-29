@@ -54,8 +54,9 @@ class BeaconFeatures(ComputeFeatureBase):
         :param day:
         :return: new data stream merging work1 and work2
         """
-        new_data = []
+
         input_streams = []
+        new_data = []
 
         if stream1_name in streams:
 
@@ -101,12 +102,13 @@ class BeaconFeatures(ComputeFeatureBase):
         :return: new stream (start_time,end_time,offset,sample=[0 or 1]
         """
         input_streams = []
+        new_data = []
         input_streams.append(
             {"identifier": beacon_stream_id, "name": beacon_stream_name})
         if (len(beaconhomestream) > 0):
             beaconstream = beaconhomestream
             windowed_data = window(beaconstream, self.window_size, True)
-            new_data = []
+
 
             for i, j in windowed_data:
                 if (len(windowed_data[i, j]) > 0):
@@ -127,7 +129,7 @@ class BeaconFeatures(ComputeFeatureBase):
                 self.store_stream(filepath="home_beacon_context.json",
                                   input_streams= input_streams,
                                   user_id=user_id,
-                                  data=new_data)
+                                  data=new_data, localtime = False)
                 self.CC.logging.log('%s %s home_beacon_context stored %d ' 
                                     'DataPoints for user %s ' 
                                     % (str(datetime.datetime.now()),
@@ -145,6 +147,7 @@ class BeaconFeatures(ComputeFeatureBase):
 
 
     def work_beacon_context(self, beaconworkstream, input_streams, user_id):
+
         """
         produces datapoint sample as 1 or 2 if around work beacons else 0
         :param beaconworkstream:
@@ -153,12 +156,13 @@ class BeaconFeatures(ComputeFeatureBase):
         :return: stream with (start_time,end_time,offset,sample= 0 or 1]
         based on context of work_beacon 1 or work_beacon 2
         """
+        new_data = []
         if (len(beaconworkstream) > 0):
             beaconstream = beaconworkstream
 
             windowed_data = window(beaconstream, self.window_size, True)
 
-            new_data = []
+
             for i, j in windowed_data:
                 if (len(windowed_data[i, j]) > 0):
                     values = []
@@ -173,6 +177,7 @@ class BeaconFeatures(ComputeFeatureBase):
                 else:
                     windowed_data[i, j] = "0"
 
+
             data = merge_consective_windows(windowed_data)
             for items in data:
                 new_data.append(DataPoint(start_time=items.start_time,
@@ -185,7 +190,7 @@ class BeaconFeatures(ComputeFeatureBase):
                 self.store_stream(filepath="work_beacon_context.json",
                                   input_streams= input_streams,
                                   user_id=user_id,
-                                  data=new_data)
+                                  data=new_data, localtime = False)
                 self.CC.logging.log('%s %s work_beacon_context stored %d '
                                     'DataPoints for user %s ' 
                                     % (str(datetime.datetime.now()),

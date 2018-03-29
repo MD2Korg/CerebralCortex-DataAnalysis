@@ -10,13 +10,18 @@
   "execution_context":{
     "processing_module":{
       "name":"core.feature.beacon_feature",
-      "input_streams":[],
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
       "input_parameters":{
-        "window_size": "60"
+        "window_size": "1minute"
       }
     },
     "algorithm":{
-      "method":"core.feature.phone_features.phone",
+      "method":"core.feature.beacon_features.beacon",
       "authors":[
         {
           "name":"Rabin Banjade",
@@ -26,11 +31,11 @@
       "version":"0.0.1",
       "reference":{
       },
-      "description":"The participants context based on proximity to home beacon"
+      "description":"The participants' context based on proximity to home beacon"
     }
   },
-  "identifier":"",
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name":"org.md2k.data_analysis.feature.beacon.home_beacon_context",
-  "owner":"",
-  "type":"1"
+  "owner":"CC_OWNER_CC",
+  "type":"datastream"
 }
