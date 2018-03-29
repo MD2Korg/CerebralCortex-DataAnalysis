@@ -67,7 +67,7 @@ class respiration_cycle_statistics(ComputeFeatureBase):
             return []
 
         respiration_final_smoothed_detrended_filtered =np.array(respiration_final)[indexes]
-
+        offset = respiration_final_smoothed_detrended_filtered[0].offset
         peak,valley = compute_peak_valley(rip=respiration_final_smoothed_detrended_filtered)
 
         if len(peak)==0 or len(valley)==0:
@@ -127,6 +127,8 @@ class respiration_cycle_statistics(ComputeFeatureBase):
             temp[20] = corr_post_cycle[i].sample
             conversation_feature.append(deepcopy(dp))
             conversation_feature[-1].sample = temp
+            conversation_feature[-1].offset = offset
+
         return conversation_feature
 
 
@@ -189,7 +191,7 @@ class respiration_cycle_statistics(ComputeFeatureBase):
                         self.store_stream(json_path,
                                           [streams[respiration_raw_autosenseble]],
                                           user_id,
-                                          feature_matrix)
+                                          feature_matrix,localtime=False)
 
 
 

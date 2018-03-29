@@ -29,7 +29,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_qualtrics.feature.affect_panas_short.daily",
+  "name":"org.md2k.data_qualtrics.feature.v3.affect_panas_short.daily",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }
