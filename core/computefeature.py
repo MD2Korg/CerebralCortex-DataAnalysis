@@ -72,6 +72,9 @@ class ComputeFeatureBase(object):
         
         stream_str += str(self.__class__.__name__)
         stream_str += str(metadata)
+        stream_name = metadata['name']
+        #stream_name = stream_name.replace('feature.','feature.v2.')
+        stream_str += str(stream_name)
 
         output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, stream_str))
         metadata["execution_context"]["processing_module"]["input_streams"]\
@@ -81,7 +84,7 @@ class ComputeFeatureBase(object):
         self.CC.logging.log('%s called '
                             'store_stream.'%(sys._getframe(1).f_code.co_name))
 
-        self.store(identifier=output_stream_id, owner=user_id, name=metadata["name"],
+        self.store(identifier=output_stream_id, owner=user_id, name=stream_name,
                    data_descriptor=metadata["data_descriptor"],
                    execution_context=metadata["execution_context"], annotations=metadata["annotations"],
                    stream_type=StreamTypes.DATASTREAM, data=data,
