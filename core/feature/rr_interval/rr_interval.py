@@ -60,45 +60,70 @@ class rr_interval(ComputeFeatureBase):
         """
         if not all_days:
             return
-        if self.CC is not None:
-            if user:
-                all_streams = self.CC.get_user_streams(user_id=user)
+        if self.CC is None:
+            return
+        if not user:
+            return
 
-                if all_streams is None:
-                    return
-                user_id = user
+        all_streams = self.CC.get_user_streams(user_id=user)
 
-                if motionsense_hrv_left_raw in all_streams or motionsense_hrv_right_raw in all_streams:
-                    for day in all_days:
-                        motionsense_raw_left = self.CC.get_stream(all_streams[motionsense_hrv_left_raw]["identifier"],
-                                                                  day=day,user_id=user_id,localtime=True)
-                        motionsense_raw_right = self.CC.get_stream(all_streams[motionsense_hrv_right_raw]["identifier"],
-                                                                   day=day,user_id=user_id,localtime=True)
+        if all_streams is None:
+            return
 
-                        if not motionsense_raw_left.data and not motionsense_raw_right.data:
-                            continue
+        if motionsense_hrv_left_raw not in all_streams and  motionsense_hrv_right_raw not in all_streams:
+            return
+        if qualtrics_identifier not in all_streams:
+            return
 
+        user_id = user
+        for day in all_days:
+            qualtrics = self.CC.get_stream(all_streams[qualtrics_identifier]["identifier"],
+                                           day=day,user_id=user_id,localtime=True)
+            if len(qualtrics.data)==0:
+                continue
+            motionsense_raw_left = self.CC.get_stream(all_streams[motionsense_hrv_left_raw]["identifier"],
+                                                      day=day,user_id=user_id,localtime=True)
+            motionsense_raw_right = self.CC.get_stream(all_streams[motionsense_hrv_right_raw]["identifier"],
+                                                       day=day,user_id=user_id,localtime=True)
 
-                        motionsense_raw_left_data = admission_control(motionsense_raw_left.data)
-                        motionsense_raw_right_data = admission_control(motionsense_raw_right.data)
-                        left_data = self.get_data_around_stress_survey(all_streams,day,user_id,
-                                                                       motionsense_raw_left_data)
-                        right_data = self.get_data_around_stress_survey(all_streams,day,user_id,
-                                                                        motionsense_raw_right_data)
-
-
-                        if not left_data and not right_data:
-                            continue
+            if not motionsense_raw_left.data and not motionsense_raw_right.data:
+                continue
 
 
-                        left_decoded_data = decode_only(left_data)
-                        right_decoded_data = decode_only(right_data)
-                        window_data = find_sample_from_combination_of_left_right(left_decoded_data,right_decoded_data)
-                        int_RR_dist_obj,H,w_l,w_r,fil_type = get_constants()
-                        for dp in window_data:
-                            led_input = dp.sample
-                            [RR_interval_all_realization, score_stdHR,HR] = GLRT_bayesianIP_HMM(led_input,
-                                                                                                H,w_r,w_l,
-                                                                                                [],int_RR_dist_obj)
+            motionsense_raw_left_data = admission_control(motionsense_raw_left.data)
+            motionsense_raw_right_data = admission_control(motionsense_raw_right.data)
+
+
+            left_data = self.get_data_around_stress_survey(all_streams,day,user_id,
+                                                           motionsense_raw_left_data)
+            right_data = self.get_data_around_stress_survey(all_streams,day,user_id,
+                                                            motionsense_raw_right_data)
+
+
+            if not left_data and not right_data:
+                continue
+
+
+            left_decoded_data = decode_only(left_data)
+            right_decoded_data = decode_only(right_data)
+
+            window_data = find_sample_from_combination_of_left_right(left_decoded_data,right_decoded_data)
+
+            int_RR_dist_obj,H,w_l,w_r,fil_type = get_constants()
+            ecg_pks = []
+            final_data = []
+            for dp in window_data:
+                led_input = dp.sample
+                try:
+                    [RR_interval_all_realization,score,HR] = GLRT_bayesianIP_HMM(led_input,
+                                                                                    H,w_r,w_l,ecg_pks,
+                                                                                int_RR_dist_obj)
+                except Exception:
+                    continue
+                if not list(RR_interval_all_realization) and not list(HR):
+                    final_data.append(deepcopy(dp))
+                    final_data[-1].sample = np.array([RR_interval_all_realization,score,HR])
+
+
 
 

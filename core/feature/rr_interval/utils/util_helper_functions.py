@@ -33,6 +33,7 @@ from datetime import datetime
 from core.feature.rr_interval.utils.JU_code import Bayesian_IP_memphis
 from sklearn.preprocessing import normalize
 from copy import deepcopy
+import pytz
 
 motionsense_hrv_left_raw = \
     "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
@@ -206,7 +207,8 @@ def find_sample_from_combination_of_left_right(left:List[DataPoint],
     """
     When both left and right PPG are available for the day this function
     windows the whole day into one minute window and decides for each window
-    how to combine the left and right wrist ppg signals
+    how to combine the left and right wrist ppg signals. Then it preprocesses the combined 
+    values to get the required input to BayesianIP based rr interval extraction method
 
     :param left:
     :param right:
@@ -265,9 +267,9 @@ def find_sample_from_combination_of_left_right(left:List[DataPoint],
             continue
         start = (initial-window_offset)/1000
         end = (initial-window_offset+window_size)/1000
-        final_window_list.append(DataPoint.from_tuple(start_time = datetime.utcfromtimestamp(start),
+        final_window_list.append(DataPoint.from_tuple(start_time = datetime.utcfromtimestamp(start).replace(tzinfo=pytz.UTC),
                                                       offset=offset,
-                                                      end_time = datetime.utcfromtimestamp(end),
+                                                      end_time = datetime.utcfromtimestamp(end).replace(tzinfo=pytz.UTC),
                                                       sample = LED_input))
 
     return final_window_list
