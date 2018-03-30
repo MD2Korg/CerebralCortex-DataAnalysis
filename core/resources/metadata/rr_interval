@@ -1,0 +1,41 @@
+{
+  "annotations":[],
+  "data_descriptor":[
+    {
+      "type":"int",
+      "unit":"1 minute window",
+      "description":"A numpy array of length 3. First index contains many realizations of RR interval, second index contains the standard deviation and the last one contains an array of heart rate"
+    }
+  ],
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.rr_interval",
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters":{
+        "window_size": "60 seconds"
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.rr_interval.rr_interval",
+      "authors":[
+        {
+          "name":"Md Azim Ullah",
+          "email":"mullah@memphis.edu"
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+      },
+      "description":"Produces many realizations of RR interval timeseries in one minute alongside the corresponding standard deviation and Heart Rate"
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.feature.rr_interval",
+  "owner":"",
+  "type":"1"
+}
