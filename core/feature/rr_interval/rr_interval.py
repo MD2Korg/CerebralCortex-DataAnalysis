@@ -113,6 +113,7 @@ class rr_interval(ComputeFeatureBase):
             ecg_pks = []
             final_data = []
             for dp in window_data:
+                RR_interval_all_realization,score,HR = [],0,[]
                 led_input = dp.sample
                 try:
                     [RR_interval_all_realization,score,HR] = GLRT_bayesianIP_HMM(led_input,
@@ -120,7 +121,7 @@ class rr_interval(ComputeFeatureBase):
                                                                                 int_RR_dist_obj)
                 except Exception:
                     continue
-                if not list(RR_interval_all_realization) and not list(HR)
+                if not list(RR_interval_all_realization) and not list(HR):
                     continue
                 final_data.append(deepcopy(dp))
                 final_data[-1].sample = np.array([RR_interval_all_realization,score,HR])
