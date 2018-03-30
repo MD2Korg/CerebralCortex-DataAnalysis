@@ -123,6 +123,7 @@ class rr_interval(ComputeFeatureBase):
                     continue
                 if not list(RR_interval_all_realization) and not list(HR):
                     continue
+                print("Finished one window successfully")
                 final_data.append(deepcopy(dp))
                 final_data[-1].sample = np.array([RR_interval_all_realization,score,HR])
             json_path = 'rr_interval.json'
