@@ -136,7 +136,7 @@
         }
     },
     "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-    "name": "org.md2k.feature.respirationcyclefeature.v2",
+    "name": "org.md2k.feature.respirationcyclefeature.v3",
     "owner": "CC_OWNER_CC",
     "type": "datastream"
 }
