@@ -119,10 +119,11 @@ class BeaconFeatures(ComputeFeatureBase):
 
             data = merge_consective_windows(windowed_data)
             for items in data:
-                new_data.append(DataPoint(start_time=items.start_time,
-                                          end_time=items.end_time,
-                                          offset=beaconhomestream[0].offset,
-                                          sample=items.sample))
+                if items.sample is not None and items.sample!="":
+                    new_data.append(DataPoint(start_time=items.start_time,
+                                              end_time=items.end_time,
+                                              offset=beaconhomestream[0].offset,
+                                              sample=items.sample))
 
             try:
                 
@@ -177,12 +178,14 @@ class BeaconFeatures(ComputeFeatureBase):
 
             data = merge_consective_windows(windowed_data)
             for items in data:
-                new_data.append(DataPoint(start_time=items.start_time,
-                                          end_time=items.end_time,
-                                          offset=beaconworkstream[0].offset,
-                                          sample=items.sample))
+                if items.sample is not None and items.sample!="":
+                    new_data.append(DataPoint(start_time=items.start_time,
+                                              end_time=items.end_time,
+                                              offset=beaconworkstream[0].offset,
+                                              sample=items.sample))
 
             try:
+                
                 
                 self.store_stream(filepath="work_beacon_context.json",
                                   input_streams= input_streams,
