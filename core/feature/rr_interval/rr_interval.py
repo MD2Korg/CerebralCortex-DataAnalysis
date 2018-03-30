@@ -23,11 +23,82 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from core.computefeature import ComputeFeatureBase
+from core.feature.rr_interval.utils.util_helper_functions import *
+from datetime import timedelta
 
-
-feature_class_name = 'DecodeHRV'
+feature_class_name = 'rr_interval'
 
 
 class rr_interval(ComputeFeatureBase):
-    pass
+    def get_data_around_stress_survey(self,
+                                      all_streams,
+                                      day,
+                                      user_id,
+                                      raw_byte_array):
+        if qualtrics_identifier in all_streams:
+            data = self.CC.get_stream(all_streams[qualtrics_identifier][
+                                          'identifier'], user_id=user_id, day=day,localtime=True)
+            if len(data.data) > 0:
+                data = data.data
+                final_data = []
+                s1 = data[0].end_time + timedelta(seconds = data[0].offset/1000)
+                for dp in raw_byte_array:
+                    s2 = dp.start_time + timedelta(seconds = dp.offset/1000)
+                    if s1 > s2 and s2 + timedelta(minutes=60) > s1 :
+                        final_data.append(dp)
+                return final_data
+        return []
+
+
+
+    def process(self, user, all_days):
+        """
+
+        :param user: user id string
+        :param all_days: list of days to compute
+
+        """
+        if not all_days:
+            return
+        if self.CC is not None:
+            if user:
+                all_streams = self.CC.get_user_streams(user_id=user)
+
+                if all_streams is None:
+                    return
+                user_id = user
+
+                if motionsense_hrv_left_raw in all_streams or motionsense_hrv_right_raw in all_streams:
+                    for day in all_days:
+                        motionsense_raw_left = self.CC.get_stream(all_streams[motionsense_hrv_left_raw]["identifier"],
+                                                                  day=day,user_id=user_id,localtime=True)
+                        motionsense_raw_right = self.CC.get_stream(all_streams[motionsense_hrv_right_raw]["identifier"],
+                                                                   day=day,user_id=user_id,localtime=True)
+
+                        if not motionsense_raw_left.data and not motionsense_raw_right.data:
+                            continue
+
+
+                        motionsense_raw_left_data = admission_control(motionsense_raw_left.data)
+                        motionsense_raw_right_data = admission_control(motionsense_raw_right.data)
+                        left_data = self.get_data_around_stress_survey(all_streams,day,user_id,
+                                                                       motionsense_raw_left_data)
+                        right_data = self.get_data_around_stress_survey(all_streams,day,user_id,
+                                                                        motionsense_raw_right_data)
+
+
+                        if not left_data and not right_data:
+                            continue
+
+
+                        left_decoded_data = decode_only(left_data)
+                        right_decoded_data = decode_only(right_data)
+                        window_data = find_sample_from_combination_of_left_right(left_decoded_data,right_decoded_data)
+                        int_RR_dist_obj,H,w_l,w_r,fil_type = get_constants()
+                        for dp in window_data:
+                            led_input = dp.sample
+                            [RR_interval_all_realization, score_stdHR,HR] = GLRT_bayesianIP_HMM(led_input,
+                                                                                                H,w_r,w_l,
+                                                                                                [],int_RR_dist_obj)
+
 
