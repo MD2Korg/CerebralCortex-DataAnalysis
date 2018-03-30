@@ -5,8 +5,8 @@ import uuid
 import traceback
 from cerebralcortex.core.util.data_types import DataPoint
 from core.computefeature import ComputeFeatureBase
-from window import window
-from window import merge_consective_windows
+from core.signalprocessing.window import window
+from core.signalprocessing.window import merge_consective_windows
 
 feature_class_name = 'BeaconFeatures'
 
@@ -135,7 +135,7 @@ class BeaconFeatures(ComputeFeatureBase):
                                     'DataPoints for user %s ' 
                                     % (str(datetime.datetime.now()),
                                        self.__class__.__name__,
-                                       len(new_data), str(user_id)))
+                                       len(new_data), str(new_data)))
 
             except Exception as e:
                 self.CC.logging.log("Exception:", str(e))
@@ -195,7 +195,7 @@ class BeaconFeatures(ComputeFeatureBase):
                                     'DataPoints for user %s ' 
                                     % (str(datetime.datetime.now()),
                                        self.__class__.__name__,
-                                       len(new_data), str(user_id)))
+                                       len(new_data), str(new_data)))
 
             except Exception as e:
                 self.CC.logging.log("Exception:", str(e))
