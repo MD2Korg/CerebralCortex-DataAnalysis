@@ -37,13 +37,13 @@ class rr_interval(ComputeFeatureBase):
                                       raw_byte_array):
         if qualtrics_identifier in all_streams:
             data = self.CC.get_stream(all_streams[qualtrics_identifier][
-                                          'identifier'], user_id=user_id, day=day,localtime=True)
+                                          'identifier'], user_id=user_id, day=day,localtime=False)
             if len(data.data) > 0:
                 data = data.data
                 final_data = []
-                s1 = data[0].end_time + timedelta(seconds = data[0].offset/1000)
+                s1 = data[0].end_time
                 for dp in raw_byte_array:
-                    s2 = dp.start_time + timedelta(seconds = dp.offset/1000)
+                    s2 = dp.start_time
                     if s1 > s2 and s2 + timedelta(minutes=60) > s1 :
                         final_data.append(dp)
                 return final_data
@@ -72,43 +72,36 @@ class rr_interval(ComputeFeatureBase):
 
         if motionsense_hrv_left_raw not in all_streams and  motionsense_hrv_right_raw not in all_streams:
             return
-        if qualtrics_identifier not in all_streams:
-            return
 
         user_id = user
         for day in all_days:
-            qualtrics = self.CC.get_stream(all_streams[qualtrics_identifier]["identifier"],
-                                           day=day,user_id=user_id,localtime=True)
-            if len(qualtrics.data)==0:
-                continue
+
             motionsense_raw_left = self.CC.get_stream(all_streams[motionsense_hrv_left_raw]["identifier"],
-                                                      day=day,user_id=user_id,localtime=True)
+                                                      day=day,user_id=user_id,localtime=False)
             motionsense_raw_right = self.CC.get_stream(all_streams[motionsense_hrv_right_raw]["identifier"],
-                                                       day=day,user_id=user_id,localtime=True)
+                                                       day=day,user_id=user_id,localtime=False)
 
             if not motionsense_raw_left.data and not motionsense_raw_right.data:
                 continue
 
 
-            motionsense_raw_left_data = admission_control(motionsense_raw_left.data)
-            motionsense_raw_right_data = admission_control(motionsense_raw_right.data)
 
+            left_data = admission_control(motionsense_raw_left.data)
+            right_data = admission_control(motionsense_raw_right.data)
 
             left_data = self.get_data_around_stress_survey(all_streams,day,user_id,
-                                                           motionsense_raw_left_data)
+                                                           left_data)
             right_data = self.get_data_around_stress_survey(all_streams,day,user_id,
-                                                            motionsense_raw_right_data)
-
+                                                            right_data)
 
             if not left_data and not right_data:
                 continue
-
 
             left_decoded_data = decode_only(left_data)
             right_decoded_data = decode_only(right_data)
 
             window_data = find_sample_from_combination_of_left_right(left_decoded_data,right_decoded_data)
-
+            print(len(window_data)," number of windows")
             int_RR_dist_obj,H,w_l,w_r,fil_type = get_constants()
             ecg_pks = []
             final_data = []
@@ -117,16 +110,16 @@ class rr_interval(ComputeFeatureBase):
                 led_input = dp.sample
                 try:
                     [RR_interval_all_realization,score,HR] = GLRT_bayesianIP_HMM(led_input,
-                                                                                    H,w_r,w_l,ecg_pks,
-                                                                                int_RR_dist_obj)
+                                                                                 H,w_r,w_l,ecg_pks,
+                                                                                 int_RR_dist_obj)
                 except Exception:
                     continue
                 if not list(RR_interval_all_realization) and not list(HR):
                     continue
-                print("Finished one window successfully")
+                print("Finished one window successfully with score", score, np.mean(HR))
                 final_data.append(deepcopy(dp))
                 final_data[-1].sample = np.array([RR_interval_all_realization,score,HR])
-            # json_path = 'rr_interval.json'
+                # json_path = 'rr_interval.json'
             # self.store_stream(json_path,
             #                   [all_streams[motionsense_hrv_left_raw]],
             #                   user_id,
