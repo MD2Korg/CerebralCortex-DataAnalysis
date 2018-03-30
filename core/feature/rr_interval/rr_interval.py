@@ -30,3 +30,4 @@ feature_class_name = 'DecodeHRV'
 
 class rr_interval(ComputeFeatureBase):
     pass
+
