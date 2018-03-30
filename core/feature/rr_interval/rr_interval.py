@@ -26,7 +26,7 @@ from core.computefeature import ComputeFeatureBase
 from core.feature.rr_interval.utils.util_helper_functions import *
 from datetime import timedelta
 
-feature_class_name = 'rr_interval'
+feature_class_name = 'rr_interval.json'
 
 
 class rr_interval(ComputeFeatureBase):
@@ -123,6 +123,11 @@ class rr_interval(ComputeFeatureBase):
                 if not list(RR_interval_all_realization) and not list(HR):
                     final_data.append(deepcopy(dp))
                     final_data[-1].sample = np.array([RR_interval_all_realization,score,HR])
+            json_path = 'rr_interval.json'
+            self.store_stream(json_path,
+                              [all_streams[motionsense_hrv_left_raw]],
+                              user_id,
+                              final_data,localtime=False)
 
 
 
