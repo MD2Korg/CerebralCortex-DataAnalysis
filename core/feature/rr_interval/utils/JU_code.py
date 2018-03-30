@@ -228,7 +228,6 @@ def Bayesian_IP_memphis(Candidates_position,Candidates_LR,int_RR_dist_obj,start_
             if iter_num_1 == 1:
                 Peak_mat[t*L:(t+1)*L,:] = HMM_stochastic_backward_smoothie(log_Gamma_R,Candidates_position,int_RR_dist_obj,
                                                                            Z_L[t*L:(t+1)*L,0],start_position,end_position)
-            #                peak_mat = loadmat('C:\\Users\\aungkon\\Desktop\\model\\JU\\peak_mat.mat')['peak_mat']
             Z_L[t*L:(t+1)*L,0] = z_sample_generation(Peak_mat[t*L:(t+1)*L,:],Candidates_position,pi_Z,int_RR_dist_obj,start_position,end_position)
             Peak_mat[t*L:(t+1)*L,:] = HMM_stochastic_backward_smoothie(log_Gamma_R,Candidates_position,int_RR_dist_obj,
                                                                        Z_L[t*L:(t+1)*L,0],start_position,end_position)
