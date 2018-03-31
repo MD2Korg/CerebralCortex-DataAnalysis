@@ -79,7 +79,7 @@ def bandpassfilter(x,fs):
 
 def isDatapointsWithinRange(red,infrared,green):
     a =  len(np.where((red >= 14000)& (red<=170000))[0]) < .64*len(red)
-    b = len(np.where((infrared >= 100000)& (infrared<=245000))[0]) < .64*len(infrared)
+    b = len(np.where((infrared >= 100000)& (infrared<=255000))[0]) < .64*len(infrared)
     c = len(np.where((green >= 800)& (green<=20000))[0]) < .64*len(green)
     if a and b and c:
         return False

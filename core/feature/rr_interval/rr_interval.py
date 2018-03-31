@@ -25,7 +25,6 @@
 from core.computefeature import ComputeFeatureBase
 from core.feature.rr_interval.utils.util_helper_functions import *
 from datetime import timedelta
-
 feature_class_name = 'rr_interval'
 
 
@@ -89,10 +88,10 @@ class rr_interval(ComputeFeatureBase):
             left_data = admission_control(motionsense_raw_left.data)
             right_data = admission_control(motionsense_raw_right.data)
 
-            left_data = self.get_data_around_stress_survey(all_streams,day,user_id,
-                                                           left_data)
-            right_data = self.get_data_around_stress_survey(all_streams,day,user_id,
-                                                            right_data)
+            # left_data = self.get_data_around_stress_survey(all_streams,day,user_id,
+            #                                                left_data)
+            # right_data = self.get_data_around_stress_survey(all_streams,day,user_id,
+            #                                                 right_data)
 
             if not left_data and not right_data:
                 continue
@@ -101,12 +100,13 @@ class rr_interval(ComputeFeatureBase):
             right_decoded_data = decode_only(right_data)
 
             window_data = find_sample_from_combination_of_left_right(left_decoded_data,right_decoded_data)
-            print(len(window_data)," number of windows")
+            if not list(window_data):
+                continue
             int_RR_dist_obj,H,w_l,w_r,fil_type = get_constants()
             ecg_pks = []
             final_data = []
             for dp in window_data:
-                RR_interval_all_realization,score,HR = [],0,[]
+                RR_interval_all_realization,score,HR = [],np.nan,[]
                 led_input = dp.sample
                 try:
                     [RR_interval_all_realization,score,HR] = GLRT_bayesianIP_HMM(led_input,
@@ -114,16 +114,19 @@ class rr_interval(ComputeFeatureBase):
                                                                                  int_RR_dist_obj)
                 except Exception:
                     continue
-                if not list(RR_interval_all_realization) and not list(HR):
+                if not list(RR_interval_all_realization):
                     continue
-                print("Finished one window successfully with score", score, np.mean(HR))
+                print("Finished one window successfully with score", score, np.nanmean(HR))
                 final_data.append(deepcopy(dp))
                 final_data[-1].sample = np.array([RR_interval_all_realization,score,HR])
-                # json_path = 'rr_interval.json'
-            # self.store_stream(json_path,
-            #                   [all_streams[motionsense_hrv_left_raw]],
-            #                   user_id,
-            #                   final_data,localtime=False)
+
+            if not list(final_data):
+                continue
+            json_path = 'rr_interval.json'
+            self.store_stream(json_path,
+                              [all_streams[motionsense_hrv_left_raw]],
+                              user_id,
+                              final_data,localtime=False)
 
 
 
