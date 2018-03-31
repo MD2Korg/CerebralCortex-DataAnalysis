@@ -50,7 +50,7 @@ class ArrivalTimes(ComputeFeatureBase):
     "org.md2k.data_analysis.feature.working_days". For office arrival time the first
     time of entering in office location according to gps location is considered and only
     the hour and minute are taken for calculation. Usual arrival time is calculated from
-    these data. And here usual time is a range of time. Each day's arrival_time is
+    these data. And here usual time is a range of time. each day's arrival_time is
     marked as usual or before_time or after_time """
 
     def listing_all_arrival_times(self, user_id, all_days):
@@ -67,8 +67,6 @@ class ArrivalTimes(ComputeFeatureBase):
         arrival_data = []
         office_arrival_times = list()
         for stream_id in stream_ids:
-            if stream_id["identifier"] == '11e0934a-05fd-36d7-903a-9123a2e9f19b':
-                continue
             for day in all_days:
                 work_data_stream = \
                     self.CC.get_stream(stream_id["identifier"], user_id, day)
@@ -79,6 +77,8 @@ class ArrivalTimes(ComputeFeatureBase):
                     sample = []
                     temp = DataPoint(data.start_time, data.end_time, data.offset, sample)
                     arrival_data.append(temp)
+        if not len(office_arrival_times):
+            return
         median = np.median(office_arrival_times)
         mad_arrival_times = []
         for arrival_time in office_arrival_times:
@@ -91,6 +91,8 @@ class ArrivalTimes(ComputeFeatureBase):
         for arrival_time in office_arrival_times:
             if arrival_time > (median - outlier_border) and arrival_time < (median + outlier_border):
                 outlier_removed_office_arrival_times.append(arrival_time)
+        if not len(outlier_removed_office_arrival_times):
+            outlier_removed_office_arrival_times = office_arrival_times
         mean = np.mean(outlier_removed_office_arrival_times)
         standard_deviation = np.std(outlier_removed_office_arrival_times)
         for data in arrival_data:
@@ -102,7 +104,7 @@ class ArrivalTimes(ComputeFeatureBase):
             elif arrival_time < mean-standard_deviation:
                 data.sample.append("before_usual_time")
                 data.sample.append(math.ceil(mean-standard_deviation-arrival_time))
-            elif arrival_time < mean+standard_deviation and arrival_time > mean-standard_deviation:
+            else:
                 data.sample.append("usual_time")
                 data.sample.append(0)
         #print(arrival_data)
@@ -111,6 +113,9 @@ class ArrivalTimes(ComputeFeatureBase):
                 streams = self.CC.get_user_streams(user_id)
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == Working_Days_STREAM:
+                        # print(stream_metadata)
+                        print("Going to pickle the file: ",arrival_data)
+
                         self.store_stream(filepath="arrival_time.json",
                                           input_streams=[stream_metadata],
                                           user_id=user_id,

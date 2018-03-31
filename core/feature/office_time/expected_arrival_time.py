@@ -88,6 +88,8 @@ class ExpectedArrivalTimes(ComputeFeatureBase):
                     sample = []
                     temp = DataPoint(data.start_time, data.end_time, data.offset, sample)
                     expected_conservative_arrival_data.append(temp)
+        if not len(office_arrival_times):
+            return
         median = np.median(office_arrival_times)
         mad_arrival_times = []
         for arrival_time in office_arrival_times:
@@ -100,6 +102,8 @@ class ExpectedArrivalTimes(ComputeFeatureBase):
         for arrival_time in office_arrival_times:
             if arrival_time > (median - outlier_border) and arrival_time < (median + outlier_border):
                 outlier_removed_office_arrival_times.append(arrival_time)
+        if not len(outlier_removed_office_arrival_times):
+            outlier_removed_office_arrival_times = office_arrival_times
         actual_time = np.mean(outlier_removed_office_arrival_times)
         actual_minute = int(actual_time%60)
         actual_hour = int(actual_time/60)
@@ -125,7 +129,7 @@ class ExpectedArrivalTimes(ComputeFeatureBase):
             elif arrival_time < conservative_time:
                 data.sample.append("before_expected_conservative_time")
                 data.sample.append(math.ceil(conservative_time-arrival_time))
-            elif arrival_time == conservative_time:
+            else:
                 data.sample.append("in_expected_conservative_time")
                 data.sample.append(0)
             temp.sample.append(data.start_time.time())
@@ -135,7 +139,7 @@ class ExpectedArrivalTimes(ComputeFeatureBase):
             elif arrival_time < liberal_time:
                 temp.sample.append("before_expected_liberal_time")
                 temp.sample.append(math.ceil(liberal_time-arrival_time))
-            elif arrival_time == liberal_time:
+            else:
                 temp.sample.append("in_expected_liberal_time")
                 temp.sample.append(0)
             expected_liberal_arrival_data.append(temp)

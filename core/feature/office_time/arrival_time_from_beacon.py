@@ -28,7 +28,7 @@ from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
-#from core.computefeature import ComputeFeatureBase
+from core.computefeature import ComputeFeatureBase
 
 import pprint as pp
 import numpy as np
@@ -73,11 +73,14 @@ class ArrivalTimesFromBeacon(ComputeFeatureBase):
                     self.CC.get_stream(stream_id["identifier"], user_id, day)
 
                 for data in work_data_stream.data:
+                    print(data)
                     arrival_time = data.start_time.hour*60+data.start_time.minute
                     office_arrival_times.append(arrival_time)
                     sample = []
                     temp = DataPoint(data.start_time, data.end_time, data.offset, sample)
                     arrival_data.append(temp)
+        if not len(office_arrival_times):
+            return
         median = np.median(office_arrival_times)
         mad_arrival_times = []
         for arrival_time in office_arrival_times:
@@ -90,6 +93,8 @@ class ArrivalTimesFromBeacon(ComputeFeatureBase):
         for arrival_time in office_arrival_times:
             if arrival_time > (median - outlier_border) and arrival_time < (median + outlier_border):
                 outlier_removed_office_arrival_times.append(arrival_time)
+        if not len(outlier_removed_office_arrival_times):
+            outlier_removed_office_arrival_times = office_arrival_times
         mean = np.mean(outlier_removed_office_arrival_times)
         standard_deviation = np.std(outlier_removed_office_arrival_times)
         for data in arrival_data:
@@ -101,7 +106,7 @@ class ArrivalTimesFromBeacon(ComputeFeatureBase):
             elif arrival_time < mean-standard_deviation:
                 data.sample.append("before_usual_time")
                 data.sample.append(math.ceil(mean-standard_deviation-arrival_time))
-            elif arrival_time < mean+standard_deviation and arrival_time > mean-standard_deviation:
+            else:
                 data.sample.append("usual_time")
                 data.sample.append(0)
         #print(arrival_data)

@@ -28,7 +28,7 @@ from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
-#from core.computefeature import ComputeFeatureBase
+from core.computefeature import ComputeFeatureBase
 
 import pprint as pp
 import numpy as np
@@ -80,6 +80,8 @@ class StayingTimesFromBeacon(ComputeFeatureBase):
                     temp = DataPoint(data.start_time, data.end_time, data.offset, sample)
                     temp.sample.append(staying_time)
                     staying_time_data.append(temp)
+        if not len(office_staying_times):
+            return
         median = np.median(office_staying_times)
         mad_office_staying_times = []
         for staying_time in office_staying_times:
@@ -92,6 +94,8 @@ class StayingTimesFromBeacon(ComputeFeatureBase):
         for staying_time in office_staying_times:
             if staying_time > (median - outlier_border) and staying_time < (median + outlier_border):
                 outlier_removed_office_staying_times.append(staying_time)
+        if not len(outlier_removed_office_staying_times):
+            outlier_removed_office_staying_times = office_staying_times
         mean = np.mean(outlier_removed_office_staying_times)
         standard_deviation = np.std(outlier_removed_office_staying_times)
         for data in staying_time_data:
@@ -102,7 +106,7 @@ class StayingTimesFromBeacon(ComputeFeatureBase):
             elif staying_time < mean-standard_deviation:
                 data.sample.append("less_than_usual")
                 data.sample.append(math.ceil(mean-standard_deviation-staying_time))
-            elif staying_time < mean+standard_deviation and staying_time > mean-standard_deviation:
+            else:
                 data.sample.append("usual_staying_time")
                 data.sample.append(0)
         #print(staying_time_data)

@@ -28,7 +28,7 @@ from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
-#from core.computefeature import ComputeFeatureBase
+from core.computefeature import ComputeFeatureBase
 
 import pprint as pp
 import numpy as np
@@ -87,6 +87,8 @@ class ExpectedStayingTimesFromBeacon(ComputeFeatureBase):
                     temp = DataPoint(data.start_time, data.end_time, data.offset, sample)
                     temp.sample.append(staying_time)
                     expected_conservative_staying_data.append(temp)
+        if not len(office_staying_times):
+            return
         median = np.median(office_staying_times)
         mad_office_staying_times = []
         for staying_time in office_staying_times:
@@ -99,6 +101,8 @@ class ExpectedStayingTimesFromBeacon(ComputeFeatureBase):
         for staying_time in office_staying_times:
             if staying_time > (median - outlier_border) and staying_time < (median + outlier_border):
                 outlier_removed_office_staying_times.append(staying_time)
+        if not len(outlier_removed_office_staying_times):
+            outlier_removed_office_staying_times = office_staying_times
         actual_staying_time = np.mean(outlier_removed_office_staying_times)
         actual_minute = int(actual_staying_time%60)
         actual_hour = int(actual_staying_time/60)
@@ -137,10 +141,10 @@ class ExpectedStayingTimesFromBeacon(ComputeFeatureBase):
                 temp.sample.append("in_expected_liberal_time")
                 temp.sample.append(0)
             expected_liberal_staying_data.append(temp)
-        for data in expected_conservative_staying_data:
-            print(data.start_time,data.sample)
-        for data in expected_liberal_staying_data:
-            print(data.start_time,data.sample)
+        #for data in expected_conservative_staying_data:
+        #    print(data.start_time,data.sample)
+        #for data in expected_liberal_staying_data:
+        #    print(data.start_time,data.sample)
         try:
             if len(expected_conservative_staying_data):
                 streams = self.CC.get_user_streams(user_id)
@@ -176,6 +180,6 @@ class ExpectedStayingTimesFromBeacon(ComputeFeatureBase):
                             (self.__class__.__name__, str(user_id),
                              len(expected_liberal_staying_data)))
     def process(self, user_id, all_days):
-       if self.CC is not None:
+        if self.CC is not None:
            self.CC.logging.log("Processing Expected Staying Times From Beacon")
            self.listing_all_expected_staying_times_from_beacon(user_id, all_days)

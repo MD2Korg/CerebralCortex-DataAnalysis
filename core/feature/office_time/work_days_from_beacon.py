@@ -28,7 +28,7 @@ from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
-#from core.computefeature import ComputeFeatureBase
+from core.computefeature import ComputeFeatureBase
 
 
 import pprint as pp
@@ -40,11 +40,10 @@ import json
 import traceback
 
 feature_class_name = 'WorkingDaysFromBeacon'
-BEACON_WORK_BEACON_CONTEXT_STREAM = "org.md2k.data_analysis.feature.beacon.work_beacon_context"
+BEACON_WORK_BEACON_CONTEXT_STREAM = "org.md2k.data_analysis.feature.v4.beacon.work_beacon_context"
 
 class WorkingDaysFromBeacon(ComputeFeatureBase):
-    """
-    Produce feature from gps location Only the days marked as "Work" in
+    """ Produce feature from gps location Only the days marked as "Work" in
     "org.md2k.data_analysis.gps_episodes_and_semantic_location" data stream are
     taken.  Among these days, the first time of entering in office location
     according to gps location is taken as arrival time and the last time of
@@ -72,6 +71,7 @@ class WorkingDaysFromBeacon(ComputeFeatureBase):
                     self.CC.get_stream(stream_id["identifier"], user_id, day)
 
                 for data in beacon_location_data_stream.data:
+                    #print(data)
                     if data.sample is None or data.sample[0] != "1":
                         # only the data marked as Work are needed
                         continue
@@ -102,13 +102,11 @@ class WorkingDaysFromBeacon(ComputeFeatureBase):
                         current_day = d.start_time.date()
 
                     work_end_time = d.end_time
-        print(work_data)
         try:
             if len(work_data):
                 streams = self.CC.get_user_streams(user_id)
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == BEACON_WORK_BEACON_CONTEXT_STREAM:
-                        # print(stream_metadata)
                         print("Going to pickle the file: ",work_data)
 
                         self.store_stream(filepath="working_days_from_beacon.json",

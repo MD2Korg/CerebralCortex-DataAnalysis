@@ -68,8 +68,6 @@ class StayingTimes(ComputeFeatureBase):
         staying_time_data = []
         office_staying_times = list()
         for stream_id in stream_ids:
-            if stream_id["identifier"] == '11e0934a-05fd-36d7-903a-9123a2e9f19b':
-                continue
             for day in all_days:
                 work_data_stream = \
                     self.CC.get_stream(stream_id["identifier"], user_id, day)
@@ -83,6 +81,8 @@ class StayingTimes(ComputeFeatureBase):
                     temp = DataPoint(data.start_time, data.end_time, data.offset, sample)
                     temp.sample.append(staying_time)
                     staying_time_data.append(temp)
+        if not len(office_staying_times):
+            return
         median = np.median(office_staying_times)
         mad_office_staying_times = []
         for staying_time in office_staying_times:
@@ -95,6 +95,8 @@ class StayingTimes(ComputeFeatureBase):
         for staying_time in office_staying_times:
             if staying_time > (median - outlier_border) and staying_time < (median + outlier_border):
                 outlier_removed_office_staying_times.append(staying_time)
+        if not len(outlier_removed_office_staying_times):
+            outlier_removed_office_staying_times = office_staying_times
         mean = np.mean(outlier_removed_office_staying_times)
         standard_deviation = np.std(outlier_removed_office_staying_times)
         for data in staying_time_data:
@@ -105,14 +107,18 @@ class StayingTimes(ComputeFeatureBase):
             elif staying_time < mean-standard_deviation:
                 data.sample.append("less_than_usual")
                 data.sample.append(math.ceil(mean-standard_deviation-staying_time))
-            elif staying_time < mean+standard_deviation and staying_time > mean-standard_deviation:
+            else:
                 data.sample.append("usual_staying_time")
                 data.sample.append(0)
+        #print(staying_time_data)
         try:
             if len(staying_time_data):
                 streams = self.CC.get_user_streams(user_id)
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == Working_Days_STREAM:
+                        # print(stream_metadata)
+                        print("Going to pickle the file: ",staying_time_data)
+
                         self.store_stream(filepath="staying_time.json",
                                           input_streams=[stream_metadata],
                                           user_id=user_id,

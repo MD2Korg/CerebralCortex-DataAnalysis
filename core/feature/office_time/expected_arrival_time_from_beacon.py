@@ -28,7 +28,7 @@ from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
-#from core.computefeature import ComputeFeatureBase
+from core.computefeature import ComputeFeatureBase
 
 import pprint as pp
 import numpy as np
@@ -86,6 +86,8 @@ class ExpectedArrivalTimesFromBeacon(ComputeFeatureBase):
                     sample = []
                     temp = DataPoint(data.start_time, data.end_time, data.offset, sample)
                     expected_conservative_arrival_data.append(temp)
+        if not len(office_arrival_times):
+            return
         median = np.median(office_arrival_times)
         mad_arrival_times = []
         for arrival_time in office_arrival_times:
@@ -98,6 +100,8 @@ class ExpectedArrivalTimesFromBeacon(ComputeFeatureBase):
         for arrival_time in office_arrival_times:
             if arrival_time > (median - outlier_border) and arrival_time < (median + outlier_border):
                 outlier_removed_office_arrival_times.append(arrival_time)
+        if not len(outlier_removed_office_arrival_times):
+            outlier_removed_office_arrival_times = office_arrival_times
         actual_time = np.mean(outlier_removed_office_arrival_times)
         actual_minute = int(actual_time%60)
         actual_hour = int(actual_time/60)
@@ -137,10 +141,7 @@ class ExpectedArrivalTimesFromBeacon(ComputeFeatureBase):
                 temp.sample.append("in_expected_liberal_time")
                 temp.sample.append(0)
             expected_liberal_arrival_data.append(temp)
-        for data in expected_conservative_arrival_data:
-            print(data.start_time,data.sample)
-        for data in expected_liberal_arrival_data:
-            print(data.start_time,data.sample)
+
         try:
             if len(expected_conservative_arrival_data):
                 streams = self.CC.get_user_streams(user_id)
