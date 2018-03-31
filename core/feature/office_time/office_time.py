@@ -152,7 +152,7 @@ class WorkingDays(ComputeFeatureBase):
 
             # Office Time Calculation from Beacon
             working_days_from_beacon_feature =  WorkingDaysFromBeacon(self.CC)
-            self.listing_all_work_days_from_beacon(user_id, all_days)
+            working_days_from_beacon_feature.process(user_id, all_days)
 
             arrival_data_from_beacon_feature = ArrivalTimesFromBeacon(self.CC)
             arrival_data_from_beacon_feature.process(user_id, all_days)
