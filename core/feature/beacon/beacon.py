@@ -63,6 +63,7 @@ class BeaconFeatures(ComputeFeatureBase):
             beacon_stream_name1 = streams[stream1_name]["name"]
             input_streams.append(
                 {"identifier": beacon_stream_id1, "name": beacon_stream_name1})
+            
             work1_stream = self.CC.get_stream(
                 beacon_stream_id1, user_id=user_id, day=day,localtime = False)
             if (len(work1_stream.data) > 0):
@@ -103,6 +104,7 @@ class BeaconFeatures(ComputeFeatureBase):
         input_streams = []
         input_streams.append(
             {"identifier": beacon_stream_id, "name": beacon_stream_name})
+        
         if (len(beaconhomestream) > 0):
             beaconstream = beaconhomestream
             windowed_data = window(beaconstream, self.window_size, True)
@@ -117,22 +119,23 @@ class BeaconFeatures(ComputeFeatureBase):
 
             data = merge_consective_windows(windowed_data)
             for items in data:
-                new_data.append(DataPoint(start_time=items.start_time,
-                                          end_time=items.end_time,
-                                          offset=beaconhomestream[0].offset,
-                                          sample=items.sample))
+                if items.sample is not None and items.sample!="":
+                    new_data.append(DataPoint(start_time=items.start_time,
+                                              end_time=items.end_time,
+                                              offset=beaconhomestream[0].offset,
+                                              sample=items.sample))
 
             try:
-
+                
                 self.store_stream(filepath="home_beacon_context.json",
                                   input_streams= input_streams,
                                   user_id=user_id,
-                                  data=new_data)
+                                  data=new_data, localtime=False)
                 self.CC.logging.log('%s %s home_beacon_context stored %d ' 
                                     'DataPoints for user %s ' 
                                     % (str(datetime.datetime.now()),
                                        self.__class__.__name__,
-                                       len(new_data), str(user_id)))
+                                       len(new_data), str(new_data)))
 
             except Exception as e:
                 self.CC.logging.log("Exception:", str(e))
@@ -175,22 +178,24 @@ class BeaconFeatures(ComputeFeatureBase):
 
             data = merge_consective_windows(windowed_data)
             for items in data:
-                new_data.append(DataPoint(start_time=items.start_time,
-                                          end_time=items.end_time,
-                                          offset=beaconworkstream[0].offset,
-                                          sample=items.sample))
+                if items.sample is not None and items.sample!="":
+                    new_data.append(DataPoint(start_time=items.start_time,
+                                              end_time=items.end_time,
+                                              offset=beaconworkstream[0].offset,
+                                              sample=items.sample))
 
             try:
-
+                
+                
                 self.store_stream(filepath="work_beacon_context.json",
                                   input_streams= input_streams,
                                   user_id=user_id,
-                                  data=new_data)
+                                  data=new_data, localtime=False)
                 self.CC.logging.log('%s %s work_beacon_context stored %d '
                                     'DataPoints for user %s ' 
                                     % (str(datetime.datetime.now()),
                                        self.__class__.__name__,
-                                       len(new_data), str(user_id)))
+                                       len(new_data), str(new_data)))
 
             except Exception as e:
                 self.CC.logging.log("Exception:", str(e))

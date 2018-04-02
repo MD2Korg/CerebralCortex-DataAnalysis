@@ -29,16 +29,16 @@ from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
 from core.computefeature import ComputeFeatureBase
-from arrival_time import ArrivalTimes
-from staying_time import StayingTimes
-from expected_arrival_time import ExpectedArrivalTimes
-from expected_staying_time import ExpectedStayingTimes
+from core.feature.office_time.arrival_time import ArrivalTimes
+from core.feature.office_time.staying_time import StayingTimes
+from core.feature.office_time.expected_arrival_time import ExpectedArrivalTimes
+from core.feature.office_time.expected_staying_time import ExpectedStayingTimes
 
-from work_days_from_beacon import WorkingDaysFromBeacon
-from arrival_time_from_beacon import ArrivalTimesFromBeacon
-from staying_time_from_beacon import StayingTimesFromBeacon
-from expected_arrival_time_beacon import ExpectedArrivalTimesFromBeacon
-from expected_staying_time_from_beacon import ExpectedStayingTimesFromBeacon
+from core.feature.office_time.work_days_from_beacon import WorkingDaysFromBeacon
+from core.feature.office_time.arrival_time_from_beacon import ArrivalTimesFromBeacon
+from core.feature.office_time.staying_time_from_beacon import StayingTimesFromBeacon
+from core.feature.office_time.expected_arrival_time_from_beacon import ExpectedArrivalTimesFromBeacon
+from core.feature.office_time.expected_staying_time_from_beacon import ExpectedStayingTimesFromBeacon
 
 import pprint as pp
 import numpy as np
