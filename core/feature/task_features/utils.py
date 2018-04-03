@@ -55,12 +55,8 @@ def target_in_fraction_of_context(target_total_time,
                                    target] / total_context_time * 60])
 
         outputstream.append(datapoint)
-        # print("Start_Time:", context_start_time, "End_Time:",
-        #       context_end_time, context, "total time:", total_context_time,
-        #       target, "total time:", target_total_time[target],
-        #       "fraction per hour: ",
-        #       target_total_time[target] / total_context_time * 60)
 
+    return outputstream
 
 def output_stream(targetconstruct_with_time, context_with_time,
                   offset):
@@ -69,8 +65,8 @@ def output_stream(targetconstruct_with_time, context_with_time,
     intervals of office or beacon, to find overlapping time windows to
     extract time intervals, in which posture/activity occurs in office/around
     work beacon.
-    :param targetconstruct_with_time: a dictionary of posture/activity intervals
-    :param context_with_time: a dictionary of office/beacon intervals
+    :param targetconstruct_with_time: a dictionary of posture/activity time intervals
+    :param context_with_time: a dictionary of office/beacon time intervals
     :param offset: offset for time information
     :return: a dictionray of total time spent for posture/activity,
             a list of datapoints for output stream
