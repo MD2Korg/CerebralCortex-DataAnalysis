@@ -1,0 +1,41 @@
+{
+  "annotations":[],
+  "data_descriptor":[
+    {
+      "type":"Enum",
+      "unit":"1 minute window",
+      "description":"Calculates the PPG yield for each minute of Raw motionsenseHRV data"
+    }
+  ],
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.data_yield",
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters":{
+        "window_size": "60 seconds"
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.data_yield.data_yield",
+      "authors":[
+        {
+          "name":"Md Azim Ullah",
+          "email":"mullah@memphis.edu"
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+      },
+      "description":"Calculates the PPG yield each minute of Raw motionsenseHRV data"
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.data_yield.60sec",
+  "owner":"",
+  "type":"1"
+}
