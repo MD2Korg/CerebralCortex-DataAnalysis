@@ -65,7 +65,7 @@ class PhoneDataYield(ComputeFeatureBase):
         :return:
         """
         if not data:
-            return None
+            return None, None
 
         start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.time.min)
         start_time = start_time.replace(tzinfo = data[0].start_time.tzinfo)
