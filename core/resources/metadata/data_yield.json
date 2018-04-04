@@ -2,7 +2,7 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"Enum",
+      "type":"boolean",
       "unit":"1 minute window",
       "description":"Calculates the PPG yield for each minute of Raw motionsenseHRV data"
     }
@@ -35,7 +35,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.data_yield.60sec",
+  "name":"org.md2k.data_analysis.data_yield.60sec.v1",
   "owner":"",
   "type":"1"
 }

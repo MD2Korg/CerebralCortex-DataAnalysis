@@ -28,7 +28,6 @@ import numpy as np
 from copy import deepcopy
 from scipy import signal
 from collections import Counter
-from enum import Enum
 
 
 motionsense_hrv_left = "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
@@ -37,9 +36,6 @@ Fs = 25
 window_size_60sec = 60
 window_size_10sec = 10
 
-class Quality(Enum):
-    ACCEPTABLE = 0
-    UNACCEPTABLE = 1
 
 def admission_control(data:List[DataPoint])->List[DataPoint]:
     final_data = []
@@ -97,37 +93,39 @@ def compute_quality(red,infrared,green,fs):
     """
 
     if not isDatapointsWithinRange(red,infrared,green):
-        return Quality.UNACCEPTABLE
+        return False
 
     if np.mean(red) < 5000 and np.mean(infrared) < 5000 and np.mean(green)<5000:
-        return Quality.UNACCEPTABLE
+        return False
 
     if not (np.mean(red)>np.mean(green) and np.mean(infrared)>np.mean(red)):
-        return Quality.UNACCEPTABLE
+        return False
 
     diff = 30000
     if np.mean(red)>140000 or np.mean(red)<=30000:
         diff = 11000
 
     if not (np.mean(red) - np.mean(green) > diff and np.mean(infrared) - np.mean(red) >diff):
-        return Quality.UNACCEPTABLE
+        return False
 
     if np.std(bandpassfilter(red,fs)) <= 5 and np.std(bandpassfilter(infrared,fs)) <= 5 and np.std(bandpassfilter(green,fs)) <= 5:
-        return Quality.UNACCEPTABLE
+        return False
 
-    return Quality.ACCEPTABLE
+    return True
+
+
 def get_quality(windowed_data,Fs):
     quality = []
     for key in windowed_data.keys():
         data = windowed_data[key]
         if len(data) < .64*Fs*10:
-            quality.append(Quality.UNACCEPTABLE)
+            quality.append(False)
             continue
         red = np.array([i.sample[0] for i in data])
         infrared = np.array([i.sample[1] for i in data])
         green = np.array([i.sample[2] for i in data])
         quality.append(compute_quality(red,infrared,green,Fs))
     if not quality:
-        return Quality.UNACCEPTABLE
+        return False
     value, count = Counter(quality).most_common()[0]
     return value
