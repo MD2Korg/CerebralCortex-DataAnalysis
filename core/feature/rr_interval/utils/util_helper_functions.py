@@ -55,6 +55,8 @@ def admission_control(data:List[DataPoint])->List[DataPoint]:
     for dp in data:
         if isinstance(dp.sample,str) and len(dp.sample.split(','))==20:
             final_data.append(dp)
+        if isinstance(dp.sample,list) and len(dp.sample)==20:
+            final_data.append(dp)
     return final_data
 
 
@@ -122,12 +124,16 @@ def compute_quality(red,infrared,green,fs):
 def decode_only(data):
     final_data = []
     for dp in data:
-        str_sample = str(dp.sample)
-        str_sample_list = str_sample.split(',')
-        if len(str_sample_list) != 20:
+        if isinstance(dp.sample,str):
+            str_sample = str(dp.sample)
+            str_sample_list = str_sample.split(',')
+            if len(str_sample_list) != 20:
+                continue
+            Vals = [np.int8(np.float(val)) for val in str_sample_list]
+        elif isinstance(dp.sample,list):
+            Vals = [np.int8(val) for val in dp.sample]
+        else:
             continue
-        Vals = [np.int8(np.float(val)) for val in str_sample_list]
-
         sample = np.array([0]*5)
         sample[0] = dp.start_time.timestamp()*1000
         sample[1] = ((np.uint8(Vals[18]) & int('00000011',2))<<8) | \
