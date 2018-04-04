@@ -75,7 +75,7 @@ class WorkingDays(ComputeFeatureBase):
                     self.CC.get_stream(stream_id["identifier"], user_id, day)
                 current_day = None  # in beginning current day is null
                 for data in location_data_stream.data:
-                    print(data)
+                    #print(data)
                     if data.sample.lower() != "work":
                         # only the data marked as Work are needed
                         continue
@@ -113,14 +113,14 @@ class WorkingDays(ComputeFeatureBase):
                     temp.sample = 'Office'
                     work_data.append(temp)
 
-        print(work_data)
+        #print(work_data)
         try:
             if len(work_data):
                 streams = self.CC.get_user_streams(user_id)
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM:
                         # print(stream_metadata)
-                        print("Going to pickle the file: ",work_data)
+                       # print("Going to pickle the file: ",work_data)
 
                         self.store_stream(filepath="working_days.json",
                                           input_streams=[stream_metadata],
