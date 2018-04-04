@@ -65,11 +65,11 @@ class WorkingDaysFromBeacon(ComputeFeatureBase):
         stream_ids = self.CC.get_stream_id(user_id,
                                            BEACON_WORK_BEACON_CONTEXT_STREAM)
         for stream_id in stream_ids:
-            current_day = None  # in beginning current day is null
+
             for day in all_days:
                 beacon_location_data_stream = \
                     self.CC.get_stream(stream_id["identifier"], user_id, day)
-
+                current_day = None  # in beginning current day is null
                 for data in beacon_location_data_stream.data:
                     #print(data)
                     if data.sample is None or data.sample[0] != "1":
@@ -102,6 +102,12 @@ class WorkingDaysFromBeacon(ComputeFeatureBase):
                         current_day = d.start_time.date()
 
                     work_end_time = d.end_time
+                if current_day:
+                    temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
+                    temp.start_time = work_start_time
+                    temp.end_time = work_end_time
+                    temp.sample = 'work'
+                    work_data.append(temp)
         try:
             if len(work_data):
                 streams = self.CC.get_user_streams(user_id)
