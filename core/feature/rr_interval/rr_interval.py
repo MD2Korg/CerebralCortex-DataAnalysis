@@ -114,14 +114,17 @@ class rr_interval(ComputeFeatureBase):
             #                                                 right_data)
 
             if not left_data and not right_data:
+                print('-'*20," No data after admission control ",'-'*20)
                 continue
 
             left_decoded_data = decode_only(left_data)
             right_decoded_data = decode_only(right_data)
-
+            print('-'*20,len(left_decoded_data),'-'*20,len(right_decoded_data),'-'*20,' decoded length')
             window_data = find_sample_from_combination_of_left_right(left_decoded_data,right_decoded_data)
             if not list(window_data):
+                print('-'*20," No window data available ",'-'*20)
                 continue
+            print('-'*20,len(window_data),'-'*20,' window length')
             int_RR_dist_obj,H,w_l,w_r,fil_type = get_constants()
             ecg_pks = []
             final_data = []
