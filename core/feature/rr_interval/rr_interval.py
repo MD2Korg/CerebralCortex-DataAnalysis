@@ -69,24 +69,44 @@ class rr_interval(ComputeFeatureBase):
         if all_streams is None:
             return
 
-        if motionsense_hrv_left_raw not in all_streams and  motionsense_hrv_right_raw not in all_streams:
+        if motionsense_hrv_left_raw not in all_streams and  \
+                        motionsense_hrv_right_raw not in all_streams and \
+                        motionsense_hrv_left_raw_cat not in all_streams and  \
+                        motionsense_hrv_right_raw_cat not in all_streams:
             return
 
         user_id = user
         for day in all_days:
 
-            motionsense_raw_left = self.CC.get_stream(all_streams[motionsense_hrv_left_raw]["identifier"],
-                                                      day=day,user_id=user_id,localtime=False)
-            motionsense_raw_right = self.CC.get_stream(all_streams[motionsense_hrv_right_raw]["identifier"],
-                                                       day=day,user_id=user_id,localtime=False)
+            left_data = []
+            right_data = []
 
-            if not motionsense_raw_left.data and not motionsense_raw_right.data:
+            if motionsense_hrv_left_raw in all_streams:
+                motionsense_raw_left = self.CC.get_stream(all_streams[motionsense_hrv_left_raw]["identifier"],
+                                                          day=day,user_id=user_id,localtime=False)
+                left_data = motionsense_raw_left.data
+            if not left_data:
+                if motionsense_hrv_left_raw_cat in all_streams:
+                    motionsense_raw_left = self.CC.get_stream(all_streams[motionsense_hrv_left_raw_cat]["identifier"],
+                                                              day=day,user_id=user_id,localtime=False)
+                    left_data = motionsense_raw_left.data
+
+
+            if motionsense_hrv_right_raw in all_streams:
+                motionsense_raw_right = self.CC.get_stream(all_streams[motionsense_hrv_right_raw]["identifier"],
+                                                           day=day,user_id=user_id,localtime=False)
+                right_data = motionsense_raw_right.data
+            if not right_data:
+                if motionsense_hrv_right_raw_cat in all_streams:
+                    motionsense_raw_right = self.CC.get_stream(all_streams[motionsense_hrv_right_raw_cat]["identifier"],
+                                                               day=day,user_id=user_id,localtime=False)
+                    right_data = motionsense_raw_right.data
+
+            if not left_data and not right_data:
                 continue
 
-
-
-            left_data = admission_control(motionsense_raw_left.data)
-            right_data = admission_control(motionsense_raw_right.data)
+            left_data = admission_control(left_data)
+            right_data = admission_control(right_data)
 
             # left_data = self.get_data_around_stress_survey(all_streams,day,user_id,
             #                                                left_data)
@@ -123,10 +143,28 @@ class rr_interval(ComputeFeatureBase):
             if not list(final_data):
                 continue
             json_path = 'rr_interval.json'
-            self.store_stream(json_path,
+            if motionsense_hrv_left_raw in all_streams:
+                self.store_stream(json_path,
                               [all_streams[motionsense_hrv_left_raw]],
                               user_id,
                               final_data,localtime=False)
+            elif motionsense_hrv_right_raw in all_streams:
+                self.store_stream(json_path,
+                                  [all_streams[motionsense_hrv_right_raw]],
+                                  user_id,
+                                  final_data,localtime=False)
+            elif motionsense_hrv_left_raw_cat in all_streams:
+                self.store_stream(json_path,
+                                  [all_streams[motionsense_hrv_left_raw_cat]],
+                                  user_id,
+                                  final_data,localtime=False)
+            else:
+                self.store_stream(json_path,
+                                  [all_streams[motionsense_hrv_right_raw_cat]],
+                                  user_id,
+                                  final_data,localtime=False)
+
+
 
 
 
