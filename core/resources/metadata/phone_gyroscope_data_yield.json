@@ -16,7 +16,7 @@
         }
       ],
       "input_parameters":{
-        "max_data_gap_threshold_seconds": 60
+        "max_data_gap_threshold_seconds": 300
       }
     },
     "algorithm":{
@@ -34,7 +34,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.phone.gyroscope_data_yield",
+  "name":"org.md2k.data_analysis.feature.v2.phone.gyroscope_data_yield",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }

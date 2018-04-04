@@ -55,7 +55,7 @@ class PhoneDataYield(ComputeFeatureBase):
             s = p.start_time
         return s
 
-    def get_data_yield(self, data, max_data_gap_threshold_seconds=60):
+    def get_data_yield(self, data, max_data_gap_threshold_seconds=300):
         """
         This method produces series of data points containing interval of data present or not. In the sample
         a 0 means data is not present in this interval, 1 means data is there. Also it returns another data points
