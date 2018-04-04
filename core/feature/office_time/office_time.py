@@ -34,21 +34,16 @@ from staying_time import StayingTimes
 from expected_arrival_time import ExpectedArrivalTimes
 from expected_staying_time import ExpectedStayingTimes
 
-from work_days_from_beacon import WorkingDaysFromBeacon
-from arrival_time_from_beacon import ArrivalTimesFromBeacon
-from staying_time_from_beacon import StayingTimesFromBeacon
-from expected_arrival_time_beacon import ExpectedArrivalTimesFromBeacon
-from expected_staying_time_from_beacon import ExpectedStayingTimesFromBeacon
-
 import pprint as pp
 import numpy as np
 import pdb
+import pickle
 import uuid
 import json
+import traceback
 
 feature_class_name = 'WorkingDays'
-GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM = "org.md2k.data_analysis.gps_episodes_and_semantic_location"
-
+GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM = "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model"
 
 class WorkingDays(ComputeFeatureBase):
     """
@@ -57,7 +52,7 @@ class WorkingDays(ComputeFeatureBase):
     taken.  Among these days, the first time of entering in office location
     according to gps location is taken as arrival time and the last time of
     leaving office office location according to gps location is taken as
-    departure time Office arrival time are marked as usual or before_time or
+    departure time Ofiice arrival time are marked as usual or before_time or
     after_time and staying time is also marked as usual, more_than_usual or
     less_than_usual """
 
@@ -74,13 +69,14 @@ class WorkingDays(ComputeFeatureBase):
         stream_ids = self.CC.get_stream_id(user_id,
                                            GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM)
         for stream_id in stream_ids:
-            current_day = None  # in beginning current day is null
+
             for day in all_days:
                 location_data_stream = \
                     self.CC.get_stream(stream_id["identifier"], user_id, day)
-
+                current_day = None  # in beginning current day is null
                 for data in location_data_stream.data:
-                    if data.sample[0].lower() != "work":
+                    print(data)
+                    if data.sample.lower() != "work":
                         # only the data marked as Work are needed
                         continue
 
@@ -110,14 +106,21 @@ class WorkingDays(ComputeFeatureBase):
                         current_day = d.start_time.date()
 
                     work_end_time = d.end_time
-        # print(work_data)
+                if current_day:
+                    temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
+                    temp.start_time = work_start_time
+                    temp.end_time = work_end_time
+                    temp.sample = 'Office'
+                    work_data.append(temp)
+
+        print(work_data)
         try:
             if len(work_data):
                 streams = self.CC.get_user_streams(user_id)
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM:
                         # print(stream_metadata)
-                        print("Going to pickle the file: ", work_data)
+                        print("Going to pickle the file: ",work_data)
 
                         self.store_stream(filepath="working_days.json",
                                           input_streams=[stream_metadata],
@@ -132,37 +135,39 @@ class WorkingDays(ComputeFeatureBase):
                             (self.__class__.__name__, str(user_id),
                              len(work_data)))
 
+
+
     def process(self, user_id, all_days):
         if self.CC is not None:
-            # # Office Time Calculation from GPS
-            # self.CC.logging.log("Processing Working Days")
-            # self.listing_all_work_days(user_id, all_days)
-            #
-            # arrival_data_feature = ArrivalTimes(self.CC)
-            # arrival_data_feature.process(user_id, all_days)
-            #
-            # expected_arrival_data_feature = ExpectedArrivalTimes(self.CC)
-            # expected_arrival_data_feature.process(user_id, all_days)
-            #
-            # staying_time_data_feature = StayingTimes(self.CC)
-            # staying_time_data_feature.process(user_id, all_days)
-            #
-            # expected_staying_time_data_feature = ExpectedStayingTimes(self.CC)
-            # expected_staying_time_data_feature.process(user_id, all_days)
+            # Office Time Calculation from GPS
+            self.CC.logging.log("Processing Working Days")
+            self.listing_all_work_days(user_id, all_days)
+
+            arrival_data_feature = ArrivalTimes(self.CC)
+            arrival_data_feature.process(user_id, all_days)
+
+            expected_arrival_data_feature = ExpectedArrivalTimes(self.CC)
+            expected_arrival_data_feature.process(user_id, all_days)
+
+            staying_time_data_feature = StayingTimes(self.CC)
+            staying_time_data_feature.process(user_id, all_days)
+
+            expected_staying_time_data_feature = ExpectedStayingTimes(self.CC)
+            expected_staying_time_data_feature.process(user_id, all_days)
 
             # Office Time Calculation from Beacon
-            working_days_from_beacon_feature =  WorkingDaysFromBeacon(self.CC)
-            working_days_from_beacon_feature.process(user_id, all_days)
-
-            arrival_data_from_beacon_feature = ArrivalTimesFromBeacon(self.CC)
-            arrival_data_from_beacon_feature.process(user_id, all_days)
-
-            expected_arrival_data_from_beacon_feature = ExpectedArrivalTimesFromBeacon(self.CC)
-            expected_arrival_data_from_beacon_feature.process(user_id, all_days)
-
-            staying_time_data_from_beacon_feature = StayingTimesFromBeacon(self.CC)
-            staying_time_data_from_beacon_feature.process(user_id, all_days)
-
-            expected_staying_time_data_from_beacon_feature = ExpectedStayingTimesFromBeacon(self.CC)
-            expected_staying_time_data_from_beacon_feature.process(user_id, all_days)
+            # working_days_from_beacon_feature =  WorkingDaysFromBeacon(self.CC)
+            # working_days_from_beacon_feature.process(user_id, all_days)
+            #
+            # arrival_data_from_beacon_feature = ArrivalTimesFromBeacon(self.CC)
+            # arrival_data_from_beacon_feature.process(user_id, all_days)
+            #
+            # expected_arrival_data_from_beacon_feature = ExpectedArrivalTimesFromBeacon(self.CC)
+            # expected_arrival_data_from_beacon_feature.process(user_id, all_days)
+            #
+            # staying_time_data_from_beacon_feature = StayingTimesFromBeacon(self.CC)
+            # staying_time_data_from_beacon_feature.process(user_id, all_days)
+            #
+            # expected_staying_time_data_from_beacon_feature = ExpectedStayingTimesFromBeacon(self.CC)
+            # expected_staying_time_data_from_beacon_feature.process(user_id, all_days)
 
