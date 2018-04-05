@@ -66,83 +66,8 @@ if args['user_mappings']:
 files_to_process=[]
 
 # Below are the list of filenames 
-FILE_NAME = 'Daily.tob.d.mitre.csv'
+FILE_NAME = 'igtb_composites.csv'
 FILE_METADATA='metadata/daily.tob.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-IRB_D = 'Daily.irb.d.csv'
-IRB_D_METADATA='metadata/daily.irb.d.json'
-files_to_process.append((IRB_D,IRB_D_METADATA))
-
-ITP_D = 'Daily.itp.d.csv'
-ITP_D_METADATA='metadata/daily.itp.d.json'
-files_to_process.append((ITP_D,ITP_D_METADATA))
-
-FILE_NAME = 'Daily.pos.affect.d.csv'
-FILE_METADATA='metadata/daily.pos.affect.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.neg.affect.d.csv'
-FILE_METADATA='metadata/daily.neg.affect.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.ocb.d.csv'
-FILE_METADATA='metadata/daily.ocb.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.cwb.d.csv'
-FILE_METADATA='metadata/daily.cwb.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.sleep.d.mitre.csv'
-FILE_METADATA='metadata/daily.sleep.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-
-FILE_NAME = 'Daily.total.pa.d.mitre.csv'
-FILE_METADATA='metadata/daily.total.pa.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.neuroticism.d.csv'
-FILE_METADATA='metadata/daily.neuroticism.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.conscientiousness.d.csv'
-FILE_METADATA='metadata/daily.conscientiousness.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.extraversion.d.csv'
-FILE_METADATA='metadata/daily.extraversion.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.agreeableness.d.csv'
-FILE_METADATA='metadata/daily.agreeableness.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.openness.d.csv'
-FILE_METADATA='metadata/daily.openness.d.json'
 files_to_process.append((FILE_NAME,FILE_METADATA))
 FILE_NAME = None
 FILE_METADATA = None
@@ -191,7 +116,6 @@ def process_feature(file_path, metadata_path):
     reader = csv.reader(f)
     count = 0
     feature_data = {}
-    start_column_number = 3    
 
     for row in reader:
         if count == 0:
@@ -206,23 +130,14 @@ def process_feature(file_path, metadata_path):
         start_time = datetime.strptime(row[1], '%m/%d/%Y %H:%M')
         start_time = centraltz.localize(start_time)
         
-        # handling the different format of the IGTB file
-        if 'IGTB' not in file_path:
-            end_time = datetime.strptime(row[2], '%m/%d/%Y %H:%M')
-        else:
-            end_time = datetime(year=start_time.year, month=start_time.month,
-                                day=start_time.day, hour=start_time.hour,
-                                minute=start_time.minute)
-            start_column_number = 2    
-        
-        if 'IGTB' not in file_path:
-            end_time = centraltz.localize(end_time)
-
         utc_offset = start_time.utcoffset().seconds * -1000
         # -1000 - DataPoint expects offset to be in milliseconds and negative is
         # to account for being west of UTC
         
-
+        '''
+        "shipley.vocab","shipley.abs","irb","itp","ocb","inter.deviance","org.deviance","extraversion","agreeableness","conscientiousness"
+        "neuroticism","openness","pos.affect","neg.affect","stai.trait","audit","gats.status","gats.quantity","gats.quantity.sub","ipaq","psqi"
+        '''
         sample = row[5:]
         values = []
         for val in sample:

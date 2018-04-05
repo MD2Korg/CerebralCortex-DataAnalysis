@@ -11,7 +11,7 @@
       "name":"core.modules.data_importer.qualtrix_data_importer",
       "input_source":[
         {
-          "file_name":"Daily.tob.d.mitre.csv",
+          "file_name":"Daily.openness.d.csv",
           "file_source" : "qualtrics"
         }
       ]
@@ -29,7 +29,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_qualtrics.feature.v7.tob.quantity.d",
+  "name":"org.md2k.data_qualtrics.feature.v7.openness.d",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }

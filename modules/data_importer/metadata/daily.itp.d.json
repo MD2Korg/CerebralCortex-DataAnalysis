@@ -2,8 +2,8 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"json",
-      "unit":"int or NA"
+      "type":"list",
+      "unit":"float"
     }
   ],
   "execution_context":{
@@ -29,7 +29,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_qualtrics.feature.v3.task_performance_ITP.3_per_week",
+  "name":"org.md2k.data_qualtrics.feature.v7.itp.d",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }
