@@ -7,6 +7,9 @@ SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = CerebralCortexDataAnalysis
 SOURCEDIR     = source
 BUILDDIR      = build
+SPHINXAPIOPTS = -M -f
+SPHINXAPIDOC  = sphinx-apidoc
+
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -17,4 +20,5 @@ help:
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
+	@$(SPHINXAPIDOC) $(SPHINXAPIOPTS) -o "$(SOURCEDIR)" ../core/ 
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)

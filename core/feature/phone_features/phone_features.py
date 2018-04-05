@@ -44,10 +44,9 @@ from sklearn.mixture import GaussianMixture
 
 feature_class_name = 'PhoneFeatures'
 
-
 class PhoneFeatures(ComputeFeatureBase):
     """
-    Phone features
+    Class Description for Phone features here
 
     - a
     - b
@@ -56,18 +55,23 @@ class PhoneFeatures(ComputeFeatureBase):
     Done
     """
     def get_filtered_data(self, data, admission_control = None):
+        """
+        MISSING
+        """
         if admission_control is None:
             return data
         return [d for d in data if admission_control(d.sample)]
 
     def get_data_by_stream_name(self, stream_name, user_id, day, localtime=True):
         """
-        A method to get combined data from CerebralCortex as there can be multiple stream ids for the same stream name.
+        Combines data from multiple streams based on stream name.
 
-        :param stream_name: Name of the stream
-        :param user_id: UUID of the strema owner
-        :param day: The day (YYYYMMDD) on which to operate
+        :param str stream_name: Name of the stream
+        :param str user_id: UUID of the stream owner
+        :param str day: The day (YYYYMMDD) on which to operate
+        :param bool localtime: The way to structure time, True for operating in participant's local time, False for UTC
         :return: Combined stream data if there are multiple stream id
+        :rtype: List(DataPoint)
         """
 
         stream_ids = self.CC.get_stream_id(user_id, stream_name)
@@ -112,9 +116,10 @@ class PhoneFeatures(ComputeFeatureBase):
         for each hour window. If there is not enough data for a window then
         there will be no data point for that window.
 
-        :param phonedata:
-        :param smsdata:
-        :return:
+        :param List(DataPoint) phonedata:
+        :param List(DataPoint) smsdata:
+        :return: ajkflajsdf
+        :rtype: List(DataPoint)
         """
         tmpphonestream = self.get_filtered_data(phonedata)
         tmpsmsstream = self.get_filtered_data(smsdata)
@@ -1858,6 +1863,9 @@ class PhoneFeatures(ComputeFeatureBase):
             self.CC.logging.log(str(traceback.format_exc()))
 
     def process_proximity_day_data(self, user_id, proximitystream, input_proximitystream):
+        """
+        MISSING
+        """
         try:
             data = self.calculate_phone_outside_duration(proximitystream)
             if data:
