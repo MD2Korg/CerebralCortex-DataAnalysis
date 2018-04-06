@@ -66,8 +66,26 @@ if args['user_mappings']:
 files_to_process=[]
 
 # Below are the list of filenames 
-FILE_NAME = 'Daily.tob.d.mitre.csv'
+FILE_NAME = 'Daily.tob.quantity.d.mitre.csv'
 FILE_METADATA='metadata/daily.tob.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
+
+FILE_NAME = 'Daily.stress.d.csv'
+FILE_METADATA='metadata/daily.stress.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
+
+FILE_NAME = 'Daily.anxiety.d.csv'
+FILE_METADATA='metadata/daily.anxiety.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
+
+FILE_NAME = 'Daily.alc.quantity.d.mitre.csv'
+FILE_METADATA='metadata/daily.alc.d.json'
 files_to_process.append((FILE_NAME,FILE_METADATA))
 FILE_NAME = None
 FILE_METADATA = None
@@ -218,7 +236,7 @@ def process_feature(file_path, metadata_path):
         if 'IGTB' not in file_path:
             end_time = centraltz.localize(end_time)
 
-        utc_offset = start_time.utcoffset().seconds * -1000
+        utc_offset = start_time.utcoffset().total_seconds() * 1000
         # -1000 - DataPoint expects offset to be in milliseconds and negative is
         # to account for being west of UTC
         
@@ -258,12 +276,6 @@ def process_feature(file_path, metadata_path):
         #print(str(user),str(output_stream_id),len(feature_data[user]))   	 
         try:
             CC.save_stream(ds, localtime=True)
-            if user =='055bed5b-60ec-43e6-9110-137f2a36d65b' or user == '8c2f443e-b329-42f2-a1cf-31c150be47e0':
-                f = open('bug.pickle','wb')
-                pickle.dump(ds,f)
-                f.close()
-                print('AAAAAAAAAAAAAAAAAAAAAAAAAA')
-                exit(1)
         except Exception as e:
             print(e)
     f.close()
@@ -274,7 +286,7 @@ def main():
     
     # processing ALC_D
     # ID","StartDate","EndDate","RecordedDate","SurveyType","alc_status","alc.quantity.d"
-    for feature in files_to_process[:1]:
+    for feature in files_to_process:
         print("PROCESSING %s %s"%(feature[0], feature[1]))
         process_feature(feature[0], feature[1])
 
