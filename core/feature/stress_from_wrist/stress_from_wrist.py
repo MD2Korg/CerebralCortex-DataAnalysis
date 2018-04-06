@@ -70,7 +70,7 @@ class stress_from_wrist(ComputeFeatureBase):
     def get_and_save_data(self,streams,day,stream_identifier,user_id,model,scaler,json_path):
         rr_interval_data = self.CC.get_stream(streams[stream_identifier]["identifier"],
                                           day=day,user_id=user_id,localtime=False)
-        print('-'*20," Got rr interval data ", len(rr_interval_data) ,'-'*20)
+        print('-'*20," Got rr interval data ", len(rr_interval_data.data) ,'-'*20)
         if not rr_interval_data.data:
             return
         final_data= []
