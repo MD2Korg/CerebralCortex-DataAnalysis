@@ -38,6 +38,7 @@ import time
 import copy
 import traceback
 from functools import lru_cache
+from typing import *
 
 from sklearn.mixture import GaussianMixture
 
@@ -46,23 +47,24 @@ feature_class_name = 'PhoneFeatures'
 
 class PhoneFeatures(ComputeFeatureBase):
     """
-    Class Description for Phone features here
-
-    - a
-    - b
-    - c
-
-    Done
+    This class is responsible for computing features based on streams of data
+    derived from the smartphone sensors.
     """
-    def get_filtered_data(self, data, admission_control = None):
+
+    def get_filtered_data(self, data:list, admission_control:bool = None) -> List[DataPoint]:
         """
-        MISSING
+        Filters out invalid data
+
+        :param List(DataPoint) data: Input data list
+        :param bool admission_control: Admission control enable flag
+        :return: Filtered list of DataPoints
+        :rtype: List(DataPoint)
         """
         if admission_control is None:
             return data
         return [d for d in data if admission_control(d.sample)]
 
-    def get_data_by_stream_name(self, stream_name, user_id, day, localtime=True):
+    def get_data_by_stream_name(self, stream_name:str, user_id:str, day:str, localtime:bool=True) -> List[DataPoint]:
         """
         Combines data from multiple streams based on stream name.
 
@@ -86,12 +88,13 @@ class PhoneFeatures(ComputeFeatureBase):
             data = sorted(data, key=lambda x: x.start_time)
         return data
 
-    def inter_event_time_list(self, data):
+    def inter_event_time_list(self, data:list) -> List[float]:
         """
-        Helper function to find inter event gaps
+        Helper function to find inter-event temporal gaps
 
-        :param data:
-        :return:
+        :param List(DataPoint) data: A list of DataPoints
+        :return: Time deltas between DataPoints in minutes
+        :rtype: list(float)
         """
         if len(data) == 0:
             return None
@@ -110,16 +113,16 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return list(map(lambda x: x / 60.0, ret))
 
-    def average_inter_phone_call_sms_time_hourly(self, phonedata, smsdata):
+    def average_inter_phone_call_sms_time_hourly(self, phonedata:list, smsdata:list) -> List[DataPoint]:
         """
         Average time (in minutes) between two consecutive events (call and sms)
         for each hour window. If there is not enough data for a window then
         there will be no data point for that window.
 
-        :param List(DataPoint) phonedata:
-        :param List(DataPoint) smsdata:
-        :return: ajkflajsdf
-        :rtype: List(DataPoint)
+        :param List(DataPoint) phonedata: Phone call DataStream
+        :param List(DataPoint) smsdata: SMS DataStream
+        :return: Average inter-phone call time over 1 hour windows
+        :rtype: List(DataPoint) or None
         """
         tmpphonestream = self.get_filtered_data(phonedata)
         tmpsmsstream = self.get_filtered_data(smsdata)
@@ -154,15 +157,16 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_phone_call_sms_time_four_hourly(self, phonedata, smsdata):
+    def average_inter_phone_call_sms_time_four_hourly(self, phonedata:list, smsdata:list) -> List[DataPoint]:
         """
         Average time (in minutes) between two consecutive events (call and sms)
         for each four hour window. If there is not enough data for a window then
         there will be no data point for that window.
 
-        :param phonedata:
-        :param smsdata:
-        :return:
+        :param List(DataPoint) phonedata: Phone call DataStream
+        :param List(DataPoint) smsdata: SMS DataStream
+        :return: Average inter-phone call time over 4 hour windows
+        :rtype: List(DataPoint) or None
         """
         tmpphonestream = self.get_filtered_data(phonedata)
         tmpsmsstream = self.get_filtered_data(smsdata)
@@ -194,14 +198,15 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_phone_call_sms_time_daily(self, phonedata, smsdata):
+    def average_inter_phone_call_sms_time_daily(self, phonedata:list, smsdata:list) -> List[DataPoint]:
         """
         Average time (in minutes) between two consecutive events (call and sms)
         for whole day. If there is not enough data then it will return None.
 
-        :param phonedata:
-        :param smsdata:
-        :return:
+        :param List(DataPoint) phonedata: Phone call DataStream
+        :param List(DataPoint) smsdata: SMS DataStream
+        :return: Average inter-phone call time over 1 day windows
+        :rtype: List(DataPoint) or None
         """
         if len(phonedata) + len(smsdata) <= 1:
             return None
