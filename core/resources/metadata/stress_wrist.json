@@ -21,7 +21,7 @@
       }
     },
     "algorithm":{
-      "method":"core.feature.stress_from_wrist.stress_from_wrist",
+      "method":"core.feature.stress_from_wrist.stress_from_wrist.v1",
       "authors":[
         {
           "name":"Md Azim Ullah",
