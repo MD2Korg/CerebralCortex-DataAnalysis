@@ -67,7 +67,7 @@ files_to_process=[]
 
 # Below are the list of filenames 
 FILE_NAME = 'igtb_composites.csv'
-FILE_METADATA='metadata/daily.tob.d.json'
+FILE_METADATA='metadata/igtb_composites.json'
 files_to_process.append((FILE_NAME,FILE_METADATA))
 FILE_NAME = None
 FILE_METADATA = None
@@ -107,9 +107,42 @@ def import_file(filename):
     csv_reader = csv.reader(f)
          
     
+def parse_str(num):
+    try:
+        return float(num)
+    except Exception as e:
+        return float('NaN')
+
+def save_point(user, value, start_time, end_time, offset, metadata, stream_name_suffix):
+    dp = DataPoint(start_time=start_time, end_time=end_time,
+                       offset=offset, sample=[value]) 
+
+
+    metadata_name = metadata['name'] 
+    metadata_name = metadata_name + stream_name_suffix
+    
+    output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(
+            metadata_name + user + str(metadata))))
+    ds = DataStream(identifier=output_stream_id, owner=user, 
+                        name=metadata_name, 
+                        data_descriptor= metadata['data_descriptor'], 
+                        execution_context=metadata['execution_context'], 
+                        annotations= metadata['annotations'], 
+                        stream_type=1,
+                        data=[dp]) 
+        #print(str(user),str(output_stream_id),len(feature_data[user]))   	 
+    try:
+        CC.save_stream(ds, localtime=True)
+    except Exception as e:
+        print(e)
+
+
 def process_feature(file_path, metadata_path):
     f = open_data_file(file_path)
     mf = open(metadata_path)
+    metadata_str = mf.read()
+    metadata = json.loads(metadata_str)
+    mf.close()
     
     if f is None:return
     
@@ -138,51 +171,170 @@ def process_feature(file_path, metadata_path):
         "shipley.vocab","shipley.abs","irb","itp","ocb","inter.deviance","org.deviance","extraversion","agreeableness","conscientiousness"
         "neuroticism","openness","pos.affect","neg.affect","stai.trait","audit","gats.status","gats.quantity","gats.quantity.sub","ipaq","psqi"
         '''
-        sample = row[5:]
-        values = []
-        for val in sample:
-            if 'yes' in val or 'no' in val:# Check for Daily.tob.d.mitre.csv
-                continue
-            if 'NA' in val:
-                values.append(float('Nan'))
-            else:
-                values.append(float(val))
-        
-        dp = DataPoint(start_time=start_time, end_time=end_time,
-                       offset=utc_offset, sample=values) 
+        shipley_vocab = parse_str(row[2])
+        save_point(user = user_id,
+                   value = shipley_vocab, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='shipley.vocab')
 
-        if user_id not in feature_data:
-            feature_data[user_id] = []
-        
-        feature_data[user_id].append(dp)
+        shipley_abs = parse_str(row[3])
+        save_point( user = user_id,value = shipley_abs, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='shipley.abs')
 
-    metadata = mf.read()
-    metadata = json.loads(metadata)
-    metadata_name = metadata['name']
-    
-    for user in feature_data:
-        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(
-            metadata_name + user + file_path)))
-        ds = DataStream(identifier=output_stream_id, owner=user, 
-                        name=metadata_name, 
-                        data_descriptor= metadata['data_descriptor'], 
-                        execution_context=metadata['execution_context'], 
-                        annotations= metadata['annotations'], 
-                        stream_type=1,
-                        data=feature_data[user]) 
-        #print(str(user),str(output_stream_id),len(feature_data[user]))   	 
-        try:
-            CC.save_stream(ds, localtime=True)
-            if user =='055bed5b-60ec-43e6-9110-137f2a36d65b' or user == '8c2f443e-b329-42f2-a1cf-31c150be47e0':
-                f = open('bug.pickle','wb')
-                pickle.dump(ds,f)
-                f.close()
-                print('AAAAAAAAAAAAAAAAAAAAAAAAAA')
-                exit(1)
-        except Exception as e:
-            print(e)
-    f.close()
-    mf.close()
+        irb = parse_str(row[4])
+        save_point( user = user_id,value = irb, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='irb')
+
+        itp = parse_str(row[5])
+        save_point(user = user_id,value = itp, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='itp')
+
+        ocb = parse_str(row[6])
+        save_point(user = user_id,value = ocb, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='ocb')
+
+        inter_deviance = parse_str(row[7])
+        save_point(user = user_id,value = inter_deviance, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='inter.deviance')
+
+        org_deviance = parse_str(row[8])
+        save_point(user = user_id,value = org_deviance, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='org_deviance')
+
+        extraversion = parse_str(row[9])
+        save_point(user = user_id,value = extraversion, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='extraversion')
+
+        agreeableness = parse_str(row[10])
+        save_point(user = user_id,value = agreeableness, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='agreeableness')
+
+        conscientiousness = parse_str(row[11])
+        save_point(user = user_id,value = conscientiousness, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='conscientiousness')
+
+        neuroticism = parse_str(row[12])
+        save_point(user = user_id,value = neuroticism, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='neuorticism')
+
+        openness = parse_str(row[13])
+        save_point(user = user_id,value = openness, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='openness')
+
+        pos_effect = parse_str(row[14])
+        save_point(user = user_id,value = pos_effect, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='pos.affect')
+
+        neg_effect = parse_str(row[15])
+        save_point(user = user_id,value = neg_effect, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='neg_effect')
+
+        stai_trait = parse_str(row[16])
+        save_point(user = user_id,value = stai_trait, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='stai.trait')
+
+        audit = parse_str(row[17])
+        save_point(user = user_id,value = audit, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='audit')
+
+        gats_status = str(row[18].strip())
+        save_point(user = user_id,value = gats_status, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='gats.status')
+
+        gats_quantity = parse_str(row[19])
+        save_point(user = user_id,value = gats_quantity, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='gats.quantity')
+
+        #gats_quantity_sub = parse_str(row[20])
+        ipaq = parse_str(row[21])
+        save_point(user = user_id,value = ipaq, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='ipaq')
+
+        psqi = parse_str(row[22])
+        save_point(user = user_id,value = psqi, 
+                   start_time = start_time, 
+                   end_time=start_time,
+                   offset=utc_offset, 
+                   metadata=metadata,
+                   stream_name_suffix='psqi')
+
+        
+        
 
 def main():
     parse_userid_mappings()
