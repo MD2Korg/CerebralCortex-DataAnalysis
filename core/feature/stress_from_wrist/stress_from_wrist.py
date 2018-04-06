@@ -61,7 +61,7 @@ class stress_from_wrist(ComputeFeatureBase):
                 pc.append(np.percentile(rr_final,p))
             temp[k,14] = np.median(np.diff(pc))
             temp[k,15] = np.std(np.diff(pc))
-        feature_one_row = np.zeros(1,no_of_feature)
+        feature_one_row = np.zeros((1,no_of_feature))
         for j in range(np.shape(temp)[1]):
             feature_one_row[0,j] = np.median(temp[:,j])
         return feature_one_row
