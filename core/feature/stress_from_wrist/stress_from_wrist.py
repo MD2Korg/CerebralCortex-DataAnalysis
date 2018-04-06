@@ -67,7 +67,7 @@ class stress_from_wrist(ComputeFeatureBase):
         return feature_one_row
 
 
-    def get_and_save(self,streams,day,stream_identifier,user_id,model,scaler,json_path):
+    def get_and_save_data(self,streams,day,stream_identifier,user_id,model,scaler,json_path):
         rr_interval_data = self.CC.get_stream(streams[stream_identifier]["identifier"],
                                           day=day,user_id=user_id,localtime=False)
         if not rr_interval_data.data:
@@ -115,7 +115,7 @@ class stress_from_wrist(ComputeFeatureBase):
         json_path = 'stress_wrist.json'
         model,scaler = get_model()
         for day in all_days:
-            self.get_and_save_data()
+            self.get_and_save_data(streams,day,rr_interval_identifier,user_id,model,scaler,json_path)
 
 
 
