@@ -79,10 +79,17 @@ class data_yield(ComputeFeatureBase):
 
         if all_streams is None:
             return
-        if motionsense_hrv_left not in all_streams and  motionsense_hrv_right not in all_streams:
-            return
         user_id = user
         json_path = 'data_yield.json'
-        self.calculate_yield(user_id,motionsense_hrv_left,all_days,all_streams,json_path)
-        self.calculate_yield(user_id,motionsense_hrv_right,all_days,all_streams,json_path)
+        if motionsense_hrv_left in all_streams:
+            self.calculate_yield(user_id,motionsense_hrv_left,all_days,all_streams,json_path)
+        if motionsense_hrv_right in all_streams:
+            self.calculate_yield(user_id,motionsense_hrv_right,all_days,all_streams,json_path)
+        if motionsense_hrv_left_cat in all_streams:
+            self.calculate_yield(user_id,motionsense_hrv_left_cat,all_days,all_streams,json_path)
+        if motionsense_hrv_right_cat in all_streams:
+            self.calculate_yield(user_id,motionsense_hrv_right_cat,all_days,all_streams,json_path)
+
+
+
 

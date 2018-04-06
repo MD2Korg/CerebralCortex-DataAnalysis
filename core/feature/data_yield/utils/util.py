@@ -32,6 +32,10 @@ from collections import Counter
 
 motionsense_hrv_left = "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
 motionsense_hrv_right = "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
+motionsense_hrv_left_cat = \
+    "RAW--CHARACTERISTIC_LED--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
+motionsense_hrv_right_cat = \
+    "RAW--CHARACTERISTIC_LED--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
 Fs = 25
 window_size_60sec = 60
 window_size_10sec = 10
@@ -42,18 +46,24 @@ def admission_control(data:List[DataPoint])->List[DataPoint]:
     for dp in data:
         if isinstance(dp.sample,str) and len(dp.sample.split(','))==20:
             final_data.append(dp)
+        if isinstance(dp.sample,list) and len(dp.sample)==20:
+            final_data.append(dp)
     return final_data
 
 
 def decode_only(data):
     final_data = []
     for dp in data:
-        str_sample = str(dp.sample)
-        str_sample_list = str_sample.split(',')
-        if len(str_sample_list) != 20:
+        if isinstance(dp.sample,str):
+            str_sample = str(dp.sample)
+            str_sample_list = str_sample.split(',')
+            if len(str_sample_list) != 20:
+                continue
+            Vals = [np.int8(np.float(val)) for val in str_sample_list]
+        elif isinstance(dp.sample,list):
+            Vals = [np.int8(val) for val in dp.sample]
+        else:
             continue
-        Vals = [np.int8(np.float(val)) for val in str_sample_list]
-
         sample = np.array([0]*3)
         sample[0] = (np.uint8(Vals[12])<<10) | (np.uint8(Vals[13])<<2) | \
                     ((np.uint8(Vals[14]) & int('11000000',2))>>6)

@@ -2,6 +2,7 @@
   "annotations":[],
   "data_descriptor":[
     {
+      "name":"stress_value",
       "type":"int",
       "unit":"1 minute window",
       "description":"1 for stress and 0 for not-stress"
@@ -21,7 +22,7 @@
       }
     },
     "algorithm":{
-      "method":"core.feature.stress_from_wrist.stress_from_wrist",
+      "method":"core.feature.stress_from_wrist.stress_from_wrist.v1",
       "authors":[
         {
           "name":"Md Azim Ullah",
