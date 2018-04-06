@@ -85,7 +85,7 @@ class stress_from_wrist(ComputeFeatureBase):
             final_data.append(deepcopy(dp))
             final_data[-1].sample = stress_value
         print('-'*20," Got Stress data ", len(final_data) ,'-'*20)
-        self.store_stream(json_path,streams[stream_identifier],user_id,final_data,localtime=False)
+        self.store_stream(json_path,[streams[stream_identifier]],user_id,final_data,localtime=False)
 
 
 
