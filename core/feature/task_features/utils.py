@@ -82,7 +82,7 @@ def output_stream(targetconstruct_with_time, context_with_time,
             if target == 'sitting' or target == 'standing' or target == 'WALKING':
                 for time_slot in targetconstruct_with_time[target]:
                     for context in context_with_time:
-                        if context == 'Work' or context == '1':
+                        if context == 'work' or context == '1':
                             for context_slot in context_with_time[context]:
                                 start_time = max(time_slot[0],context_slot[0])
                                 end_time = min(time_slot[1],context_slot[1])
@@ -108,7 +108,7 @@ def process_data(data: List[DataPoint]):
     """
     dicts = {}
 
-    if len(data) == 0:
+    if len(data)==0:
         return None
 
     for v in data:
@@ -116,6 +116,7 @@ def process_data(data: List[DataPoint]):
         if v.sample != None:
             time.append(v.start_time)
             time.append(v.end_time)
+
             if type(v.sample) == list:
                 if v.sample[0] in dicts:
                     dicts[v.sample[0]].append(time)
@@ -124,6 +125,13 @@ def process_data(data: List[DataPoint]):
                     dicts[v.sample[0]].append(time)
 
             elif type(v.sample) == str:
+                if v.sample in dicts:
+                    dicts[v.sample].append(time)
+                else:
+                    dicts[v.sample] = []
+                    dicts[v.sample].append(time)
+
+            elif type(v.sample) == np.str_:
                 if v.sample in dicts:
                     dicts[v.sample].append(time)
                 else:

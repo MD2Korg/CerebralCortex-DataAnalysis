@@ -54,28 +54,37 @@ class TaskFeatures(ComputeFeatureBase):
             activity_with_time = {}
             office_with_time = {}
             beacon_with_time = {}
+            unique_data_set = set()
             offset = 0
 
             # gets all posture datapoints
             get_all_data = self.get_day_data(posture_stream_name, user, day)
             if len(get_all_data) != 0: #creates a dictionary of start,end times
+                unique_data_set = set(get_all_data)#removes duplicate datapoints
+                get_all_data = list(unique_data_set)
                 posture_with_time = process_data(get_all_data)
                 offset = get_all_data[0].offset
 
             # gets all activity datapoints
             get_all_data = self.get_day_data(activity_stream_name, user, day)
             if len(get_all_data) != 0: #creates a dictionary of start,end times
+                unique_data_set = set(get_all_data)#removes duplicate datapoints
+                get_all_data = list(unique_data_set)
                 activity_with_time = process_data(get_all_data)
                 offset = get_all_data[0].offset
 
             # gets all office datapoints
             get_all_data = self.get_day_data(office_stream_name, user, day)
             if len(get_all_data) != 0: #creates a dictionary of start,end times
+                unique_data_set = set(get_all_data)
+                get_all_data = list(unique_data_set)
                 office_with_time = process_data(get_all_data)
 
             # gets all beacon datapoints
             get_all_data = self.get_day_data(beacon_stream_name, user, day)
             if len(get_all_data) != 0:#creates a dictionary of start,end times
+                unique_data_set = set(get_all_data)
+                get_all_data = list(unique_data_set)
                 beacon_with_time = process_data(get_all_data)
 
             target_total_time, posture_office = output_stream(posture_with_time,
@@ -91,7 +100,7 @@ class TaskFeatures(ComputeFeatureBase):
 
                 posture_office_fraction = target_in_fraction_of_context(
                     target_total_time,
-                    office_with_time, offset, 'Work')
+                    office_with_time, offset, 'work')
 
                 self.store_stream(
                     filepath='posture_office_context_fraction_hourly.json',
@@ -114,7 +123,7 @@ class TaskFeatures(ComputeFeatureBase):
 
                 activity_office_fraction = target_in_fraction_of_context(
                     target_total_time, office_with_time,
-                    offset, 'Work')
+                    offset, 'work')
                 self.store_stream(
                     filepath='activity_office_context_fraction_hourly.json',
                     input_streams=[
