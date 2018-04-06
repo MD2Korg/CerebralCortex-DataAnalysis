@@ -49,11 +49,13 @@ class PhoneFeatures(ComputeFeatureBase):
     """
     This class is responsible for computing features based on streams of data
     derived from the smartphone sensors.
+
+
     """
 
     def get_filtered_data(self, data:list, admission_control:bool = None) -> List[DataPoint]:
         """
-        Filters out invalid data
+        DESCRIPTION GOES HERE
 
         :param List(DataPoint) data: Input data list
         :param bool admission_control: Admission control enable flag
@@ -66,6 +68,8 @@ class PhoneFeatures(ComputeFeatureBase):
 
     def get_data_by_stream_name(self, stream_name:str, user_id:str, day:str, localtime:bool=True) -> List[DataPoint]:
         """
+        DESCRIPTION GOES HERE
+
         Combines data from multiple streams based on stream name.
 
         :param str stream_name: Name of the stream
@@ -90,7 +94,7 @@ class PhoneFeatures(ComputeFeatureBase):
 
     def inter_event_time_list(self, data:list) -> List[float]:
         """
-        Helper function to find inter-event temporal gaps
+        Helper function to compute inter-event times
 
         :param List(DataPoint) data: A list of DataPoints
         :return: Time deltas between DataPoints in minutes
@@ -118,6 +122,18 @@ class PhoneFeatures(ComputeFeatureBase):
         Average time (in minutes) between two consecutive events (call and sms)
         for each hour window. If there is not enough data for a window then
         there will be no data point for that window.
+
+        Algorithm::
+
+            Stage 1
+            Stage 2
+                Stage 2.1
+                Stage 2.2
+            Stage 3
+
+        >>> 1+1
+        2
+
 
         :param List(DataPoint) phonedata: Phone call DataStream
         :param List(DataPoint) smsdata: SMS DataStream
