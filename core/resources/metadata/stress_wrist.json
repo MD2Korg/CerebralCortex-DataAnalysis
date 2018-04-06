@@ -2,6 +2,7 @@
   "annotations":[],
   "data_descriptor":[
     {
+      "name":"stress_value",
       "type":"int",
       "unit":"1 minute window",
       "description":"1 for stress and 0 for not-stress"

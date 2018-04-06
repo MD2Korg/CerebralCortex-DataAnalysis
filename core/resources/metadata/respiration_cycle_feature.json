@@ -2,7 +2,7 @@
     "annotations": [],
     "data_descriptor": [
         {
-            "NAME": "Inspiration Duration",
+            "NAME": "inspiration_duration",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Inspiration duration time computed from a valley to the next peak"
         },
