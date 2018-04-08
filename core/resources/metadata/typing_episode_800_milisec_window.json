@@ -2,8 +2,10 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"float",
-      "unit":"minute"
+      "name":"typing_value",
+      "type":"string",
+      "unit":"",
+      "descriptor":"Detects typing in a 800 mlsec window"
     }
   ],
   "execution_context":{

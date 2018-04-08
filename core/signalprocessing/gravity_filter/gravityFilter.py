@@ -30,7 +30,6 @@ from cerebralcortex.core.datatypes.datapoint import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
 from core.feature.activity.utils import MADGWICKFILTER_BETA
 
-
 def gravityFilter_function(accl_data, gyro_data, sampling_freq,
                            is_gyro_in_degree):
     accl = [value.sample for value in accl_data]
