@@ -1342,85 +1342,6 @@ class PhoneFeatures(ComputeFeatureBase):
                 i += 1
         return ret
 
-    def process_phonescreen_all_day_data(self, user_id, all_days, touchescreen_stream_name, appcategory_stream_name):
-        MIN_TAP_DATA = 100
-        td = []
-        appd = []
-        for day in all_days:
-            touchstream = self.get_data_by_stream_name(touchescreen_stream_name, user_id, day)
-            touchstream = self.get_filtered_data(touchstream, lambda x: (type(x) is float and x>1000000000.0))
-            td += touchstream
-            appcategorystream  = self.get_data_by_stream_name(appcategory_stream_name, user_id, day)
-            appcategorystream = self.get_filtered_data(appcategorystream, lambda x: (type(x) is list and len(x)==4))
-            appd += appcategorystream
-
-        td = sorted(td, key=lambda x: x.start_time)
-
-        appusage = self.get_appusage_duration_by_category(appd, ["Communication", "Productivity"])
-        tapping_gap = self.appusage_interval_list(td, appusage)
-        if len(tapping_gap) < MIN_TAP_DATA:
-            self.CC.logging.log("Not enough screen touch data")
-            return None
-        tapping_gap = sorted(tapping_gap)
-
-        gm = GaussianMixture(n_components = 4, max_iter = 500)#, covariance_type = 'spherical')
-        X = (np.array(tapping_gap)/1000).reshape(-1, 1)
-        gm.fit(X)
-        return gm
-
-    def process_phonescreen_day_data(self, user_id, touchstream, categorystream, \
-                                     input_touchstream, input_categorystream, gm):
-        """
-        Analyze the phone touch screen gap to find typing, pause between typing, reading
-        and unknown sessions. It uses the Gaussian Mixture algorithm to find different peaks
-        in a mixture of 4 different gaussian distribution of screen touch gap.
-        :param user_id:
-        :param touchstream:
-        :param categorystream:
-        :param input_touchstream:
-        :param input_categorystream:
-        :return:
-        """
-        touchstream = sorted(touchstream, key=lambda x: x.start_time)
-
-        appusage = self.get_appusage_duration_by_category(categorystream, ["Communication", "Productivity"])
-        tapping_gap = self.appusage_interval_list(touchstream, appusage)
-        #         if len(tapping_gap) < 50:
-        #             self.CC.logging.log("Not enough screen touch data")
-        #             return
-        tapping_gap = sorted(tapping_gap)
-        if len(tapping_gap)==0:
-            self.CC.logging.log("Not enough screen touch data")
-            return
-
-        #gm = GaussianMixture(n_components = 4, max_iter = 500)#, covariance_type = 'spherical')
-        X = (np.array(tapping_gap)/1000).reshape(-1, 1)
-        #gm.fit(X)
-
-        P = gm.predict(X)
-        mx = np.zeros(4)
-        mn = np.full(4, np.inf)
-        for i in range(len(P)):
-            x = P[i]
-            mx[x] = max(mx[x], X[i][0])
-            mn[x] = min(mn[x], X[i][0])
-
-        intervals = []
-        for i in range(len(mx)):
-            intervals.append((mn[i], mx[i]))
-        intervals = sorted(intervals)
-
-        try:
-            data = self.label_appusage_intervals(touchstream, appusage, intervals,
-                                                 ["typing", "pause", "reading", "unknown"])
-            if data:
-                self.store_stream(filepath="phone_touch_type.json",
-                                  input_streams=[input_touchstream, input_categorystream],
-                                  user_id=user_id, data=data)
-        except Exception as e:
-            self.CC.logging.log("Exception:", str(e))
-            self.CC.logging.log(str(traceback.format_exc()))
-
     def process_callsmsstream_day_data(self, user_id, callstream, smsstream, input_callstream, input_smsstream):
         """
         Process all the call and sms related features and store them as datastreams.
@@ -1836,6 +1757,96 @@ class PhoneFeatures(ComputeFeatureBase):
             self.CC.logging.log("Exception:", str(e))
             self.CC.logging.log(str(traceback.format_exc()))
 
+
+    def get_overlapped_value(self, px1, py1, px2, py2):
+        x = max(px1, px2)
+        y = min(py1, py2)
+        if x > y:
+            return 0
+        return (y - x).total_seconds() / 60
+
+    def process_appusage_context_day_data(self, user_id: str, app_usage_data: list, input_usage_stream: DataStream, gps_semantic_data: list, input_gps_semantic_stream: DataStream):
+        if not app_usage_data:
+            return
+
+        total = [{},{}, {}, {}]
+        try:
+            for category, data in app_usage_data[0].sample.items():
+                total[0][category] = 0
+                total[1][category] = 0
+                total[2][category] = 0
+                total[3][category] = 0
+                for d in data:
+                    total[0][category] += (d["end_time"] - d["start_time"]).total_seconds() / 60
+                    for gd in gps_semantic_data:
+                        val = self.get_overlapped_value(d["start_time"], d["end_time"], gd.start_time, gd.end_time)
+                        if gd.sample == "work":
+                            total[1][category] += val
+                        elif gd.sample == "home":
+                            total[2][category] += val
+
+                total[3][category] = total[0][category] - total[1][category] - total[2][category]
+
+            context_total = [24, 0, 0, 0]
+            for gd in gps_semantic_data:
+                if gd.sample == "work":
+                    context_total[1] += (gd.end_time - gd.start_time).total_seconds() / (60*60)
+                elif gd.sample == "home":
+                    context_total[2] += (gd.end_time - gd.start_time).total_seconds() / (60*60)
+            context_total[3] = context_total[0] - context_total[1] - context_total[2]
+
+            st = app_usage_data[0].start_time.date()
+            start_time = datetime.datetime.combine(st, datetime.time.min)
+            start_time = start_time.replace(tzinfo=app_usage_data[0].start_time.tzinfo)
+            end_time = datetime.datetime.combine(st, datetime.time.max)
+            end_time = end_time.replace(tzinfo=app_usage_data[0].start_time.tzinfo)
+
+            dp1 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[0])
+            dp2 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[1])
+            dp3 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[2])
+            dp4 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[3])
+
+            self.store_stream(filepath="appusage_duration_total_by_category.json",
+                              input_streams=[input_usage_stream], user_id=user_id,
+                              data=[dp1], localtime=False)
+            self.store_stream(filepath="appusage_duration_total_by_category_work.json",
+                              input_streams=[input_usage_stream, input_gps_semantic_stream], user_id=user_id,
+                              data=[dp2], localtime=False)
+            self.store_stream(filepath="appusage_duration_total_by_category_home.json",
+                              input_streams=[input_usage_stream, input_gps_semantic_stream], user_id=user_id,
+                              data=[dp3], localtime=False)
+            self.store_stream(filepath="appusage_duration_total_by_category_outside.json",
+                              input_streams=[input_usage_stream, input_gps_semantic_stream], user_id=user_id,
+                              data=[dp4], localtime=False)
+
+            for i in range(4):
+                if context_total[i] == 0:
+                    continue
+                for category in app_usage_data[0].sample:
+                    total[i][category] /= context_total[i]
+
+            dp5 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[0])
+            dp6 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[1])
+            dp7 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[2])
+            dp8 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[3])
+
+            self.store_stream(filepath="appusage_duration_average_by_category.json",
+                              input_streams=[input_usage_stream], user_id=user_id,
+                              data=[dp5], localtime=False)
+            self.store_stream(filepath="appusage_duration_average_by_category_work.json",
+                              input_streams=[input_usage_stream, input_gps_semantic_stream], user_id=user_id,
+                              data=[dp6], localtime=False)
+            self.store_stream(filepath="appusage_duration_average_by_category_home.json",
+                              input_streams=[input_usage_stream, input_gps_semantic_stream], user_id=user_id,
+                              data=[dp7], localtime=False)
+            self.store_stream(filepath="appusage_duration_average_by_category_outside.json",
+                              input_streams=[input_usage_stream, input_gps_semantic_stream], user_id=user_id,
+                              data=[dp8], localtime=False)
+
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
     def process_data(self, user_id, all_user_streams, all_days):
         """
         Getting all the necessary input datastreams for a user
@@ -1849,18 +1860,23 @@ class PhoneFeatures(ComputeFeatureBase):
         input_callstream = None
         input_smsstream = None
         input_proximitystream = None
-        input_appusagestream = None
-        input_touchscreenstream = None
+        input_cuappusagestream = None
         input_appcategorystream = None
         input_lightstream = None
+        input_appusage_stream = None
+        input_gpssemanticstream = None
 
         call_stream_name = 'CU_CALL_DURATION--edu.dartmouth.eureka'
         sms_stream_name = 'CU_SMS_LENGTH--edu.dartmouth.eureka'
         proximity_stream_name = 'PROXIMITY--org.md2k.phonesensor--PHONE'
-        appusage_stream_name = 'CU_APPUSAGE--edu.dartmouth.eureka'
+        cu_appusage_stream_name = 'CU_APPUSAGE--edu.dartmouth.eureka'
         touchescreen_stream_name = "TOUCH_SCREEN--org.md2k.phonesensor--PHONE"
-        appcategory_stream_name = "org.md2k.data_analysis.feature.phone.app_usage_category"
         light_stream_name = 'AMBIENT_LIGHT--org.md2k.phonesensor--PHONE'
+        appcategory_stream_name = "org.md2k.data_analysis.feature.phone.app_usage_category"
+        appusage_stream_name = "org.md2k.data_analysis.feature.phone.app_usage_interval"
+        gpssemantic_stream_name = "org.md2k.data_analysis.feature.gps_semantic_location.daywise_split.utc"
+
+
         streams = all_user_streams
         days = None
 
@@ -1876,12 +1892,8 @@ class PhoneFeatures(ComputeFeatureBase):
                 input_smsstream = stream_metadata
             elif stream_name == proximity_stream_name:
                 input_proximitystream = stream_metadata
-            elif stream_name == appusage_stream_name:
-                input_appusagestream = stream_metadata
-            elif stream_name == touchescreen_stream_name:
-                input_touchscreenstream = stream_metadata
-            elif stream_name == appcategory_stream_name:
-                input_appcategorystream = stream_metadata
+            elif stream_name == cu_appusage_stream_name:
+                input_cuappusagestream = stream_metadata
             elif stream_name == light_stream_name:
                 input_lightstream = stream_metadata
         # Processing Call and SMS related features
@@ -1928,41 +1940,65 @@ class PhoneFeatures(ComputeFeatureBase):
                 lightstream = self.get_filtered_data(lightstream, lambda x: (type(x) is float and x>=0))
                 self.process_light_day_data(user_id, lightstream, input_lightstream)
         # processing app usage and category related features
-        if not input_appusagestream:
+        if not input_cuappusagestream:
+            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
+                                "USERID %s" %
+                                (self.__class__.__name__, cu_appusage_stream_name,
+                                 str(user_id)))
+        else:
+            for day in all_days:
+                appusagestream = self.get_data_by_stream_name(cu_appusage_stream_name, user_id, day)
+                appusagestream = self.get_filtered_data(appusagestream, lambda x: type(x) is str)
+                self.process_appcategory_day_data(user_id, appusagestream, input_cuappusagestream)
+
+        # Processing phone touche and typing related features
+        streams = self.CC.get_user_streams(user_id)
+        if not streams or not len(streams):
+            self.CC.logging.log('No streams found for user %s for feature %s'
+                                % (str(user_id), self.__class__.__name__))
+            return
+
+        for stream_name, stream_metadata in streams.items():
+            if stream_name == appcategory_stream_name:
+                input_appcategorystream = stream_metadata
+
+        if not input_appcategorystream:
+            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
+                                "USERID %s" %
+                                (self.__class__.__name__, appcategory_stream_name,
+                                 str(user_id)))
+        else:
+            for day in all_days:
+                appcategorydata = self.get_data_by_stream_name(appcategory_stream_name, user_id, day, localtime=False)
+                appcategorydata = self.get_filtered_data(appcategorydata, lambda x: (type(x) is list and len(x)==4))
+                self.process_appusage_day_data(user_id, appcategorydata, input_appcategorystream)
+
+        streams = self.CC.get_user_streams(user_id)
+        if not streams or not len(streams):
+            self.CC.logging.log('No streams found for user %s for feature %s'
+                                % (str(user_id), self.__class__.__name__))
+            return
+
+        for stream_name, stream_metadata in streams.items():
+            if stream_name == appusage_stream_name:
+                input_appusage_stream = stream_metadata
+            elif stream_name == gpssemantic_stream_name:
+                input_gpssemanticstream = stream_metadata
+
+        if not input_appusage_stream:
             self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
                                 "USERID %s" %
                                 (self.__class__.__name__, appusage_stream_name,
                                  str(user_id)))
         else:
             for day in all_days:
-                appusagestream = self.get_data_by_stream_name(appusage_stream_name, user_id, day)
-                appusagestream = self.get_filtered_data(appusagestream, lambda x: type(x) is str)
-                self.process_appcategory_day_data(user_id, appusagestream, input_appusagestream)
+                app_usage_data = self.get_data_by_stream_name(appusage_stream_name, user_id, day, localtime=False)
+                app_usage_data = self.get_filtered_data(app_usage_data, lambda x: type(x) is dict)
 
-        # Processing phone touche and typing related features
-        if not input_touchscreenstream:
-            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
-                                "USERID %s" %
-                                (self.__class__.__name__, touchescreen_stream_name,
-                                 str(user_id)))
+                gps_semantic_data = self.get_data_by_stream_name(gpssemantic_stream_name, user_id, day, localtime=False)
+                gps_semantic_data = self.get_filtered_data(gps_semantic_data, lambda x: ((type(x) is str) or (type(x) is np.str_) ))
 
-        elif not input_appcategorystream:
-            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
-                                "USERID %s" %
-                                (self.__class__.__name__, appcategory_stream_name,
-                                 str(user_id)))
-        else:
-            gm = self.process_phonescreen_all_day_data(user_id, all_days, touchescreen_stream_name,
-                                                       appcategory_stream_name)
-            if gm:
-                for day in all_days:
-                    touchstream = self.get_data_by_stream_name(touchescreen_stream_name, user_id, day)
-                    touchstream = self.get_filtered_data(touchstream, lambda x: (type(x) is float and x>=0))
-                    appcategorystream  = self.get_data_by_stream_name(appcategory_stream_name, user_id, day)
-                    appcategorystream = self.get_filtered_data(appcategorystream,
-                                                               lambda x: (type(x) is list and len(x)==4))
-                    self.process_phonescreen_day_data(user_id, touchstream, appcategorystream, input_touchscreenstream,
-                                                      input_appcategorystream, gm)
+                self.process_appusage_context_day_data(user_id, app_usage_data, input_appusage_stream, gps_semantic_data, input_gpssemanticstream)
 
 
     def process(self, user_id, all_days):
