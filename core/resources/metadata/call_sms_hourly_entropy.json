@@ -34,7 +34,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"test.org.md2k.data_analysis.feature.phone.call_sms.hour.entropy",
+  "name":"org.md2k.data_analysis.feature.phone.call_sms.hour.entropy",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }

@@ -34,7 +34,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"test.org.md2k.data_analysis.feature.phone.call.four_hour.count",
+  "name":"org.md2k.data_analysis.feature.phone.call.four_hour.count",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }
