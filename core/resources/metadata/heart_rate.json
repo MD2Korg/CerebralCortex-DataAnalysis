@@ -2,6 +2,7 @@
   "annotations":[],
   "data_descriptor":[
     {
+      "name":"heart_rate_value",
       "type":"double",
       "unit":"",
       "description":"Gives the heart rate(bpm) of the person calculated from 8 second windows centered on the start_time of the datapoint"
