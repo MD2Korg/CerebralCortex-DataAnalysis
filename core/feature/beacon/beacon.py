@@ -58,7 +58,7 @@ class BeaconFeatures(ComputeFeatureBase):
             beacon_stream_name = streams[stream_name]["name"]
 
             stream = self.CC.get_stream(
-                beacon_stream_id, user_id=user_id, day=day,localtime = False)
+                beacon_stream_id, user_id=user_id, day=day,localtime = True)
 
             if (len(stream.data) > 0):
                 if (stream_name ==
@@ -91,7 +91,7 @@ class BeaconFeatures(ComputeFeatureBase):
                 {"identifier": beacon_stream_id1, "name": beacon_stream_name1})
             
             work1_stream = self.CC.get_stream(
-                beacon_stream_id1, user_id=user_id, day=day,localtime = False)
+                beacon_stream_id1, user_id=user_id, day=day,localtime = True)
             if (len(work1_stream.data) > 0):
                 for items in work1_stream.data:
                     new_data.append(DataPoint(start_time=items.start_time,
@@ -104,7 +104,7 @@ class BeaconFeatures(ComputeFeatureBase):
             input_streams.append(
                 {"identifier": beacon_stream_id2, "name": beacon_stream_name2})
             work2_stream = self.CC.get_stream(
-                beacon_stream_id2, user_id=user_id, day=day,localtime = False)
+                beacon_stream_id2, user_id=user_id, day=day,localtime = True)
             if (len(work2_stream.data) > 0):
                 for items in work2_stream.data:
                     new_data.append(DataPoint(start_time=items.start_time,
@@ -156,7 +156,7 @@ class BeaconFeatures(ComputeFeatureBase):
                 self.store_stream(filepath="home_beacon_context.json",
                                   input_streams= input_streams,
                                   user_id=user_id,
-                                  data=new_data, localtime=False)
+                                  data=new_data, localtime= True)
                 self.CC.logging.log('%s %s home_beacon_context stored %d ' 
                                     'DataPoints for user %s ' 
                                     % (str(datetime.datetime.now()),
@@ -216,7 +216,7 @@ class BeaconFeatures(ComputeFeatureBase):
                 self.store_stream(filepath="work_beacon_context.json",
                                   input_streams= input_streams,
                                   user_id=user_id,
-                                  data=new_data, localtime=False)
+                                  data=new_data, localtime=True)
                 self.CC.logging.log('%s %s work_beacon_context stored %d '
                                     'DataPoints for user %s ' 
                                     % (str(datetime.datetime.now()),
