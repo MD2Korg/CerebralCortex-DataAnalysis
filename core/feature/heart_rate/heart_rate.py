@@ -30,7 +30,7 @@ from cerebralcortex.core.datatypes.datapoint import DataPoint
 
 feature_class_name = 'heart_rate'
 
-class stress_from_wrist(ComputeFeatureBase):
+class heart_rate(ComputeFeatureBase):
 
 
     def get_and_save_data(self,streams,day,stream_identifier,user_id,json_path):
