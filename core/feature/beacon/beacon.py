@@ -197,7 +197,7 @@ class BeaconFeatures(ComputeFeatureBase):
                     if ('1' in items.sample) & ('2' in items.sample):
                         windowed_data[i, j] = 1
                     else:
-                        windowed_data[i, j] = values[0]
+                        windowed_data[i, j] = int(values[0])
 
                 else:
                     windowed_data[i, j] = 0
