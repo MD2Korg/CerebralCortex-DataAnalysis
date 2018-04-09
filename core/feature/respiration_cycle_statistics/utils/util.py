@@ -134,7 +134,7 @@ def smooth_detrend(sample,ts,window_size=300,no_of_samples=13):
         initial+=window_size
     return np.array(sample_final)
 
-def filter_bad_rip(ts,sample,window_size=150,filter_condition=100):
+def filter_bad_rip(ts,sample,window_size=150,filter_condition=120):
     """
     Filters respiration signal to remove outliers
     :param ts:
