@@ -37,6 +37,7 @@ class heart_rate(ComputeFeatureBase):
 
         rr_interval_data = self.CC.get_stream(streams[stream_identifier]["identifier"],
                                               day=day,user_id=user_id,localtime=False)
+        print("-"*20," rr interval data ",len(rr_interval_data),"-"*20)
         if not rr_interval_data.data:
             return
         final_data= []
@@ -53,6 +54,7 @@ class heart_rate(ComputeFeatureBase):
                     final_data.append(DataPoint.from_tuple(start_time=initial,offset=dp.offset,sample=dp.sample[2][count]))
                 count+=1
                 initial+=step
+        print("-"*20,len(final_data),"-"*20)
         self.store_stream(json_path,[streams[stream_identifier]],user_id,final_data,localtime=False)
 
 
