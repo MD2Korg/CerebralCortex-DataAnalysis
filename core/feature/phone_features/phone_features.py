@@ -2305,20 +2305,22 @@ class PhoneFeatures(ComputeFeatureBase):
             end_time = end_time.replace(tzinfo=app_usage_data[0].start_time.tzinfo)
 
             dp1 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[0])
-            dp2 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[1])
-            dp3 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[2])
-            dp4 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[3])
+            if input_gps_semantic_stream:
+                dp2 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[1])
+                dp3 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[2])
+                dp4 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[3])
 
             self.store_stream(filepath="appusage_duration_total_by_category.json",
                               input_streams=[input_usage_stream], user_id=user_id,
                               data=[dp1], localtime=False)
-            self.store_stream(filepath="appusage_duration_total_by_category_work.json",
-                              input_streams=[input_usage_stream, input_gps_semantic_stream], user_id=user_id,
-                              data=[dp2], localtime=False)
-            self.store_stream(filepath="appusage_duration_total_by_category_home.json",
-                              input_streams=[input_usage_stream, input_gps_semantic_stream], user_id=user_id,
-                              data=[dp3], localtime=False)
-            self.store_stream(filepath="appusage_duration_total_by_category_outside.json",
+            if input_gps_semantic_stream:
+                self.store_stream(filepath="appusage_duration_total_by_category_work.json",
+                                  input_streams=[input_usage_stream, input_gps_semantic_stream], user_id=user_id,
+                                  data=[dp2], localtime=False)
+                self.store_stream(filepath="appusage_duration_total_by_category_home.json",
+                                  input_streams=[input_usage_stream, input_gps_semantic_stream], user_id=user_id,
+                                  data=[dp3], localtime=False)
+                self.store_stream(filepath="appusage_duration_total_by_category_outside.json",
                               input_streams=[input_usage_stream, input_gps_semantic_stream], user_id=user_id,
                               data=[dp4], localtime=False)
 
@@ -2329,20 +2331,22 @@ class PhoneFeatures(ComputeFeatureBase):
                     total[i][category] /= context_total[i]
 
             dp5 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[0])
-            dp6 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[1])
-            dp7 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[2])
-            dp8 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[3])
+            if input_gps_semantic_stream:
+                dp6 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[1])
+                dp7 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[2])
+                dp8 = DataPoint(start_time, end_time, app_usage_data[0].offset, total[3])
 
             self.store_stream(filepath="appusage_duration_average_by_category.json",
                               input_streams=[input_usage_stream], user_id=user_id,
                               data=[dp5], localtime=False)
-            self.store_stream(filepath="appusage_duration_average_by_category_work.json",
-                              input_streams=[input_usage_stream, input_gps_semantic_stream], user_id=user_id,
-                              data=[dp6], localtime=False)
-            self.store_stream(filepath="appusage_duration_average_by_category_home.json",
-                              input_streams=[input_usage_stream, input_gps_semantic_stream], user_id=user_id,
-                              data=[dp7], localtime=False)
-            self.store_stream(filepath="appusage_duration_average_by_category_outside.json",
+            if input_gps_semantic_stream:
+                self.store_stream(filepath="appusage_duration_average_by_category_work.json",
+                                  input_streams=[input_usage_stream, input_gps_semantic_stream], user_id=user_id,
+                                  data=[dp6], localtime=False)
+                self.store_stream(filepath="appusage_duration_average_by_category_home.json",
+                                  input_streams=[input_usage_stream, input_gps_semantic_stream], user_id=user_id,
+                                  data=[dp7], localtime=False)
+                self.store_stream(filepath="appusage_duration_average_by_category_outside.json",
                               input_streams=[input_usage_stream, input_gps_semantic_stream], user_id=user_id,
                               data=[dp8], localtime=False)
 
@@ -2400,7 +2404,6 @@ class PhoneFeatures(ComputeFeatureBase):
         sms_stream_name = 'CU_SMS_LENGTH--edu.dartmouth.eureka'
         proximity_stream_name = 'PROXIMITY--org.md2k.phonesensor--PHONE'
         cu_appusage_stream_name = 'CU_APPUSAGE--edu.dartmouth.eureka'
-        touchescreen_stream_name = "TOUCH_SCREEN--org.md2k.phonesensor--PHONE"
         light_stream_name = 'AMBIENT_LIGHT--org.md2k.phonesensor--PHONE'
         appcategory_stream_name = "org.md2k.data_analysis.feature.phone.app_usage_category"
         appusage_stream_name = "org.md2k.data_analysis.feature.phone.app_usage_interval"
