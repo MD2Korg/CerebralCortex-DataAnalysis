@@ -37,7 +37,7 @@ class heart_rate(ComputeFeatureBase):
 
         rr_interval_data = self.CC.get_stream(streams[stream_identifier]["identifier"],
                                               day=day,user_id=user_id,localtime=False)
-        print("-"*20," rr interval data ",len(rr_interval_data),"-"*20)
+        print("-"*20," rr interval data ",len(rr_interval_data.data),"-"*20)
         if not rr_interval_data.data:
             return
         final_data= []
