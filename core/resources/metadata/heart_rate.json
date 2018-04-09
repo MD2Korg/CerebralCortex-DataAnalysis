@@ -1,0 +1,41 @@
+{
+  "annotations":[],
+  "data_descriptor":[
+    {
+      "type":"double",
+      "unit":"",
+      "description":"Gives the heart rate(bpm) of the person calculated from 8 second windows centered on the start_time of the datapoint"
+    }
+  ],
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.heart_rate",
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters":{
+        "window_size": "8 seconds"
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.heart_rate.heart_rate",
+      "authors":[
+        {
+          "name":"Md Azim Ullah",
+          "email":"mullah@memphis.edu"
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+      },
+      "description":"Calculates the instantaneous heart rate in beats per minute"
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.heart_rate",
+  "owner":"",
+  "type":"1"
+}
