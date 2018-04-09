@@ -51,7 +51,8 @@ WINDOW_SIZE = 20 #for a 800ms window (at 25Hz we get a value every 40ms.
 STRIDE = 5 #we make a prediction every 200ms
 
 # coded by JEYA VIKRANTH JEYAKUMAR
-def typing_episodes(dataset, offset, CC):
+# def typing_episodes(dataset, offset, CC):
+def typing_episodes(dataset, offset):
 
     """
     This function detects typing episodes.
@@ -137,11 +138,14 @@ def typing_episodes(dataset, offset, CC):
         for i in range(0, len(start_time)):
             st = datetime.fromtimestamp(int(float(start_time[i])))
             et = datetime.fromtimestamp(int(float(end_time[i])))
-            data.append(DataPoint(start_time=st, end_time=et, offset=offset,
-                                  sample='Typing'))
+            if st.day != et.day:
+                et = datetime(st.year,st.month,st.day) + timedelta(hours=23, minutes=59, seconds=59)
 
-    else:
-        CC.logging.log("No typing episode found for this dataset.")
+            data.append(DataPoint(start_time=st, end_time=et, offset=offset,
+                                  sample=1))
+
+    # else:
+    #     CC.logging.log("No typing episode found for this dataset.")
     return data
 
 
