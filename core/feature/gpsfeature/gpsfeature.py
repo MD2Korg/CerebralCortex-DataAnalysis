@@ -30,7 +30,8 @@ from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
-
+from core.computefeature import ComputeFeatureBase
+import traceback
 from datetime import datetime, timedelta
 import pprint as pp
 import numpy as np
@@ -81,6 +82,10 @@ class GPSFeatures(ComputeFeatureBase):
         for dp in data:
             if ( float(dp.sample[1]) != -1.0):
                 data_without_transit.append(dp)
+                
+                
+        if len(data_without_transit) == 0:
+            return []
 
         i = 0
         while i <= len(data_without_transit)-2:
@@ -120,6 +125,10 @@ class GPSFeatures(ComputeFeatureBase):
         for dp in data:
             if (float(dp.sample[1]) != -1.0):
                 data_without_transit.append(dp)
+                
+                
+        if len(data_without_transit) == 0:
+            return []
 
 
         max_dist_bet_two_locations = 0
@@ -168,7 +177,9 @@ class GPSFeatures(ComputeFeatureBase):
             concat_string = str(data[ii].sample[1]) + str(data[ii].sample[2])
             loc_array.append(concat_string)
             ii = ii + 1
-
+        
+        if len(loc_array) == 0:
+            return []
 
         loc_dict = {}
         i = 0
@@ -379,6 +390,9 @@ class GPSFeatures(ComputeFeatureBase):
             if (float(dp.sample[0]) != -1.0):
                 data.append(dp)
                 
+        if len(data) == 0:
+            return []
+        
         summed_lattitude = 0
         summed_longitude = 0
         
@@ -400,7 +414,7 @@ class GPSFeatures(ComputeFeatureBase):
         for dp in data:
             total_time = total_time + (dp.end_time - dp.start_time).total_seconds()
             distance = self.haversine(float(dp.sample[2]),float(dp.sample[1]),mean_longitude,mean_lattitude)
-            time_distance = time_distance + (dp.end_time - dp.start_time).total_seconds() * distance * distance
+            time_distance = time_distance + ((dp.end_time - dp.start_time).total_seconds()) * distance * distance
             
         
         rad_of_gyration = 0
@@ -492,7 +506,7 @@ class GPSFeatures(ComputeFeatureBase):
         Returns Routine Index for all days of the participant.
         """            
 
-        if len(places) == 1:            
+        if len(places) <= 1:            
             return []
                 
         routine_ind_datapoints = []
@@ -519,13 +533,37 @@ class GPSFeatures(ComputeFeatureBase):
 
         return routine_ind_datapoints
                 
-    
+
+
+    def available_data_in_time(self,data):
+
+        total_time = 0
+        for dp in data:
+            total_time += (dp.end_time - dp.start_time).total_seconds()
+        if total_time < 0:
+            return []
+        
+        start_time = data[0].start_time
+        end_time = data[-1].end_time
+        offset = data[0].offset   
+        
+        datapoint = DataPoint(start_time,end_time,offset,total_time)
+        
+        return [datapoint]
+        
+        
 
 
     def process(self,user_id,all_days):
-        stream_name_gps_cluster = "org.md2k.data_analysis.gps_clustering_episode_generation"
-        stream_name_semantic_location = "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model"
-        stream_name_semantic_location_user_marked="org.md2k.data_analysis.gps_episodes_and_semantic_location_user_marked"
+#         stream_name_gps_cluster = "org.md2k.data_analysis.gps_clustering_episode_generation"
+#         stream_name_semantic_location = "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model"
+#         stream_name_semantic_location_user_marked="org.md2k.data_analysis.gps_episodes_and_semantic_location_user_marked"
+        
+        stream_name_gps_cluster = "org.md2k.data_analysis.gps_clustering_episode_generation_daily_test"
+        stream_name_semantic_location = "org.md2k.data_analysis.gps_episodes_and_semantic_location_daily_test"
+        stream_name_semantic_location_user_marked="org.md2k.data_analysis.gps_episodes_and_semantic_location_user_marked_daily_test"       
+
+                
         streams = self.CC.get_user_streams(user_id)
 
 
@@ -566,7 +604,7 @@ class GPSFeatures(ComputeFeatureBase):
                 
                     
             
-            if home_present == False:
+            if home_present == False and stream_name_semantic_location in streams:
                 i = 0
                 while i < len(semantic_data):
                     if (semantic_data[i].sample.lower() == "home"):
@@ -598,6 +636,7 @@ class GPSFeatures(ComputeFeatureBase):
             day_places.append(self.mobility_places(cluster_data))
             
  
+        
         rout_ind = self.routine_index(day_places)
 
         try:
@@ -639,7 +678,39 @@ class GPSFeatures(ComputeFeatureBase):
                     
             if len(cluster_data) == 0:
                 continue
-                                 
+
+                
+                
+            available_data = self.available_data_in_time(cluster_data)
+                
+
+            try:
+                if len(available_data):
+                    streams = self.CC.get_user_streams(user_id)
+                    for stream_name, stream_metadata in streams.items():
+                        if stream_name == stream_name_gps_cluster:
+                            #print("---->",stream_metadata)
+
+                            self.store_stream(filepath="gpsfeature_data_available.json",
+                                      input_streams=[stream_metadata], 
+                                      user_id=user_id,
+                                      data=available_data)
+                            break
+            except Exception as e:
+                print("Exception:", str(e))
+                print(traceback.format_exc())
+            self.CC.logging.log('%s finished processing for user_id %s saved %d '
+                                'data points' %
+                                (self.__class__.__name__, str(user_id),
+                                 len(available_data)))
+                    
+                  
+                
+                
+                
+                
+                
+                
             rad_gyr = self.radius_of_gyration(cluster_data)
                                  
 #             print (rad_gyr[0].sample)
@@ -667,7 +738,7 @@ class GPSFeatures(ComputeFeatureBase):
                     
                     
             tot_dist = self.total_distance_covered(cluster_data)
-            
+#             print ('here',day, tot_dist)
                               
 
             try:
@@ -675,10 +746,12 @@ class GPSFeatures(ComputeFeatureBase):
                     streams = self.CC.get_user_streams(user_id)
                     for stream_name, stream_metadata in streams.items():
                         if stream_name == stream_name_gps_cluster:
-                            #print("---->",stream_metadata)
+    #                         print("---->",stream_metadata)
+
+#                             print (">>>>>>>>>>>>>>>>>>>>..................................")
 
                             self.store_stream(filepath="total_distance_covered.json",
-                                      input_streams=[stream_metadata], 
+                                      input_streams=[streams[stream_name]], 
                                       user_id=user_id,
                                       data=tot_dist)
                             break

@@ -66,7 +66,7 @@ class ComputeFeatureBase(object):
 
         metadata_file_path = '/'.join(['core','resources','metadata',filepath])
         # FIXME
-        metadata_str = __loader__.get_data(metadata_file_path)
+        metadata_str = str(__loader__.get_data(metadata_file_path).decode("utf-8"))
 
         metadata = json.loads(metadata_str)
         
@@ -83,7 +83,7 @@ class ComputeFeatureBase(object):
         metadata["owner"] = str(user_id)
         self.CC.logging.log('%s called '
                             'store_stream.'%(sys._getframe(1).f_code.co_name))
-
+        print("-"*100)
         self.store(identifier=output_stream_id, owner=user_id, name=stream_name,
                    data_descriptor=metadata["data_descriptor"],
                    execution_context=metadata["execution_context"], annotations=metadata["annotations"],
