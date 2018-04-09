@@ -22,7 +22,7 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+import math
 
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
@@ -38,6 +38,7 @@ import time
 import copy
 import traceback
 from functools import lru_cache
+import math
 
 from sklearn.mixture import GaussianMixture
 
@@ -1342,6 +1343,533 @@ class PhoneFeatures(ComputeFeatureBase):
                 i += 1
         return ret
 
+    def process_appusage_day_data(self, user_id, appcategorydata, input_appcategorystream):
+        #print(appcategorydata)
+        data = {}
+        try:
+            categories =list(set([y.sample[1] for y in appcategorydata if y.sample[1]]))
+            categories.sort(key=lambda x: x.start_time)
+            for c in categories:
+                d = self.get_appusage_duration_by_category(appcategorydata, [c],300)
+
+                if d:
+                    newd = [{ "start_time": x[0], "end_time": x[1]} for x in d]
+                    data[c] = newd
+
+            if data:
+                st = appcategorydata[0].start_time.date()
+                start_time = datetime.datetime.combine(st, datetime.time.min)
+                start_time = start_time.replace(tzinfo=appcategorydata[0].start_time.tzinfo)
+                end_time = datetime.datetime.combine(st, datetime.time.max)
+                end_time = end_time.replace(tzinfo=appcategorydata[0].start_time.tzinfo)
+                dp = DataPoint(start_time, end_time, appcategorydata[0].offset, data)
+
+                self.store_stream(filepath="appusage_duration_by_category.json",
+                                  input_streams=[input_appcategorystream], user_id=user_id,
+                                  data=[dp], localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+    def get_contact_entropy(self, data: list) -> float:
+        contact = {}
+        for d in data:
+            if d in contact:
+                contact[d] += 1
+            else:
+                contact[d] = 1
+        entropy = 0
+        for f in contact.values():
+            entropy -= f * math.log(f)
+        return entropy
+
+    def get_call_daily_entropy(self, data: list) -> list:
+        if not data:
+            return None
+        entropy = self.get_contact_entropy([d.sample for d in data])
+
+        start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        start_time = start_time.replace(tzinfo=data[0].start_time.tzinfo)
+        end_time = start_time + datetime.timedelta(hours=23, minutes=59)
+        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=data[0].offset,
+                              sample=entropy)]
+        return new_data
+
+    def get_call_hourly_entropy(self, data: list) -> list:
+        if not data:
+            return None
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
+        for h in range(0, 24):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            if len(datalist) == 0:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=self.get_contact_entropy(datalist) ))
+        return new_data
+
+    def get_call_four_hourly_entropy(self, data: list) -> list:
+        if not data:
+            return None
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
+        for h in range(0, 24, 4):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(hours=3, minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            if len(datalist) == 0:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=self.get_contact_entropy(datalist) ))
+        return new_data
+
+    def get_sms_daily_entropy(self, data: list) -> list:
+        if not data:
+            return None
+        entropy = self.get_contact_entropy([d.sample for d in data])
+
+        start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        start_time = start_time.replace(tzinfo=data[0].start_time.tzinfo)
+        end_time = start_time + datetime.timedelta(hours=23, minutes=59)
+        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=data[0].offset,
+                              sample=entropy)]
+        return new_data
+
+    def get_sms_hourly_entropy(self, data: list) -> list:
+        if not data:
+            return None
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
+        for h in range(0, 24):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            if len(datalist) == 0:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=self.get_contact_entropy(datalist) ))
+        return new_data
+
+    def get_sms_four_hourly_entropy(self, data: list) -> list:
+        if not data:
+            return None
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
+        for h in range(0, 24, 4):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(hours=3, minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            if len(datalist) == 0:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=self.get_contact_entropy(datalist) ))
+        return new_data
+
+    def get_call_sms_daily_entropy(self, calldata: list, smsdata: list) -> list:
+        data = calldata + smsdata
+        if not data:
+            return None
+        data.sort(key=lambda x: x.start_time)
+        entropy = self.get_contact_entropy([d.sample for d in data])
+
+        start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        start_time = start_time.replace(tzinfo=data[0].start_time.tzinfo)
+        end_time = start_time + datetime.timedelta(hours=23, minutes=59)
+        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=data[0].offset,
+                              sample=entropy)]
+        return new_data
+
+    def get_call_sms_hourly_entropy(self, calldata: list, smsdata: list) -> list:
+        data = calldata + smsdata
+        if not data:
+            return None
+        data.sort(key=lambda x: x.start_time)
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
+        for h in range(0, 24):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            if len(datalist) == 0:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=self.get_contact_entropy(datalist) ))
+        return new_data
+
+    def get_call_sms_four_hourly_entropy(self, calldata: list, smsdata: list) -> list:
+        data = calldata + smsdata
+        if not data:
+            return None
+        data.sort(key=lambda x: x.start_time)
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
+        for h in range(0, 24, 4):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(hours=3, minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            if len(datalist) == 0:
+                continue
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=self.get_contact_entropy(datalist) ))
+        return new_data
+
+    def get_total_call_daily(self, data: list) -> list:
+
+        start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        start_time = start_time.replace(tzinfo=data[0].start_time.tzinfo)
+        end_time = start_time + datetime.timedelta(hours=23, minutes=59)
+        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=data[0].offset, sample=len(data))]
+        return new_data
+
+    def get_total_call_hourly(self, data: list) -> list:
+        if not data:
+            return None
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
+        for h in range(0, 24):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=len(datalist)))
+        return new_data
+
+    def get_total_call_four_hourly(self, data: list) -> list:
+        if not data:
+            return None
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
+        for h in range(0, 24, 4):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(hours=3, minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=len(datalist)))
+        return new_data
+
+    def get_total_sms_daily(self, data: list) -> list:
+
+        start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        start_time = start_time.replace(tzinfo=data[0].start_time.tzinfo)
+        end_time = start_time + datetime.timedelta(hours=23, minutes=59)
+        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=data[0].offset,
+                              sample=len(data))]
+        return new_data
+
+    def get_total_sms_hourly(self, data: list) -> list:
+        if not data:
+            return None
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
+        for h in range(0, 24):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=len(datalist)))
+        return new_data
+
+    def get_total_sms_four_hourly(self, data: list) -> list:
+        if not data:
+            return None
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
+        for h in range(0, 24, 4):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(hours=3, minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=len(datalist)))
+        return new_data
+
+    def get_total_call_sms_daily(self, calldata: list, smsdata: list) -> list:
+        data = calldata + smsdata
+
+        data.sort(key=lambda x: x.start_time)
+
+        start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        start_time = start_time.replace(tzinfo=data[0].start_time.tzinfo)
+        end_time = start_time + datetime.timedelta(hours=23, minutes=59)
+        new_data = [DataPoint(start_time=start_time, end_time=end_time, offset=data[0].offset,
+                              sample=len(data))]
+        return new_data
+
+    def get_total_call_sms_hourly(self, calldata: list, smsdata: list) -> list:
+        data = calldata + smsdata
+
+        data.sort(key=lambda x: x.start_time)
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
+        for h in range(0, 24):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=len(datalist) ))
+        return new_data
+
+    def get_total_call_sms_four_hourly(self, calldata: list, smsdata: list) -> list:
+        data = calldata + smsdata
+        if not data:
+            return None
+        data.sort(key=lambda x: x.start_time)
+        new_data = []
+        tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
+        tmp_time = tmp_time.replace(tzinfo=data[0].start_time.tzinfo)
+        for h in range(0, 24, 4):
+            datalist = []
+            start = tmp_time.replace(hour = h)
+            end = start + datetime.timedelta(hours=3, minutes=59)
+            for d in data:
+                if start <= d.start_time <= end:
+                    datalist.append(d.sample)
+
+            new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
+                                      sample=len(datalist)))
+        return new_data
+
+    def process_callsmsnumber_day_data(self, user_id, call_number_data, sms_number_data, input_callstream, input_smsstream):
+        try:
+            data = self.get_call_sms_daily_entropy(call_number_data, sms_number_data)
+            if data:
+                self.store_stream(filepath="call_sms_daily_entropy.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_call_sms_hourly_entropy(call_number_data, sms_number_data)
+            if data:
+                self.store_stream(filepath="call_sms_hourly_entropy.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_call_sms_four_hourly_entropy(call_number_data, sms_number_data)
+            if data:
+                self.store_stream(filepath="call_sms_four_hourly_entropy.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_call_daily_entropy(call_number_data)
+            if data:
+                self.store_stream(filepath="call_daily_entropy.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_call_hourly_entropy(call_number_data)
+            if data:
+
+                self.store_stream(filepath="call_hourly_entropy.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_call_four_hourly_entropy(call_number_data)
+            if data:
+                self.store_stream(filepath="call_four_hourly_entropy.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_sms_daily_entropy(sms_number_data)
+            if data:
+                self.store_stream(filepath="sms_daily_entropy.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_sms_hourly_entropy(sms_number_data)
+            if data:
+                self.store_stream(filepath="sms_hourly_entropy.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_sms_four_hourly_entropy(sms_number_data)
+            if data:
+                self.store_stream(filepath="sms_four_hourly_entropy.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_total_call_sms_daily(call_number_data, sms_number_data)
+            if data:
+                self.store_stream(filepath="total_call_sms_daily.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_total_call_sms_hourly(call_number_data, sms_number_data)
+            if data:
+                print(data)
+                self.store_stream(filepath="total_call_sms_hourly.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_total_call_sms_four_hourly(call_number_data, sms_number_data)
+            if data:
+                print(data)
+                self.store_stream(filepath="total_call_sms_four_hourly.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_total_call_daily(call_number_data)
+            if data:
+                self.store_stream(filepath="total_call_daily.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_total_call_hourly(call_number_data)
+            if data:
+                self.store_stream(filepath="total_call_hourly.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_total_call_four_hourly(call_number_data)
+            if data:
+                self.store_stream(filepath="total_call_four_hourly.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_total_sms_daily(sms_number_data)
+            if data:
+                self.store_stream(filepath="total_sms_daily.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_total_sms_hourly(sms_number_data)
+            if data:
+                self.store_stream(filepath="total_sms_hourly.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_total_sms_four_hourly(sms_number_data)
+            if data:
+                print(data)
+                self.store_stream(filepath="total_sms_four_hourly.json",
+                                  input_streams=[input_callstream, input_smsstream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
     def process_callsmsstream_day_data(self, user_id, callstream, smsstream, input_callstream, input_smsstream):
         """
         Process all the call and sms related features and store them as datastreams.
@@ -1732,32 +2260,6 @@ class PhoneFeatures(ComputeFeatureBase):
             self.CC.logging.log("Exception:", str(e))
             self.CC.logging.log(str(traceback.format_exc()))
 
-    def process_appcategory_day_data(self, user_id, appcategorystream, input_appcategorystream):
-        """
-        process all app category related features.
-        :param user_id:
-        :param appcategorystream:
-        :param input_appcategorystream:
-        :return:
-        """
-        try:
-            data = []
-            for d in appcategorystream:
-                if type(d.sample) is not str:
-                    continue
-                dnew = d
-                dnew.sample = self.get_app_category(d.sample)
-                data.append(dnew)
-
-            if data:
-                self.store_stream(filepath="app_usage_category.json",
-                                  input_streams=[input_appcategorystream],
-                                  user_id=user_id, data=data)
-        except Exception as e:
-            self.CC.logging.log("Exception:", str(e))
-            self.CC.logging.log(str(traceback.format_exc()))
-
-
     def get_overlapped_value(self, px1, py1, px2, py2):
         x = max(px1, px2)
         y = min(py1, py2)
@@ -1765,7 +2267,8 @@ class PhoneFeatures(ComputeFeatureBase):
             return 0
         return (y - x).total_seconds() / 60
 
-    def process_appusage_context_day_data(self, user_id: str, app_usage_data: list, input_usage_stream: DataStream, gps_semantic_data: list, input_gps_semantic_stream: DataStream):
+    def process_appusage_context_day_data(self, user_id: str, app_usage_data: list, input_usage_stream: DataStream,
+                                          gps_semantic_data: list, input_gps_semantic_stream: DataStream):
         if not app_usage_data:
             return
 
@@ -1847,6 +2350,31 @@ class PhoneFeatures(ComputeFeatureBase):
             self.CC.logging.log("Exception:", str(e))
             self.CC.logging.log(str(traceback.format_exc()))
 
+    def process_appcategory_day_data(self, user_id, appcategorystream, input_appcategorystream):
+        """
+        process all app category related features.
+        :param user_id:
+        :param appcategorystream:
+        :param input_appcategorystream:
+        :return:
+        """
+        try:
+            data = []
+            for d in appcategorystream:
+                if type(d.sample) is not str:
+                    continue
+                dnew = d
+                dnew.sample = self.get_app_category(d.sample)
+                data.append(dnew)
+
+            if data:
+                self.store_stream(filepath="app_usage_category.json",
+                                  input_streams=[input_appcategorystream],
+                                  user_id=user_id, data=data)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
     def process_data(self, user_id, all_user_streams, all_days):
         """
         Getting all the necessary input datastreams for a user
@@ -1865,6 +2393,8 @@ class PhoneFeatures(ComputeFeatureBase):
         input_lightstream = None
         input_appusage_stream = None
         input_gpssemanticstream = None
+        input_callnumberstream = None
+        input_smsnumberstream = None
 
         call_stream_name = 'CU_CALL_DURATION--edu.dartmouth.eureka'
         sms_stream_name = 'CU_SMS_LENGTH--edu.dartmouth.eureka'
@@ -1875,7 +2405,8 @@ class PhoneFeatures(ComputeFeatureBase):
         appcategory_stream_name = "org.md2k.data_analysis.feature.phone.app_usage_category"
         appusage_stream_name = "org.md2k.data_analysis.feature.phone.app_usage_interval"
         gpssemantic_stream_name = "org.md2k.data_analysis.feature.gps_semantic_location.daywise_split.utc"
-
+        call_number_stream_name = "CU_CALL_NUMBER--edu.dartmouth.eureka"
+        sms_number_stream_name = "CU_SMS_NUMBER--edu.dartmouth.eureka"
 
         streams = all_user_streams
         days = None
@@ -1896,6 +2427,11 @@ class PhoneFeatures(ComputeFeatureBase):
                 input_cuappusagestream = stream_metadata
             elif stream_name == light_stream_name:
                 input_lightstream = stream_metadata
+            elif stream_name == call_number_stream_name:
+                input_callnumberstream = stream_metadata
+            elif stream_name == sms_number_stream_name:
+                input_smsnumberstream = stream_metadata
+
         # Processing Call and SMS related features
         if not input_callstream:
             self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
@@ -1996,9 +2532,30 @@ class PhoneFeatures(ComputeFeatureBase):
                 app_usage_data = self.get_filtered_data(app_usage_data, lambda x: type(x) is dict)
 
                 gps_semantic_data = self.get_data_by_stream_name(gpssemantic_stream_name, user_id, day, localtime=False)
-                gps_semantic_data = self.get_filtered_data(gps_semantic_data, lambda x: ((type(x) is str) or (type(x) is np.str_) ))
+                gps_semantic_data = self.get_filtered_data(gps_semantic_data,
+                                                           lambda x: ((type(x) is str) or (type(x) is np.str_) ))
 
-                self.process_appusage_context_day_data(user_id, app_usage_data, input_appusage_stream, gps_semantic_data, input_gpssemanticstream)
+                self.process_appusage_context_day_data(user_id, app_usage_data, input_appusage_stream,
+                                                       gps_semantic_data, input_gpssemanticstream)
+
+        if not input_callnumberstream:
+            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
+                                "USERID %s" %
+                                (self.__class__.__name__, call_number_stream_name,
+                                 str(user_id)))
+        elif not input_smsnumberstream:
+            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
+                                "USERID %s" %
+                                (self.__class__.__name__, sms_number_stream_name,
+                                 str(user_id)))
+        else:
+            for day in all_days:
+                callnumberdata = self.get_data_by_stream_name(call_number_stream_name, user_id, day, localtime=False)
+                callnumberdata = self.get_filtered_data(callnumberdata, lambda x: (type(x) is str))
+                smsnumberdata = self.get_data_by_stream_name(sms_number_stream_name, user_id, day, localtime=False)
+                smsnumberdata = self.get_filtered_data(smsnumberdata, lambda x: (type(x) is str))
+                self.process_callsmsnumber_day_data(user_id, callnumberdata, smsnumberdata, input_callnumberstream,
+                                                    input_smsnumberstream)
 
 
     def process(self, user_id, all_days):
