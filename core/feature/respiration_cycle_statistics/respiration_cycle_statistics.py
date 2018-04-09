@@ -33,15 +33,23 @@ feature_class_name = 'respiration_cycle_statistics'
 
 
 class respiration_cycle_statistics(ComputeFeatureBase):
-
+    """
+    This class combines the respiration raw datastream and 
+    respiration baseline datastream, applies the peak valley 
+    detection code to find out the respiration cycles and then 
+    computes 21 features for each respiration cycle and 
+    stores them  
+    """
 
     def get_feature_matrix(self,final_respiration:List[DataPoint])->List[DataPoint]:
 
         """
         
-        :param final_respiration: A list of datapoints after combining the respiration datastream and the respiration baseline datastream
+        :param final_respiration: A list of datapoints after combining 
+        the respiration datastream and the respiration baseline datastream
         
-        :return: A list of datapoints. Each datapoint contains a list of 21 values each representing the 21 separate features
+        :return: A list of datapoints. Each datapoint contains a list of 21 values 
+        each representing the 21 separate features
         calculated from one respiration cycle
         The features are,
         1  inspiration_duration
@@ -159,6 +167,7 @@ class respiration_cycle_statistics(ComputeFeatureBase):
     def process(self, user:str, all_days:list):
 
         """
+        Takes the user identifier and the list of days and does the required processing  
         :param user: user id string
         :param all_days: list of days to compute
 
