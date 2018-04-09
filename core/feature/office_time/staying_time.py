@@ -70,7 +70,7 @@ class StayingTimes(ComputeFeatureBase):
         for stream_id in stream_ids:
             for day in all_days:
                 work_data_stream = \
-                    self.CC.get_stream(stream_id["identifier"], user_id, day)
+                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime = True)
 
                 for data in work_data_stream.data:
                     arrival_time = data.start_time.hour*60+data.start_time.minute
@@ -122,7 +122,7 @@ class StayingTimes(ComputeFeatureBase):
                         self.store_stream(filepath="staying_time.json",
                                           input_streams=[stream_metadata],
                                           user_id=user_id,
-                                          data=staying_time_data)
+                                          data=staying_time_data, localtime = True)
                         break
         except Exception as e:
             print("Exception:", str(e))

@@ -76,7 +76,7 @@ class ExpectedStayingTimesFromBeacon(ComputeFeatureBase):
         for stream_id in stream_ids:
             for day in all_days:
                 work_data_stream = \
-                      self.CC.get_stream(stream_id["identifier"], user_id, day)
+                      self.CC.get_stream(stream_id["identifier"], user_id, day, localtime = True)
 
                 for data in work_data_stream.data:
                     arrival_time = data.start_time.hour*60+data.start_time.minute
@@ -153,7 +153,7 @@ class ExpectedStayingTimesFromBeacon(ComputeFeatureBase):
                         self.store_stream(filepath="expected_conservative_staying_time_from_beacon.json",
                                   input_streams=[stream_metadata],
                                   user_id=user_id,
-                                  data=expected_conservative_staying_data)
+                                  data=expected_conservative_staying_data, localtime = True)
                         break
         except Exception as e:
             print("Exception:", str(e))
@@ -170,7 +170,7 @@ class ExpectedStayingTimesFromBeacon(ComputeFeatureBase):
                         self.store_stream(filepath="expected_liberal_staying_time_from_beacon.json",
                                   input_streams=[stream_metadata],
                                   user_id=user_id,
-                                  data=expected_liberal_staying_data)
+                                  data=expected_liberal_staying_data, localtime = True)
                         break
         except Exception as e:
             print("Exception:", str(e))
