@@ -17,6 +17,7 @@
         }
       ],
       "input_parameters":{
+        "window_size": "4hours"
       }
     },
     "algorithm":{
