@@ -475,21 +475,23 @@ def process(self, user, all_days):
     offset = 0
     for day in all_days:
         activity_data = self.get_day_data(ACTIVITY_STREAMNAME, user, day)
-        walking_min_hourly, mod_min_hourly, high_min_hourly, total_min_per_hour = \
-            self.compute_activity_features_hourly(ACTIVITY_STREAMNAME,
-                                                  activity_data, streams, user)
-        D[day] = [walking_min_hourly, mod_min_hourly, high_min_hourly,
-                  total_min_per_hour]
+        if len(activity_data)>0:
+            walking_min_hourly, mod_min_hourly, high_min_hourly, total_min_per_hour = \
+                self.compute_activity_features_hourly(ACTIVITY_STREAMNAME,
+                                                      activity_data, streams, user)
+            D[day] = [walking_min_hourly, mod_min_hourly, high_min_hourly,
+                      total_min_per_hour]
 
         activity_data_accel_only = \
             self.get_day_data(ACCEL_ONLY_ACTIVITY_STREAMNAME, user, day)
-        walking_min_hourly_accel_only, mod_min_hourly_accel_only, high_min_hourly_accel_only, total_min_per_hour_accel_only = \
-            self.compute_activity_features_hourly(
-                ACCEL_ONLY_ACTIVITY_STREAMNAME, activity_data_accel_only,
-                streams, user)
-        D_accel[day] = [walking_min_hourly_accel_only,
-                        mod_min_hourly_accel_only, high_min_hourly_accel_only,
-                        total_min_per_hour_accel_only]
+        if len(activity_data_accel_only)>0:
+            walking_min_hourly_accel_only, mod_min_hourly_accel_only, high_min_hourly_accel_only, total_min_per_hour_accel_only = \
+                self.compute_activity_features_hourly(
+                    ACCEL_ONLY_ACTIVITY_STREAMNAME, activity_data_accel_only,
+                    streams, user)
+            D_accel[day] = [walking_min_hourly_accel_only,
+                            mod_min_hourly_accel_only, high_min_hourly_accel_only,
+                            total_min_per_hour_accel_only]
 
         posture_data = self.get_day_data(POSTURE_STREAMNAME, user, day)
         self.compute_posture_features_hourly(posture_data, streams, user)
