@@ -163,7 +163,7 @@ def process_feature(file_path, metadata_path):
         start_time = datetime.strptime(row[1], '%m/%d/%Y %H:%M')
         start_time = centraltz.localize(start_time)
         
-        utc_offset = start_time.utcoffset().seconds * -1000
+        utc_offset = start_time.utcoffset().total_seconds() * 1000
         # -1000 - DataPoint expects offset to be in milliseconds and negative is
         # to account for being west of UTC
         
