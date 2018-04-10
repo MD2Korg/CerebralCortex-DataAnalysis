@@ -56,4 +56,4 @@ from datetime import timedelta, timezone, datetime
 
 def get_local_datetime(year, month, day, hour=0, minute=0, second=0, offset=0):
     tz = timezone(timedelta(milliseconds=offset))
-    return datetime(year, month, day, hour, min, second, tzinfo=tz)
+    return datetime(year, month, day, hour, minute, second, tzinfo=tz)

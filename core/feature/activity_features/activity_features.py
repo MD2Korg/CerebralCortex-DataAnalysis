@@ -41,6 +41,14 @@ class ActivityFeature(ComputeFeatureBase):
     """
 
     def get_day_data(self, stream_name, user_id, day):
+        '''
+        get list od datapoint for the stream name
+
+        :param string stream_name: Name of the stream
+        :param string user_id: UID of the user
+        :param string day: YMD
+        :return: list(Datapoint)
+        '''
         day_data = []
         stream_ids = self.CC.get_stream_id(user_id, stream_name)
         for stream_id in stream_ids:
@@ -58,6 +66,15 @@ class ActivityFeature(ComputeFeatureBase):
     def compute_activity_features_hourly(self, STREAMNAME,
                                          activity_data: List[DataPoint],
                                          streams, user):
+        '''
+        compute activity output hourly
+
+        :param string STREAMNAME:  Name of the stream
+        :param list(Datapoint) activity_data: list of Datapoint
+        :param streams:
+        :param user:
+        :return:
+        '''
 
         if activity_data is None or len(activity_data) == 0:
             return
@@ -144,6 +161,13 @@ class ActivityFeature(ComputeFeatureBase):
         return walking_min_hourly, mod_min_hourly, high_min_hourly, total_min_per_hour
 
     def compute_posture_features_hourly(self, posture_data, streams, user):
+        '''
+        :param list(Datapoint) activity_data: list of Datapoint
+        :param streams:
+        :param user:
+        :return:
+        '''
+
         if posture_data is None or len(posture_data) == 0:
             return
 
@@ -204,7 +228,15 @@ class ActivityFeature(ComputeFeatureBase):
                           user_id=user,
                           data=standing_data)
 
-    def compute_hourly_mean_for_time_of_day(self, D: dict(), days):
+    def compute_hourly_mean_for_time_of_day(self, D: dict, days):
+
+        '''
+        computes
+
+        :param D: dictionary of activity output hourly
+        :param list days:  all days
+        :return: mean for hourly activity output
+        '''
 
         mean_walk_hourly = [0] * 24
         mean_mod_hourly = [0] * 24
@@ -232,6 +264,13 @@ class ActivityFeature(ComputeFeatureBase):
         return mean_walk_hourly, mean_mod_hourly, mean_high_hourly
 
     def compute_hourly_mean_for_day_of_week(self, D: dict(), days):
+
+        '''
+
+        :param D:
+        :param days:
+        :return:
+        '''
 
         dayOfWeek_mean = dict()
 
@@ -472,36 +511,44 @@ def process(self, user, all_days):
 
     D = dict()
     D_accel = dict()
+
+    day_list = []
+    day_list_accel = []
+
     offset = 0
     for day in all_days:
         activity_data = self.get_day_data(ACTIVITY_STREAMNAME, user, day)
-        if len(activity_data)>0:
+        if len(activity_data) > 0:
             walking_min_hourly, mod_min_hourly, high_min_hourly, total_min_per_hour = \
                 self.compute_activity_features_hourly(ACTIVITY_STREAMNAME,
-                                                      activity_data, streams, user)
+                                                      activity_data, streams,
+                                                      user)
             D[day] = [walking_min_hourly, mod_min_hourly, high_min_hourly,
                       total_min_per_hour]
+            day_list.append(day)
 
         activity_data_accel_only = \
             self.get_day_data(ACCEL_ONLY_ACTIVITY_STREAMNAME, user, day)
-        if len(activity_data_accel_only)>0:
+        if len(activity_data_accel_only) > 0:
             walking_min_hourly_accel_only, mod_min_hourly_accel_only, high_min_hourly_accel_only, total_min_per_hour_accel_only = \
                 self.compute_activity_features_hourly(
                     ACCEL_ONLY_ACTIVITY_STREAMNAME, activity_data_accel_only,
                     streams, user)
             D_accel[day] = [walking_min_hourly_accel_only,
-                            mod_min_hourly_accel_only, high_min_hourly_accel_only,
+                            mod_min_hourly_accel_only,
+                            high_min_hourly_accel_only,
                             total_min_per_hour_accel_only]
+            day_list_accel.append(day)
 
         posture_data = self.get_day_data(POSTURE_STREAMNAME, user, day)
         self.compute_posture_features_hourly(posture_data, streams, user)
         if len(activity_data) > 0:
             offset = activity_data[0].offset
 
-    self.imputation_by_mean_data(D, all_days, user,
+    self.imputation_by_mean_data(D, day_list, user,
                                  ACTIVITY_STREAMNAME, streams, offset)
 
-    self.imputation_by_mean_data(D_accel, all_days, user,
+    self.imputation_by_mean_data(D_accel, day_list_accel, user,
                                  ACCEL_ONLY_ACTIVITY_STREAMNAME, streams,
                                  offset)
 
