@@ -1,0 +1,40 @@
+{
+  "annotations":[],
+  "data_descriptor":[
+    {
+      "type":"float",
+      "unit":"km"
+    }
+  ],
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.gpsfeature",
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters":{
+        
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.gpsfeature.gpsfeature.maximum_distance_covered",
+      "authors":[
+        {
+          "name":"Anik Khan",
+          "email":"aniknagato@gmail.com"
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+      },
+      "description":"Maximum distance covered by participant in one day in kilometer."
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.feature.maximum_distance_covered",
+  "owner":"CC_OWNER_CC",
+  "type":"datastream"
+}

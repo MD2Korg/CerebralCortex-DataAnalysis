@@ -1,0 +1,40 @@
+{
+  "annotations":[],
+  "data_descriptor":[
+    {
+      "type":"list",
+      "unit":""
+    }
+  ],
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.gpsfeature",
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters":{
+        
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.gpsfeature.gpsfeature.cumulative_staying_time",
+      "authors":[
+        {
+          "name":"Anik Khan",
+          "email":"aniknagato@gmail.com"
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+      },
+      "description":"Sample is a list of 2 elements. First one is type of location (home, work etc.) and the second one is the cumulative time in that type of location"
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.feature.cumulative_staying_time",
+  "owner":"CC_OWNER_CC",
+  "type":"datastream"
+}
