@@ -49,12 +49,12 @@ class heart_rate(ComputeFeatureBase):
             initial = dp.start_time+ timedelta(seconds=4)
             step = timedelta(seconds=2)
             count = 0
-            while initial <= dp.end_time and count < len(dp.sample[2]):
-                if not math.isnan(dp.sample[2][count]):
-                    final_data.append(DataPoint.from_tuple(start_time=initial,offset=dp.offset,sample=dp.sample[2][count]))
+            while initial <= dp.end_time and count < len(dp.sample[2][0]):
+                if not math.isnan(dp.sample[2][0][count]):
+                    final_data.append(DataPoint.from_tuple(start_time=initial,offset=dp.offset,sample=dp.sample[2][0][count]))
                 count+=1
                 initial+=step
-        print("-"*20,len(final_data),"-"*20)
+        print("-"*20,' final data length ',len(final_data),"-"*20)
         self.store_stream(json_path,[streams[stream_identifier]],user_id,final_data,localtime=False)
 
 
