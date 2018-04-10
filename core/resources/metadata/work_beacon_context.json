@@ -2,8 +2,8 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"string",
-      "unit":"",
+      "name":"beacon_received",
+      "type":"int",
       "descriptor":"The participants context based on proximity to work beacon,Values = Not_work_beacon(0),Around_work1_beacon(1),Around_work2_beacon(2)"
     }
   ],
@@ -35,7 +35,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.v4.beacon.work_beacon_context",
+  "name":"org.md2k.data_analysis.feature.v6.beacon.work_beacon_context",
   "owner":"CC_OWNER_CC",
   "type":"1"
 }

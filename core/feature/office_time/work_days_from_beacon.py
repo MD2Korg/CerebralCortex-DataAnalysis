@@ -40,7 +40,7 @@ import json
 import traceback
 
 feature_class_name = 'WorkingDaysFromBeacon'
-BEACON_WORK_BEACON_CONTEXT_STREAM = "org.md2k.data_analysis.feature.v4.beacon.work_beacon_context"
+BEACON_WORK_BEACON_CONTEXT_STREAM = "org.md2k.data_analysis.feature.v6.beacon.work_beacon_context"
 
 class WorkingDaysFromBeacon(ComputeFeatureBase):
     """ Produce feature from gps location Only the days marked as "Work" in
@@ -62,46 +62,57 @@ class WorkingDaysFromBeacon(ComputeFeatureBase):
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
         work_data = []
+        beacon_location_data = []
         stream_ids = self.CC.get_stream_id(user_id,
                                            BEACON_WORK_BEACON_CONTEXT_STREAM)
+
         for stream_id in stream_ids:
-            current_day = None  # in beginning current day is null
             for day in all_days:
                 beacon_location_data_stream = \
-                    self.CC.get_stream(stream_id["identifier"], user_id, day)
+                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime = True)
+                beacon_location_data += beacon_location_data_stream.data
+        beacon_location_data = list(set(beacon_location_data))
+        beacon_location_data.sort(key=lambda x: x.start_time)
+        current_day = None  # in beginning current day is null
+        for data in beacon_location_data:
+            print(data)
+            if data.sample is None or int(data.sample) != 1:
+                # only the data marked as Work are needed
+                continue
 
-                for data in beacon_location_data_stream.data:
-                    #print(data)
-                    if data.sample is None or data.sample[0] != "1":
-                        # only the data marked as Work are needed
-                        continue
+            d = DataPoint(data.start_time, data.end_time,
+                          data.offset, data.sample)
+            #                     if d.offset:
+            #                         d.start_time += timedelta(milliseconds=d.offset)
+            #                         if d.end_time:
+            #                             d.end_time += timedelta(milliseconds=d.offset)
+            #                         else:
+            #                             continue
 
-                    d = DataPoint(data.start_time, data.end_time,
-                                  data.offset, data.sample)
-                    #                     if d.offset:
-                    #                         d.start_time += timedelta(milliseconds=d.offset)
-                    #                         if d.end_time:
-                    #                             d.end_time += timedelta(milliseconds=d.offset)
-                    #                         else:
-                    #                             continue
+            if d.start_time.date() != current_day:
+                '''
+                when the day in d.start_time.date() is not equal
+                current_day that means its a new day.
+                '''
+                if current_day:
+                    temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
+                    temp.start_time = work_start_time
+                    temp.end_time = work_end_time
+                    temp.sample = 'work'
+                    work_data.append(temp)
+                work_start_time = d.start_time
 
-                    if d.start_time.date() != current_day:
-                        '''
-                        when the day in d.start_time.date() is not equal
-                        current_day that means its a new day.
-                        '''
-                        if current_day:
-                            temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
-                            temp.start_time = work_start_time
-                            temp.end_time = work_end_time
-                            temp.sample = 'work'
-                            work_data.append(temp)
-                        work_start_time = d.start_time
+                # save the new day as current day
+                current_day = d.start_time.date()
 
-                        # save the new day as current day
-                        current_day = d.start_time.date()
+            work_end_time = d.end_time
+        if current_day:
+            temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
+            temp.start_time = work_start_time
+            temp.end_time = work_end_time
+            temp.sample = 'work'
+            work_data.append(temp)
 
-                    work_end_time = d.end_time
         try:
             if len(work_data):
                 streams = self.CC.get_user_streams(user_id)

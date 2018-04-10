@@ -2,8 +2,8 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"json",
-      "unit":"int or NA"
+      "type":"list",
+      "unit":"float"
     }
   ],
   "execution_context":{
@@ -11,7 +11,7 @@
       "name":"core.modules.data_importer.qualtrix_data_importer",
       "input_source":[
         {
-          "file_name":"Daily.alc.d.csv",
+          "file_name":"Daily.alc.quantity.d.mitre.csv",
           "file_source" : "qualtrics"
         }
       ]
@@ -28,8 +28,5 @@
       "description":"Importer of qualtrics data"
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_qualtrics.feature.v3.alcohol_use_MITRE_alcohol_use_assessment",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "name":"org.md2k.data_qualtrics.feature.v10.alc.quantity.d"
 }

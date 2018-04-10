@@ -35,7 +35,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.stress.respiration.60seconds",
+  "name":"org.md2k.data_analysis.feature.stress.respiration.60seconds.v3",
   "owner":"",
   "type":"1"
 }

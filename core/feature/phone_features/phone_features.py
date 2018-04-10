@@ -41,25 +41,44 @@ from functools import lru_cache
 import math
 
 from sklearn.mixture import GaussianMixture
+from typing import List
 
 
 feature_class_name = 'PhoneFeatures'
 
-
 class PhoneFeatures(ComputeFeatureBase):
+    """
+    This class is responsible for computing features based on streams of data
+    derived from the smartphone sensors.
 
-    def get_filtered_data(self, data, admission_control = None):
+
+    """
+
+    def get_filtered_data(self, data:list, admission_control:bool = None) -> List[DataPoint]:
+        """
+        DESCRIPTION GOES HERE
+
+        :param List(DataPoint) data: Input data list
+        :param bool admission_control: Admission control enable flag
+        :return: Filtered list of DataPoints
+        :rtype: List(DataPoint)
+        """
         if admission_control is None:
             return data
         return [d for d in data if admission_control(d.sample)]
 
-    def get_data_by_stream_name(self, stream_name, user_id, day, localtime=True):
+    def get_data_by_stream_name(self, stream_name:str, user_id:str, day:str, localtime:bool=True) -> List[DataPoint]:
         """
-        method to get combined data from CerebralCortex as there can be multiple stream id for same stream
-        :param stream_name: Name of the stream corresponding to the datastream
-        :param user_id:
-        :param day:
-        :return: combined data if there are multiple stream id
+        DESCRIPTION GOES HERE
+
+        Combines data from multiple streams based on stream name.
+
+        :param str stream_name: Name of the stream
+        :param str user_id: UUID of the stream owner
+        :param str day: The day (YYYYMMDD) on which to operate
+        :param bool localtime: The way to structure time, True for operating in participant's local time, False for UTC
+        :return: Combined stream data if there are multiple stream id
+        :rtype: List(DataPoint)
         """
 
         stream_ids = self.CC.get_stream_id(user_id, stream_name)
@@ -74,11 +93,13 @@ class PhoneFeatures(ComputeFeatureBase):
             data = sorted(data, key=lambda x: x.start_time)
         return data
 
-    def inter_event_time_list(self, data):
+    def inter_event_time_list(self, data:list) -> List[float]:
         """
-        Helper function to find inter event gaps
-        :param data:
-        :return:
+        Helper function to compute inter-event times
+
+        :param List(DataPoint) data: A list of DataPoints
+        :return: Time deltas between DataPoints in minutes
+        :rtype: list(float)
         """
         if len(data) == 0:
             return None
@@ -97,14 +118,28 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return list(map(lambda x: x / 60.0, ret))
 
-    def average_inter_phone_call_sms_time_hourly(self, phonedata, smsdata):
+    def average_inter_phone_call_sms_time_hourly(self, phonedata:list, smsdata:list) -> List[DataPoint]:
         """
         Average time (in minutes) between two consecutive events (call and sms)
         for each hour window. If there is not enough data for a window then
         there will be no data point for that window.
-        :param phonedata:
-        :param smsdata:
-        :return:
+
+        Algorithm::
+
+            Stage 1
+            Stage 2
+                Stage 2.1
+                Stage 2.2
+            Stage 3
+
+        >>> 1+1
+        2
+
+
+        :param List(DataPoint) phonedata: Phone call DataStream
+        :param List(DataPoint) smsdata: SMS DataStream
+        :return: Average inter-phone call time over 1 hour windows
+        :rtype: List(DataPoint) or None
         """
         tmpphonestream = self.get_filtered_data(phonedata)
         tmpsmsstream = self.get_filtered_data(smsdata)
@@ -139,14 +174,16 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_phone_call_sms_time_four_hourly(self, phonedata, smsdata):
+    def average_inter_phone_call_sms_time_four_hourly(self, phonedata:list, smsdata:list) -> List[DataPoint]:
         """
         Average time (in minutes) between two consecutive events (call and sms)
         for each four hour window. If there is not enough data for a window then
         there will be no data point for that window.
-        :param phonedata:
-        :param smsdata:
-        :return:
+
+        :param List(DataPoint) phonedata: Phone call DataStream
+        :param List(DataPoint) smsdata: SMS DataStream
+        :return: Average inter-phone call time over 4 hour windows
+        :rtype: List(DataPoint) or None
         """
         tmpphonestream = self.get_filtered_data(phonedata)
         tmpsmsstream = self.get_filtered_data(smsdata)
@@ -178,13 +215,15 @@ class PhoneFeatures(ComputeFeatureBase):
 
         return new_data
 
-    def average_inter_phone_call_sms_time_daily(self, phonedata, smsdata):
+    def average_inter_phone_call_sms_time_daily(self, phonedata:list, smsdata:list) -> List[DataPoint]:
         """
         Average time (in minutes) between two consecutive events (call and sms)
         for whole day. If there is not enough data then it will return None.
-        :param phonedata:
-        :param smsdata:
-        :return:
+
+        :param List(DataPoint) phonedata: Phone call DataStream
+        :param List(DataPoint) smsdata: SMS DataStream
+        :return: Average inter-phone call time over 1 day windows
+        :rtype: List(DataPoint) or None
         """
         if len(phonedata) + len(smsdata) <= 1:
             return None
@@ -211,6 +250,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Variance of time (in minutes) between two consecutive events (call and sms)
         for whole day. If there is not enough data then it will return None.
+
         :param phonedata:
         :param smsdata:
         :return:
@@ -242,6 +282,7 @@ class PhoneFeatures(ComputeFeatureBase):
         Variance of time (in minutes) between two consecutive events (call and sms)
         for each hour window. If there is not enough data for a window then
         there will be no data point for that window.
+
         :param phonedata:
         :param smsdata:
         :return:
@@ -282,6 +323,7 @@ class PhoneFeatures(ComputeFeatureBase):
         Variance of time (in minutes) between two consecutive events (call and sms)
         for each four hour window. If there is not enough data for a window then
         there will be no data point for that window.
+
         :param phonedata:
         :param smsdata:
         :return:
@@ -321,6 +363,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average time (in minutes) between two consecutive call for each hour window.
         If there is not enough data for a window then there will be no data point for that window.
+
         :param phonedata:
         :return:
         """
@@ -353,6 +396,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average time (in minutes) between two consecutive call for each four hour window.
         If there is not enough data for a window then there will be no data point for that window.
+
         :param phonedata:
         :return:
         """
@@ -385,6 +429,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average time (in minutes) between two consecutive call for a whole day.
         If there is not enough data for the day then it will return None.
+
         :param phonedata:
         :return:
         """
@@ -408,6 +453,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Variance of time (in minutes) between two consecutive call for each hour window.
         If there is not enough data for a window then there will be no data point for that window.
+
         :param phonedata:
         :return:
         """
@@ -440,6 +486,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Variance of time (in minutes) between two consecutive call for each four hour window.
         If there is not enough data for a window then there will be no data point for that window.
+
         :param phonedata:
         :return:
         """
@@ -472,6 +519,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average time (in minutes) between two consecutive call for a day.
         If there is not enough data for the day then it will return None.
+
         :param phonedata:
         :return:
         """
@@ -495,6 +543,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average time (in minutes) between two consecutive sms for each hour window.
         If there is not enough data for a window then there will be no data point for that window.
+
         :param smsdata:
         :return:
         """
@@ -527,6 +576,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average time (in minutes) between two consecutive sms for each four hour window.
         If there is not enough data for a window then there will be no data point for that window.
+
         :param smsdata:
         :return:
         """
@@ -559,6 +609,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average time (in minutes) between two consecutive sms for a day.
         If there is not enough data for the day then it will return None.
+
         :param smsdata:
         :return:
         """
@@ -582,6 +633,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Variance of time (in minutes) between two consecutive sms for each hour window.
         If there is not enough data for a window then there will be no data point for that window.
+
         :param smsdata:
         :return:
         """
@@ -614,6 +666,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average time (in minutes) between two consecutive sms for each four hour window.
         If there is not enough data for a window then there will be no data point for that window.
+
         :param smsdata:
         :return:
         """
@@ -646,6 +699,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average time (in minutes) between two consecutive sms for a day.
         If there is not enough data for that day, then it will return None.
+
         :param smsdata:
         :return:
         """
@@ -669,6 +723,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average time (in minutes) spent in call in a day. If there is not enough data
         for that day then it will return None.
+
         :param phonedata:
         :return:
         """
@@ -689,6 +744,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average time (in minutes) spent in call for each hour window. If there is not enough data
         for any window then there will no data point for that window.
+
         :param phonedata:
         :return:
         """
@@ -725,6 +781,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average time (in minutes) spent in call for each four hour window. If there is not enough data
         for any window then there will no data point for that window.
+
         :param phonedata:
         :return:
         """
@@ -761,6 +818,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average sms length for a day. If there is not enough data for that day
         then it will return None.
+
         :param smsdata:
         :return:
         """
@@ -781,6 +839,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average sms length for each hour window. If there is not enough data
         for any window then there will no data point for that window.
+
         :param smsdata:
         :return:
         """
@@ -811,6 +870,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average sms length for each four hour window. If there is not enough data
         for any window then there will no data point for that window.
+
         :param smsdata:
         :return:
         """
@@ -841,6 +901,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Variance of sms length for a day. If there is not enough data
         for that day, then it will return None.
+
         :param smsdata:
         :return:
         """
@@ -861,6 +922,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Variance of sms length for each hour window. If there is not enough data
         for any window then there will no data point for that window.
+
         :param smsdata:
         :return:
         """
@@ -891,6 +953,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Variance of sms length for each four hour window. If there is not enough data
         for any window then there will no data point for that window.
+
         :param smsdata:
         :return:
         """
@@ -921,6 +984,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Variance of call duration in minutes for a day. If there is not enough data
         for that day then it will return None.
+
         :param phonedata:
         :return:
         """
@@ -941,6 +1005,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Variance of call duration in minutes for each hour window. If there is not enough data
         for any window then there will no data point for that window.
+
         :param phonedata:
         :return:
         """
@@ -977,8 +1042,9 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Variance of call duration in minutes for each four hour window. If there is not enough data
         for any window then there will no data point for that window.
-        :param phonedata:
-        :return:
+
+        :param phonedata: Foo
+        :return: Variance of call duration in minutes for each four hour window.
         """
         if len(phonedata) < 1:
             return None
@@ -1013,6 +1079,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average ambient light (in flux) for a day. If the input light data is less than minimum_data_percent%
         which is default 40%, it will return None.
+
         :param lightdata:
         :param data_frequency: How many data point should generate in a second
         :param minimum_data_percent: Minimum percent of data should be available
@@ -1029,6 +1096,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average ambient light (in flux) for each hour window in a day. If the input light data is less than minimum_data_percent%
         which is default 40%, in a window then it will not generate any data point for that window.
+
         :param lightdata:
         :param data_frequency: How many data point should generate in a second
         :param minimum_data_percent: Minimum percent of data should be available
@@ -1061,7 +1129,8 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Average ambient light (in flux) for each four hour window in a day. If the input light data is less than
         minimum_data_percent%, which is default 40%, in a window then it will not generate any data point for that
-         window.
+        window.
+
         :param lightdata:
         :param data_frequency: How many data point should generate in a second
         :param minimum_data_percent: Minimum percent of data should be available
@@ -1094,6 +1163,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Variance of ambient light (in flux) for a day. If the input light data is less than minimum_data_percent%
         which is default 40%, it will return None.
+
         :param lightdata:
         :param data_frequency: How many data point should generate in a second
         :param minimum_data_percent: Minimum percent of data should be available
@@ -1110,6 +1180,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Variance of ambient light (in flux) for each hour window in a day. If the input light data is less than
          minimum_data_percent%, which is default 40%, in a window then it will not generate any data point for that window.
+
         :param lightdata:
         :param data_frequency: How many data point should generate in a second
         :param minimum_data_percent: Minimum percent of data should be available
@@ -1143,6 +1214,7 @@ class PhoneFeatures(ComputeFeatureBase):
         Variance of ambient light (in flux) for each four hour window in a day. If the input light data is
         less than minimum_data_percent%, which is default 40%, in a window then it will not generate any data
          point for that window.
+
         :param lightdata:
         :param data_frequency: How many data point should generate in a second
         :param minimum_data_percent: Minimum percent of data should be available
@@ -1177,6 +1249,7 @@ class PhoneFeatures(ComputeFeatureBase):
         It uses a threshold (phone_inside_threshold_second), such that, if there is a duration of
         at least this amount of consecutive time the phone proximity is 0, then this will be a
         period of phone inside.
+
         :param data:
         :param phone_inside_threshold_second:
         :return:
@@ -1220,6 +1293,7 @@ class PhoneFeatures(ComputeFeatureBase):
         and return the category. If there are multiple category it will
         return the first one in the webpage. Only for the GAME category
         it will return the sub-category also.
+
         :param appid: package name of an app
         :return: [package_name, category, app_name, sub_category]
         """
@@ -1257,6 +1331,7 @@ class PhoneFeatures(ComputeFeatureBase):
         Given the app category, it will return the list of duration when the app was used.
         It is assumed that if the gap between two consecutive data points with same app usage
         is within the appusage_gap_threshold_seconds time then, the app usage is in same session.
+
         :param appdata:
         :param categories:
         :param appusage_gap_threshold_seconds:
@@ -1288,6 +1363,7 @@ class PhoneFeatures(ComputeFeatureBase):
     def appusage_interval_list(self, data, appusage):
         """
         Helper function to get screen touch gap between appusage
+
         :param data:
         :param appusage:
         :return:
@@ -1308,6 +1384,7 @@ class PhoneFeatures(ComputeFeatureBase):
     def label_appusage_intervals(self, data, appusage, intervals, interval_label):
         """
         Helper function to label screen touch in a fixed app category usage
+
         :param data:
         :param appusage:
         :param intervals:
@@ -1408,7 +1485,6 @@ class PhoneFeatures(ComputeFeatureBase):
             for d in data:
                 if start <= d.start_time <= end:
                     datalist.append(d.sample)
-
             if len(datalist) == 0:
                 continue
             new_data.append(DataPoint(start_time=start, end_time=end, offset=data[0].offset,
@@ -1873,6 +1949,7 @@ class PhoneFeatures(ComputeFeatureBase):
     def process_callsmsstream_day_data(self, user_id, callstream, smsstream, input_callstream, input_smsstream):
         """
         Process all the call and sms related features and store them as datastreams.
+
         :param user_id:
         :param callstream:
         :param smsstream:
@@ -2184,6 +2261,7 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         Process all the ambient light related features and store the output
         streams.
+
         :param user_id:
         :param lightdata:
         :param input_lightstream:
@@ -2250,6 +2328,9 @@ class PhoneFeatures(ComputeFeatureBase):
             self.CC.logging.log(str(traceback.format_exc()))
 
     def process_proximity_day_data(self, user_id, proximitystream, input_proximitystream):
+        """
+        MISSING
+        """
         try:
             data = self.calculate_phone_outside_duration(proximitystream)
             if data:
@@ -2357,6 +2438,7 @@ class PhoneFeatures(ComputeFeatureBase):
     def process_appcategory_day_data(self, user_id, appcategorystream, input_appcategorystream):
         """
         process all app category related features.
+
         :param user_id:
         :param appcategorystream:
         :param input_appcategorystream:
@@ -2384,6 +2466,7 @@ class PhoneFeatures(ComputeFeatureBase):
         Getting all the necessary input datastreams for a user
         and run all feature processing modules for all the days
         of the user.
+
         :param user_id:
         :param all_user_streams:
         :param all_days:
@@ -2562,6 +2645,9 @@ class PhoneFeatures(ComputeFeatureBase):
 
 
     def process(self, user_id, all_days):
+        """
+        MISSING
+        """
         if self.CC is not None:
             self.CC.logging.log("Processing PhoneFeatures")
             streams = self.CC.get_user_streams(user_id)

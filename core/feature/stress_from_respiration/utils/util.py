@@ -24,7 +24,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import pickle
 import core.computefeature
-respiration_cycle_feature = "org.md2k.feature.respirationcyclefeature.v2"
+respiration_cycle_feature = "org.md2k.feature.respirationcyclefeature.v3"
 path_to_model_files = 'core/resources/models/stress_respiration/'
 window_size = 60
 window_offset = 60
