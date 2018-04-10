@@ -2,8 +2,9 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"string",
-      "unit":""
+      "name": "office_day's_annotation_from_beacon_model",
+      "type":"String",
+      "description": "work"
     }
   ],
   "execution_context":{

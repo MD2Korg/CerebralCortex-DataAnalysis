@@ -116,7 +116,7 @@ class StayingTimesFromBeacon(ComputeFeatureBase):
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == Working_Days_STREAM:
                         # print(stream_metadata)
-                        print("Going to pickle the file: ",staying_time_data)
+                        # print("Going to pickle the file: ",staying_time_data)
 
                         self.store_stream(filepath="staying_time_from_beacon.json",
                                           input_streams=[stream_metadata],

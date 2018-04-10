@@ -55,50 +55,53 @@ class GpsLocationDaywise(ComputeFeatureBase):
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
         gps_data = []
+        location_data = []
         stream_ids = self.CC.get_stream_id(user_id,
                                            GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM)
         for stream_id in stream_ids:
-
             for day in all_days:
                 location_data_stream = \
-                    self.CC.get_stream(stream_id["identifier"], user_id, day,localtime=False)
+                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime = False)
+                location_data += location_data_stream.data
+        location_data = list(set(location_data))
+        location_data.sort(key=lambda x: x.start_time)
+        for data in location_data:
+            if(data.start_time.date() != data.end_time.date()):
+                temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
+                start_day = data.start_time.date()
+                end_time = datetime.combine(start_day, time.max)
+                end_time = end_time.replace(tzinfo=data.start_time.tzinfo)
+                temp.end_time = end_time
+                gps_data.append(temp)
 
-
-                for data in set(location_data_stream.data):
-
-                    if(data.start_time.date() != data.end_time.date()):
-                        temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
-                        start_day = data.start_time.date()
-                        end_time = datetime.combine(start_day, time.max)
-                        end_time = end_time.replace(tzinfo=data.start_time.tzinfo)
-                        temp.end_time = end_time
-                        gps_data.append(temp)
-
-                        end_day = data.end_time.date()
-                        start_day += timedelta(days = 1)
-                        while start_day != end_day:
-                            temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
-                            start_time = datetime.combine(start_day, time.min)
-                            start_time = start_time.replace(tzinfo=data.start_time.tzinfo)
-                            temp.start_time = start_time
-                            end_time = datetime.combine(start_day, time.max)
-                            end_time = end_time.replace(tzinfo=data.start_time.tzinfo)
-                            temp.end_time = end_time
-                            gps_data.append(temp)
-                            start_day += timedelta(days = 1)
-                        temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
-                        start_time = datetime.combine(start_day, time.min)
-                        start_time = start_time.replace(tzinfo=data.start_time.tzinfo)
-                        temp.start_time = start_time
-                        gps_data.append(temp)
-                    else:
-                        gps_data.append(data)
+                end_day = data.end_time.date()
+                start_day += timedelta(days = 1)
+                while start_day != end_day:
+                    temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
+                    start_time = datetime.combine(start_day, time.min)
+                    start_time = start_time.replace(tzinfo=data.start_time.tzinfo)
+                    temp.start_time = start_time
+                    end_time = datetime.combine(start_day, time.max)
+                    end_time = end_time.replace(tzinfo=data.start_time.tzinfo)
+                    temp.end_time = end_time
+                    gps_data.append(temp)
+                    start_day += timedelta(days = 1)
+                temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
+                start_time = datetime.combine(start_day, time.min)
+                start_time = start_time.replace(tzinfo=data.start_time.tzinfo)
+                temp.start_time = start_time
+                gps_data.append(temp)
+            else:
+                gps_data.append(data)
 
         try:
             if len(gps_data):
                 streams = self.CC.get_user_streams(user_id)
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM:
+                        # print(stream_metadata)
+                        print("Going to pickle the file: ",gps_data)
+
                         self.store_stream(filepath="gps_location_daywise.json",
                                           input_streams=[stream_metadata],
                                           user_id=user_id,

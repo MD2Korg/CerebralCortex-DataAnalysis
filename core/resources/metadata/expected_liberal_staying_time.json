@@ -2,8 +2,21 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"list",
-      "unit":""
+      "name": "office_staying_time",
+      "type":"integer",
+      "unit":"minute",
+      "description": "Office staying time (total time between first entering time into the office location and last departure time from office location) according to GPS location model"
+    },
+    {
+      "name": "verdict",
+      "type":"string",
+      "description": "Analysis of the staying time which is one of the three verdict: 1. less_than_expected_liberal_time 2. more_than_expected_liberal_time 3. in_expected_liberal_time. Expected liberal time is the half_hourly time of average staying time. For example if average staying time is 8 hour 20 minute then expected liberal time is 8 hour on the other hand if average staying time is 8 hour 37 minute then expected liberal time is 8 hour 30 minutes.  The staying time which are less than expected liberal time are labeled less_than_expected_liberal_time and the staying time which are more than expected liberal time are labeled as more_than_expected_liberal_time, the staying time which are exactly same as the expected liberal time are labeled as in_expected_liberal_time."
+    },
+    {
+      "name": "deviation",
+      "type":"integer",
+      "unit":"minute",
+      "description": "How much deviated from the expected liberal time (in minutes)."
     }
   ],
   "execution_context":{

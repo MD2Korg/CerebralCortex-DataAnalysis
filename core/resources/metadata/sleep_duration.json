@@ -2,8 +2,10 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"list",
-      "unit":""
+      "name": "duration",
+      "type":"float",
+      "unit":"hour",
+      "description": "Approximate Sleep duration in number of hours"
     }
   ],
   "execution_context":{
