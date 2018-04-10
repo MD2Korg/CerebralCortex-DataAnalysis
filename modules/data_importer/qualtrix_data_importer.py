@@ -28,11 +28,15 @@ import os
 import json
 import uuid
 import argparse
+import pytz
+import pickle
 from datetime import datetime
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.cerebralcortex import CerebralCortex
+import cerebralcortex.cerebralcortex
 
+print('-'*10,os.path.abspath(cerebralcortex.__file__))
 
 
 CC_CONFIG_PATH = '/home/vagrant/CerebralCortex-DockerCompose/cc_config_file/cc_vagrant_configuration.yml'
@@ -62,26 +66,29 @@ if args['user_mappings']:
 files_to_process=[]
 
 # Below are the list of filenames 
-ALC_D = 'Daily.alc.d.csv'
-ALC_D_METADATA='metadata/daily.alc.d.json'
-files_to_process.append((ALC_D,ALC_D_METADATA))
+FILE_NAME = 'Daily.tob.quantity.d.mitre.csv'
+FILE_METADATA='metadata/daily.tob.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
 
+FILE_NAME = 'Daily.stress.d.csv'
+FILE_METADATA='metadata/daily.stress.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
 
-ANXIETY_D = 'Daily.anxiety.d.csv'
-ANXIETY_D_METADATA='metadata/daily.anxiety.d.json'
-files_to_process.append((ANXIETY_D,ANXIETY_D_METADATA))
+FILE_NAME = 'Daily.anxiety.d.csv'
+FILE_METADATA='metadata/daily.anxiety.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
 
-BFI_D = 'Daily.bfi.d.csv'
-BFI_D_METADATA='metadata/daily.bfi.d.json'
-files_to_process.append((BFI_D,BFI_D_METADATA))
-
-DALAL_D = 'Daily.dalal.csv'
-DALAL_D_METADATA='metadata/daily.dalal.json'
-files_to_process.append((DALAL_D,DALAL_D_METADATA))
-
-EXERCISE_D = 'Daily.exercise.d.csv'
-EXERCISE_D_METADATA='metadata/daily.exercise.d.json'
-files_to_process.append((EXERCISE_D,EXERCISE_D_METADATA))
+FILE_NAME = 'Daily.alc.quantity.d.mitre.csv'
+FILE_METADATA='metadata/daily.alc.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
 
 IRB_D = 'Daily.irb.d.csv'
 IRB_D_METADATA='metadata/daily.irb.d.json'
@@ -91,34 +98,79 @@ ITP_D = 'Daily.itp.d.csv'
 ITP_D_METADATA='metadata/daily.itp.d.json'
 files_to_process.append((ITP_D,ITP_D_METADATA))
 
-PAN_D = 'Daily.pan.d.csv'
-PAN_D_METADATA='metadata/daily.pan.d.json'
-files_to_process.append((PAN_D,PAN_D_METADATA))
+FILE_NAME = 'Daily.pos.affect.d.csv'
+FILE_METADATA='metadata/daily.pos.affect.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
 
-SLEEP_D = 'Daily.sleep.d.csv'
-SLEEP_D_METADATA='metadata/daily.sleep.d.json'
-files_to_process.append((SLEEP_D,SLEEP_D_METADATA))
+FILE_NAME = 'Daily.neg.affect.d.csv'
+FILE_METADATA='metadata/daily.neg.affect.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
 
-STRESS_D = 'Daily.stress.d.csv'
-STRESS_D_METADATA='metadata/daily.stress.d.json'
-files_to_process.append((STRESS_D,STRESS_D_METADATA))
+FILE_NAME = 'Daily.ocb.d.csv'
+FILE_METADATA='metadata/daily.ocb.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
 
-TOB_D = 'Daily.tob.d.csv'
-TOB_D_METADATA='metadata/daily.tob.d.json'
-files_to_process.append((TOB_D,TOB_D_METADATA))
+FILE_NAME = 'Daily.cwb.d.csv'
+FILE_METADATA='metadata/daily.cwb.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
 
-WORKTODAY_D = 'Daily.worktoday.d.csv'
-WORKTODAY_D_METADATA='metadata/daily.worktoday.d.json'
-# TODO confirm what this file corresponds to
-#files_to_process.append((WORKTODAY_D,WORKTODAY_D_METADATA))
+FILE_NAME = 'Daily.sleep.d.mitre.csv'
+FILE_METADATA='metadata/daily.sleep.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
 
-IGTB = 'igtb_composites.csv'
-IGTB_METADATA='metadata/igtb_composites.json'
-files_to_process.append((IGTB,IGTB_METADATA))
+
+FILE_NAME = 'Daily.total.pa.d.mitre.csv'
+FILE_METADATA='metadata/daily.total.pa.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
+
+FILE_NAME = 'Daily.neuroticism.d.csv'
+FILE_METADATA='metadata/daily.neuroticism.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
+
+FILE_NAME = 'Daily.conscientiousness.d.csv'
+FILE_METADATA='metadata/daily.conscientiousness.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
+
+FILE_NAME = 'Daily.extraversion.d.csv'
+FILE_METADATA='metadata/daily.extraversion.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
+
+FILE_NAME = 'Daily.agreeableness.d.csv'
+FILE_METADATA='metadata/daily.agreeableness.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
+
+FILE_NAME = 'Daily.openness.d.csv'
+FILE_METADATA='metadata/daily.openness.d.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
 # End list of file names
 
 # Map that contains the user 
 user_id_mappings={}
+
+# Timezone in which all times are recorded
+centraltz=pytz.timezone('US/Central')
 
 
 # CC intialization
@@ -170,22 +222,38 @@ def process_feature(file_path, metadata_path):
         
         user_id = user_id_mappings[row[0]]
         start_time = datetime.strptime(row[1], '%m/%d/%Y %H:%M')
+        start_time = centraltz.localize(start_time)
         
         # handling the different format of the IGTB file
-        if IGTB not in file_path:
+        if 'IGTB' not in file_path:
             end_time = datetime.strptime(row[2], '%m/%d/%Y %H:%M')
         else:
-            end_time = start_time
+            end_time = datetime(year=start_time.year, month=start_time.month,
+                                day=start_time.day, hour=start_time.hour,
+                                minute=start_time.minute)
             start_column_number = 2    
         
-        sample = {}
+        if 'IGTB' not in file_path:
+            end_time = centraltz.localize(end_time)
+
+        utc_offset = start_time.utcoffset().total_seconds() * 1000
+        # -1000 - DataPoint expects offset to be in milliseconds and negative is
+        # to account for being west of UTC
         
-        for idx in range(start_column_number, len(row)):
-            sample[header_row[idx]] = row[idx]
+
+        sample = row[5:]
+        values = []
+        for val in sample:
+            if 'yes' in val or 'no' in val:# Check for Daily.tob.d.mitre.csv
+                continue
+            if 'NA' in val:
+                values.append(float('Nan'))
+            else:
+                values.append(float(val))
         
-        sample_str = json.dumps(sample)
-        dp = DataPoint(start_time=start_time, end_time=end_time, offset=0, sample=sample_str) 
-        
+        dp = DataPoint(start_time=start_time, end_time=end_time,
+                       offset=utc_offset, sample=values) 
+
         if user_id not in feature_data:
             feature_data[user_id] = []
         
@@ -193,15 +261,21 @@ def process_feature(file_path, metadata_path):
 
     metadata = mf.read()
     metadata = json.loads(metadata)
+    metadata_name = metadata['name']
     
     for user in feature_data:
-        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str( metadata_path + user + file_path)))
-        ds = DataStream(identifier=output_stream_id, owner=user, name=metadata['name'], data_descriptor=\
-                metadata['data_descriptor'], execution_context=metadata['execution_context'], annotations=\
-                metadata['annotations'], stream_type='datastream', data=feature_data[user]) 
+        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(
+            metadata_name + user + file_path)))
+        ds = DataStream(identifier=output_stream_id, owner=user, 
+                        name=metadata_name, 
+                        data_descriptor= metadata['data_descriptor'], 
+                        execution_context=metadata['execution_context'], 
+                        annotations= metadata['annotations'], 
+                        stream_type=1,
+                        data=feature_data[user]) 
         #print(str(user),str(output_stream_id),len(feature_data[user]))   	 
         try:
-            CC.save_stream(ds)
+            CC.save_stream(ds, localtime=True)
         except Exception as e:
             print(e)
     f.close()

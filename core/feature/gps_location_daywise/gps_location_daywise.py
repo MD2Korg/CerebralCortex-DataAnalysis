@@ -105,8 +105,9 @@ class GpsLocationDaywise(ComputeFeatureBase):
                                           data=gps_data)
                         break
         except Exception as e:
-            print("Exception:", str(e))
-            print(traceback.format_exc())
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(traceback.format_exc())
+        
         self.CC.logging.log('%s finished processing for user_id %s saved %d '
                             'data points' %
                             (self.__class__.__name__, str(user_id),

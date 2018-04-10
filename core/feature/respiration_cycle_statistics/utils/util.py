@@ -74,6 +74,7 @@ def recover_rip_rawwithmeasuredref(RIP:list, ref:list,
         ref_synn_noM_LP.shape)
     return RIP_raw_measuredREF+m
 
+
 def get_recovery(rip:List[DataPoint],baseline:List[DataPoint],Fs)->List[DataPoint]:
     """
     matches respiration raw with baseline signal and returns the recovered
@@ -97,7 +98,8 @@ def get_recovery(rip:List[DataPoint],baseline:List[DataPoint],Fs)->List[DataPoin
             [i.sample for i in rip],[i.sample for i in baseline],
             Fs)
     recovered_dp_list = \
-        [DataPoint.from_tuple(start_time=rip[i].start_time,sample=recovered[i])
+        [DataPoint.from_tuple(start_time=rip[i].start_time,sample=recovered[i],
+                              offset=rip[i].offset)
          for i in range(len(recovered))]
     return recovered_dp_list
 
@@ -132,7 +134,7 @@ def smooth_detrend(sample,ts,window_size=300,no_of_samples=13):
         initial+=window_size
     return np.array(sample_final)
 
-def filter_bad_rip(ts,sample,window_size=150,filter_condition=150):
+def filter_bad_rip(ts,sample,window_size=150,filter_condition=120):
     """
     Filters respiration signal to remove outliers
     :param ts:
@@ -202,9 +204,9 @@ def bandpower(x, fs, fmin, fmax,nfft_point=1024):
     :return: power in low to high frequency band
     """
     f, Pxx = scipy.signal.welch(x,
-                                fs=fs,window=signal.get_window('hamming',
-                                                               len(x)),
-                                nfft=nfft_point,return_onesided=False)
+                                fs=fs,
+                                window=signal.get_window('hamming',len(x)),
+                                return_onesided=False)
     ind_min = scipy.argmax(f > fmin) - 1
     ind_max = scipy.argmax(f > fmax) - 1
     return scipy.trapz(Pxx[ind_min: ind_max+1], f[ind_min: ind_max+1])

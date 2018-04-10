@@ -1,3 +1,29 @@
+# Copyright (c) 2018, MD2K Center of Excellence
+# -Rabin Banjade <rbnjade1@memphis.edu;rabin.banjade@gmail.com>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+# list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
 import os
 import datetime
 import json
@@ -32,7 +58,7 @@ class BeaconFeatures(ComputeFeatureBase):
             beacon_stream_name = streams[stream_name]["name"]
 
             stream = self.CC.get_stream(
-                beacon_stream_id, user_id=user_id, day=day,localtime = False)
+                beacon_stream_id, user_id=user_id, day=day,localtime = True)
 
             if (len(stream.data) > 0):
                 if (stream_name ==
@@ -63,8 +89,9 @@ class BeaconFeatures(ComputeFeatureBase):
             beacon_stream_name1 = streams[stream1_name]["name"]
             input_streams.append(
                 {"identifier": beacon_stream_id1, "name": beacon_stream_name1})
+            
             work1_stream = self.CC.get_stream(
-                beacon_stream_id1, user_id=user_id, day=day,localtime = False)
+                beacon_stream_id1, user_id=user_id, day=day,localtime = True)
             if (len(work1_stream.data) > 0):
                 for items in work1_stream.data:
                     new_data.append(DataPoint(start_time=items.start_time,
@@ -77,7 +104,7 @@ class BeaconFeatures(ComputeFeatureBase):
             input_streams.append(
                 {"identifier": beacon_stream_id2, "name": beacon_stream_name2})
             work2_stream = self.CC.get_stream(
-                beacon_stream_id2, user_id=user_id, day=day,localtime = False)
+                beacon_stream_id2, user_id=user_id, day=day,localtime = True)
             if (len(work2_stream.data) > 0):
                 for items in work2_stream.data:
                     new_data.append(DataPoint(start_time=items.start_time,
@@ -103,6 +130,7 @@ class BeaconFeatures(ComputeFeatureBase):
         input_streams = []
         input_streams.append(
             {"identifier": beacon_stream_id, "name": beacon_stream_name})
+        
         if (len(beaconhomestream) > 0):
             beaconstream = beaconhomestream
             windowed_data = window(beaconstream, self.window_size, True)
@@ -110,29 +138,30 @@ class BeaconFeatures(ComputeFeatureBase):
 
             for i, j in windowed_data:
                 if (len(windowed_data[i, j]) > 0):
-                    windowed_data[i, j] = "1"
+                    windowed_data[i, j] = 1
 
                 else:
-                    windowed_data[i, j] = "0"
+                    windowed_data[i, j] = 0
 
             data = merge_consective_windows(windowed_data)
             for items in data:
-                new_data.append(DataPoint(start_time=items.start_time,
-                                          end_time=items.end_time,
-                                          offset=beaconhomestream[0].offset,
-                                          sample=items.sample))
+                if items.sample is not None and items.sample!="":
+                    new_data.append(DataPoint(start_time=items.start_time,
+                                              end_time=items.end_time,
+                                              offset=beaconhomestream[0].offset,
+                                              sample=items.sample))
 
             try:
-
+                
                 self.store_stream(filepath="home_beacon_context.json",
                                   input_streams= input_streams,
                                   user_id=user_id,
-                                  data=new_data)
+                                  data=new_data, localtime= True)
                 self.CC.logging.log('%s %s home_beacon_context stored %d ' 
                                     'DataPoints for user %s ' 
                                     % (str(datetime.datetime.now()),
                                        self.__class__.__name__,
-                                       len(new_data), str(user_id)))
+                                       len(new_data), str(new_data)))
 
             except Exception as e:
                 self.CC.logging.log("Exception:", str(e))
@@ -166,31 +195,33 @@ class BeaconFeatures(ComputeFeatureBase):
                         values.append(items.sample)
 
                     if ('1' in items.sample) & ('2' in items.sample):
-                        windowed_data[i, j] = "1"
+                        windowed_data[i, j] = 1
                     else:
-                        windowed_data[i, j] = values[0]
+                        windowed_data[i, j] = int(values[0])
 
                 else:
-                    windowed_data[i, j] = "0"
+                    windowed_data[i, j] = 0
 
             data = merge_consective_windows(windowed_data)
             for items in data:
-                new_data.append(DataPoint(start_time=items.start_time,
-                                          end_time=items.end_time,
-                                          offset=beaconworkstream[0].offset,
-                                          sample=items.sample))
+                if items.sample is not None and items.sample!="":
+                    new_data.append(DataPoint(start_time=items.start_time,
+                                              end_time=items.end_time,
+                                              offset=beaconworkstream[0].offset,
+                                              sample=items.sample))
 
             try:
-
+                
+                
                 self.store_stream(filepath="work_beacon_context.json",
                                   input_streams= input_streams,
                                   user_id=user_id,
-                                  data=new_data)
+                                  data=new_data, localtime=True)
                 self.CC.logging.log('%s %s work_beacon_context stored %d '
                                     'DataPoints for user %s ' 
                                     % (str(datetime.datetime.now()),
                                        self.__class__.__name__,
-                                       len(new_data), str(user_id)))
+                                       len(new_data), str(new_data)))
 
             except Exception as e:
                 self.CC.logging.log("Exception:", str(e))
