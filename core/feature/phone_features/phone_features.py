@@ -1622,7 +1622,8 @@ class PhoneFeatures(ComputeFeatureBase):
         return new_data
 
     def get_total_call_daily(self, data: list) -> list:
-
+        if not data:
+            return None
         start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
         start_time = start_time.replace(tzinfo=data[0].start_time.tzinfo)
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
@@ -1666,7 +1667,8 @@ class PhoneFeatures(ComputeFeatureBase):
         return new_data
 
     def get_total_sms_daily(self, data: list) -> list:
-
+        if not data:
+            return None
         start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
         start_time = start_time.replace(tzinfo=data[0].start_time.tzinfo)
         end_time = start_time + datetime.timedelta(hours=23, minutes=59)
@@ -1712,7 +1714,8 @@ class PhoneFeatures(ComputeFeatureBase):
 
     def get_total_call_sms_daily(self, calldata: list, smsdata: list) -> list:
         data = calldata + smsdata
-
+        if not data:
+            return None
         data.sort(key=lambda x: x.start_time)
 
         start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
@@ -1723,8 +1726,10 @@ class PhoneFeatures(ComputeFeatureBase):
         return new_data
 
     def get_total_call_sms_hourly(self, calldata: list, smsdata: list) -> list:
-        data = calldata + smsdata
 
+        data = calldata + smsdata
+        if not data:
+            return None
         data.sort(key=lambda x: x.start_time)
         new_data = []
         tmp_time = datetime.datetime.combine(data[0].start_time.date(), datetime.datetime.min.time())
