@@ -2,14 +2,15 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "name":"found_posture",
+      "name":"activity_type",
       "type":"string",
-      "descriptor":"The participant's time intervals of posture, posture = standing,sitting"
+      "descriptor":"The participant's activity time per hour, activity = walking"
     },
     {
-      "name":"context_type",
-      "type":"string",
-      "descriptor":"The participant's time intervals of posture in context, context = office"
+      "name":"activity_time",
+      "type":"float",
+      "unit":"minute",
+      "descriptor":"The participant's activity time per hour in minutes in office beacon context"
     }
   ],
   "execution_context":{
@@ -22,7 +23,7 @@
         }
       ],
       "input_parameters":{
-        "window_size": "24 Hours"
+        "window_size": "1 Hour"
       }
     },
     "algorithm":{
@@ -36,11 +37,11 @@
       "version":"0.0.1",
       "reference":{
       },
-      "description":"The participants' posture time intervals in office context"
+      "description":"The participants'total activity time in fraction of office beacon context"
     }
   },
   "identifier":"",
-  "name":"org.md2k.data_analysis.feature.task_features.posture_office_context.daily",
+  "name":"org.md2k.data_analysis.feature.task_features.activity_office_beacon_context_fraction.per_hour",
   "owner":"",
   "type":"1"
 }

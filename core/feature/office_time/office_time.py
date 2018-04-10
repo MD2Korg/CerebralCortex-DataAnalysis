@@ -33,7 +33,6 @@ from core.feature.office_time.arrival_time import ArrivalTimes
 from core.feature.office_time.staying_time import StayingTimes
 from core.feature.office_time.expected_arrival_time import ExpectedArrivalTimes
 from core.feature.office_time.expected_staying_time import ExpectedStayingTimes
-
 from core.feature.office_time.work_days_from_beacon import WorkingDaysFromBeacon
 from core.feature.office_time.arrival_time_from_beacon import ArrivalTimesFromBeacon
 from core.feature.office_time.staying_time_from_beacon import StayingTimesFromBeacon
@@ -43,12 +42,13 @@ from core.feature.office_time.expected_staying_time_from_beacon import ExpectedS
 import pprint as pp
 import numpy as np
 import pdb
+import pickle
 import uuid
 import json
+import traceback
 
 feature_class_name = 'WorkingDays'
-GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM = "org.md2k.data_analysis.gps_episodes_and_semantic_location"
-
+GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM = "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model"
 
 class WorkingDays(ComputeFeatureBase):
     """
@@ -57,7 +57,7 @@ class WorkingDays(ComputeFeatureBase):
     taken.  Among these days, the first time of entering in office location
     according to gps location is taken as arrival time and the last time of
     leaving office office location according to gps location is taken as
-    departure time Office arrival time are marked as usual or before_time or
+    departure time Ofiice arrival time are marked as usual or before_time or
     after_time and staying time is also marked as usual, more_than_usual or
     less_than_usual """
 
@@ -71,58 +71,68 @@ class WorkingDays(ComputeFeatureBase):
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
         work_data = []
+        location_data = []
         stream_ids = self.CC.get_stream_id(user_id,
                                            GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM)
         for stream_id in stream_ids:
             current_day = None  # in beginning current day is null
             for day in all_days:
                 location_data_stream = \
-                    self.CC.get_stream(stream_id["identifier"], user_id, day)
+                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime = True)
+                location_data += location_data_stream.data
+        location_data = list(set(location_data))
+        location_data.sort(key=lambda x: x.start_time)
+        for data in location_data:
+            print(data)
+            if data.sample.lower() != "work":
+                # only the data marked as Work are needed
+                continue
 
-                for data in location_data_stream.data:
-                    if data.sample[0].lower() != "work":
-                        # only the data marked as Work are needed
-                        continue
+            d = DataPoint(data.start_time, data.end_time,
+                          data.offset, data.sample)
+            #                     if d.offset:
+            #                         d.start_time += timedelta(milliseconds=d.offset)
+            #                         if d.end_time:
+            #                             d.end_time += timedelta(milliseconds=d.offset)
+            #                         else:
+            #                             continue
 
-                    d = DataPoint(data.start_time, data.end_time,
-                                  data.offset, data.sample)
-                    #                     if d.offset:
-                    #                         d.start_time += timedelta(milliseconds=d.offset)
-                    #                         if d.end_time:
-                    #                             d.end_time += timedelta(milliseconds=d.offset)
-                    #                         else:
-                    #                             continue
+            if d.start_time.date() != current_day:
+                '''
+                when the day in d.start_time.date() is not equal
+                current_day that means its a new day.
+                '''
+                if current_day:
+                    temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
+                    temp.start_time = work_start_time
+                    temp.end_time = work_end_time
+                    temp.sample = 'Office'
+                    work_data.append(temp)
+                work_start_time = d.start_time
 
-                    if d.start_time.date() != current_day:
-                        '''
-                        when the day in d.start_time.date() is not equal
-                        current_day that means its a new day.
-                        '''
-                        if current_day:
-                            temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
-                            temp.start_time = work_start_time
-                            temp.end_time = work_end_time
-                            temp.sample = 'Office'
-                            work_data.append(temp)
-                        work_start_time = d.start_time
+                # save the new day as current day
+                current_day = d.start_time.date()
 
-                        # save the new day as current day
-                        current_day = d.start_time.date()
-
-                    work_end_time = d.end_time
-        # print(work_data)
+            work_end_time = d.end_time
+        if current_day:
+            temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
+            temp.start_time = work_start_time
+            temp.end_time = work_end_time
+            temp.sample = 'Office'
+            work_data.append(temp)
+        #print(work_data)
         try:
             if len(work_data):
                 streams = self.CC.get_user_streams(user_id)
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM:
-                        # print(stream_metadata)
-                        print("Going to pickle the file: ", work_data)
+                       # print(stream_metadata)
+                       # print("Going to pickle the file: ",work_data)
 
                         self.store_stream(filepath="working_days.json",
                                           input_streams=[stream_metadata],
                                           user_id=user_id,
-                                          data=work_data)
+                                          data=work_data, localtime = True)
                         break
         except Exception as e:
             print("Exception:", str(e))
@@ -132,25 +142,27 @@ class WorkingDays(ComputeFeatureBase):
                             (self.__class__.__name__, str(user_id),
                              len(work_data)))
 
+
+
     def process(self, user_id, all_days):
         if self.CC is not None:
-            # # Office Time Calculation from GPS
-            # self.CC.logging.log("Processing Working Days")
-            # self.listing_all_work_days(user_id, all_days)
-            #
-            # arrival_data_feature = ArrivalTimes(self.CC)
-            # arrival_data_feature.process(user_id, all_days)
-            #
-            # expected_arrival_data_feature = ExpectedArrivalTimes(self.CC)
-            # expected_arrival_data_feature.process(user_id, all_days)
-            #
-            # staying_time_data_feature = StayingTimes(self.CC)
-            # staying_time_data_feature.process(user_id, all_days)
-            #
-            # expected_staying_time_data_feature = ExpectedStayingTimes(self.CC)
-            # expected_staying_time_data_feature.process(user_id, all_days)
+            # Office Time Calculation from GPS
+            self.CC.logging.log("Processing Working Days")
+            self.listing_all_work_days(user_id, all_days)
 
-            # Office Time Calculation from Beacon
+            arrival_data_feature = ArrivalTimes(self.CC)
+            arrival_data_feature.process(user_id, all_days)
+
+            expected_arrival_data_feature = ExpectedArrivalTimes(self.CC)
+            expected_arrival_data_feature.process(user_id, all_days)
+
+            staying_time_data_feature = StayingTimes(self.CC)
+            staying_time_data_feature.process(user_id, all_days)
+
+            expected_staying_time_data_feature = ExpectedStayingTimes(self.CC)
+            expected_staying_time_data_feature.process(user_id, all_days)
+
+            #Office Time Calculation from Beacon
             working_days_from_beacon_feature =  WorkingDaysFromBeacon(self.CC)
             working_days_from_beacon_feature.process(user_id, all_days)
 

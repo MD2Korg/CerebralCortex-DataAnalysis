@@ -49,6 +49,9 @@ class TypingMarker(ComputeFeatureBase):
     accl and gyro values of both motionsense wrist bands.
 
     """
+    # def __init__(self):
+    #     CC_CONFIG_PATH = '/home/md2k/cc_configuration.yml'
+    #     self.CC = CerebralCortex(CC_CONFIG_PATH)
 
     def collect_data(self, dict, day, user_id):
         """
@@ -139,7 +142,7 @@ class TypingMarker(ComputeFeatureBase):
                accel_left_stream_ids_with_date, \
                gyro_left_stream_ids_with_date
 
-    def process(self, user, all_days):
+    def process(self, user, all_days ):
         """
          This function processes both wrists' accl and gyro data for the
          commons days to create data frames for left, right accl and gyro data.
@@ -170,7 +173,10 @@ class TypingMarker(ComputeFeatureBase):
         accel_left_stream_ids_with_date, gyro_left_stream_ids_with_date = \
             self.get_common_days(user)
 
+        # print(common_days)
         for day in all_days:
+            # print("Processing for date--------------------",day)
+
             if day not in common_days:
                 continue
 
@@ -235,7 +241,13 @@ class TypingMarker(ComputeFeatureBase):
                 offset = get_all_data[0].offset
 
             # gets the typying episdoes information
-            data = typing_episodes(dataset, offset, self.CC)
+            # data = typing_episodes(dataset, offset, self.CC)
+            data = typing_episodes(dataset, offset)
+            if len(data) == 0:
+                data.append(DataPoint(start_time=get_all_data[0].start_time,
+                                      end_time=get_all_data[-1].start_time, offset=offset,
+                                      sample=0))
+            # print(data)
 
             self.store_stream(filepath='typing_episode_800_milisec_window.json',
                               input_streams=[
