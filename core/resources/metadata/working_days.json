@@ -2,8 +2,9 @@
   "annotations":[],
   "data_descriptor":[
     {
+      "name": "office_day's_annotation_from_gps_location_model",
       "type":"String",
-      "unit":""
+      "description": "Office"
     }
   ],
   "execution_context":{

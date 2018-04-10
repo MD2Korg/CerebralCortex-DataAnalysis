@@ -2,8 +2,21 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"list",
-      "unit":""
+      "name": "office_staying_time",
+      "type":"integer",
+      "unit":"minute",
+      "description": "Office staying time (total time between first entering time into the office location and last departure time from office location) according to GPS location model"
+    },
+    {
+      "name": "verdict",
+      "type":"string",
+      "description": "Analysis of the staying time which is one of the three verdict: 1. less_than_usual 2. more_than_usual 3. usual_staying_time. Usual time is a range from (mean - standard_deviation) to (mean + standard_deviation). The staying time which are less than usual time are labeled less_than_usual and the staying time which are more than usual are labeled as more_than_usual, the staying time which are in the range of  usual time are labeled as usual_staying_time."
+    },
+    {
+      "name": "deviation",
+      "type":"integer",
+      "unit":"minute",
+      "description": "How much deviated from the usual time (in minutes)."
     }
   ],
   "execution_context":{
