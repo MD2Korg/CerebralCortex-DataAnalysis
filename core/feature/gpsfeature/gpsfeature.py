@@ -44,9 +44,6 @@ import uuid
 
 import json
 
-CC = CerebralCortex('/home/md2k/cc_configuration.yml')
-
-
 feature_class_name = 'GPSFeatures'
 
 
