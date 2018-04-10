@@ -2,9 +2,10 @@
   "annotations":[],
   "data_descriptor":[
     {
+      "name":"yield_value",
       "type":"boolean",
       "unit":"1 minute window",
-      "description":"Calculates the PPG yield for each minute of Raw motionsenseHRV data"
+      "description":"True indicating sensor was worn, False indicating sensor not worn"
     }
   ],
   "execution_context":{
@@ -31,7 +32,7 @@
       "version":"0.0.1",
       "reference":{
       },
-      "description":"Calculates the PPG yield each minute of Raw motionsenseHRV data"
+      "description":"Calculates the PPG yield for each minute of Raw motionsenseHRV data and tells whether the sensor was worn or not"
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",

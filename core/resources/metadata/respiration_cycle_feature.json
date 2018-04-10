@@ -7,102 +7,102 @@
             "DESCRIPTION": "Inspiration duration time computed from a valley to the next peak"
         },
         {
-            "NAME": "Expiration Duration",
+            "NAME": "expiration_duration",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Expiration duration time computed from a peak to the next valley"
         },
         {
-            "NAME": "Respiration Duration",
+            "NAME": "respiration_duration",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Respiration duration time computed from valley to valley"
         },
         {
-            "NAME": "Ratio of Inspiration to Expiration Duration",
+            "NAME": "inspiration_expiration_duration_ratio",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Inspiration duration divided by expiration duration"
         },
         {
-            "NAME": "Stretch",
+            "NAME": "stretch",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Stretch of the respiration cycle"
         },
         {
-            "NAME": "Inspiration Velocity",
+            "NAME": "inspiration_velocity",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Inspiration Area divided by time"
         },
         {
-            "NAME": "Expiration Velocity",
+            "NAME": "expiration_velocity",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Expiration Area divided by time"
         },
         {
-            "NAME": "Skewness",
+            "NAME": "skewness",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Skew of the Respiration cycle"
         },
         {
-            "NAME": "Kurtosis",
+            "NAME": "kurtosis",
             "DATA_TYPE": "double",
             "DESCRIPTION": "kurtosis of the Respiration cycle"
         },
         {
-            "NAME": "Entropy",
+            "NAME": "entropy",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Entropy of the Respiration Cycle"
         },
         {
-            "NAME": "Ratio of Inspiration to Expiration Velocity",
+            "NAME": "inspiration_expiration_velocity_ratio",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Ratio of Inspiration to Expiration Velocity"
         },
         {
-            "NAME": "Ratio of Inspiration to Expiration Area",
+            "NAME": "inspiration_expiration_area_ratio",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Ratio of Inspiration to Expiration Area"
         },
         {
-            "NAME": "Ratio of Expiration to Respiration Duration",
+            "NAME": "expiration_respiration_duration_ratio",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Ratio of Expiration to Respiration Duration"
         },
         {
-            "NAME": "Ratio of Respiration Area to Inspiration Duration",
+            "NAME": "resspiration_area_inspiration_duration_ratio",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Ratio of Respiration Area to Inspiration Duration"
         },
         {
-            "NAME": "Power in .05-.2 Hz",
+            "NAME": "power_.05-.2_Hz",
             "DATA_TYPE": "double",
-            "DESCRIPTION": "Power in .05-.2 Hz"
+            "DESCRIPTION": "Power in .05-.2 Hz band"
         },
         {
-            "NAME": "Power in .201-.4 Hz",
+            "NAME": "power_.201-.4_Hz",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Power in .201-.4 Hz"
         },
         {
-            "NAME": "Power in .401-.6 Hz",
+            "NAME": "power_.401-.6_Hz",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Power in .401-.6 Hz"
         },
         {
-            "NAME": "Power in .601-.8 Hz",
+            "NAME": "power_.601-.8_Hz",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Power in .601-.8 Hz"
         },
         {
-            "NAME": "Power in .801-1 Hz",
+            "NAME": "power_.801-1_Hz",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Power in .801-1 Hz"
         },
         {
-            "NAME": "Correlation with Previous Cycle",
+            "NAME": "correlation_previous_cycle",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Correlation with Previous Respiration Cycle"
         },
         {
-            "NAME": "Correlation with Next Cycle",
+            "NAME": "correlation_next_cycle",
             "DATA_TYPE": "double",
             "DESCRIPTION": "Correlation with Next Respiration Cycle"
         }
