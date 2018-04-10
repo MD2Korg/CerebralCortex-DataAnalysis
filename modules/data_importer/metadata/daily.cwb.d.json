@@ -11,7 +11,7 @@
       "name":"core.modules.data_importer.qualtrix_data_importer",
       "input_source":[
         {
-          "file_name":"igtb_composites.csv",
+          "file_name":"Daily.cwb.d.csv",
           "file_source" : "qualtrics"
         }
       ]
@@ -29,7 +29,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_qualtrics.feature.v10.igtb.",
+  "name":"org.md2k.data_qualtrics.feature.v10.cwb.d",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }

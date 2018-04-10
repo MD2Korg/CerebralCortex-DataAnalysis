@@ -12,3 +12,8 @@ kafka
 influxdb==5.0.0
 pympler
 shapely
+bs4
+sphinx
+python-google-places
+keras
+tensorflow
