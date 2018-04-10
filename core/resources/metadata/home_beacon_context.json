@@ -2,8 +2,8 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"string",
-      "unit":"",
+      "name":"beacon_received",
+      "type":"int",
       "descriptor":"The participants context based on proximity to home beacon,Values = Around_home_beacon(0),Not_around_home_beacon(1)"
     }
   ],
@@ -35,7 +35,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.v4.beacon.home_beacon_context",
+  "name":"org.md2k.data_analysis.feature.v6.beacon.home_beacon_context",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }
