@@ -2,9 +2,17 @@
   "annotations":[],
   "data_descriptor":[
     {
+      "name":"posture_type",
+      "type":"string",
+      "descriptor":"The participant's posture time per hour, posture = standing,sitting"
+    },
+    {
+      "name":"posture_time",
       "type":"float",
-      "unit":"minute"
+      "unit":"minute",
+      "descriptor":"The participant's posture time per hour in minutes in office context"
     }
+
   ],
   "execution_context":{
     "processing_module":{
@@ -30,11 +38,11 @@
       "version":"0.0.1",
       "reference":{
       },
-      "description":"The participants'total activity time in fraction of office beacon context"
+      "description":"The participants'total posture time in fraction of office context"
     }
   },
   "identifier":"",
-  "name":"org.md2k.data_analysis.feature.task_features.activity_office_beacon_context_fraction.hourly",
+  "name":"org.md2k.data_analysis.feature.task_features.posture_office_context_fraction.per_hour",
   "owner":"",
   "type":"1"
 }

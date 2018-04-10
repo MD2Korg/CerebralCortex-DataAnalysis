@@ -1,3 +1,28 @@
+# Copyright (c) 2018, MD2K Center of Excellence
+# -Mithun Saha <msaha1@memphis.edu>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+# list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 from core.feature.task_features.utils import *
 from core.computefeature import ComputeFeatureBase
 from cerebralcortex.cerebralcortex import CerebralCortex
@@ -24,10 +49,9 @@ class TaskFeatures(ComputeFeatureBase):
         day_data = []
         stream_ids = self.CC.get_stream_id(user_id, stream_name)
         for stream_id in stream_ids:
-            data_stream = self.CC.get_stream(stream_id["identifier"],
-                                             day=day,
-                                             user_id=user_id,
-                                             data_type=DataSet.COMPLETE)
+            data_stream = self.CC.get_stream(stream_id["identifier"],user_id,
+                                             day,localtime=True)
+
             if data_stream is not None and len(data_stream.data) > 0:
                 day_data.extend(data_stream.data)
 
@@ -55,137 +79,137 @@ class TaskFeatures(ComputeFeatureBase):
             activity_with_time = {}
             office_with_time = {}
             beacon_with_time = {}
+            unique_data_set = set()
             offset = 0
 
             # gets all posture datapoints
-            get_all_data = self.get_day_data(posture_stream_name,
-                                             user, day)
+            get_all_data = self.get_day_data(posture_stream_name, user, day)
             if len(get_all_data) != 0: #creates a dictionary of start,end times
+                unique_data_set = set(get_all_data)#removes duplicate datapoints
+                get_all_data = list(unique_data_set)
                 posture_with_time = process_data(get_all_data)
                 offset = get_all_data[0].offset
 
             # gets all activity datapoints
             get_all_data = self.get_day_data(activity_stream_name, user, day)
             if len(get_all_data) != 0: #creates a dictionary of start,end times
+                unique_data_set = set(get_all_data)#removes duplicate datapoints
+                get_all_data = list(unique_data_set)
                 activity_with_time = process_data(get_all_data)
                 offset = get_all_data[0].offset
 
             # gets all office datapoints
             get_all_data = self.get_day_data(office_stream_name, user, day)
             if len(get_all_data) != 0: #creates a dictionary of start,end times
+                unique_data_set = set(get_all_data)
+                get_all_data = list(unique_data_set)
                 office_with_time = process_data(get_all_data)
 
             # gets all beacon datapoints
             get_all_data = self.get_day_data(beacon_stream_name, user, day)
-
-            # beacon stream does not have timezone information.so timezone
-            # information is incorportaed for uniformity with other streams
-            if len(get_all_data) != 0:
-                updatedlist = []
-                for dp in get_all_data:
-                    st = dp.start_time
-                    st = st.replace(tzinfo=pytz.utc)
-                    et = dp.end_time
-                    et = et.replace(tzinfo=pytz.utc)
-                    ndp = DataPoint(start_time=st, end_time=et,
-                                    offset=dp.offset, sample=dp.sample)
-                    updatedlist.append(ndp)
-
-                beacon_with_time = process_data(updatedlist)
-
-            # get the time offset for the dataset
+            if len(get_all_data) != 0:#creates a dictionary of start,end times
+                unique_data_set = set(get_all_data)
+                get_all_data = list(unique_data_set)
+                beacon_with_time = process_data(get_all_data)
 
             target_total_time, posture_office = output_stream(posture_with_time,
                                                               office_with_time,
-                                                              offset,
-                                                              'office')
+                                                              offset)
             if len(posture_office)> 0:
+                posture_office.sort(key = lambda x: x.start_time)
                 self.store_stream(filepath='posture_office_context_daily.json',
                                   input_streams=[
                                       streams[posture_stream_name],
                                       streams[office_stream_name]],
                                   user_id=user,
-                                  data=posture_office)
+                                  data=posture_office,localtime=True)
 
                 posture_office_fraction = target_in_fraction_of_context(
                     target_total_time,
-                    office_with_time, offset, 'Work')
+                    office_with_time, offset, 'work')
 
                 self.store_stream(
-                    filepath='posture_office_context_fraction_hourly.json',
+                    filepath='posture_office_context_fraction_per_hour.json',
                     input_streams=[
                         streams[posture_stream_name],
                         streams[office_stream_name]],
                     user_id=user,
-                    data=posture_office_fraction)
+                    data=posture_office_fraction,localtime=True)
 
             target_total_time, activity_office = output_stream(
                 activity_with_time,
-                office_with_time, offset,
-                'office')
+                office_with_time, offset)
+
             if len(activity_office)> 0:
+                activity_office.sort(key = lambda x: x.start_time)
                 self.store_stream(filepath='activity_office_context_daily.json',
                                   input_streams=[
                                       streams[activity_stream_name],
                                       streams[office_stream_name]],
                                   user_id=user,
-                                  data=activity_office)
+                                  data=activity_office,localtime=True)
 
                 activity_office_fraction = target_in_fraction_of_context(
                     target_total_time, office_with_time,
-                    offset, 'Work')
+                    offset, 'work')
+
                 self.store_stream(
-                    filepath='activity_office_context_fraction_hourly.json',
+                    filepath='activity_office_context_fraction_per_hour.json',
                     input_streams=[
                         streams[activity_stream_name],
                         streams[office_stream_name]],
                     user_id=user,
-                    data=activity_office_fraction)
+                    data=activity_office_fraction,localtime=True)
 
             target_total_time, posture_beacon = output_stream(posture_with_time,
                                                               beacon_with_time,
-                                                              offset,
-                                                              'beacon')
+                                                              offset)
+
             if len(posture_beacon)> 0:
+                posture_beacon.sort(key = lambda x: x.start_time)
                 self.store_stream(filepath='posture_beacon_context_daily.json',
                                   input_streams=[
                                       streams[posture_stream_name],
                                       streams[beacon_stream_name]],
                                   user_id=user,
-                                  data=posture_beacon)
+                                  data=posture_beacon,localtime=True)
 
                 posture_beacon_fraction = target_in_fraction_of_context(
                     target_total_time, beacon_with_time,
                     offset, '1')
+
                 self.store_stream(
-                    filepath='posture_beacon_context_fraction_hourly.json',
+                    filepath='posture_beacon_context_fraction_per_hour.json',
                     input_streams=[
                         streams[posture_stream_name],
                         streams[beacon_stream_name]],
                     user_id=user,
-                    data=posture_beacon_fraction)
+                    data=posture_beacon_fraction,localtime=True)
 
             target_total_time, activity_beacon = output_stream(
                 activity_with_time,
-                beacon_with_time, offset,
-                'beacon')
+                beacon_with_time, offset)
+
             if len(activity_beacon)> 0:
+                activity_beacon.sort(key = lambda x: x.start_time)
                 self.store_stream(filepath='activity_beacon_context_daily.json',
                                   input_streams=[
                                       streams[activity_stream_name],
                                       streams[beacon_stream_name]],
                                   user_id=user,
-                                  data=activity_beacon)
+                                  data=activity_beacon,localtime=True)
+
                 activity_beacon_fraction = target_in_fraction_of_context(
                     target_total_time, beacon_with_time,
                     offset, '1')
+
                 self.store_stream(
-                    filepath='activity_beacon_context_fraction_hourly.json',
+                    filepath='activity_beacon_context_fraction_per_hour.json',
                     input_streams=[
                         streams[activity_stream_name],
                         streams[beacon_stream_name]],
                     user_id=user,
-                    data=activity_beacon_fraction)
+                    data=activity_beacon_fraction,localtime=True)
 
         self.CC.logging.log(
             "Finished processing Task features for user: %s" % (user))

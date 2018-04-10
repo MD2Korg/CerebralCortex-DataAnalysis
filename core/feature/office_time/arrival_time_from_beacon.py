@@ -70,7 +70,7 @@ class ArrivalTimesFromBeacon(ComputeFeatureBase):
         for stream_id in stream_ids:
             for day in all_days:
                 work_data_stream = \
-                    self.CC.get_stream(stream_id["identifier"], user_id, day)
+                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime = True)
 
                 for data in work_data_stream.data:
                     print(data)
@@ -121,7 +121,7 @@ class ArrivalTimesFromBeacon(ComputeFeatureBase):
                         self.store_stream(filepath="arrival_time_from_beacon.json",
                                           input_streams=[stream_metadata],
                                           user_id=user_id,
-                                          data=arrival_data)
+                                          data=arrival_data, localtime = True)
                         break
         except Exception as e:
             print("Exception:", str(e))
