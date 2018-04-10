@@ -306,252 +306,252 @@ class ActivityFeature(ComputeFeatureBase):
         return dayOfWeek_mean
 
 
-def imputation_by_mean_data(self, D: dict, days, user_id,
-                            STREAMNAME, streams, offset):
-    mean_walk_hourly_tofd, mean_mod_hourly_tofd, mean_high_hourly_tofd = \
-        self.compute_hourly_mean_for_time_of_day(D, days)
+    def imputation_by_mean_data(self, D: dict, days, user_id,
+                                STREAMNAME, streams, offset):
+        mean_walk_hourly_tofd, mean_mod_hourly_tofd, mean_high_hourly_tofd = \
+            self.compute_hourly_mean_for_time_of_day(D, days)
 
-    dayOfWeek_hourly_mean = self.compute_hourly_mean_for_day_of_week(D,
-                                                                     days)
+        dayOfWeek_hourly_mean = self.compute_hourly_mean_for_day_of_week(D,
+                                                                         days)
 
-    for day in days:
+        for day in days:
 
-        daytime = datetime.strptime(day, '%Y%m%d')
-        week_id = daytime.weekday()
+            daytime = datetime.strptime(day, '%Y%m%d')
+            week_id = daytime.weekday()
 
-        mean_walk_hourly_dofw, mean_mod_hourly_dofw, mean_high_hourly_dofw = \
-            dayOfWeek_hourly_mean[week_id]
+            mean_walk_hourly_dofw, mean_mod_hourly_dofw, mean_high_hourly_dofw = \
+                dayOfWeek_hourly_mean[week_id]
 
-        walkH_prev, modH_prev, highH_prev, hourCount = D[day]
+            walkH_prev, modH_prev, highH_prev, hourCount = D[day]
 
-        total_walking = sum(walkH_prev)
-        total_mod = sum(modH_prev)
-        total_high = sum(highH_prev)
+            total_walking = sum(walkH_prev)
+            total_mod = sum(modH_prev)
+            total_high = sum(highH_prev)
 
-        walkH_tofd = [0] * 24
-        modH_tofd = [0] * 24
-        highH_tofd = [0] * 24
-        walkH_dofw = [0] * 24
-        modH_dofw = [0] * 24
-        highH_dofw = [0] * 24
+            walkH_tofd = [0] * 24
+            modH_tofd = [0] * 24
+            highH_tofd = [0] * 24
+            walkH_dofw = [0] * 24
+            modH_dofw = [0] * 24
+            highH_dofw = [0] * 24
 
-        for i in range(24):
-            if hourCount[i] < 30:
-                walkH_tofd[i] = mean_walk_hourly_tofd[i]
-                modH_tofd[i] = mean_mod_hourly_tofd[i]
-                highH_tofd[i] = mean_high_hourly_tofd[i]
-                walkH_dofw[i] = mean_walk_hourly_dofw[i]
-                modH_dofw[i] = mean_mod_hourly_dofw[i]
-                highH_dofw[i] = mean_high_hourly_dofw[i]
-            else:
-                walkH_tofd[i] = (walkH_prev[i] * 60) / hourCount[i]
-                modH_tofd[i] = (modH_prev[i] * 60) / hourCount[i]
-                highH_tofd[i] = (highH_prev[i] * 60) / hourCount[i]
+            for i in range(24):
+                if hourCount[i] < 30:
+                    walkH_tofd[i] = mean_walk_hourly_tofd[i]
+                    modH_tofd[i] = mean_mod_hourly_tofd[i]
+                    highH_tofd[i] = mean_high_hourly_tofd[i]
+                    walkH_dofw[i] = mean_walk_hourly_dofw[i]
+                    modH_dofw[i] = mean_mod_hourly_dofw[i]
+                    highH_dofw[i] = mean_high_hourly_dofw[i]
+                else:
+                    walkH_tofd[i] = (walkH_prev[i] * 60) / hourCount[i]
+                    modH_tofd[i] = (modH_prev[i] * 60) / hourCount[i]
+                    highH_tofd[i] = (highH_prev[i] * 60) / hourCount[i]
 
-                walkH_dofw[i] = (walkH_prev[i] * 60) / hourCount[i]
-                modH_dofw[i] = (modH_prev[i] * 60) / hourCount[i]
-                highH_dofw[i] = (highH_prev[i] * 60) / hourCount[i]
+                    walkH_dofw[i] = (walkH_prev[i] * 60) / hourCount[i]
+                    modH_dofw[i] = (modH_prev[i] * 60) / hourCount[i]
+                    highH_dofw[i] = (highH_prev[i] * 60) / hourCount[i]
 
-        total_imputed_time_of_day_walk = sum(walkH_tofd)
-        total_imputed_time_of_day_mod = sum(modH_tofd)
-        total_imputed_time_of_day_high = sum(highH_tofd)
+            total_imputed_time_of_day_walk = sum(walkH_tofd)
+            total_imputed_time_of_day_mod = sum(modH_tofd)
+            total_imputed_time_of_day_high = sum(highH_tofd)
 
-        total_imputed_day_of_week_walk = sum(walkH_dofw)
-        total_imputed_day_of_week_mod = sum(modH_dofw)
-        total_imputed_day_of_week_high = sum(highH_dofw)
+            total_imputed_day_of_week_walk = sum(walkH_dofw)
+            total_imputed_day_of_week_mod = sum(modH_dofw)
+            total_imputed_day_of_week_high = sum(highH_dofw)
 
-        y = int(day[:4])
-        m = int(day[4:6])
-        d = int(day[6:8])
+            y = int(day[:4])
+            m = int(day[4:6])
+            d = int(day[6:8])
 
-        start_time = get_local_datetime(y, m, d, 0, 0, 0, offset=offset)
-        end_time = get_local_datetime(y, m, d, 23, 59, 59, offset=offset)
+            start_time = get_local_datetime(y, m, d, 0, 0, 0, offset=offset)
+            end_time = get_local_datetime(y, m, d, 23, 59, 59, offset=offset)
 
-        if STREAMNAME == ACTIVITY_STREAMNAME:
-            self.store_stream(filepath=WALKING_DAILY,
-                              input_streams=[streams[ACTIVITY_STREAMNAME]],
-                              user_id=user_id,
-                              data=[DataPoint(start_time=start_time,
-                                              end_time=end_time, offset=offset,
-                                              sample=total_walking)])
-            self.store_stream(filepath=WALKING_IMPUTED_TIME_OF_DAY_DAILY,
-                              input_streams=[streams[ACTIVITY_STREAMNAME]],
-                              user_id=user_id,
-                              data=[DataPoint(start_time=start_time,
-                                              end_time=end_time, offset=offset,
-                                              sample=total_imputed_time_of_day_walk)])
-            self.store_stream(filepath=WALKING_IMPUTED_DAY_OF_WEEK_DAILY,
-                              input_streams=[streams[ACTIVITY_STREAMNAME]],
-                              user_id=user_id,
-                              data=[DataPoint(start_time=start_time,
-                                              end_time=end_time, offset=offset,
-                                              sample=total_imputed_day_of_week_walk)])
+            if STREAMNAME == ACTIVITY_STREAMNAME:
+                self.store_stream(filepath=WALKING_DAILY,
+                                  input_streams=[streams[ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_walking)])
+                self.store_stream(filepath=WALKING_IMPUTED_TIME_OF_DAY_DAILY,
+                                  input_streams=[streams[ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_imputed_time_of_day_walk)])
+                self.store_stream(filepath=WALKING_IMPUTED_DAY_OF_WEEK_DAILY,
+                                  input_streams=[streams[ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_imputed_day_of_week_walk)])
 
-            self.store_stream(filepath=MODERATE_ACTIVITY_DAILY,
-                              input_streams=[streams[ACTIVITY_STREAMNAME]],
-                              user_id=user_id,
-                              data=[DataPoint(start_time=start_time,
-                                              end_time=end_time, offset=offset,
-                                              sample=total_mod)])
-            self.store_stream(
-                filepath=MODERATE_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
-                input_streams=[streams[ACTIVITY_STREAMNAME]],
-                user_id=user_id,
-                data=[DataPoint(start_time=start_time,
-                                end_time=end_time, offset=offset,
-                                sample=total_imputed_time_of_day_mod)])
-            self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
-                              input_streams=[streams[ACTIVITY_STREAMNAME]],
-                              user_id=user_id,
-                              data=[DataPoint(start_time=start_time,
-                                              end_time=end_time, offset=offset,
-                                              sample=total_imputed_day_of_week_mod)])
+                self.store_stream(filepath=MODERATE_ACTIVITY_DAILY,
+                                  input_streams=[streams[ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_mod)])
+                self.store_stream(
+                    filepath=MODERATE_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
+                    input_streams=[streams[ACTIVITY_STREAMNAME]],
+                    user_id=user_id,
+                    data=[DataPoint(start_time=start_time,
+                                    end_time=end_time, offset=offset,
+                                    sample=total_imputed_time_of_day_mod)])
+                self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
+                                  input_streams=[streams[ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_imputed_day_of_week_mod)])
 
-            self.store_stream(filepath=HIGH_ACTIVITY_DAILY,
-                              input_streams=[streams[ACTIVITY_STREAMNAME]],
-                              user_id=user_id,
-                              data=[DataPoint(start_time=start_time,
-                                              end_time=end_time, offset=offset,
-                                              sample=total_high)])
-            self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
-                              input_streams=[streams[ACTIVITY_STREAMNAME]],
-                              user_id=user_id,
-                              data=[DataPoint(start_time=start_time,
-                                              end_time=end_time, offset=offset,
-                                              sample=total_imputed_time_of_day_high)])
-            self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_DAY_OF_WEEK_DAILY,
-                              input_streams=[streams[ACTIVITY_STREAMNAME]],
-                              user_id=user_id,
-                              data=[DataPoint(start_time=start_time,
-                                              end_time=end_time, offset=offset,
-                                              sample=total_imputed_day_of_week_high)])
+                self.store_stream(filepath=HIGH_ACTIVITY_DAILY,
+                                  input_streams=[streams[ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_high)])
+                self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
+                                  input_streams=[streams[ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_imputed_time_of_day_high)])
+                self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_DAY_OF_WEEK_DAILY,
+                                  input_streams=[streams[ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_imputed_day_of_week_high)])
 
-        if STREAMNAME == ACCEL_ONLY_ACTIVITY_STREAMNAME:
-            self.store_stream(filepath=WALKING_DAILY,
-                              input_streams=[
-                                  streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
-                              user_id=user_id,
-                              data=[DataPoint(start_time=start_time,
-                                              end_time=end_time, offset=offset,
-                                              sample=total_walking)])
-            self.store_stream(filepath=WALKING_IMPUTED_TIME_OF_DAY_DAILY,
-                              input_streams=[
-                                  streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
-                              user_id=user_id,
-                              data=[DataPoint(start_time=start_time,
-                                              end_time=end_time, offset=offset,
-                                              sample=total_imputed_time_of_day_walk)])
-            self.store_stream(filepath=WALKING_IMPUTED_DAY_OF_WEEK_DAILY,
-                              input_streams=[
-                                  streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
-                              user_id=user_id,
-                              data=[DataPoint(start_time=start_time,
-                                              end_time=end_time, offset=offset,
-                                              sample=total_imputed_day_of_week_walk)])
+            if STREAMNAME == ACCEL_ONLY_ACTIVITY_STREAMNAME:
+                self.store_stream(filepath=WALKING_DAILY,
+                                  input_streams=[
+                                      streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_walking)])
+                self.store_stream(filepath=WALKING_IMPUTED_TIME_OF_DAY_DAILY,
+                                  input_streams=[
+                                      streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_imputed_time_of_day_walk)])
+                self.store_stream(filepath=WALKING_IMPUTED_DAY_OF_WEEK_DAILY,
+                                  input_streams=[
+                                      streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_imputed_day_of_week_walk)])
 
-            self.store_stream(filepath=MODERATE_ACTIVITY_DAILY,
-                              input_streams=[
-                                  streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
-                              user_id=user_id,
-                              data=[DataPoint(start_time=start_time,
-                                              end_time=end_time, offset=offset,
-                                              sample=total_mod)])
-            self.store_stream(
-                filepath=MODERATE_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
-                input_streams=[streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
-                user_id=user_id,
-                data=[DataPoint(start_time=start_time,
-                                end_time=end_time, offset=offset,
-                                sample=total_imputed_time_of_day_mod)])
-            self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
-                              input_streams=[
-                                  streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
-                              user_id=user_id,
-                              data=[DataPoint(start_time=start_time,
-                                              end_time=end_time, offset=offset,
-                                              sample=total_imputed_day_of_week_mod)])
+                self.store_stream(filepath=MODERATE_ACTIVITY_DAILY,
+                                  input_streams=[
+                                      streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_mod)])
+                self.store_stream(
+                    filepath=MODERATE_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
+                    input_streams=[streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                    user_id=user_id,
+                    data=[DataPoint(start_time=start_time,
+                                    end_time=end_time, offset=offset,
+                                    sample=total_imputed_time_of_day_mod)])
+                self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
+                                  input_streams=[
+                                      streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_imputed_day_of_week_mod)])
 
-            self.store_stream(filepath=HIGH_ACTIVITY_DAILY,
-                              input_streams=[
-                                  streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
-                              user_id=user_id,
-                              data=[DataPoint(start_time=start_time,
-                                              end_time=end_time, offset=offset,
-                                              sample=total_high)])
-            self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
-                              input_streams=[
-                                  streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
-                              user_id=user_id,
-                              data=[DataPoint(start_time=start_time,
-                                              end_time=end_time, offset=offset,
-                                              sample=total_imputed_time_of_day_high)])
-            self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_DAY_OF_WEEK_DAILY,
-                              input_streams=[
-                                  streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
-                              user_id=user_id,
-                              data=[DataPoint(start_time=start_time,
-                                              end_time=end_time, offset=offset,
-                                              sample=total_imputed_day_of_week_high)])
+                self.store_stream(filepath=HIGH_ACTIVITY_DAILY,
+                                  input_streams=[
+                                      streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_high)])
+                self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
+                                  input_streams=[
+                                      streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_imputed_time_of_day_high)])
+                self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_DAY_OF_WEEK_DAILY,
+                                  input_streams=[
+                                      streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_imputed_day_of_week_high)])
 
 
-def process(self, user, all_days):
-    if self.CC is None:
-        return
+    def process(self, user, all_days):
+        if self.CC is None:
+            return
 
-    if not user:
-        return
+        if not user:
+            return
 
-    streams = self.CC.get_user_streams(user)
+        streams = self.CC.get_user_streams(user)
 
-    if not streams:
+        if not streams:
+            self.CC.logging.log(
+                "Activity and posture features - no streams found for user: %s" %
+                (user))
+            return
+
+        D = dict()
+        D_accel = dict()
+
+        day_list = []
+        day_list_accel = []
+
+        offset = 0
+        for day in all_days:
+            activity_data = self.get_day_data(ACTIVITY_STREAMNAME, user, day)
+            if len(activity_data) > 0:
+                walking_min_hourly, mod_min_hourly, high_min_hourly, total_min_per_hour = \
+                    self.compute_activity_features_hourly(ACTIVITY_STREAMNAME,
+                                                          activity_data, streams,
+                                                          user)
+                D[day] = [walking_min_hourly, mod_min_hourly, high_min_hourly,
+                          total_min_per_hour]
+                day_list.append(day)
+
+            activity_data_accel_only = \
+                self.get_day_data(ACCEL_ONLY_ACTIVITY_STREAMNAME, user, day)
+            if len(activity_data_accel_only) > 0:
+                walking_min_hourly_accel_only, mod_min_hourly_accel_only, high_min_hourly_accel_only, total_min_per_hour_accel_only = \
+                    self.compute_activity_features_hourly(
+                        ACCEL_ONLY_ACTIVITY_STREAMNAME, activity_data_accel_only,
+                        streams, user)
+                D_accel[day] = [walking_min_hourly_accel_only,
+                                mod_min_hourly_accel_only,
+                                high_min_hourly_accel_only,
+                                total_min_per_hour_accel_only]
+                day_list_accel.append(day)
+
+            posture_data = self.get_day_data(POSTURE_STREAMNAME, user, day)
+            self.compute_posture_features_hourly(posture_data, streams, user)
+            if len(activity_data) > 0:
+                offset = activity_data[0].offset
+
+        self.imputation_by_mean_data(D, day_list, user,
+                                     ACTIVITY_STREAMNAME, streams, offset)
+
+        self.imputation_by_mean_data(D_accel, day_list_accel, user,
+                                     ACCEL_ONLY_ACTIVITY_STREAMNAME, streams,
+                                     offset)
+
         self.CC.logging.log(
-            "Activity and posture features - no streams found for user: %s" %
-            (user))
-        return
-
-    D = dict()
-    D_accel = dict()
-
-    day_list = []
-    day_list_accel = []
-
-    offset = 0
-    for day in all_days:
-        activity_data = self.get_day_data(ACTIVITY_STREAMNAME, user, day)
-        if len(activity_data) > 0:
-            walking_min_hourly, mod_min_hourly, high_min_hourly, total_min_per_hour = \
-                self.compute_activity_features_hourly(ACTIVITY_STREAMNAME,
-                                                      activity_data, streams,
-                                                      user)
-            D[day] = [walking_min_hourly, mod_min_hourly, high_min_hourly,
-                      total_min_per_hour]
-            day_list.append(day)
-
-        activity_data_accel_only = \
-            self.get_day_data(ACCEL_ONLY_ACTIVITY_STREAMNAME, user, day)
-        if len(activity_data_accel_only) > 0:
-            walking_min_hourly_accel_only, mod_min_hourly_accel_only, high_min_hourly_accel_only, total_min_per_hour_accel_only = \
-                self.compute_activity_features_hourly(
-                    ACCEL_ONLY_ACTIVITY_STREAMNAME, activity_data_accel_only,
-                    streams, user)
-            D_accel[day] = [walking_min_hourly_accel_only,
-                            mod_min_hourly_accel_only,
-                            high_min_hourly_accel_only,
-                            total_min_per_hour_accel_only]
-            day_list_accel.append(day)
-
-        posture_data = self.get_day_data(POSTURE_STREAMNAME, user, day)
-        self.compute_posture_features_hourly(posture_data, streams, user)
-        if len(activity_data) > 0:
-            offset = activity_data[0].offset
-
-    self.imputation_by_mean_data(D, day_list, user,
-                                 ACTIVITY_STREAMNAME, streams, offset)
-
-    self.imputation_by_mean_data(D_accel, day_list_accel, user,
-                                 ACCEL_ONLY_ACTIVITY_STREAMNAME, streams,
-                                 offset)
-
-    self.CC.logging.log(
-        "Finished processing activity and posture features for user: %s" % (
-            user))
+            "Finished processing activity and posture features for user: %s" % (
+                user))
