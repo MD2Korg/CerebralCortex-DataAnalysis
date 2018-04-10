@@ -75,7 +75,7 @@ class WorkingDaysFromBeacon(ComputeFeatureBase):
         beacon_location_data.sort(key=lambda x: x.start_time)
         current_day = None  # in beginning current day is null
         for data in beacon_location_data:
-            print(data)
+            #print(data)
             if data.sample is None or int(data.sample) != 1:
                 # only the data marked as Work are needed
                 continue
@@ -118,7 +118,7 @@ class WorkingDaysFromBeacon(ComputeFeatureBase):
                 streams = self.CC.get_user_streams(user_id)
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == BEACON_WORK_BEACON_CONTEXT_STREAM:
-                        print("Going to pickle the file: ",work_data)
+                        # print("Going to pickle the file: ",work_data)
 
                         self.store_stream(filepath="working_days_from_beacon.json",
                                           input_streams=[stream_metadata],

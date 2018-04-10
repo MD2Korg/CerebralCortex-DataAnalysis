@@ -73,7 +73,6 @@ class ArrivalTimesFromBeacon(ComputeFeatureBase):
                     self.CC.get_stream(stream_id["identifier"], user_id, day, localtime = True)
 
                 for data in work_data_stream.data:
-                    print(data)
                     arrival_time = data.start_time.hour*60+data.start_time.minute
                     office_arrival_times.append(arrival_time)
                     sample = []
@@ -116,7 +115,7 @@ class ArrivalTimesFromBeacon(ComputeFeatureBase):
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == Working_Days_STREAM:
                         # print(stream_metadata)
-                        print("Going to pickle the file: ",arrival_data)
+                        #print("Going to pickle the file: ",arrival_data)
 
                         self.store_stream(filepath="arrival_time_from_beacon.json",
                                           input_streams=[stream_metadata],
