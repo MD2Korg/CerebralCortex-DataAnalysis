@@ -41,6 +41,7 @@ from functools import lru_cache
 import math
 
 from sklearn.mixture import GaussianMixture
+from typing import List
 
 
 feature_class_name = 'PhoneFeatures'
