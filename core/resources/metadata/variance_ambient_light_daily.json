@@ -2,6 +2,7 @@
   "annotations":[],
   "data_descriptor":[
     {
+      "name": "value",
       "type":"float",
       "unit":"lux"
     }
