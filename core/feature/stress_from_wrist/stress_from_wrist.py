@@ -31,13 +31,15 @@ from scipy.stats import iqr
 from scipy.stats import skew
 from scipy.stats import kurtosis
 from copy import deepcopy
-
+import sklearn
 feature_class_name = 'stress_from_wrist'
 
 class stress_from_wrist(ComputeFeatureBase):
 
 
-    def get_feature_for_one_window(self,rr):
+    def get_feature_for_one_window(self,
+                                   rr:list)->np.ndarray:
+
         temp = np.zeros((len(rr),no_of_feature))
         for k,rr_list in enumerate(rr):
             rr_final = rr_list*1000/25
@@ -67,7 +69,14 @@ class stress_from_wrist(ComputeFeatureBase):
         return feature_one_row
 
 
-    def get_and_save_data(self,streams,day,stream_identifier,user_id,model,scaler,json_path):
+    def get_and_save_data(self,streams:dict,
+                          day:str,
+                          stream_identifier:str,
+                          user_id:str,
+                          model,
+                          scaler,
+                          json_path:str):
+
         rr_interval_data = self.CC.get_stream(streams[stream_identifier]["identifier"],
                                           day=day,user_id=user_id,localtime=False)
         print('-'*20," Got rr interval data ", len(rr_interval_data.data) ,'-'*20)
@@ -93,10 +102,12 @@ class stress_from_wrist(ComputeFeatureBase):
     def process(self, user:str, all_days):
 
         """
+        Takes the user identifier and the list of days and does the required processing  
         :param user: user id string
         :param all_days: list of days to compute
-
+        
         """
+
         if not list(all_days):
             return
 

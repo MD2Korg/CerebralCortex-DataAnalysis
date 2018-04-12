@@ -30,6 +30,7 @@ feature_class_name = 'stress_from_respiration'
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 
 class stress_from_respiration(ComputeFeatureBase):
+
     """
     This class applies a pretrained Support Vector Machine model with radial basis kernel to one minute of 
     respiration cycle features 
