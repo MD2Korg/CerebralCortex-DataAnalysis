@@ -30,14 +30,52 @@ feature_class_name = 'stress_from_respiration'
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 
 class stress_from_respiration(ComputeFeatureBase):
-
+    """
+    This class applies a pretrained Support Vector Machine model with radial basis kernel to one minute of 
+    respiration cycle features 
+    and produces a binary output of Stress/Not Stressed.
+    
+    The model was trained with python scikit-learn library with 21 participants data.
+    The hyperparameters of the model are:
+        1. C = 10.0
+        2. Gamma = 0.01
+    The model takes 14 input features as listed:
+        1.  inspiration_duration
+        2.  expiration_duration
+        3.  respiration_duration
+        4.  inspiration_expiration_duration_ratio
+        5.  stretch
+        6.  inspiration_velocity
+        7.  expiration_velocity
+        8.  skewness
+        9.  kurtosis
+        10.  entropy
+        11.  inspiration_expiration_velocity_ratio
+        12.  inspiration_expiration_area_ratio
+        13.  expiration_respiration_duration_ratio
+        14.  resspiration_area_inspiration_duration_ratio
+    
+    In every one minute of data there will be more than 1 respiration cycles each with these 14 features pre-calculated.
+    We take the median of each of this feature found within the minute, 
+    transform the (1,14) shape feature row according to a pre-trained standard 
+    transformation and apply the Support Vector Machine model to get the binary output
+    
+    The model trained from respiration here has its theoretical underpinnings described in the following paper:
+    
+    K. Hovsepian, M. al’Absi, E. Ertin, T. Kamarck, M. Nakajima, and S. Kumar, 
+    "cStress: Towards a Gold Standard for Continuous Stress Assessment in the Mobile Environment," 
+    ACM UbiComp, pp. 493-504, 2015.
+        
+    """
     def process(self, user:str, all_days):
 
         """
+        Takes the user identifier and the list of days and does the required processing  
         :param user: user id string
         :param all_days: list of days to compute
 
         """
+
         if not list(all_days):
             return
 
