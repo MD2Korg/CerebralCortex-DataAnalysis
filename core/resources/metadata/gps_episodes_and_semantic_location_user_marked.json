@@ -2,8 +2,9 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"List",
-      "unit":""
+      "NAME": "Semantic name",
+      "DATA_TYPE": "string",
+      "DESCRIPTION": "Semantic name of the co-ordinate using user markings"
     }
   ],
   "execution_context":{
