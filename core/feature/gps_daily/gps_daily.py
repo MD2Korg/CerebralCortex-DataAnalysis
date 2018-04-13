@@ -52,7 +52,11 @@ class GPSDaily(ComputeFeatureBase):
     
     def split_datapoint_array_by_day(self,data):
         """
-        Returns datapoint array in a day.
+        Returns datapoint array splitted wth respect to days considering localtime.
+
+        :param data: Input data (single DataPoint)
+        :return: Splitted list of DataPoints
+        :rtype: List(DataPoint)
         """
         data_by_day = []
         for dp in data:
@@ -62,22 +66,22 @@ class GPSDaily(ComputeFeatureBase):
             end_time = dp.end_time
             offset = dp.offset
             timezoneinfo = start_time.tzinfo
-            print (timezoneinfo)
+
             
-#             print (end_date)
+
             if start_date == end_date:
                 data_by_day.append(dp)
                 continue
             
-            print('process start', dp)
+
             
             while (start_date != end_date):
                 
-#                 print ("got innnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
-#                 new_end_date = start_date + timedelta(days = 1)
+
+
                 new_end_time = start_time + timedelta(days = 1)
                 new_end_date = new_end_time.date()
-#                 print("1st",start_date, new_end_date)
+
 
                 new_end_date_str = str(new_end_date).replace("-","")
                 new_end_datetime = datetime.strptime(new_end_date_str, "%Y%m%d")
@@ -86,16 +90,15 @@ class GPSDaily(ComputeFeatureBase):
                 
                 new_datapoint = DataPoint(start_time,new_end_datetime,offset,dp.sample)
                 
-#                 print (new_datapoint)
+
                 data_by_day.append(new_datapoint)
-#                 print('new end date', new_end_date)
+
                 start_date = new_end_date
-#                 print ("2nd",start_date)
+
                 start_date_str = str(start_date).replace("-","")
 
                 start_time = start_time + timedelta(days=1)
-#                 print("haaaaaaaaaaaaaaaaaaaaaaaaaaaaa",new_datapoint)
-#                 print (start_time)
+
             
             new_start_str = str(start_date).replace("-","")
             new_start_datetime = datetime.strptime(new_start_str, "%Y%m%d")
@@ -152,17 +155,15 @@ class GPSDaily(ComputeFeatureBase):
 
             cluster_data_by_day = self.split_datapoint_array_by_day(cluster_data_unique)
             
-#             for dp in cluster_data_by_day:
-#                 print (dp)
+
+
             
             try:
                 if len(cluster_data_by_day):
                     streams = self.CC.get_user_streams(user_id)
                     for stream_name, stream_metadata in streams.items():
                         if stream_name == stream_name_gps_cluster:
-    #                         print("---->",stream_metadata)
 
-#                             print (">>>>>>>>>>>>>>>>>>>>..................................")
 
                             self.store_stream(filepath="gps_data_clustering_episode_generation_daily.json",
                                       input_streams=[streams[stream_name]], 
@@ -199,9 +200,7 @@ class GPSDaily(ComputeFeatureBase):
                     streams = self.CC.get_user_streams(user_id)
                     for stream_name, stream_metadata in streams.items():
                         if stream_name == stream_name_semantic_location:
-    #                         print("---->",stream_metadata)
 
-#                             print (">>>>>>>>>>>>>>>>>>>>..................................")
 
                             self.store_stream(filepath="gps_episodes_and_semantic_location_from_model_daily.json",
                                       input_streams=[streams[stream_name]], 
@@ -243,9 +242,7 @@ class GPSDaily(ComputeFeatureBase):
                         streams = self.CC.get_user_streams(user_id)
                         for stream_name, stream_metadata in streams.items():
                             if stream_name == stream_name_semantic_location:
-        #                         print("---->",stream_metadata)
 
-    #                             print (">>>>>>>>>>>>>>>>>>>>..................................")
 
                                 self.store_stream(filepath="gps_episodes_and_semantic_location_user_marked_daily.json",
                                           input_streams=[streams[stream_name]], 
