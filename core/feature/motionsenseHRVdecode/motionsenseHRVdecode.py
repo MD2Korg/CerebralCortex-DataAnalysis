@@ -27,29 +27,41 @@ from core.computefeature import ComputeFeatureBase
 from core.feature.motionsenseHRVdecode.util_helper_functions \
     import *
 import numpy as np
-from dateutil import tz
+import pytz
 from datetime import datetime,timedelta
 
 feature_class_name = 'DecodeHRV'
 
 class DecodeHRV(ComputeFeatureBase):
+
     def get_data_around_stress_survey(self,
-                                      all_streams,
-                                      day,
-                                      user_id,
-                                      raw_byte_array,
-                                      offset):
+                                      all_streams:dict,
+                                      day:str,
+                                      user_id:str,
+                                      raw_byte_array:list)->list:
+        """
+        This function checks for qualtrics stress survey data present on the day 
+        specified and finds those datapoints which are only 60 minutes behind the
+        time of taking the survey. The motivation is to predict the stress value 
+        we would be more concerned with the 60 minutes of data beforehand 
+        
+        :param all_streams: a dictionery of all the streams of the partiipant
+        :param day: a string in 'YYYYMMDD' format 
+        :param user_id: uuid string representing the user identifier
+        :param raw_byte_array: A list of all the datapoints for that user on that day
+        
+        :return: A list of only those datapoints those are 60 minutes behind the timing of stress survey 
+        """
         if qualtrics_identifier in all_streams:
             data = self.CC.get_stream(all_streams[qualtrics_identifier][
-                                      'identifier'], user_id=user_id, day=day,localtime=False)
+                                          'identifier'], user_id=user_id, day=day,localtime=False)
             if len(data.data) > 0:
                 data = data.data
-                s1 = data[0].end_time
-                tzlocal = tz.tzoffset('IST', offset/1000)
-                s1 = s1.replace(tzinfo=tzlocal)
                 final_data = []
+                s1 = data[0].end_time
                 for dp in raw_byte_array:
-                    if s1>dp.start_time and dp.start_time+timedelta(minutes=60)>s1:
+                    s2 = dp.start_time
+                    if s1 > s2 and s2 + timedelta(minutes=60) > s1 :
                         final_data.append(dp)
                 return final_data
         return []
@@ -72,31 +84,29 @@ class DecodeHRV(ComputeFeatureBase):
         for day in all_days:
             motionsense_raw = self.CC.get_stream(
                 all_streams[stream_identifier]["identifier"],day=day,
-                user_id=user_id,localtime=True)
+                user_id=user_id,localtime=False)
             motionsense_raw_data = admission_control(motionsense_raw.data)
             if len(motionsense_raw_data) > 0:
                 offset = motionsense_raw_data[0].offset
                 data = self.get_data_around_stress_survey(all_streams,
                                                      day,
                                                      user_id,
-                                                     motionsense_raw_data,
-                                                     offset)
+                                                     motionsense_raw_data)
                 if len(data) > 0:
                     decoded_sample = get_decoded_matrix(np.array(data))
                     if not list(decoded_sample):
                         continue
                     final_data = []
-                    tzlocal = tz.tzoffset('IST',0)
                     for i in range(len(decoded_sample[:, 0])):
                         final_data.append(DataPoint.from_tuple(
-                            start_time=datetime.fromtimestamp(decoded_sample[i, -1]).replace(tzinfo=tzlocal),
+                            start_time=datetime.fromtimestamp(decoded_sample[i, -1]).replace(tzinfo=pytz.UTC),
                             offset=offset, sample=decoded_sample[i, 1:-1]))
                     self.store_stream(json_path,[all_streams[stream_identifier]],
                            user_id, final_data,localtime=False)
         return
 
 
-    def process(self, user, all_days):
+    def process(self, user, all_days:list):
         """
 
         :param user: user id string
