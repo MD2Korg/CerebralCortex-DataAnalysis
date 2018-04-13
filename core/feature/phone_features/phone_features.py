@@ -1425,7 +1425,6 @@ class PhoneFeatures(ComputeFeatureBase):
         data = {}
         try:
             categories =list(set([y.sample[1] for y in appcategorydata if y.sample[1]]))
-            categories.sort(key=lambda x: x.start_time)
             for c in categories:
                 d = self.get_appusage_duration_by_category(appcategorydata, [c],300)
 

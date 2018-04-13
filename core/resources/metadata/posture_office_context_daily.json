@@ -2,8 +2,14 @@
   "annotations":[],
   "data_descriptor":[
     {
+      "name":"found_posture",
       "type":"string",
-      "unit":""
+      "descriptor":"The participant's time intervals of posture, posture = standing,sitting"
+    },
+    {
+      "name":"context_type",
+      "type":"string",
+      "descriptor":"The participant's time intervals of posture in context, context = office"
     }
   ],
   "execution_context":{

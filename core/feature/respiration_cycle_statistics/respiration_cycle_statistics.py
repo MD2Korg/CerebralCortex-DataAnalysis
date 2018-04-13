@@ -33,17 +33,48 @@ feature_class_name = 'respiration_cycle_statistics'
 
 
 class respiration_cycle_statistics(ComputeFeatureBase):
+    """
+    This class combines the respiration raw datastream and 
+    respiration baseline datastream, applies the peak valley 
+    detection code to find out the respiration cycles and then 
+    computes 21 features for each respiration cycle and 
+    stores them  
+    """
 
-
-    def get_feature_matrix(self,final_respiration:List[DataPoint]):
+    def get_feature_matrix(self,final_respiration:List[DataPoint])->List[DataPoint]:
 
         """
-        all necessary computation
-        :param final_respiration: a combination of respiration raw and baseline
-        :return feature matrix of shape (*,21)
-
+        
+        :param final_respiration: A list of datapoints after combining 
+        the respiration datastream and the respiration baseline datastream
+        
+        :return: A list of datapoints. Each datapoint contains a list of 21 values 
+        each representing the 21 separate features
+        calculated from one respiration cycle
+        The features are,
+        1  inspiration_duration
+        2  expiration_duration
+        3  respiration_duration
+        4  inspiration_expiration_duration_ratio
+        5  stretch
+        6  inspiration_velocity
+        7  expiration_velocity
+        8  skewness
+        9  kurtosis
+        10  entropy
+        11  inspiration_expiration_velocity_ratio
+        12  inspiration_expiration_area_ratio
+        13  expiration_respiration_duration_ratio
+        14  resspiration_area_inspiration_duration_ratio
+        15  power_.05-.2_Hz
+        16  power_.201-.4_Hz
+        17  power_.401-.6_Hz
+        18  power_.601-.8_Hz
+        19  power_.801-1_Hz
+        20  correlation_previous_cycle
+        21  correlation_next_cycle
+        
         """
-
         if final_respiration is None:
             return []
         if not final_respiration:
@@ -133,9 +164,10 @@ class respiration_cycle_statistics(ComputeFeatureBase):
 
 
 
-    def process(self, user:str, all_days):
+    def process(self, user:str, all_days:list):
 
         """
+        Takes the user identifier and the list of days and does the required processing  
         :param user: user id string
         :param all_days: list of days to compute
 

@@ -50,6 +50,7 @@ def process_features(feature_list, all_users, all_days, num_cores=1):
             spark_context = get_or_create_sc(type="sparkContext")
             if 'gps' in str(module) or 'sleep_duration_analysis' in str(module) \
                 or 'office_time' in str(module) \
+                or 'phone_screen_touch_features' in str(module) \
                 or 'gps_location_daywise' in str(module):
                 '''
                 # FIXME # TODO Currently only GPS feature computes features on a

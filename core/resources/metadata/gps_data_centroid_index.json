@@ -2,14 +2,16 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"List",
-      "unit":""
+      "NAME": "GPS Index",
+      "DATA_TYPE": "int",
+      "DESCRIPTION": "Index of gps centroid"
     }
+
   ],
   "execution_context":{
     "processing_module":{
       "name":"Gps Data Centroid Index",
-      "confidential":"True",
+      "confidential":"False",
       "input_streams":[
         {
           "id":"CC_INPUT_STREAM_ID_CC",

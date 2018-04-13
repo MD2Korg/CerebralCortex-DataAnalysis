@@ -5,6 +5,7 @@ from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from pprint import pprint
 from scipy.io import savemat
 import datetime
+import time
 import numpy as np, pandas as pd
 import time, os
 from math import radians, cos, sin, asin, sqrt
@@ -13,7 +14,6 @@ from geopy.distance import great_circle
 from shapely.geometry.multipoint import MultiPoint
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-import datetime
 from core.computefeature import ComputeFeatureBase
 from googleplaces import GooglePlaces, types, lang
 import googleplaces
@@ -25,6 +25,18 @@ feature_class_name = 'GPSClusteringEpochComputation'
 class GPSClusteringEpochComputation(ComputeFeatureBase):
     """
     Class to compute GPS markers
+
+    1. Compute GPS clusters using DBScan algorithm, find centroids, persist
+    them as a confidential data stream for feature computation.
+    2. Mark each centroid semantically from user marked locations, for those
+    who have the manual markings.
+    3. For all the users mark centroid using a semantic_location model (
+    random forest classifier) trained with 10 participants' data. Each
+    co-ordinate is marked as 'home', 'work' or 'other'.
+    4. Create context epochs from gps data, representing those locations
+    which have been dwelled for at least 5 minutes. Used google places api to
+    mark if a location has either of the following restaurant/bar,
+    school, entertainment, store, place of worship, sport arena nearby or not.
     
     """
     INTERPOLATION_TIME = 1.0
@@ -66,13 +78,37 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     CENTROID_INDEX = 7
     FIVE_MINUTE_SECONDS = 600.0
     NOT_HOME_OR_WORK = 'other'
+    PLACES_QUERY_CACHE = [] # each item will be of the format ((lat,long), [])
+    QUERY_CACHE_PATH = '/cerebralcortex/code/anand/places_cache.txt'
+
+    TOTAL_QUERIES = []
+    QUERIES_AVOIDED = 0
+
+    QUERY_LIMIT = 130000
+    QUERY_DONE = 0
 
     def process(self, user, all_days):
         """
         Process GPS data
+
+        :param string user: User
+        :param list all_days: List of all days
+        :return: None
         """
+        self.CC.logging.log('Computing for user %s cache length '
+                            '%d'%(user,len(GPSClusteringEpochComputation.PLACES_QUERY_CACHE)))
         location_stream = 'LOCATION--org.md2k.phonesensor--PHONE'
         geofence_list_stream = 'GEOFENCE--LIST--org.md2k.phonesensor--PHONE'
+        
+        #load cache
+        cache_file_path = self.CC.config['cachepaths']['googleplaces']
+        if os.path.exists(cache_file_path):
+            pkl_path = open(cache_file_path, 'rb')
+            self.query_cache = pickle.load(pkl_path)
+            pkl_path.close()
+        else:
+            self.query_cache = {}
+
         if self.CC is not None:
             streams = self.CC.get_user_streams(user)
             gps_data_all_streams = []
@@ -178,44 +214,137 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                         user_id=user,
                         data=epoch_place_annotation, localtime=False)
 
+
+        pkl_path = open(cache_file_path, 'wb')
+        pickle.dump(self.query_cache, pkl_path)
+        pkl_path.close()
+
+        self.CC.logging.log('TOTAL Queries %d QUERIES Avoided %d ' 
+                            'Cache Length %d QUERIES_DONE %d' %
+                            (len(GPSClusteringEpochComputation.TOTAL_QUERIES),
+                             GPSClusteringEpochComputation.QUERIES_AVOIDED,
+                            len(GPSClusteringEpochComputation.PLACES_QUERY_CACHE), 
+                             GPSClusteringEpochComputation.QUERY_DONE))
+
     def find_interesting_places(self, latitude, longitude, api_key,
                                 geofence_radius):
         """
         Obtain the list of interesting places near a coordinate
-        :param latitude: float
-        :param longitude: float
-        :param api_key: string
-        :param geofence_radius: float
-        :return: 
+
+        :param float latitude: Latitude of the place
+        :param float longitude: Longitude of the place
+        :param string api_key: API key of google places
+        :param float geofence_radius: Radius within which we search for
+        interesting places.
+        :return: List of 1 or 0. 1, if we find the corresponding interesting
+        place otherwise 0.
         """
-        google_places = GooglePlaces(api_key)
+        # search the cache, if found return from cache
+        GPSClusteringEpochComputation.TOTAL_QUERIES.append((latitude,longitude))
+        for cached_search in GPSClusteringEpochComputation.PLACES_QUERY_CACHE:
+            cached_long = cached_search[0][1]
+            cached_lat = cached_search[0][0]
+            distance = self.haversine(longitude, latitude, cached_long, cached_lat)
+            distance = distance * 1000 # convert km to m
+            if distance <= 10: # 10m is a heuristic value
+                GPSClusteringEpochComputation.QUERIES_AVOIDED += 1
+                #self.CC.logging.log('For latitude %f longitude %f found cached '
+                #                    'value %s within %f meters' %
+                #                    (latitude, longitude, str(cached_search),
+                #                     distance))
+                return cached_search[1]
+
+        return_list = []
+
+
         places_type_list = [self.RESTAURANT, self.SCHOOL, self.PLACE_OF_WORSHIP,
                             self.ENTERTAINMENT, self.STORE,
                             self.SPORTS]
-        return_list = []
+
+        google_places = GooglePlaces(api_key)
         for places_list in places_type_list:
             place_list_length = 0
             for a_place in places_list:
-                query_res = google_places.nearby_search(
-                    lat_lng={'lat': latitude, 'lng': longitude},
-                    keyword=a_place,
-                    radius=geofence_radius)
-                for place in query_res.places:
-                    place_list_length += 1
+                #Search cache first 
+                if (latitude, longitude, a_place) in self.query_cache:
+                    for x in self.query_cache[(latitude, longitude,
+                                               a_place)].places:
+                        place_list_length +=1
+                else:
+                    self.CC.logging.log('No cache entry found for %s ' %
+                                        (self.query_cache[(latitude, longitude,
+                                                           a_place)]))
+                    try:
+                        query_res = google_places.nearby_search(
+                            lat_lng={'lat': latitude, 'lng': longitude},
+                            keyword=a_place,
+                            radius=geofence_radius)
+                        for place in query_res.places:
+                            place_list_length += 1
+
+                        #update cache
+                        self.query_cache[(latitude, longitude, a_place)] =\
+                                                                    query_res
+                    except Exception as e:
+                        if 'OVER_QUERY_LIMIT' in str(e):
+                            now = datetime.datetime.now()
+                            sleep_until = now + datetime.timedelta(days=1)
+                            sleep_until = sleep_until.replace(hour=3,minute=0,second=10)
+                            delay_by = ((sleep_until - now).seconds)
+                            self.CC.logging.log("Sleeping %f seconds so that we "
+                                               "do not exceed the limit for places api"
+                                               % (float(delay_by.seconds)))
+                            time.sleep(delay_by)
+                            #QUERY AGAIN
+                            query_res = google_places.nearby_search(
+                                lat_lng={'lat': latitude, 'lng': longitude},
+                                keyword=a_place,
+                                radius=geofence_radius)
+                            for place in query_res.places:
+                                place_list_length += 1
+
+                            #update cache
+                            self.query_cache[(latitude, longitude, a_place)] =\
+                                                                    query_res
+                        elif 'HTTP Error 500: Internal Server Error' in str(e):
+                            self.CC.logging.log('Caught HTTP 500 error, sleeping 30 '
+                                                'seconds')
+                            time.sleep(30)
+                            #QUERY AGAIN
+                            query_res = google_places.nearby_search(
+                                lat_lng={'lat': latitude, 'lng': longitude},
+                                keyword=a_place,
+                                radius=geofence_radius)
+                            for place in query_res.places:
+                                place_list_length += 1
+
+                            #update cache
+                            self.query_cache[(latitude, longitude, a_place)] =\
+                                                                    query_res
+                        else:
+                            raise
+
+                    GPSClusteringEpochComputation.QUERY_DONE += 1
+            
             if place_list_length:
-                return_list.append('yes')
+                return_list.append(1)
             else:
-                return_list.append('no')
+                return_list.append(0)
+        
+        GPSClusteringEpochComputation.PLACES_QUERY_CACHE.append(((latitude,
+                                                                  longitude),
+                                                                  return_list))
         return return_list
 
     def get_gps(self, gps_stream_id, user_id, all_days):
         """
         Extract all gps data of a given user
-        :param all_days:
-        :param gps_stream_id: String
-        :param user_id: String
-        :return: List (of gps datapoints for the that gps_stream_id for that
-        user_id)
+
+        :param List all_days: List of all days present
+        :param string gps_stream_id: Stream id
+        :param string user_id: User ID
+        :return: List(Datapoints): Gps datapoints for the that gps_stream_id
+        for that user_id)
         """
         data_for_all_days = []
         if gps_stream_id:
@@ -231,15 +360,18 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
             extracted_gps_data = []
         else:
             for all_data in data_for_all_days:
+
                 for data in all_data:
                     extracted_gps_data.append(data)
         return extracted_gps_data
 
-    def gps_admission_control(self, gps_data):
+    @staticmethod
+    def gps_admission_control(gps_data):
         """
-         Filter out spurious data
-        :param gps_data: List
-        :return: List
+        Filter out spurious data
+
+        :param List(Datapoints) gps_data: List of GPS datapoints
+        :return: List(Datapoints)
         """
         gps_data_control = []
         for gps in gps_data:
@@ -252,8 +384,10 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     def gps_groundtruth(self, geofence_stream_id, user_id, all_days):
         """
          Obtain gps locations marked by users
-        :param geofence_stream_id: String
-        :param user_id: String
+
+        :param list all_days: list of all days
+        :param string geofence_stream_id: Data stream id
+        :param string user_id: User ID
         :return: Dictionary (key - semantic names, values - Corresponding
         co-ordinates)
         """
@@ -292,8 +426,9 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     def gps_interpolation(self, gps_data):
         """
         Interpolate raw gps data
-        :param gps_data: List
-        :return: list
+
+        :param List(Datapoints) gps_data: list of gps data
+        :return: list of interpolated gps data
         """
         interpolated_data = []
         for i in range(len(gps_data) - 1):
@@ -317,13 +452,14 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
 
     def haversine(self, lon1, lat1, lon2, lat2):
         """
-        Calculate the great circle distance between two points
+        Calculate the great circle distance between two points (A and B)
         on the earth (specified in decimal degrees)
-        :param lon1: Float
-        :param lat1: Float
-        :param lon2: Float
-        :param lat2: Float
-        :return: Float (Distance in km)
+
+        :param float lon1: Longitude of location A
+        :param float lat1: Latitude of location A
+        :param float lon2: Longitude of location B
+        :param float lat2: Latitude of location B
+        :return: float (Distance in km)
         """
         # convert decimal degrees to radians
         lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
@@ -347,10 +483,12 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                          min_points_in_cluster):
         """
          Computes the clusters
-        :param interpolated_gps_data: List
-        :param geo_fence_distance: Constant
-        :param min_points_in_cluster: Constant
-        :return: List of cluster-centroids coordinates
+
+        :param list interpolated_gps_data: list of interpolated gps data
+        :param float geo_fence_distance: Maximum distance between points in a
+        cluster
+        :param int min_points_in_cluster: Minimum number of points in a cluster
+        :return: list of cluster-centroids coordinates
         """
         arr_latitude = []
         arr_longitude = []
@@ -387,9 +525,10 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     def gps_semantic_locations(self, semantic_groundtruth, centorids_coord):
         """
         Assigns semantic name to a centroid
-        :param semantic_groundtruth: Dictionary
-        :param centorids_coord: List
-        :return: List of centroids with their corresponding semantic names, if
+
+        :param dict semantic_groundtruth: Dictionary of user marked location
+        :param list centorids_coord: list of centroid co-ordinates
+        :return: list of centroids with their corresponding semantic names, if
         found
         """
         candidate_names = []
@@ -420,12 +559,13 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         """
          Obtain the nearest centroid and semantic name for a given location
          co-ordinate
-        :param centroids: List
-        :param c_name: List
-        :param lat: Float
-        :param long: Float
-        :param max_dist_assign_centroid: Constant
-        :return: List of centroid and semantic name assigned to the given GPS
+
+        :param list centroids: list of centroid co-ordinates
+        :param list c_name: list of user marked location name
+        :param float lat: Latitude of location
+        :param float long: Longitude of location
+        :param int max_dist_assign_centroid: Distance threshold
+        :return: list of centroid and semantic name assigned to the given GPS
         datapoint
         """
         dist = []
@@ -450,21 +590,24 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         unix_t = utc.timestamp() * 1000 - int(d) * 60 * 60000
         return unix_t
 
-    def getHourOfDay(self, timestamp):
+    @staticmethod
+    def getHourOfDay(timestamp):
         """
         Get Time of day
-        :param timestamp: unixtimestamp
-        :return:
+
+        :param int timestamp: unixtimestamp
+        :return: Hour of day
         """
         tm = time.localtime(timestamp / 1000)
         hourOfDay = tm.tm_hour + tm.tm_min / 60.0 + tm.tm_sec / 3600.0
         return hourOfDay
 
-    def getDayOfWeek(self, timestamp):
+    @staticmethod
+    def getDayOfWeek(timestamp):
         """
         Get Day of Week
-        :param timestamp: unixtimestamp
-        :return:
+        :param int timestamp: unixtimestamp
+        :return: Day of week
         """
         # """day of week, range [0, 6], Monday is 0"""
         tm = time.localtime(timestamp / 1000)
@@ -473,9 +616,10 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     def getFeatures(self, timestampEntry, timestampExit):
         """
         Compute features for semantic assignment model
-        :param timestampEntry: unixtimestamp
-        :param timestampExit: unixtimestamp
-        :return:
+
+        :param int timestampEntry: entry time into an epoch
+        :param int timestampExit: exit time into an epoch
+        :return: feature list
         """
         featuresM = []
         hodEntry = self.getHourOfDay(timestampEntry)
@@ -491,9 +635,10 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     def predictLabel(self, timestampEntry, timestampExit):
         """
         Predict label from model
-        :param timestampEntry: unixtimestamp
-        :param timestampExit: unixtimestamp
-        :return:
+
+        :param int timestampEntry: entry time into an epoch
+        :param int timestampExit: exit time into an epoch
+        :return: predicted label ('home', 'work', or 'other')
         """
         modelFilePath = self.MODEL_FILE_PATH
         model = pickle.loads(get_resource_contents(modelFilePath))
@@ -508,13 +653,16 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                             max_dist_assign_centroid,
                             centroid_name_dict):
         """
+        Final computations as described in the class description above
 
-        :param interpolated_gps_data: List
-        :param geo_fence_distance: Constant
-        :param min_points_in_cluster: Constant
-        :param max_dist_assign_centroid: Constant
-        :param centroid_name_dict: Dictionary
-        :return: None
+        :param list interpolated_gps_data: List of interpolated gps points
+        :param int geo_fence_distance: Maximum distance between points in a
+        cluster
+        :param int min_points_in_cluster: Minimum number of points in a cluster
+        :param int max_dist_assign_centroid: Distance threshold for assigning a
+        cluster
+        :param dict centroid_name_dict: Dictionary of user marked semantic names
+        :return: List (Datapoints)
         """
         gps_data = []
         gps_epoch_with_centroid = []
@@ -633,7 +781,8 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                         self.FIVE_MINUTE_SECONDS:
                     sample_centroid = self.find_interesting_places(
                         gps_datapoints[i][self.LATITUDE],
-                        gps_datapoints[i][self.LONGITUDE], self.gps_api_key,
+                        gps_datapoints[i][self.LONGITUDE],
+                        self.CC.config['apikeys']['googleplacesapi'],
                         self.MINIMUM_POINTS_IN_CLUSTER)
                     dp_centroid = DataPoint(n_start_date, n_end_date,
                                             gps_datapoints[i][3],

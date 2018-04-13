@@ -38,6 +38,13 @@ respiration_baseline_autosenseble = \
 Fs = 25
 
 def admission_control(data:List[DataPoint])->List[DataPoint]:
+    """
+    Checks if all the datapoints in the input conform towards being a respiration 
+    datapoint and returns only those who passes the condition
+    
+    :param data: list of respiration datapoints 
+    :return: list of filtered respiration datapoints
+    """
     final_data = []
     for dp in data:
         if not isinstance(dp.sample,list) and dp.sample>=0 and dp.sample<=4095:

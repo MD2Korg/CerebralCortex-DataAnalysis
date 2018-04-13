@@ -3,7 +3,7 @@
   "data_descriptor":[
     {
       "name":"typing_value",
-      "type":"string",
+      "type":"int",
       "unit":"",
       "descriptor":"Detects typing in a 800 mlsec window"
     }
@@ -42,7 +42,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.typing.episodes.day",
+  "name":"org.md2k.data_analysis.feature.v3.typing.episodes.day",
   "owner":"",
   "type":"1"
 }

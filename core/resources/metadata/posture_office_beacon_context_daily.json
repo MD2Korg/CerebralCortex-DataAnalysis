@@ -2,9 +2,16 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"float",
-      "unit":"minute"
+      "name":"found_posture",
+      "type":"string",
+      "descriptor":"The participant's time intervals of posture, posture = standing,sitting"
+    },
+    {
+      "name":"context_type",
+      "type":"string",
+      "descriptor":"The participant's time intervals of posture in context, context = office beacon"
     }
+
   ],
   "execution_context":{
     "processing_module":{
@@ -16,7 +23,7 @@
         }
       ],
       "input_parameters":{
-        "window_size": "1 Hour"
+        "window_size": "24 Hours"
       }
     },
     "algorithm":{
@@ -30,11 +37,11 @@
       "version":"0.0.1",
       "reference":{
       },
-      "description":"The participants'total posture time in fraction of office context"
+      "description":"The participants' posture time intervals in office beacon context"
     }
   },
   "identifier":"",
-  "name":"org.md2k.data_analysis.feature.task_features.posture_office_context_fraction.hourly",
+  "name":"org.md2k.data_analysis.feature.task_features.posture_office_beacon_context.daily",
   "owner":"",
   "type":"1"
 }
