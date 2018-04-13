@@ -69,8 +69,8 @@ class BeaconFeatures(ComputeFeatureBase):
 
 
 
-    def merge_work_beacons(self, streams, stream1_name, stream2_name,
-                           user_id,  day):
+    def merge_work_beacons(self, streams:dict, stream1_name:str, stream2_name:str,
+                           user_id:str,  day:str):
         """
         merges datapoints of work1 and work2 beacons for a particular day
         if streams are from 1 and 2 both than 1 is taken as primary beacon
@@ -118,8 +118,8 @@ class BeaconFeatures(ComputeFeatureBase):
 
 
 
-    def home_beacon_context(self, beaconhomestream, beacon_stream_id,
-                            beacon_stream_name, user_id):
+    def home_beacon_context(self, beaconhomestream:list, beacon_stream_id:str,
+                            beacon_stream_name:str, user_id:str):
         """
         produces datapoint sample as 1 if around home beacon else 0
         
@@ -182,7 +182,7 @@ class BeaconFeatures(ComputeFeatureBase):
 
 
 
-    def work_beacon_context(self, beaconworkstream, input_streams, user_id):
+    def work_beacon_context(self, beaconworkstream:list, input_streams:dict, user_id:str):
         """
         produces datapoint sample as 1 if around work beacon 1, 2 if around workbeacon2
         and 0 if not around work beacon
@@ -253,7 +253,7 @@ class BeaconFeatures(ComputeFeatureBase):
 
 
 
-    def process(self, user, all_days):
+    def process(self, user:str, all_days:list):
 	
 	"""
         lists requried streams needed for computation.
