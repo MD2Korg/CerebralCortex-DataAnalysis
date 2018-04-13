@@ -1,13 +1,78 @@
 """
-Phone Feature Documentation Goes Here
 
 Feature list
 
-1. Feature 1
-2. Feature 2
+1. Entropy
+    - Hourly
+        - Call
+        - SMS
+        - Call and SMS
+    - Four Hourly
+        - Call
+        - SMS
+        - Call and SMS
+    - Daily
+        - Call
+        - SMS
+        - Call and SMS
+2. Frequency
+    - Hourly
+        - Call
+        - SMS
+        - Call and SMS
+    - Four Hourly
+        - Call
+        - SMS
+        - Call and SMS
+    - Daily
+        - Call
+        - SMS
+        - Call and SMS
+3. Inter Event Time
+    - Hourly
+        - Average
+            - Call
+            - SMS
+            - Call and SMS
+        - Variance
+            - Call
+            - SMS
+            - Call and SMS
+    - Four Hourly
+        - Average
+            - Call
+            - SMS
+            - Call and SMS
+        - Variance
+            - Call
+            - SMS
+            - Call and SMS
+    - Daily
+        - Average
+            - Call
+            - SMS
+            - Call and SMS
+        - Variance
+            - Call
+            - SMS
+            - Call and SMS
+4. App Usage Duration
+    - At Work
+    - At HOme
+    - At Other places
+    - At all places
+5. Ambient Light
+    - Hourly
+        - Average
+        - Variance
+    - Four Hourly
+        - Average
+        - Variance
+    - Daily
+        - Average
+        - Variance
+6. App Category
 
 References:
 
-1. Reference 1
-2. Reference 2
 """

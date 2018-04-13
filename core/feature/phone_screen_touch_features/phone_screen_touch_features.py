@@ -38,12 +38,15 @@ feature_class_name = 'PhoneScreenTouchFeatures'
 
 
 class PhoneScreenTouchFeatures(ComputeFeatureBase):
+    """
+    Compute all features related to phone touch screen which needed all days data of a user and can not be paralleled.
+    """
 
     def get_filtered_data(self, data: List[DataPoint],
                           admission_control: Callable[[Any], bool] = None) -> List[DataPoint]:
         """
         Return the filtered list of DataPoints according to the admission control provided
-
+        
         :param List(DataPoint) data: Input data list
         :param Callable[[Any], bool] admission_control: Admission control lambda function, which accepts the sample and
                 returns a bool based on the data sample validity
@@ -182,14 +185,17 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
         return ret
 
     def process_phonescreen_all_day_data(self, user_id: str, all_days: List[str],
-                                         touchescreen_stream_name: str, appcategory_stream_name: str):
+                                        touchescreen_stream_name: str, appcategory_stream_name: str) -> GaussianMixture:
         """
+        This method create a unsupervised model using screen touch gap during productivity and communication app usage.
 
-        :param user_id:
-        :param all_days:
-        :param touchescreen_stream_name:
-        :param appcategory_stream_name:
-        :return:
+        :param str user_id: UUID of the user.
+        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        :param str touchescreen_stream_name: Phone touch screen stream name
+        :param str appcategory_stream_name: App category stream name
+        :return: GaussianMixture object of the created model
+        :rtype: GaussianMixture
+
         """
         MIN_TAP_DATA = 100
         td = []
@@ -216,17 +222,19 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
         gm.fit(X)
         return gm
 
-    def process_phonescreen_day_data(self, user_id, touchstream, categorystream, \
-                                     input_touchstream, input_categorystream, gm):
+    def process_phonescreen_day_data(self, user_id: str, touchstream: List[DataPoint], categorystream: List[DataPoint],
+                                input_touchstream: DataStream, input_categorystream: DataStream, gm: GaussianMixture):
         """
         Analyze the phone touch screen gap to find typing, pause between typing, reading
         and unknown sessions. It uses the Gaussian Mixture algorithm to find different peaks
         in a mixture of 4 different gaussian distribution of screen touch gap.
-        :param user_id:
-        :param touchstream:
-        :param categorystream:
-        :param input_touchstream:
-        :param input_categorystream:
+
+        :param str user_id: UUID of the stream owner
+        :param List(DataPoint) touchstream: Phone touch screen stream data
+        :param List(DataPoint) categorystream: ApP category stream data
+        :param DataStream input_touchstream: DataStream object of phone touch screen
+        :param DataStream input_categorystream: DataStream object of app category stream
+        :param GaussianMixture gm: GaussianMixture object created from all day data of the user
         :return:
         """
         touchstream = sorted(touchstream, key=lambda x: x.start_time)
@@ -269,14 +277,16 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
             self.CC.logging.log("Exception:", str(e))
             self.CC.logging.log(str(traceback.format_exc()))
 
-    def process_data(self, user_id, all_user_streams, all_days):
+    def process_data(self, user_id: str, all_user_streams: dict, all_days: List[str]):
         """
         Getting all the necessary input datastreams for a user
         and run all feature processing modules for all the days
         of the user.
-        :param user_id:
-        :param all_user_streams:
-        :param all_days:
+
+        :param str user_id: UUID of the stream owner
+        :param dict all_user_streams: Dictionary containing all the user streams, where key is the stream name, value
+                                        is the stream metadata
+        :param List(str) all_days: List of all days for the processing in the format 'YYYYMMDD'
         :return:
         """
 
@@ -324,7 +334,14 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
                     self.process_phonescreen_day_data(user_id, touchstream, appcategorystream, input_touchscreenstream,
                                                       input_appcategorystream, gm)
 
-    def process(self, user_id, all_days):
+    def process(self, user_id: str, all_days: List[str]):
+        """
+        Main processing function inherited from ComputerFeatureBase
+
+        :param str user_id: UUID of the user
+        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        :return:
+        """
         if self.CC is not None:
             self.CC.logging.log("Processing PhoneTouchScreenFeatures")
             streams = self.CC.get_user_streams(user_id)
