@@ -72,7 +72,7 @@ class BeaconFeatures(ComputeFeatureBase):
     def merge_work_beacons(self, streams:dict, stream1_name:str, stream2_name:str,
                            user_id:str,  day:str):
         """
-        merges datapoints of work1 and work2 beacons for a particular day
+        merges DataPoints of work1 and work2 beacons for a particular day
         if streams are from 1 and 2 both than 1 is taken as primary beacon
         :param dict streams : Input list
         :param str stream1_name: stream name representing workbeacon1
@@ -121,7 +121,7 @@ class BeaconFeatures(ComputeFeatureBase):
     def home_beacon_context(self, beaconhomestream:list, beacon_stream_id:str,
                             beacon_stream_name:str, user_id:str):
         """
-        produces datapoint sample as 1 if around home beacon else 0
+        produces DataPoint sample as 1 if around home beacon else 0
         
         Algorithm::
             data = window beaconstream 
@@ -184,7 +184,7 @@ class BeaconFeatures(ComputeFeatureBase):
 
     def work_beacon_context(self, beaconworkstream:list, input_streams:dict, user_id:str):
         """
-        produces datapoint sample as 1 if around work beacon 1, 2 if around workbeacon2
+        produces DataPoint sample as 1 if around work beacon 1, 2 if around workbeacon2
         and 0 if not around work beacon
         
          Algorithm::
@@ -254,8 +254,7 @@ class BeaconFeatures(ComputeFeatureBase):
 
 
     def process(self, user:str, all_days:list):
-	
-	"""
+	    """
         lists requried streams needed for computation.
         :param str user_id: id of user
         :param List all_days: Input list of days

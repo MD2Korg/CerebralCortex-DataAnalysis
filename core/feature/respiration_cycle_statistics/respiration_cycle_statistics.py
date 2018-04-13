@@ -40,7 +40,7 @@ class respiration_cycle_statistics(ComputeFeatureBase):
     computes 21 features for each respiration cycle and 
     stores them
       
-    ..Algorithm:
+    Algorithm::
         1. Filter the combined respiration raw and baseline datastream to get rid of the signal at 
         times when the person was not wearing the sensor suite
         2. Identify the Respiration Cycles by getting the peak and valley points
@@ -52,13 +52,13 @@ class respiration_cycle_statistics(ComputeFeatureBase):
 
         """
         
-        :param final_respiration: A list of datapoints after combining 
+        :param final_respiration: A list of DataPoints after combining
         the respiration datastream and the respiration baseline datastream
         
-        :return: A list of datapoints. Each datapoint contains a list of 21 values 
-        each representing the 21 separate features
-        calculated from one respiration cycle
-        The features are,
+        :return: A list of datapoints. Each DataPoint contains a list of 21 values
+        each representing the 21 separate features calculated from one respiration cycle
+
+        :Features:
         1.  inspiration_duration
         2.  expiration_duration
         3.  respiration_duration
@@ -72,7 +72,7 @@ class respiration_cycle_statistics(ComputeFeatureBase):
         11.  inspiration_expiration_velocity_ratio
         12.  inspiration_expiration_area_ratio
         13.  expiration_respiration_duration_ratio
-        14.  resspiration_area_inspiration_duration_ratio
+        14.  respiration_area_inspiration_duration_ratio
         15.  power_.05-.2_Hz
         16.  power_.201-.4_Hz
         17.  power_.401-.6_Hz
@@ -174,9 +174,10 @@ class respiration_cycle_statistics(ComputeFeatureBase):
     def process(self, user:str, all_days:list):
 
         """
-        Takes the user identifier and the list of days and does the required processing  
-        :param user: user id string
-        :param all_days: list of days to compute
+        Takes the user identifier and the list of days and does the required processing
+
+        :param str user: user id string
+        :param list all_days: list of days to compute
 
         """
         if not list(all_days):

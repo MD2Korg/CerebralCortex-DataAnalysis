@@ -71,7 +71,7 @@ class GPSFeatures(ComputeFeatureBase):
         """
 	Total distance covered in a day.
 
-        :param data: datapoint array of centroid stream
+        :param data: DataPoint array of centroid stream
         :return: total distance covered by participant in kilometers 
         :rtype: List(DataPoint) with a single element.
         """
@@ -117,7 +117,7 @@ class GPSFeatures(ComputeFeatureBase):
         """
 	Maximum distance between two locations covered by participant in kilometers in a day.
 
-        :param data: datapoint array of centroid stream
+        :param data: DataPoint array of centroid stream
         :return: maximum distance between two locations covered by participant in kilometers 
         :rtype: List(DataPoint) with a single element.
         """
@@ -163,7 +163,7 @@ class GPSFeatures(ComputeFeatureBase):
         """
 	Number of different places the participant visited in a day.
 	
-        :param data: datapoint array of centroid stream
+        :param data: DataPoint array of centroid stream
         :return: number of different places the participant visited in a day
         :rtype: List(DataPoint) with a single element.
         """
@@ -212,7 +212,7 @@ class GPSFeatures(ComputeFeatureBase):
         """
 	Standard deviation of displacements of a user in a day.
 
-        :param datawithtransit: datapoint array of centroid stream
+        :param datawithtransit: DataPoint array of centroid stream
         :return: standard deviation of displacements in a day
         :rtype: List(DataPoint) with a single element.
         """
@@ -264,7 +264,7 @@ class GPSFeatures(ComputeFeatureBase):
         """
 	Cumulative staying time of one type of place. 
 
-        :param semanticdata: datapoint array of semantic stream
+        :param semanticdata: DataPoint array of semantic stream
         :return: cumulative staying time at different types of locations
         :rtype: List(DataPoint) with a single element (dictionary).
         """
@@ -303,7 +303,7 @@ class GPSFeatures(ComputeFeatureBase):
         """
 	Number of transitions from one type of place to another.
 
-        :param semanticdata: datapoint array of semantic stream
+        :param semanticdata: DataPoint array of semantic stream
         :return: number of transitions from one type of location to another 
         :rtype: List(DataPoint) with a single element (dictionary).
         """
@@ -395,7 +395,7 @@ class GPSFeatures(ComputeFeatureBase):
         """
 	Radius of gyration of a participant in a day.
 
-        :param data: datapoint array of centroid stream
+        :param data: DataPoint array of centroid stream
         :return: radius_of_gyration
         :rtype: List(DataPoint) with a single element.
         """
@@ -454,7 +454,7 @@ class GPSFeatures(ComputeFeatureBase):
         Returns list of lists places visited by the user in whole study. 
         Each element lists the places visited by the user in a day.
 
-        :param data: datapoint array of centroid stream
+        :param data: DataPoint array of centroid stream
         :return: Mobility places of one participant in a day ( with interval 15 minutes ).
         :rtype: List(DataPoint).
 
@@ -503,7 +503,7 @@ class GPSFeatures(ComputeFeatureBase):
     def average_difference(self,datapoint1,datapoint2):
         """
         Average difference of the places visited by user in two different days.
-        :param data: datapoint array of centroid stream
+        :param data: DataPoint array of centroid stream
         :return: averaged different places in two days 
         :rtype: number(float)
 
@@ -529,7 +529,7 @@ class GPSFeatures(ComputeFeatureBase):
         """
         Returns Routine Index for all days of the participant.
 
-        :param data: datapoint array of centroid stream
+        :param data: DataPoint array of centroid stream
         :return: total distance covered by participant in kilometers 
         :rtype: List(DataPoint) with a single element.
 
@@ -568,7 +568,7 @@ class GPSFeatures(ComputeFeatureBase):
         """
 	Available data of a participant in seconds.
 
-        :param data: datapoint array of centroid stream
+        :param data: DataPoint array of centroid stream
         :return: available data in a day in seconds
         :rtype: List(DataPoint) with a single element.
         """

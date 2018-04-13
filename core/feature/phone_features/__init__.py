@@ -1,4 +1,5 @@
 """
+This documentation block describes the how the feature is computed
 
 Feature list
 
@@ -73,6 +74,8 @@ Feature list
         - Variance
 6. App Category
 
-References:
 
+:References:
+1. Book or article reference, URL or whatever.
+2. Book or article reference, URL or whatever.
 """

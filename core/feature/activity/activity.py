@@ -36,6 +36,7 @@ from core.computefeature import ComputeFeatureBase
 
 feature_class_name = 'ActivityMarker'
 
+
 class ActivityMarker(ComputeFeatureBase):
     """
     Detects activity and posture per 10 seconds window from
@@ -48,7 +49,7 @@ class ActivityMarker(ComputeFeatureBase):
 
     def get_day_data(self, stream_name, user_id, day):
         '''
-        get list od datapoint for the stream name
+        get list od DataPoint for the stream name
 
         :param string stream_name: Name of the stream
         :param string user_id: UID of the user
@@ -115,7 +116,7 @@ class ActivityMarker(ComputeFeatureBase):
                                                            window_size=TEN_SECONDS)
 
         print("Accel Len:",len(activity_features))
-        
+
         posture_labels = classify_posture(activity_features, is_gravity)
         activity_labels = classify_activity(activity_features, is_gravity)
 
@@ -161,7 +162,7 @@ class ActivityMarker(ComputeFeatureBase):
 
             self.CC.logging.log("is_gravity TRUE activity_type_stream: %d" %
                                 (len(activity_labels)))
-            self.CC.logging.log("is_gravity TRUE posture_stream: %d " % 
+            self.CC.logging.log("is_gravity TRUE posture_stream: %d " %
                                 (len(posture_labels)))
 
             if len(activity_labels) > 0:
@@ -191,7 +192,7 @@ class ActivityMarker(ComputeFeatureBase):
 
             self.CC.logging.log("is_gravity FALSE activity_type_stream: %d" %
                                 (len(activity_labels)))
-            self.CC.logging.log("is_gravity FALSE posture_stream: %d " % 
+            self.CC.logging.log("is_gravity FALSE posture_stream: %d " %
                                  (len(posture_labels)))
 
             if len(activity_labels) > 0:

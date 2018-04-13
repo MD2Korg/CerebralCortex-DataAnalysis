@@ -34,39 +34,37 @@ feature_class_name = 'TaskFeatures'
 
 class TaskFeatures(ComputeFeatureBase):
     """
-    Algorithm:
-    step 1: For each user collects stream data of all stream ids of one day
-    step 2: Checks and removes duplicate data points
-    step 3: Converts stream data of one day into dictionary of lists of
-            start and end times for each stream. The keys of interest in the
-            dictionaries are sitting,standing,walking,work and 1.
-    step 4: Finds overlapping start and end times of sitting,standing,walking in
-            work and around office beacon context. Converts each such finding
-            into a datapoint.Sums difference of these start and end times to find
-            total time spent in sitting,standing,walking in work in office and around
-            office beacon context.
-    step 5: Stores each such datapoint.
-    step 6: Finds fraction of time spent in sitting,standing,walking in mintues
-            per hour in comaparison with total time sent in work in office and
-            around office beacon in a day.Converts each such finding in a datapoint.
-    Step 7: Stores each such datapoint
-
-
-    Detects start and end sessions of postures like sitting and standing
+        Detects start and end sessions of postures like sitting and standing
     in office context and around office beacon context in a day. Also detects
     activity sessions like walking against the same office and office beacon
     context for the same day. Computes fraction of posture and activity time against
     total office and office beacon context time and converts them to minutes per
     hour.
-    """
 
-    # def __init__(self):
-    #     CC_CONFIG_PATH = '/home/md2k/cc_configuration.yml'
-    #     self.CC = CerebralCortex(CC_CONFIG_PATH)
+    Algorithm::
+
+        step 1: For each user collects stream data of all stream ids of one day
+        step 2: Checks and removes duplicate data points
+        step 3: Converts stream data of one day into dictionary of lists of
+                start and end times for each stream. The keys of interest in the
+                dictionaries are sitting,standing,walking,work and 1.
+        step 4: Finds overlapping start and end times of sitting,standing,walking in
+                work and around office beacon context. Converts each such finding
+                into a DataPoint.Sums difference of these start and end times to find
+                total time spent in sitting,standing,walking in work in office and around
+                office beacon context.
+        step 5: Stores each such DataPoint.
+        step 6: Finds fraction of time spent in sitting,standing,walking in mintues
+                per hour in comaparison with total time sent in work in office and
+                around office beacon in a day.Converts each such finding in a DataPoint.
+        Step 7: Stores each such datapoint
+
+    """
 
     def get_day_data(self, stream_name: str, user_id: str, day: str)->List[DataPoint]:
         """
         This function collects participant data of all stream ids for a day
+
         :param str stream_name: Name of the stream
         :param str user_id: UUID of the stream owner
         :param str day: The day (YYYYMMDD) on which to operate

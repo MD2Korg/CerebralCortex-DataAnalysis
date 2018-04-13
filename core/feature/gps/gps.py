@@ -343,7 +343,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         :param List all_days: List of all days present
         :param string gps_stream_id: Stream id
         :param string user_id: User ID
-        :return: List(Datapoints): Gps datapoints for the that gps_stream_id
+        :return: List(Datapoints): Gps DataPoints for the that gps_stream_id
         for that user_id)
         """
         data_for_all_days = []

@@ -1,6 +1,7 @@
 """
-Feature List
+This documentation block describes the how the feature is computed
 
+:Features:
 1. Working days from GPS
 2. Working days from Beacon
 3. Office staying time from GPS
@@ -40,5 +41,23 @@ Feature List
     - Liberal
         - after_expected_liberal_time
         - before_expected_liberal_time
-        - in_expected_liberal_time
+        - in_expected_liberal_timehone pressure sensor data yield
+
+:Inputs:
+1. Input one
+2. Input two
+
+:Outputs:
+1. Output one
+
+Algorithm::
+
+    This is step one of the algorithm.
+    This is step two of the algorithm.
+        This is step two part b of the algorithm.
+    This is step four of the algorithm.
+
+:References:
+1. Book or article reference, URL or whatever.
+2. Book or article reference, URL or whatever.
 """

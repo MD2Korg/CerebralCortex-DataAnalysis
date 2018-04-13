@@ -40,6 +40,7 @@ import json
 import traceback
 import math
 
+# TODO: Comment and describe constants
 feature_class_name = 'SleepDurationAnalysis'
 Sleep_Durations_STREAM = 'org.md2k.data_analysis.feature.v2.sleep_durations'
 MEDIAN_ABSOLUTE_DEVIATION_MULTIPLIER = 1.4826
@@ -51,7 +52,8 @@ class SleepDurationAnalysis(ComputeFeatureBase):
     Produce feature from these stream: 'org.md2k.data_analysis.feature.v2.sleep_durations. Sleep
     duration time is taken from the stream's data sample. And here usual sleep duration is a range
     of time. each day's sleep_duration is marked as usual_sleep_duration or more_than_usual or
-    less_than_usual """
+    less_than_usual
+    """
 
     def listing_all_sleep_duration_analysis(self, user_id: str, all_days: List[str]):
         """
@@ -113,14 +115,14 @@ class SleepDurationAnalysis(ComputeFeatureBase):
             else:
                 data.sample.append("usual_sleep_duration")
                 data.sample.append(0)
-        #print(sleep_duration_data)
+
         try:
             if len(sleep_duration_data)>0:
                 streams = self.CC.get_user_streams(user_id)
                 if streams:
                     for stream_name, stream_metadata in streams.items():
                         if stream_name == Sleep_Durations_STREAM:
-                            #print("Going to pickle the file: ",sleep_duration_data)
+
                             self.store_stream(filepath="sleep_duration_analysis.json",
                                               input_streams=[stream_metadata],
                                               user_id=user_id,

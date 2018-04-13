@@ -31,7 +31,7 @@ feature_class_name = 'data_yield'
 class data_yield(ComputeFeatureBase):
     """
     Class to calculate the the motionsenseHRV data yield for each minute of the day when data is present 
-    rendering a list of datapoints. each datapoint contains a boolean decision indicating if the sensor was worn or not
+    rendering a list of datapoints. each DataPoint contains a boolean decision indicating if the sensor was worn or not
     """
 
     def calculate_yield(self,
@@ -42,13 +42,13 @@ class data_yield(ComputeFeatureBase):
                         json_path:str)->list:
         """
         Function to calculate the motionsenseHRV data yield for each minute of the day when data is present 
-        rendering a list of datapoints. each datapoint contains a boolean decision indicating if the sensor was worn or not
+        rendering a list of datapoints. each DataPoint contains a boolean decision indicating if the sensor was worn or not
         :param user_id: 
         :param stream_identifier: 
         :param all_days: 
         :param all_streams: 
         :param json_path: 
-        :return: A list of datapoints each datapoint contains a boolean decision indicating if the sensor was worn or not
+        :return: A list of DataPoints each DataPoint contains a boolean decision indicating if the sensor was worn or not
         """
         for day in all_days:
             motionsense_raw = self.CC.get_stream(all_streams[stream_identifier]["identifier"],

@@ -45,16 +45,16 @@ class DecodeHRV(ComputeFeatureBase):
                                       raw_byte_array:list)->list:
         """
         This function checks for qualtrics stress survey data present on the day 
-        specified and finds those datapoints which are only 60 minutes behind the
+        specified and finds those DataPoints which are only 60 minutes behind the
         time of taking the survey. The motivation is to predict the stress value 
         we would be more concerned with the 60 minutes of data beforehand 
         
         :param all_streams: a dictionery of all the streams of the partiipant
         :param day: a string in 'YYYYMMDD' format 
         :param user_id: uuid string representing the user identifier
-        :param raw_byte_array: A list of all the datapoints for that user on that day
+        :param raw_byte_array: A list of all the DataPoints for that user on that day
         
-        :return: A list of only those datapoints those are 60 minutes behind the timing of stress survey 
+        :return: A list of only those DataPoints those are 60 minutes behind the timing of stress survey
         """
         if qualtrics_identifier in all_streams:
             data = self.CC.get_stream(all_streams[qualtrics_identifier][

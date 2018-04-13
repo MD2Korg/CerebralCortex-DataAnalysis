@@ -27,16 +27,19 @@ import numpy as np
 import scipy.signal as signal
 
 
-
-def lomb(time_stamps:List,
-         samples:List,
+def lomb(time_stamps: List,
+         samples: List,
          low_frequency: float,
          high_frequency: float):
     """
-   : Lomb–Scargle periodogram implementation
-    :param high_frequency: float
-    :param low_frequency: float
+    Lomb–Scargle periodogram implementation
+
+    :param list samples:
+    :param list time_stamps:
+    :param float high_frequency: float
+    :param float low_frequency: float
     :return lomb-scargle pgram and frequency values
+    :rtype:
     """
 
     frequency_range = np.linspace(low_frequency, high_frequency, len(time_stamps))
@@ -50,11 +53,13 @@ def heart_rate_power(power: np.ndarray,
                      high_rate: float):
     """
     Compute Heart Rate Power for specific frequency range
-    :param power: np.ndarray
-    :param frequency: np.ndarray
-    :param high_rate: float
-    :param low_rate: float
+
+    :param np.ndarray power:
+    :param np.ndarray frequency:
+    :param float high_rate:
+    :param float low_rate:
     :return: sum of power for the frequency range
+    :rtype: float
     """
     result_power = float(0.0)
     for i, value in enumerate(power):
@@ -63,12 +68,8 @@ def heart_rate_power(power: np.ndarray,
     return result_power
 
 
-
-
-
-
-def ecg_feature_computation(timestamp:list,
-                            value:list,
+def ecg_feature_computation(timestamp: list,
+                            value: list,
                             low_frequency: float = 0.01,
                             high_frequency: float = 0.7,
                             low_rate_vlf: float = 0.0009,
@@ -81,20 +82,21 @@ def ecg_feature_computation(timestamp:list,
     ECG Feature Implementation. The frequency ranges for High, Low and Very low heart rate variability values are
     derived from the following paper:
     'Heart rate variability: standards of measurement, physiological interpretation and clinical use'
-    :param high_rate_lf: float
-    :param low_rate_lf: float
-    :param high_rate_hf: float
-    :param low_rate_hf: float
-    :param high_rate_vlf: float
-    :param low_rate_vlf: float
-    :param high_frequency: float
-    :param low_frequency: float
+    :param list value:
+    :param list timestamp:
+    :param float high_rate_lf:
+    :param float low_rate_lf:
+    :param float high_rate_hf:
+    :param float low_rate_hf:
+    :param float high_rate_vlf:
+    :param float low_rate_vlf:
+    :param float high_frequency:
+    :param float low_frequency:
     :return: ECG Feature DataStreams
+    :rtype: list
     """
 
-
     # perform windowing of datastream
-
 
     # initialize each ecg feature array
 
@@ -112,18 +114,18 @@ def ecg_feature_computation(timestamp:list,
 
     # iterate over each window and calculate features
 
-
     reference_data = value
 
     rr_variance_data.append(np.var(reference_data))
 
-    power, frequency = lomb(time_stamps=timestamp,samples=value,low_frequency=low_frequency, high_frequency=high_frequency)
+    power, frequency = lomb(time_stamps=timestamp, samples=value, low_frequency=low_frequency,
+                            high_frequency=high_frequency)
 
     rr_VLF_data.append(heart_rate_power(power, frequency, low_rate_vlf, high_rate_vlf))
 
     rr_HF_data.append(heart_rate_power(power, frequency, low_rate_hf, high_rate_hf))
 
-    rr_LF_data.append(heart_rate_power(power,frequency,low_rate_lf,high_rate_lf))
+    rr_LF_data.append(heart_rate_power(power, frequency, low_rate_lf, high_rate_lf))
 
     if heart_rate_power(power, frequency, low_rate_hf, high_rate_hf) != 0:
         lf_hf = float(heart_rate_power(power, frequency, low_rate_lf, high_rate_lf) / heart_rate_power(power,
@@ -136,8 +138,8 @@ def ecg_feature_computation(timestamp:list,
 
     rr_mean_data.append(np.mean(reference_data))
     rr_median_data.append(np.median(reference_data))
-    rr_quartile_deviation_data.append((0.5*(np.percentile(reference_data, 75) - np.percentile(reference_data,25))))
-    rr_heart_rate_data.append(np.median(60000/np.array(reference_data)))
+    rr_quartile_deviation_data.append((0.5 * (np.percentile(reference_data, 75) - np.percentile(reference_data, 25))))
+    rr_heart_rate_data.append(np.median(60000 / np.array(reference_data)))
 
     return [rr_variance_data[0], rr_VLF_data[0], rr_HF_data[0], rr_LF_data[0], rr_LF_HF_data[0], \
             rr_mean_data[0], rr_median_data[0], rr_quartile_deviation_data[0], rr_heart_rate_data[0]]

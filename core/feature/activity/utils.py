@@ -31,7 +31,7 @@ from typing import List
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 
-###### --------------- start constants -------------------------------------
+# ------------------------------------- start constants -------------------------------------
 # Sampling frequency
 SAMPLING_FREQ_MOTIONSENSE_ACCEL = 25.0
 SAMPLING_FREQ_MOTIONSENSE_GYRO = 25.0
@@ -76,17 +76,15 @@ ACTIVITY_LABELS_INDEX_MAP = {"NO": 0, "LOW": 1, "WALKING": 2, "MOD": 3,
                              "HIGH": 4}
 POSTURE_LABELS_INDEX_MAP = {"lying": 0, "sitting": 1, "standing": 2}
 
-
 MADGWICKFILTER_BETA = 0.4
 
 
-###### --------------- END constants -------------------------------------
+# ------------------------------------- end constants -------------------------------------
 
 
 def get_max_label(label1, label2):
     if label1 in ACTIVITY_LABELS and label2 in ACTIVITY_LABELS:
-        if ACTIVITY_LABELS_INDEX_MAP[label1] > ACTIVITY_LABELS_INDEX_MAP[
-            label2]:
+        if ACTIVITY_LABELS_INDEX_MAP[label1] > ACTIVITY_LABELS_INDEX_MAP[label2]:
             return label1
         else:
             return label2
@@ -97,9 +95,8 @@ def get_max_label(label1, label2):
             return label2
     return "UNDEFINED"
 
-def merge_left_right(left_data: List[DataPoint],
-                     right_data: List[DataPoint],
-                     window_size=10.0):
+
+def merge_left_right(left_data: List[DataPoint], right_data: List[DataPoint], window_size=10.0):
     data = left_data + right_data
     data.sort(key=lambda x: x.start_time)
 
@@ -111,6 +108,7 @@ def merge_left_right(left_data: List[DataPoint],
         if data[index].start_time + win_size > data[index + 1].start_time:
             updated_label = get_max_label(data[index].sample,
                                           data[index + 1].sample)
+
             merged_data.append(DataPoint(start_time=data[index].start_time,
                                          end_time=data[index].end_time,
                                          offset=data[index].offset,
@@ -125,6 +123,7 @@ def merge_left_right(left_data: List[DataPoint],
             index = index + 1
     return merged_data
 
+
 def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
     """
     Returns a list of days (string format: YearMonthDay (e.g., 20171206)
@@ -134,17 +133,15 @@ def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
     stream_days = []
     days = stream_dicts["end_time"] - stream_dicts["start_time"]
     for day in range(days.days + 1):
-        stream_days.append(
-            (stream_dicts["start_time"] + timedelta(days=day)).strftime(
-                '%Y%m%d'))
+        stream_days.append((stream_dicts["start_time"] + timedelta(days=day)).strftime('%Y%m%d'))
     return stream_days
 
 
 def store_data(filepath, input_streams, user_id, data, str_sufix, instance):
-    output_stream_id = str(
-        uuid.uuid3(uuid.NAMESPACE_DNS, str(filepath + user_id + str_sufix)))
+    output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(filepath + user_id + str_sufix)))
     cur_dir = os.path.dirname(os.path.abspath(__file__))
     newfilepath = os.path.join(cur_dir, filepath)
+
     with open(newfilepath, "r") as f:
         metadata = f.read()
         metadata = metadata.replace("CC_INPUT_STREAM_ID_CC",

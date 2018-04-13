@@ -51,7 +51,7 @@ class GPSDaily(ComputeFeatureBase):
     
     def split_datapoint_array_by_day(self,data):
         """
-        Returns datapoint array splitted wth respect to days considering localtime.
+        Returns DataPoint array splitted wth respect to days considering localtime.
 
         :param data: Input data (single DataPoint)
         :return: Splitted list of DataPoints

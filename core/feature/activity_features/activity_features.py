@@ -42,7 +42,7 @@ class ActivityFeature(ComputeFeatureBase):
 
     def get_day_data(self, stream_name, user_id, day):
         '''
-        get list od datapoint for the stream name
+        get list od DataPoint for the stream name
 
         :param string stream_name: Name of the stream
         :param string user_id: UID of the user
