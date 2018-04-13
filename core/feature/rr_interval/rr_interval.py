@@ -25,15 +25,50 @@
 from core.computefeature import ComputeFeatureBase
 from core.feature.rr_interval.utils.util_helper_functions import *
 from datetime import timedelta
+
 feature_class_name = 'rr_interval'
 
 
 class rr_interval(ComputeFeatureBase):
+    """
+    
+    This class takes the raw datastream of motionsenseHRV and motionsenseHRV+ which contains a byte array 
+    in each datapoint and decodes them to get the PPG signal in RED,INFRARED,GREEN channel. This is done for 
+    both left and right/only left/only right sensors whichever is applicable for the person wearing the sensor suite.
+    Depending on the presence of PPG signal this code tries to combine information of both the wrists in a one minute 
+    window. Then a subspace based method is applied to generate the initial likelihood of the presence of R-peaks in 
+    the ppg signals.
+    
+    This likelihood array is then used to compute the R-peaks through an Bayesian IP algorithm. 
+    
+    The class outputs three things for every minute of acceptable PPG signal present:
+    
+        1. A list of RR-interval array. Each entry in the list corresponds to a realization of the position of R peaks 
+        in that minute
+        2. Standard Deviation of Heart Rate within the minute
+        3. A list corresponding to the heart rate values calculated from variable realizations of the RR interval on a 
+        sliding window of window size = 8 second and window offset = 2 second.
+        
+    
+    """
     def get_data_around_stress_survey(self,
-                                      all_streams,
-                                      day,
-                                      user_id,
-                                      raw_byte_array):
+                                      all_streams:dict,
+                                      day:str,
+                                      user_id:str,
+                                      raw_byte_array:list)->list:
+        """
+        This function checks for qualtrics stress survey data present on the day 
+        specified and finds those datapoints which are only 60 minutes behind the
+        time of taking the survey. The motivation is to predict the stress value 
+        we would be more concerned with the 60 minutes of data beforehand 
+        
+        :param all_streams: a dictionery of all the streams of the partiipant
+        :param day: a string in 'YYYYMMDD' format 
+        :param user_id: uuid string representing the user identifier
+        :param raw_byte_array: A list of all the datapoints for that user on that day
+        
+        :return: A list of only those datapoints those are 60 minutes behind the timing of stress survey 
+        """
         if qualtrics_identifier in all_streams:
             data = self.CC.get_stream(all_streams[qualtrics_identifier][
                                           'identifier'], user_id=user_id, day=day,localtime=False)
@@ -50,12 +85,12 @@ class rr_interval(ComputeFeatureBase):
 
 
 
-    def process(self, user, all_days):
+    def process(self, user:str, all_days:list):
         """
-
+        Takes the user identifier and the list of days and does the required processing  
         :param user: user id string
         :param all_days: list of days to compute
-
+        
         """
         if not all_days:
             return
