@@ -2,8 +2,10 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"float",
-      "unit":"10 seconds window"
+      "name": "activity_type",
+      "type": "string",
+      "unit": "",
+      "descriptor": "Detects activity types (NO, LOW, WALKING, MOD, HIGH) in 10 seconds window using wrist accelerometer"
     }
   ],
   "execution_context":{
@@ -30,7 +32,7 @@
       "version":"0.0.1",
       "reference":{
       },
-      "description":"Detects activity types (NO, LOW, WALKING, MOD, HIGH)"
+      "description":"Detects activity types (NO, LOW, WALKING, MOD, HIGH) in 10 seconds window using wrist accelerometer"
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",

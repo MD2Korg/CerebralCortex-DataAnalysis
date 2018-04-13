@@ -2,9 +2,22 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"int",
-      "unit":"1 minute window",
-      "description":"A numpy array of length 3. First index contains many realizations of RR interval, second index contains the standard deviation and the last one contains an array of heart rate"
+      "name":"rr_interval_list",
+      "type":"list",
+      "unit":"",
+      "description":"A list fo all the realizations of RR interval given in number of samples"
+    },
+    {
+      "name":"standard_deviation_heart_rate",
+      "type":"list",
+      "unit":"",
+      "description":"Standard deviation of heart rate within a minute"
+    },
+    {
+      "name":"heart_rate_list",
+      "type":"list",
+      "unit":"",
+      "description":"A list of heart rate values within the minute calculated on window size = 8 seconds,window offset = 2 seconds"
     }
   ],
   "execution_context":{

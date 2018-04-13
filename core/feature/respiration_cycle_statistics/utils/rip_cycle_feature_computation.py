@@ -17,9 +17,10 @@ def rip_cycle_feature_computation(peaks_datastream: List[DataPoint],
     Removed due to lack of current use in the implementation
     roc_max = []  # 8. ROC_MAX = max(sample[j]-sample[j-1])
     roc_min = []  # 9. ROC_MIN = min(sample[j]-sample[j-1])
-    :param peaks_datastream: DataStream
-    :param valleys_datastream: DataStream
-    :return: RIP Feature DataStreams
+    :param peaks_datastream: list of peak datapoints
+    :param valleys_datastream: list of valley datapoints
+    :return: lists of datapoints each representing a specific feature calculated from the respiration cycle 
+    found from the peak valley inputs 
     """
 
 

@@ -1,0 +1,42 @@
+{
+  "annotations": [],
+  "data_descriptor": [
+    {
+      "name": "amount_of_walking_accel_only",
+      "type": "float",
+      "unit": "minute",
+      "descriptor": "amount of walking daily from accel only model. If missing data of any hour is more than 50% then imputed with mean walking of that time of day."
+    }
+  ],
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.activity_features",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+        "window_size": "1day"
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.activity_features.activity_features",
+      "authors": [
+        {
+          "name": "Sayma Akther",
+          "email": "sakther@memphis.edu"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+      },
+      "description": "Compute amount of walking daily from accel only model. If missing data of any hour is more than 50% then imputed with mean walking of that time of day."
+    }
+  },
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.activity_features.walking.imputed_time_of_day.daily",
+  "owner": "",
+  "type": "1"
+}

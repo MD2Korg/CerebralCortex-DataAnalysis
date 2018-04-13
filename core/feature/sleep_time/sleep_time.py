@@ -30,7 +30,7 @@ from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
 from core.computefeature import ComputeFeatureBase
-from SleepDurationPrediction import SleepDurationPredictor
+from core.feature.sleep_time.SleepDurationPrediction import SleepDurationPredictor
 
 import pprint as pp
 import numpy as np
