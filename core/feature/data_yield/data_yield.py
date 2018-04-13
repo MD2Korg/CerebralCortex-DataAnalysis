@@ -29,10 +29,28 @@ from core.signalprocessing.window import window_sliding
 feature_class_name = 'data_yield'
 
 class data_yield(ComputeFeatureBase):
+    """
+    Class to calculate the the motionsenseHRV data yield for each minute of the day when data is present 
+    rendering a list of datapoints. each datapoint contains a boolean decision indicating if the sensor was worn or not
+    """
 
-    def calculate_yield(self,user_id,stream_identifier,all_days,all_streams,json_path):
+    def calculate_yield(self,
+                        user_id:str,
+                        stream_identifier:str,
+                        all_days:list,
+                        all_streams:dict,
+                        json_path:str)->list:
+        """
+        Function to calculate the motionsenseHRV data yield for each minute of the day when data is present 
+        rendering a list of datapoints. each datapoint contains a boolean decision indicating if the sensor was worn or not
+        :param user_id: 
+        :param stream_identifier: 
+        :param all_days: 
+        :param all_streams: 
+        :param json_path: 
+        :return: A list of datapoints each datapoint contains a boolean decision indicating if the sensor was worn or not
+        """
         for day in all_days:
-            final_data = []
             motionsense_raw = self.CC.get_stream(all_streams[stream_identifier]["identifier"],
                                                  day=day,user_id=user_id,localtime=False)
             if not list(motionsense_raw.data):
@@ -62,12 +80,13 @@ class data_yield(ComputeFeatureBase):
                               user_id,
                               final_yield,localtime=False)
 
-    def process(self, user, all_days):
+    def process(self, user, all_days:list):
         """
-
+        Takes the user identifier and the list of days and does the required processing  
+        
         :param user: user id string
         :param all_days: list of days to compute
-
+        
         """
         if not all_days:
             return
