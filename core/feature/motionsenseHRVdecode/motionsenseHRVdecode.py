@@ -34,6 +34,10 @@ feature_class_name = 'DecodeHRV'
 
 class DecodeHRV(ComputeFeatureBase):
 
+    """
+    This class takes as input raw datastreams from motionsenseHRV and decodes them to get the Accelerometer, Gyroscope 
+    PPG, Sequence number timeseries. Last of all it does timestamp correction on all the timeseries and saves them. 
+    """
     def get_data_around_stress_survey(self,
                                       all_streams:dict,
                                       day:str,
@@ -67,10 +71,11 @@ class DecodeHRV(ComputeFeatureBase):
         return []
 
     def get_and_save_data(self,
-                          all_streams,
-                          all_days,
-                          stream_identifier,
-                          user_id,json_path):
+                          all_streams:dict,
+                          all_days:list,
+                          stream_identifier:str,
+                          user_id:str,
+                          json_path:str):
         """
         all computation and storing of data
 
@@ -78,8 +83,8 @@ class DecodeHRV(ComputeFeatureBase):
         :param all_days: daylist to compute
         :param stream_identifier: left/right wrist HRV raw stream identifier
         :param user_id: user id
-        :param json_path: path of json file containing metadata
-        :return:
+        :param json_path: name of json file containing metadata
+        
         """
         for day in all_days:
             motionsense_raw = self.CC.get_stream(
@@ -109,9 +114,12 @@ class DecodeHRV(ComputeFeatureBase):
     def process(self, user, all_days:list):
         """
 
+        Takes the user identifier and the list of days and does the required processing
+        
         :param user: user id string
         :param all_days: list of days to compute
 
+        
         """
         if not all_days:
             return
