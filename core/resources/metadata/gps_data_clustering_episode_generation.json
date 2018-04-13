@@ -2,8 +2,19 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"List",
-      "unit":""
+      "NAME": "GPS Index",
+      "DATA_TYPE": "int",
+      "DESCRIPTION": "Index of gps centroid"
+    },
+    {
+      "NAME": "Centroid Latitude",
+      "DATA_TYPE": "float",
+      "DESCRIPTION": "Latitude of Centroid"
+    },
+    {
+      "NAME": "Centroid Longitude",
+      "DATA_TYPE": "float",
+      "DESCRIPTION": "Longitude of Centroid"
     }
   ],
   "execution_context":{
