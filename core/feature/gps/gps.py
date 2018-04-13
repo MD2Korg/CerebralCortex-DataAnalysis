@@ -5,6 +5,7 @@ from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from pprint import pprint
 from scipy.io import savemat
 import datetime
+import time
 import numpy as np, pandas as pd
 import time, os
 from math import radians, cos, sin, asin, sqrt
@@ -13,7 +14,6 @@ from geopy.distance import great_circle
 from shapely.geometry.multipoint import MultiPoint
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-import datetime
 from core.computefeature import ComputeFeatureBase
 from googleplaces import GooglePlaces, types, lang
 import googleplaces
@@ -66,13 +66,33 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     CENTROID_INDEX = 7
     FIVE_MINUTE_SECONDS = 600.0
     NOT_HOME_OR_WORK = 'other'
+    PLACES_QUERY_CACHE = [] # each item will be of the format ((lat,long), [])
+    QUERY_CACHE_PATH = '/cerebralcortex/code/anand/places_cache.txt'
+
+    TOTAL_QUERIES = []
+    QUERIES_AVOIDED = 0
+
+    QUERY_LIMIT = 130000
+    QUERY_DONE = 0
 
     def process(self, user, all_days):
         """
         Process GPS data
         """
+        self.CC.logging.log('Computing for user %s cache length '
+                            '%d'%(user,len(GPSClusteringEpochComputation.PLACES_QUERY_CACHE)))
         location_stream = 'LOCATION--org.md2k.phonesensor--PHONE'
         geofence_list_stream = 'GEOFENCE--LIST--org.md2k.phonesensor--PHONE'
+        
+        #load cache
+        cache_file_path = self.CC.config['cachepaths']['googleplaces']
+        if os.path.exists(cache_file_path):
+            pkl_path = open(cache_file_path, 'rb')
+            self.query_cache = pickle.load(pkl_path)
+            pkl_path.close()
+        else:
+            self.query_cache = {}
+
         if self.CC is not None:
             streams = self.CC.get_user_streams(user)
             gps_data_all_streams = []
@@ -178,6 +198,18 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                         user_id=user,
                         data=epoch_place_annotation, localtime=False)
 
+
+        pkl_path = open(cache_file_path, 'wb')
+        pickle.dump(self.query_cache, pkl_path)
+        pkl_path.close()
+
+        self.CC.logging.log('TOTAL Queries %d QUERIES Avoided %d ' 
+                            'Cache Length %d QUERIES_DONE %d' %
+                            (len(GPSClusteringEpochComputation.TOTAL_QUERIES),
+                             GPSClusteringEpochComputation.QUERIES_AVOIDED,
+                            len(GPSClusteringEpochComputation.PLACES_QUERY_CACHE), 
+                             GPSClusteringEpochComputation.QUERY_DONE))
+
     def find_interesting_places(self, latitude, longitude, api_key,
                                 geofence_radius):
         """
@@ -188,24 +220,101 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         :param geofence_radius: float
         :return: 
         """
-        google_places = GooglePlaces(api_key)
+        # search the cache, if found return from cache
+        GPSClusteringEpochComputation.TOTAL_QUERIES.append((latitude,longitude))
+        for cached_search in GPSClusteringEpochComputation.PLACES_QUERY_CACHE:
+            cached_long = cached_search[0][1]
+            cached_lat = cached_search[0][0]
+            distance = self.haversine(longitude, latitude, cached_long, cached_lat)
+            distance = distance * 1000 # convert km to m
+            if distance <= 10: # 10m is a heuristic value
+                GPSClusteringEpochComputation.QUERIES_AVOIDED += 1
+                #self.CC.logging.log('For latitude %f longitude %f found cached '
+                #                    'value %s within %f meters' %
+                #                    (latitude, longitude, str(cached_search),
+                #                     distance))
+                return cached_search[1]
+
+        return_list = []
+
+
         places_type_list = [self.RESTAURANT, self.SCHOOL, self.PLACE_OF_WORSHIP,
                             self.ENTERTAINMENT, self.STORE,
                             self.SPORTS]
-        return_list = []
+
+        google_places = GooglePlaces(api_key)
         for places_list in places_type_list:
             place_list_length = 0
             for a_place in places_list:
-                query_res = google_places.nearby_search(
-                    lat_lng={'lat': latitude, 'lng': longitude},
-                    keyword=a_place,
-                    radius=geofence_radius)
-                for place in query_res.places:
-                    place_list_length += 1
+                #Search cache first 
+                if (latitude, longitude, a_place) in self.query_cache:
+                    for x in self.query_cache[(latitude, longitude,
+                                               a_place)].places:
+                        place_list_length +=1
+                else:
+                    self.CC.logging.log('No cache entry found for %s ' %
+                                        (self.query_cache[(latitude, longitude,
+                                                           a_place)]))
+                    try:
+                        query_res = google_places.nearby_search(
+                            lat_lng={'lat': latitude, 'lng': longitude},
+                            keyword=a_place,
+                            radius=geofence_radius)
+                        for place in query_res.places:
+                            place_list_length += 1
+
+                        #update cache
+                        self.query_cache[(latitude, longitude, a_place)] =\
+                                                                    query_res
+                    except Exception as e:
+                        if 'OVER_QUERY_LIMIT' in str(e):
+                            now = datetime.datetime.now()
+                            sleep_until = now + datetime.timedelta(days=1)
+                            sleep_until = sleep_until.replace(hour=3,minute=0,second=10)
+                            delay_by = ((sleep_until - now).seconds)
+                            self.CC.logging.log("Sleeping %f seconds so that we "
+                                               "do not exceed the limit for places api"
+                                               % (float(delay_by.seconds)))
+                            time.sleep(delay_by)
+                            #QUERY AGAIN
+                            query_res = google_places.nearby_search(
+                                lat_lng={'lat': latitude, 'lng': longitude},
+                                keyword=a_place,
+                                radius=geofence_radius)
+                            for place in query_res.places:
+                                place_list_length += 1
+
+                            #update cache
+                            self.query_cache[(latitude, longitude, a_place)] =\
+                                                                    query_res
+                        elif 'HTTP Error 500: Internal Server Error' in str(e):
+                            self.CC.logging.log('Caught HTTP 500 error, sleeping 30 '
+                                                'seconds')
+                            time.sleep(30)
+                            #QUERY AGAIN
+                            query_res = google_places.nearby_search(
+                                lat_lng={'lat': latitude, 'lng': longitude},
+                                keyword=a_place,
+                                radius=geofence_radius)
+                            for place in query_res.places:
+                                place_list_length += 1
+
+                            #update cache
+                            self.query_cache[(latitude, longitude, a_place)] =\
+                                                                    query_res
+                        else:
+                            raise
+
+                    GPSClusteringEpochComputation.QUERY_DONE += 1
+            
             if place_list_length:
                 return_list.append('yes')
             else:
                 return_list.append('no')
+        
+        GPSClusteringEpochComputation.PLACES_QUERY_CACHE.append(((latitude,
+                                                                  longitude),
+                                                                  return_list))
         return return_list
 
     def get_gps(self, gps_stream_id, user_id, all_days):
@@ -231,6 +340,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
             extracted_gps_data = []
         else:
             for all_data in data_for_all_days:
+
                 for data in all_data:
                     extracted_gps_data.append(data)
         return extracted_gps_data
@@ -633,7 +743,8 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                         self.FIVE_MINUTE_SECONDS:
                     sample_centroid = self.find_interesting_places(
                         gps_datapoints[i][self.LATITUDE],
-                        gps_datapoints[i][self.LONGITUDE], self.gps_api_key,
+                        gps_datapoints[i][self.LONGITUDE],
+                        self.CC.config['apikeys']['googleplacesapi'],
                         self.MINIMUM_POINTS_IN_CLUSTER)
                     dp_centroid = DataPoint(n_start_date, n_end_date,
                                             gps_datapoints[i][3],
