@@ -2,8 +2,8 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"string",
-      "unit":""
+      "name": "type",
+      "type":"string"
     }
   ],
   "execution_context":{
