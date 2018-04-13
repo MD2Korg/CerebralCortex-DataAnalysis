@@ -56,8 +56,8 @@ class stress_from_respiration(ComputeFeatureBase):
         13.  expiration_respiration_duration_ratio
         14.  resspiration_area_inspiration_duration_ratio
     
-    In every one minute of data there will be more than 1 respiration cycles each with these 14 features pre-calculated.
-    We take the median of each of this feature found within the minute, 
+    In every one minute of data there will be more than 1 respiration cycles each with 
+    these 14 features pre-calculated. We take the median of each of this feature found within the minute, 
     transform the (1,14) shape feature row according to a pre-trained standard 
     transformation and apply the Support Vector Machine model to get the binary output
     
@@ -68,7 +68,7 @@ class stress_from_respiration(ComputeFeatureBase):
     ACM UbiComp, pp. 493-504, 2015.
         
     """
-    def process(self, user:str, all_days):
+    def process(self, user:str, all_days:list):
 
         """
         Takes the user identifier and the list of days and does the required processing  

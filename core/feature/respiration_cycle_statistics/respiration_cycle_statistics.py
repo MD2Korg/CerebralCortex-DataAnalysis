@@ -44,7 +44,7 @@ class respiration_cycle_statistics(ComputeFeatureBase):
         1. Filter the combined respiration raw and baseline datastream to get rid of the signal at 
         times when the person was not wearing the sensor suite
         2. Identify the Respiration Cycles by getting the peak and valley points
-        3. Compute the features
+        3. Compute the features for each cycle
     
     """
 
