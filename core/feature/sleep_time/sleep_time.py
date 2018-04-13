@@ -31,6 +31,7 @@ from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
 from core.computefeature import ComputeFeatureBase
 from core.feature.sleep_time.SleepDurationPrediction import SleepDurationPredictor
+from typing import List
 
 import pprint as pp
 import numpy as np
@@ -55,8 +56,14 @@ class SleepTime(ComputeFeatureBase):
     and CU_AUDIO_ENERGY--edu.dartmouth.eureka'. Sleep time is calculated from these
     stream's data."""
 
-    def listing_all_sleep_times(self, user_id, all_days):
-        """ Produce and save the list of sleep time intervals according to day in one stream """
+    def listing_all_sleep_times(self, user_id: str, all_days: List[str]):
+        """
+        Produce and save the list of sleep time intervals according to day in one stream
+
+        :param str user_id: UUID of the stream owner
+        :param List(str) all_days: All days of the user in the format 'YYYYMMDD'
+        :return:
+        """
         try:
             input_stream_names = [ACTIVITY_STREAM, LIGHT_STREAM, PHONE_SCREEN_STREAM, AUDIO_ENERGY_STREAM]
             input_streams = []
@@ -82,7 +89,14 @@ class SleepTime(ComputeFeatureBase):
             self.CC.logging.log("Exception:", str(e))
             self.CC.logging.log(str(traceback.format_exc()))
 
-    def process(self, user_id, all_days):
+    def process(self, user_id: str, all_days: List[str]):
+        """
+        Main processing function inherited from ComputerFeatureBase
+
+        :param str user_id: UUID of the user
+        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        :return:
+        """
         if self.CC is not None:
             self.CC.logging.log("Processing Sleep Times")
             self.listing_all_sleep_times(user_id, all_days)

@@ -30,6 +30,7 @@ from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
 from core.computefeature import ComputeFeatureBase
 
+from typing import List
 import pprint as pp
 import numpy as np
 import pdb
@@ -53,11 +54,15 @@ class ArrivalTimesFromBeacon(ComputeFeatureBase):
     arrival time is calculated from these data. And here usual time is a range of time.
     Each day's arrival_time is marked as usual or before_time or after_time """
 
-    def listing_all_arrival_times_from_beacon(self, user_id, all_days):
+    def listing_all_arrival_times_from_beacon(self, user_id: str, all_days: List[str]):
         """
         Produce and save the list of work_day's arrival_time at office's beacon
         from "org.md2k.data_analysis.feature.working_days_from_beacon" stream and
         marked each day's arrival_time as usual or before_time or after_time
+
+        :param str user_id: UUID of the stream owner
+        :param List(str) all_days: All days of the user in the format 'YYYYMMDD'
+        :return:
         """
 
         self.CC.logging.log('%s started processing for user_id %s' %
@@ -130,7 +135,15 @@ class ArrivalTimesFromBeacon(ComputeFeatureBase):
                             'data points' %
                             (self.__class__.__name__, str(user_id),
                              len(arrival_data)))
-    def process(self, user_id, all_days):
+
+    def process(self, user_id: str, all_days: List[str]):
+        """
+        Main processing function inherited from ComputerFeatureBase
+
+        :param str user_id: UUID of the user
+        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        :return:
+        """
         if self.CC is not None:
             self.CC.logging.log("Processing Arrival Times From Beacon")
             self.listing_all_arrival_times_from_beacon(user_id, all_days)

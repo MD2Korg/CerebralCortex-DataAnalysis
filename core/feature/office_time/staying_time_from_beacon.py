@@ -30,6 +30,7 @@ from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
 from core.computefeature import ComputeFeatureBase
 
+from typing import List
 import pprint as pp
 import numpy as np
 import pdb
@@ -52,12 +53,17 @@ class StayingTimesFromBeacon(ComputeFeatureBase):
     time is calculated from these data. And here usual staying time is a range of time. each day's
     staying_time is marked as usual_staying_time or more_than_usual or less_than_usual """
 
-    def listing_all_staying_times_from_beacon(self, user_id, all_days):
+    def listing_all_staying_times_from_beacon(self, user_id: str, all_days: List[str]):
         """
         Produce and save the list of work_day's staying_time at office according to beacon from
         "org.md2k.data_analysis.feature.working_days_from_beacon" stream and marked each day's
         staying_time as Usual_staying_time or More_than_usual or Less_than_usual. All staying time
-        is saved in minute. """
+        is saved in minute.
+
+        :param str user_id: UUID of the stream owner
+        :param List(str) all_days: All days of the user in the format 'YYYYMMDD'
+        :return:
+        """
 
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
@@ -130,7 +136,15 @@ class StayingTimesFromBeacon(ComputeFeatureBase):
                             'data points' %
                             (self.__class__.__name__, str(user_id),
                              len(staying_time_data)))
-    def process(self, user_id, all_days):
+
+    def process(self, user_id: str, all_days: List[str]):
+        """
+        Main processing function inherited from ComputerFeatureBase
+
+        :param str user_id: UUID of the user
+        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        :return:
+        """
         if self.CC is not None:
             self.CC.logging.log("Processing Staying Times From Beacon")
             self.listing_all_staying_times_from_beacon(user_id, all_days)

@@ -30,6 +30,7 @@ from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
 from core.computefeature import ComputeFeatureBase
 
+from typing import List
 import pprint as pp
 import numpy as np
 import pdb
@@ -56,14 +57,19 @@ class ExpectedStayingTimes(ComputeFeatureBase):
     And in another stream each day's staying_time is marked as in_expected_liberal_time or
     more_than_expected_liberal_time or less_than_expected_liberal_time """
 
-    def listing_all_expected_staying_times(self, user_id, all_days):
+    def listing_all_expected_staying_times(self, user_id: str, all_days: List[str]):
         """
         Produce and save the list of work_day's staying_time at office from
         "org.md2k.data_analysis.feature.working_days" stream and marked each day's
         staying_time as in_expected_conservative_time or more_than_expected_conservative_time
         or less_than_expected_conservative_time in one stream and in another stream each day's
         staying_time is marked as in_expected_liberal_time or more_than_expected_liberal_time
-        or less_than_expected_liberal_time """
+        or less_than_expected_liberal_time
+
+        :param str user_id: UUID of the stream owner
+        :param List(str) all_days: All days of the user in the format 'YYYYMMDD'
+        :return:
+        """
 
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
@@ -182,7 +188,15 @@ class ExpectedStayingTimes(ComputeFeatureBase):
                             'data points' %
                             (self.__class__.__name__, str(user_id),
                              len(expected_liberal_staying_data)))
-    def process(self, user_id, all_days):
+
+    def process(self, user_id: str, all_days: List[str]):
+        """
+        Main processing function inherited from ComputerFeatureBase
+
+        :param str user_id: UUID of the user
+        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        :return:
+        """
         if self.CC is not None:
             self.CC.logging.log("Processing Expected Staying Times")
             self.listing_all_expected_staying_times(user_id, all_days)
