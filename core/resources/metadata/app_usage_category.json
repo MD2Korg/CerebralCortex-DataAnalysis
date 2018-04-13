@@ -2,8 +2,24 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"list",
-      "unit":""
+      "name": "package",
+      "type":"string",
+      "description": "package name of the app"
+    },
+    {
+      "name": "category",
+      "type":"string",
+      "description": "category of the app"
+    },
+    {
+      "name": "app_name",
+      "type":"string",
+      "description": "name of the app in the play store"
+    },
+    {
+      "name": "sub-category",
+      "type":"string",
+      "description": "sub-category name of the app"
     }
   ],
   "execution_context":{

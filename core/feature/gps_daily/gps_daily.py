@@ -43,7 +43,6 @@ import uuid
 
 import json
 
-CC = CerebralCortex('/home/md2k/cc_configuration.yml')
 
 
 feature_class_name = 'GPSDaily'
@@ -67,13 +66,9 @@ class GPSDaily(ComputeFeatureBase):
             offset = dp.offset
             timezoneinfo = start_time.tzinfo
 
-            
-
             if start_date == end_date:
                 data_by_day.append(dp)
                 continue
-            
-
             
             while (start_date != end_date):
                 
@@ -171,8 +166,8 @@ class GPSDaily(ComputeFeatureBase):
                                       data=cluster_data_by_day,localtime=True)
                             break                
             except Exception as e:
-                print("Exception:", str(e))
-                print(traceback.format_exc())
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
             self.CC.logging.log('%s finished processing for user_id %s saved %d '
                                 'data points' %
                                 (self.__class__.__name__, str(user_id),
@@ -192,9 +187,6 @@ class GPSDaily(ComputeFeatureBase):
 
             semantic_data_by_day = self.split_datapoint_array_by_day(semantic_data_unique)
             
-            for dp in semantic_data_by_day:
-                print (dp)
-            
             try:
                 if len(semantic_data_by_day):
                     streams = self.CC.get_user_streams(user_id)
@@ -208,8 +200,8 @@ class GPSDaily(ComputeFeatureBase):
                                       data=semantic_data_by_day,localtime=True)
                             break   
             except Exception as e:
-                print("Exception:", str(e))
-                print(traceback.format_exc())
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
             self.CC.logging.log('%s finished processing for user_id %s saved %d '
                                 'data points' %
                                 (self.__class__.__name__, str(user_id),
@@ -234,8 +226,6 @@ class GPSDaily(ComputeFeatureBase):
 
                 semantic_user_data_by_day = self.split_datapoint_array_by_day(semantic_user_data_unique)
 
-                for dp in semantic_user_data_by_day:
-                    print (dp)
 
                 try:
                     if len(semantic_user_data_by_day):
@@ -251,8 +241,8 @@ class GPSDaily(ComputeFeatureBase):
                                 break                
 
                 except Exception as e:
-                    print("Exception:", str(e))
-                    print(traceback.format_exc())
+                    self.CC.logging.log("Exception:", str(e))
+                    self.CC.logging.log(traceback.format_exc())
                 self.CC.logging.log('%s finished processing for user_id %s saved %d '
                                     'data points' %
                                     (self.__class__.__name__, str(user_id),

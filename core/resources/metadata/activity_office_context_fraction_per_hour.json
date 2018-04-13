@@ -2,8 +2,15 @@
   "annotations":[],
   "data_descriptor":[
     {
+      "name":"activity_type",
+      "type":"string",
+      "descriptor":"The participant's activity time per hour, activity = walking"
+    },
+    {
+      "name":"activity_time",
       "type":"float",
-      "unit":"minute"
+      "unit":"minute",
+      "descriptor":"The participant's activity time per hour in minutes in office context"
     }
   ],
   "execution_context":{
@@ -30,11 +37,11 @@
       "version":"0.0.1",
       "reference":{
       },
-      "description":"The participants'total posture time in fraction of office beacon context"
+      "description":"The participants'total activity time in fraction of office context"
     }
   },
   "identifier":"",
-  "name":"org.md2k.data_analysis.feature.task_features.posture_office_beacon_context_fraction.hourly",
+  "name":"org.md2k.data_analysis.feature.task_features.activity_office_context_fraction.per_hour",
   "owner":"",
   "type":"1"
 }

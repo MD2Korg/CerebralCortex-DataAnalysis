@@ -2,9 +2,16 @@
   "annotations":[],
   "data_descriptor":[
     {
+      "name":"found_activity",
       "type":"string",
-      "unit":""
+      "descriptor":"The participant's time intervals of activity, activity = walking"
+    },
+    {
+      "name":"context_type",
+      "type":"string",
+      "descriptor":"The participant's time intervals of activity in context, context = office"
     }
+
   ],
   "execution_context":{
     "processing_module":{

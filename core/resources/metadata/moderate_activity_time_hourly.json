@@ -2,8 +2,16 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"float",
-      "unit":"minute"
+      "name": "amount_of_moderate_activity",
+      "type": "float",
+      "unit": "minute",
+      "descriptor": "Amount of moderate activity of that hour"
+    },
+    {
+      "name": "amount_of_data",
+      "type": "float",
+      "unit": "minute",
+      "descriptor": "Amount of data of that hour"
     }
   ],
   "execution_context":{
@@ -30,7 +38,7 @@
       "version":"0.0.1",
       "reference":{
       },
-      "description":"Computes moderate activity time hourly"
+      "description":"Amount of moderate activity of that hour and amount of data of that hour"
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",

@@ -44,9 +44,6 @@ import uuid
 
 import json
 
-CC = CerebralCortex('/home/md2k/cc_configuration.yml')
-
-
 feature_class_name = 'GPSFeatures'
 
 
@@ -595,9 +592,9 @@ class GPSFeatures(ComputeFeatureBase):
     def process(self,user_id,all_days):
 
         
-        stream_name_gps_cluster = "org.md2k.data_analysis.gps_clustering_episode_generation_daily_test"
-        stream_name_semantic_location = "org.md2k.data_analysis.gps_episodes_and_semantic_location_daily_test"
-        stream_name_semantic_location_user_marked="org.md2k.data_analysis.gps_episodes_and_semantic_location_user_marked_daily_test"       
+        stream_name_gps_cluster = "org.md2k.data_analysis.gps_clustering_episode_generation_daily"
+        stream_name_semantic_location = "org.md2k.data_analysis.gps_episodes_and_semantic_location_daily"
+        stream_name_semantic_location_user_marked="org.md2k.data_analysis.gps_episodes_and_semantic_location_user_marked_daily" 
 
                 
         streams = self.CC.get_user_streams(user_id)
@@ -607,6 +604,9 @@ class GPSFeatures(ComputeFeatureBase):
         home_present = False
         
         for day in all_days:
+
+            if not stream_name_gps_cluster in streams:
+                continue
 
             if stream_name_gps_cluster in streams:
                 cluster_stream_ids = self.CC.get_stream_id(user_id, stream_name_gps_cluster)
@@ -658,6 +658,8 @@ class GPSFeatures(ComputeFeatureBase):
         day_places = []
         for day in all_days:
 
+            if not stream_name_gps_cluster in streams:
+                continue
             
             if stream_name_gps_cluster in streams:
                 cluster_stream_ids = self.CC.get_stream_id(user_id, stream_name_gps_cluster)
@@ -695,6 +697,8 @@ class GPSFeatures(ComputeFeatureBase):
     
         
         for day in all_days:
+            if not stream_name_gps_cluster in streams:
+                continue
 
             if stream_name_gps_cluster in streams:
                 cluster_stream_ids = self.CC.get_stream_id(user_id, stream_name_gps_cluster)

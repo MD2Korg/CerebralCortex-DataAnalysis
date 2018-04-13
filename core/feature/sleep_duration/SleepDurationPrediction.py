@@ -34,7 +34,7 @@ import numpy
 from datetime import datetime, timedelta, timezone, tzinfo
 
 
-from SleepUnsupervisedPredictor import SleepUnsupervisedPredictor
+from core.feature.sleep_duration.SleepUnsupervisedPredictor import SleepUnsupervisedPredictor
 
 # Sleep duration calculatation works from 8 PM (12 - 4) to 8 PM (12 + 20)
 DAY_START_HOUR = -4;
