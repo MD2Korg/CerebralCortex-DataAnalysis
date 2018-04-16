@@ -1,41 +1,41 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
       "name": "value",
-      "type":"float",
+      "type": "float",
       "description": "Entropy of sms event"
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.phone_feature",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.phone_feature",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
+      "input_parameters": {
         "window_size": "4hours"
       }
     },
-    "algorithm":{
-      "method":"core.feature.phone_features.phone",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.phone_features.phone",
+      "authors": [
         {
-          "name":"Md Shiplu Hawlader",
-          "email":"shiplu.cse.du@gmail.com"
+          "name": "Md Shiplu Hawlader",
+          "email": "shiplu.cse.du@gmail.com"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"Entropy of sms events for each four hour window of a day."
+      "description": "Entropy of sms events for each four hour window of a day."
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.phone.sms.four_hour.entropy",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.phone.sms.four_hour.entropy",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
 }

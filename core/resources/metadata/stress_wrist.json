@@ -1,42 +1,41 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
-      "name":"stress_value",
-      "type":"int",
-      "unit":"1 minute window",
-      "description":"1 for stress and 0 for not-stress"
+      "name": "stress_value",
+      "type": "int",
+      "description": "1 for stress and 0 for not-stress"
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.stress_from_wrist",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.stress_from_wrist",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
+      "input_parameters": {
         "window_size": "60 seconds"
       }
     },
-    "algorithm":{
-      "method":"core.feature.stress_from_wrist.stress_from_wrist.v1",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.stress_from_wrist.stress_from_wrist.v1",
+      "authors": [
         {
-          "name":"Md Azim Ullah",
-          "email":"mullah@memphis.edu"
+          "name": "Md Azim Ullah",
+          "email": "mullah@memphis.edu"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"Assigns each one minute window as stress or not-stress through calculating RR interval statistics calculated from wrist ppg"
+      "description": "Assigns each one minute window as stress or not-stress through calculating RR interval statistics calculated from wrist ppg"
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.stress.wrist.60seconds",
-  "owner":"",
-  "type":"1"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.stress.wrist.60seconds",
+  "owner": "",
+  "type": "1"
 }
