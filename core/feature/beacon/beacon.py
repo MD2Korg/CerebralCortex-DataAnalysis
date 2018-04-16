@@ -44,14 +44,14 @@ class BeaconFeatures(ComputeFeatureBase):
     """
 
 
-    def mark_beacons(self, streams, stream_name, user_id, day):
+    def mark_beacons(self, streams:dict, stream_name:str, user_id:str, day:str): 
         """
-        fetches datastream for home beacons
-        :param streams:
-        :param stream_name:
-        :param user_id:
-        :param day:
-        :return:
+        fetches datastream for home beacons and calls home_beacon context
+        :param dict streams : Input list
+        :param str stream_name: name of stream
+        :param str user_id: id of user
+        :param str day: day 
+      
         """
         if stream_name in streams:
             beacon_stream_id = streams[stream_name]["identifier"]
@@ -69,16 +69,17 @@ class BeaconFeatures(ComputeFeatureBase):
 
 
 
-    def merge_work_beacons(self, streams, stream1_name, stream2_name,
-                           user_id,  day):
+    def merge_work_beacons(self, streams:dict, stream1_name:str, stream2_name:str,
+                           user_id:str,  day:str):
         """
         merges datapoints of work1 and work2 beacons for a particular day
-        :param streams:
-        :param stream1_name: workbeacon1
-        :param stream2_name: workbeacon2
-        :param user_id:
-        :param day:
-        :return: new data stream merging work1 and work2
+        if streams are from 1 and 2 both than 1 is taken as primary beacon
+        :param dict streams : Input list
+        :param str stream1_name: stream name representing workbeacon1
+        :param str stream2_name: stream name representing workbeacon2
+        :param str user_id: id of user
+        :param str day: day 
+       
         """
         new_data = []
         input_streams = []
@@ -117,15 +118,23 @@ class BeaconFeatures(ComputeFeatureBase):
 
 
 
-    def home_beacon_context(self, beaconhomestream, beacon_stream_id,
-                            beacon_stream_name, user_id):
+    def home_beacon_context(self, beaconhomestream:list, beacon_stream_id:str,
+                            beacon_stream_name:str, user_id:str):
         """
         produces datapoint sample as 1 if around home beacon else 0
-        :param beaconhomestream:
-        :param beacon_stream_id:
-        :param beacon_stream_name:
-        :param user_id:
-        :return: new stream (start_time,end_time,offset,sample=[0 or 1]
+        
+        Algorithm::
+            data = window beaconstream 
+            if values in a minute window in data
+                around beacon:1
+            else
+                not around beacon:0
+
+        :param List(Datapoint) beaconhomestream : Input list
+        :param str beacon_stream_id: stream name representing workbeacon1
+        :param str beacon_stream_name: stream name representing workbeacon2
+        :param str user_id: id of user
+       
         """
         input_streams = []
         input_streams.append(
@@ -173,14 +182,25 @@ class BeaconFeatures(ComputeFeatureBase):
 
 
 
-    def work_beacon_context(self, beaconworkstream, input_streams, user_id):
+    def work_beacon_context(self, beaconworkstream:list, input_streams:dict, user_id:str):
         """
-        produces datapoint sample as 1 or 2 if around work beacons else 0
-        :param beaconworkstream:
-        :param input_streams:
-        :param user_id:
-        :return: stream with (start_time,end_time,offset,sample= 0 or 1]
-        based on context of work_beacon 1 or work_beacon 2
+        produces datapoint sample as 1 if around work beacon 1, 2 if around workbeacon2
+        and 0 if not around work beacon
+        
+         Algorithm::
+            data = window beaconstream 
+            if [values] in a minute window in data
+                if 1 in values and 2 in values:
+                    around work_beacon1 (1)
+                else
+                    around work_beacon(values[0]):could be either 1 or 2
+            else
+                not around beacon:0
+        
+        :param List(Datapoint) beaconworkstream : Input list
+        :param dict input_streams: Dict to store stream id and name for storing
+        :param string user_id: id of user
+        
         """
         if (len(beaconworkstream) > 0):
             beaconstream = beaconworkstream
@@ -233,7 +253,13 @@ class BeaconFeatures(ComputeFeatureBase):
 
 
 
-    def process(self, user, all_days):
+    def process(self, user:str, all_days:list):
+	
+	"""
+        lists requried streams needed for computation.
+        :param str user_id: id of user
+        :param List all_days: Input list of days
+        """
 
         self.window_size = 60
         self.beacon_homestream = "BEACON--org.md2k.beacon--BEACON--HOME"

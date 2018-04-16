@@ -32,25 +32,42 @@ import numpy as np
 from datetime import timedelta
 import traceback
 from sklearn.mixture import GaussianMixture
-
+from typing import List, Callable, Any
 
 feature_class_name = 'PhoneScreenTouchFeatures'
 
 
 class PhoneScreenTouchFeatures(ComputeFeatureBase):
+    """
+    Compute all features related to phone touch screen which needed all days data of a user and can not be paralleled.
+    """
 
-    def get_filtered_data(self, data, admission_control=None):
+    def get_filtered_data(self, data: List[DataPoint],
+                          admission_control: Callable[[Any], bool] = None) -> List[DataPoint]:
+        """
+        Return the filtered list of DataPoints according to the admission control provided
+        
+        :param List(DataPoint) data: Input data list
+        :param Callable[[Any], bool] admission_control: Admission control lambda function, which accepts the sample and
+                returns a bool based on the data sample validity
+        :return: Filtered list of DataPoints
+        :rtype: List(DataPoint)
+        """
         if admission_control is None:
             return data
         return [d for d in data if admission_control(d.sample)]
 
-    def get_data_by_stream_name(self, stream_name, user_id, day, localtime=False):
+    def get_data_by_stream_name(self, stream_name: str, user_id: str, day: str,
+                                localtime: bool=True) -> List[DataPoint]:
         """
-        method to get combined data from CerebralCortex as there can be multiple stream id for same stream
-        :param stream_name: Name of the stream corresponding to the datastream
-        :param user_id:
-        :param day:
-        :return: combined data if there are multiple stream id
+        Combines data from multiple streams data of same stream based on stream name.
+
+        :param str stream_name: Name of the stream
+        :param str user_id: UUID of the stream owner
+        :param str day: The day (YYYYMMDD) on which to operate
+        :param bool localtime: The way to structure time, True for operating in participant's local time, False for UTC
+        :return: Combined stream data if there are multiple stream id
+        :rtype: List(DataPoint)
         """
 
         stream_ids = self.CC.get_stream_id(user_id, stream_name)
@@ -65,15 +82,19 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
             data = sorted(data, key=lambda x: x.start_time)
         return data
 
-    def get_appusage_duration_by_category(self, appdata, categories: list, appusage_gap_threshold_seconds=120):
+    def get_appusage_duration_by_category(self, appdata: List[DataPoint], categories: List[str],
+                                          appusage_gap_threshold_seconds: float=120) -> List:
         """
         Given the app category, it will return the list of duration when the app was used.
         It is assumed that if the gap between two consecutive data points with same app usage
         is within the appusage_gap_threshold_seconds time then, the app usage is in same session.
-        :param appdata:
-        :param categories:
-        :param appusage_gap_threshold_seconds:
-        :return:
+
+        :param List(DataPoint) appdata: App category data stream
+        :param List(str) categories: List of app categories of which the usage duration should be calculated
+        :param float appusage_gap_threshold_seconds: Threshold in seconds, which is the gap allowed between two
+                        consecutive DataPoint of same app
+        :return: A list of intervals of the given apps (categories) usage [start_time, end_time, category]
+        :rtype: List
         """
         appdata = sorted(appdata, key=lambda x: x.start_time)
         appusage = []
@@ -98,12 +119,15 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
 
         return appusage
 
-    def appusage_interval_list(self, data, appusage):
+    def appusage_interval_list(self, data: List[DataPoint], appusage: List) -> List[int]:
         """
-        Helper function to get screen touch gap between appusage
-        :param data:
-        :param appusage:
-        :return:
+        Helper function to get screen touch gap for specific app categories
+
+        :param List(DataPoint) data: Phone screen touch data stream
+        :param List appusage: list of app usage duration of specific app categories of the form
+                                [start_time, end_time, category]
+        :return: A list of integers containing screen touch gap as in touch screen timestamp unit (milliseconds)
+        :rtype: List(int)
         """
         ret = []
         i = 0
@@ -118,14 +142,18 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
                 i += 1
         return ret
 
-    def label_appusage_intervals(self, data, appusage, intervals, interval_label):
+    def label_appusage_intervals(self, data: List[DataPoint], appusage: List, intervals: List,
+                                 interval_label: List[str]) -> List[DataPoint]:
         """
         Helper function to label screen touch in a fixed app category usage
-        :param data:
-        :param appusage:
-        :param intervals:
-        :param interval_label:
-        :return:
+
+        :param List(DataPoint) data: Phone touch screen data stream
+        :param List appusage: List appusage: list of app usage duration of specific app categories of the form
+                                [start_time, end_time, category]
+        :param intervals: List of integers containing screen touch gap as in touch screen timestamp unit (milliseconds)
+        :param interval_label: A list of possible type of screen touch which are [typing, pause, reading, unknown]
+        :return: Labelled touche interval
+        :rtype: List(DataPoint)
         """
         ret = []
         i = 0
@@ -156,7 +184,19 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
                 i += 1
         return ret
 
-    def process_phonescreen_all_day_data(self, user_id, all_days, touchescreen_stream_name, appcategory_stream_name):
+    def process_phonescreen_all_day_data(self, user_id: str, all_days: List[str],
+                                        touchescreen_stream_name: str, appcategory_stream_name: str) -> GaussianMixture:
+        """
+        This method create a unsupervised model using screen touch gap during productivity and communication app usage.
+
+        :param str user_id: UUID of the user.
+        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        :param str touchescreen_stream_name: Phone touch screen stream name
+        :param str appcategory_stream_name: App category stream name
+        :return: GaussianMixture object of the created model
+        :rtype: GaussianMixture
+
+        """
         MIN_TAP_DATA = 100
         td = []
         appd = []
@@ -182,17 +222,19 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
         gm.fit(X)
         return gm
 
-    def process_phonescreen_day_data(self, user_id, touchstream, categorystream, \
-                                     input_touchstream, input_categorystream, gm):
+    def process_phonescreen_day_data(self, user_id: str, touchstream: List[DataPoint], categorystream: List[DataPoint],
+                                input_touchstream: DataStream, input_categorystream: DataStream, gm: GaussianMixture):
         """
         Analyze the phone touch screen gap to find typing, pause between typing, reading
         and unknown sessions. It uses the Gaussian Mixture algorithm to find different peaks
         in a mixture of 4 different gaussian distribution of screen touch gap.
-        :param user_id:
-        :param touchstream:
-        :param categorystream:
-        :param input_touchstream:
-        :param input_categorystream:
+
+        :param str user_id: UUID of the stream owner
+        :param List(DataPoint) touchstream: Phone touch screen stream data
+        :param List(DataPoint) categorystream: ApP category stream data
+        :param DataStream input_touchstream: DataStream object of phone touch screen
+        :param DataStream input_categorystream: DataStream object of app category stream
+        :param GaussianMixture gm: GaussianMixture object created from all day data of the user
         :return:
         """
         touchstream = sorted(touchstream, key=lambda x: x.start_time)
@@ -235,14 +277,16 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
             self.CC.logging.log("Exception:", str(e))
             self.CC.logging.log(str(traceback.format_exc()))
 
-    def process_data(self, user_id, all_user_streams, all_days):
+    def process_data(self, user_id: str, all_user_streams: dict, all_days: List[str]):
         """
         Getting all the necessary input datastreams for a user
         and run all feature processing modules for all the days
         of the user.
-        :param user_id:
-        :param all_user_streams:
-        :param all_days:
+
+        :param str user_id: UUID of the stream owner
+        :param dict all_user_streams: Dictionary containing all the user streams, where key is the stream name, value
+                                        is the stream metadata
+        :param List(str) all_days: List of all days for the processing in the format 'YYYYMMDD'
         :return:
         """
 
@@ -290,7 +334,14 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
                     self.process_phonescreen_day_data(user_id, touchstream, appcategorystream, input_touchscreenstream,
                                                       input_appcategorystream, gm)
 
-    def process(self, user_id, all_days):
+    def process(self, user_id: str, all_days: List[str]):
+        """
+        Main processing function inherited from ComputerFeatureBase
+
+        :param str user_id: UUID of the user
+        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        :return:
+        """
         if self.CC is not None:
             self.CC.logging.log("Processing PhoneTouchScreenFeatures")
             streams = self.CC.get_user_streams(user_id)

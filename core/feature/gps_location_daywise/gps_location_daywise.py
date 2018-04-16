@@ -30,6 +30,7 @@ from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta, time
 from core.computefeature import ComputeFeatureBase
 
+from typing import List
 import pprint as pp
 import numpy as np
 import pdb
@@ -48,9 +49,14 @@ class GpsLocationDaywise(ComputeFeatureBase):
     point is split into two when it starts from one day and ends in other day. In that way,
     we are getting semantic location of daily data """
 
-    def listing_all_gps_location_daywise(self, user_id, all_days):
+    def listing_all_gps_location_daywise(self, user_id: str, all_days: List[str]):
         """
-        Produce and save the gps location of participant's in day basis """
+        Produce and save the gps location of participant's in day basis
+
+        :param str user_id: UUID of the stream owner
+        :param List(str) all_days: All days of the user in the format 'YYYYMMDD'
+        :return:
+        """
 
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
@@ -114,7 +120,14 @@ class GpsLocationDaywise(ComputeFeatureBase):
                              len(gps_data)))
 
 
-    def process(self, user_id, all_days):
+    def process(self, user_id: str, all_days: List[str]):
+        """
+        Main processing function inherited from ComputerFeatureBase
+
+        :param str user_id: UUID of the user
+        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        :return:
+        """
         if self.CC is not None:
             self.CC.logging.log("Processing Working Days")
             self.listing_all_gps_location_daywise(user_id, all_days)

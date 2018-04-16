@@ -31,10 +31,31 @@ from cerebralcortex.core.datatypes.datapoint import DataPoint
 feature_class_name = 'heart_rate'
 
 class heart_rate(ComputeFeatureBase):
+    """
+    This class extracts the pre computed rr interval timeseries and computes a continuous heart rate timeseries 
+    with a resolution of two seconds
+    """
 
-
-    def get_and_save_data(self,streams,day,stream_identifier,user_id,json_path):
-
+    def get_and_save_data(self,
+                          streams:dict,
+                          day:str,
+                          stream_identifier:str,
+                          user_id:str,
+                          json_path:str):
+        """
+        This function takes all the streams of a user on a specific day alongwith the rr interval datastream name and 
+        extracts the rr interval data for the day.
+        
+        It then unpacks the minute based list of heart rate present in the RR interval data to compute a heart rate 
+        timeseries of two second resolution 
+        
+        :param streams: all the streams of the user
+        :param day: day in yyyymmdd string format
+        :param stream_identifier: stream name of rr interval
+        :param user_id: uuid of user
+        :param json_path: name of the file which contains the metadata
+        
+        """
         rr_interval_data = self.CC.get_stream(streams[stream_identifier]["identifier"],
                                               day=day,user_id=user_id,localtime=False)
         print("-"*20," rr interval data ",len(rr_interval_data.data),"-"*20)
@@ -60,12 +81,14 @@ class heart_rate(ComputeFeatureBase):
 
 
 
-    def process(self, user:str, all_days):
+    def process(self, user:str, all_days:list):
 
         """
+        Takes the user identifier and the list of days and does the required processing  
+        
         :param user: user id string
         :param all_days: list of days to compute
-
+        
         """
         if not list(all_days):
             return
