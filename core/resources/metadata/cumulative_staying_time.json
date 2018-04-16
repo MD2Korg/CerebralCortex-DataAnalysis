@@ -1,40 +1,39 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
-      "type":"Dictionary",
-      "unit":""
+      "type": "Dictionary",
+      "unit": ""
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.gpsfeature",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.gpsfeature",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
-        
+      "input_parameters": {
       }
     },
-    "algorithm":{
-      "method":"core.feature.gpsfeature.gpsfeature.cumulative_staying_time",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.gpsfeature.gpsfeature.cumulative_staying_time",
+      "authors": [
         {
-          "name":"Anik Khan",
-          "email":"aniknagato@gmail.com"
+          "name": "Anik Khan",
+          "email": "aniknagato@gmail.com"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"Sample is a dictionary. Key is the type of location (home, work etc.) and corresponding value is the cumulative time (in seconds) in that type of location"
+      "description": "Sample is a dictionary. Key is the type of location (home, work etc.) and corresponding value is the cumulative time (in seconds) in that type of location"
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.cumulative_staying_time",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.cumulative_staying_time",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
 }

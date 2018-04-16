@@ -1,40 +1,41 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
-      "type":"float",
-      "unit":"km"
+      "name": "value",
+      "type": "float",
+      "unit": "km",
+      "description": ""
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.gpsfeature",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.gpsfeature",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
-        
+      "input_parameters": {
       }
     },
-    "algorithm":{
-      "method":"core.feature.gpsfeature.gpsfeature.standard_deviation_of_displacements",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.gpsfeature.gpsfeature.standard_deviation_of_displacements",
+      "authors": [
         {
-          "name":"Anik Khan",
-          "email":"aniknagato@gmail.com"
+          "name": "Anik Khan",
+          "email": "aniknagato@gmail.com"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"Standard deviation of the displacements covered by participant in one day in kilometer."
+      "description": "Standard deviation of the displacements covered by participant in one day in kilometer."
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.standard_deviation_of_displacements",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.standard_deviation_of_displacements",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
 }

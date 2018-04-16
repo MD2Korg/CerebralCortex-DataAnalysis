@@ -4,12 +4,12 @@
     {
       "name":"found_activity",
       "type":"string",
-      "descriptor":"The participant's time intervals of activity, activity = walking"
+      "description": "The participant's time intervals of activity, activity = walking"
     },
     {
       "name":"context_type",
       "type":"string",
-      "descriptor":"The participant's time intervals of activity in context, context = office beacon"
+      "description": "The participant's time intervals of activity in context, context = office beacon"
     }
 
   ],

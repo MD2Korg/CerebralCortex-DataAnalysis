@@ -5,7 +5,7 @@
       "name": "amount_of_walking_accel_only",
       "type": "float",
       "unit": "minute",
-      "descriptor": "amount of walking daily from accel only model. If missing data of any hour is more than 50% then imputed with mean walking of that time of day."
+      "description": "amount of walking daily from accel only model. If missing data of any hour is more than 50% then imputed with mean walking of that time of day."
     }
   ],
   "execution_context": {
