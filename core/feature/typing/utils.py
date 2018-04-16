@@ -52,15 +52,16 @@ STRIDE = 5 #we make a prediction every 200ms
 
 # coded by JEYA VIKRANTH JEYAKUMAR
 # def typing_episodes(dataset, offset, CC):
-def typing_episodes(dataset, offset):
+def typing_episodes(dataset: pd.DataFrame, offset: int)->List[DataPoint]:
 
     """
     This function detects typing episodes.
     Makes a prediction every 200ms using values from a window of 800ms.
     This means there will be a overlap of 600ms between each sample window.
-    :param dataset: the synced dataframe of left and right accl and gyro data
-    :param offset: offset for local time
-    :return: dataset of typing episodes
+    :param pd.DataFrame dataset: the synced dataframe of left and right accl and gyro data
+    :param int offset: offset for local time
+    :return: datapoints of typing episodes
+    :rtype:List(DataPoint)
     """
 
     dataset = dataset.values
@@ -150,13 +151,14 @@ def typing_episodes(dataset, offset):
 
 
 # coded by JEYA VIKRANTH JEYAKUMAR
-def _data_reshaping(X_va, network_type):
+def _data_reshaping(X_va: np.ndarray, network_type: str)->np.ndarray:
     """
     This function is used to reshape the data into a particular form
     to make use of the keras tensorflow api.
-    :param network_type: model type
-    :param X_va: dataset
+    :param np.ndarray X_va: dataset
+    :param str network_type: model type
     :return: reshaped dataset
+    :rtype: np.ndarray
     """
     _, win_len, dim = X_va.shape
 
@@ -168,12 +170,14 @@ def _data_reshaping(X_va, network_type):
     return X_va
 
 # coded by JEYA VIKRANTH JEYAKUMAR
-def sync_left_right_accel(dl, dr):
+def sync_left_right_accel(dl: pd.Dataframe, dr: pd.DataFrame)->pd.Dataframe:
     """
-    This function is used to sync the left,right accl and gyro dataframes.
-    :param dl: left accl,gyro dataframe
-    :param dr: right accl,gyro dataframe
-    :return: synced dataframe
+    This function is used to sync and combine the left,right accl and gyro dataframes.
+    :param pd.Dataframe dl: combined dataframe of left accelerometer and gyroscope data
+    :param pd.Dataframe dr: combined dataframe of right accelerometer and gyroscope data
+    :return: a synced and combined dataframe of left and right accelerometer and gyroscope
+            dataframes
+    :rtype:pd.Dataframe
     """
 
     dl_new = dl
@@ -218,12 +222,13 @@ def sync_left_right_accel(dl, dr):
 
 
 
-def unique_days_of_one_stream(dict):
+def unique_days_of_one_stream(dict: dict)->set:
     """
     This function takes a dictionary of stream ids with dates of each stream
     and makes a unique set of dates for all the stream ids
-    :param dict: a dictionary of stream ids with dates of each stream
-    :return: a unique set of dates for all the stream ids
+    :param dict dict: a dictionary of stream ids as keys with dates as values
+    :return: a set of dates for all the stream ids of one stream for a day
+    :rtype: set
     """
     merged_dates = []
 
@@ -233,13 +238,15 @@ def unique_days_of_one_stream(dict):
     merged_dates_set = set(merged_dates)
     return merged_dates_set
 
-def get_dataframe(data: List[DataPoint], var_name):
+def get_dataframe(data: List[DataPoint], var_name: list)->pd.DataFrame:
     """
-    This function takes a list of datapoints for each stream
+    This function takes a list of datapoints of each stream
     and makes a dataframe with unique set of column names
-    :param data: a list of datapoints
-    :param var_name: a list of columnnames
-    :return: a dataframe of one stream (like accl left)
+    :param List[DataPoint] data: a list of datapoints
+    :param list var_name: a list of X,Y,Z column names for left and right accelerometer
+                          and gyroscope data
+    :return: a dataframe of one stream (like left acclerometer)
+    :rtype: pd.DataFrame
     """
 
     # this function takes a list of datapoints and make them into a dataframe

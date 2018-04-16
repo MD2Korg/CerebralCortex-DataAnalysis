@@ -29,7 +29,7 @@ from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
-
+from typing import List, Tuple, Callable
 import numpy
 from datetime import datetime, timedelta, timezone, tzinfo
 
@@ -45,34 +45,58 @@ class SleepDurationPredictor:
     def __init__(self, CC):
         self.CC = CC
 
-    def get_time_range(self, day):
+    def get_time_range(self, day: datetime) -> Tuple[datetime, datetime]:
         """
         Calculates the time range for example 8 PM of previous day
         to 8 PM of current day
+
+        :param datetime day: user calculation date
+        :return: Adjusted start and end time
+        :rtype: Tuple(datetime, datetime)
         """
         start_time = day + timedelta(hours=DAY_START_HOUR)
         end_time = day + timedelta(hours=DAY_END_HOUR)
         return start_time, end_time
 
 
-    def get_data_by_stream_name(self, stream_name, user_id, day, localtime=False):
+    def get_data_by_stream_name(self, stream_name: str, user_id: str, day: str,
+                                localtime: bool=False) -> List[DataPoint]:
         """
-        Get all the data under a single stream name by gathering all the stream ids
-        and getting data from them
+        Combines data from multiple streams data of same stream based on stream name.
+
+        :param str stream_name: Name of the stream
+        :param str user_id: UUID of the stream owner
+        :param str day: The day (YYYYMMDD) on which to operate
+        :param bool localtime: The way to structure time, True for operating in participant's local time, False for UTC
+        :return: Combined stream data if there are multiple stream id
+        :rtype: List(DataPoint)
         """
+
         stream_ids = self.CC.get_stream_id(user_id, stream_name)
         data = []
         for stream in stream_ids:
-            d = self.CC.get_stream(stream['identifier'], user_id = user_id, day=day, localtime=localtime).data
-            if d:
-                data += d
-
+            if stream is not None:
+                ds = self.CC.get_stream(stream['identifier'], user_id=user_id, day=day, localtime=localtime)
+                if ds is not None:
+                    if ds.data is not None:
+                        data += ds.data
+        if len(stream_ids)>1:
+            data = sorted(data, key=lambda x: x.start_time)
         return data
 
 
-    def get_data(self, stream_name, user_id, start_time, end_time, admission_control = None):
+    def get_data(self, stream_name: str, user_id: str, start_time: datetime, end_time: datetime,
+                 admission_control: Callable = None) -> List[DataPoint]:
         """
         Get data for sleep, as it is requires 24 hour window data from two days
+
+        :param str stream_name: Stream name of which data to be fetched
+        :param str user_id: UUID of the stream owner
+        :param datetime start_time: Start time of the data collection duration
+        :param datetime end_time: End time of the data collection duration
+        :param Callable admission_control: Lambda function to filter corrupted data
+        :return: DataPoints of the given stream name from start time to end time
+        :rtype: List(DataPoint)
         """
         start_date = start_time.date()
         end_date = end_time.date()
@@ -82,7 +106,8 @@ class SleepDurationPredictor:
         while start_date <= end_date:
             ds = self.get_data_by_stream_name(stream_name, user_id, start_date.strftime("%Y%m%d"))
             for d in ds:
-                d.start_time = d.start_time.replace(tzinfo=timezone.utc)
+                if not d.start_time.tzinfo:
+                    d.start_time = d.start_time.replace(tzinfo=timezone.utc)
                 if start_time.replace(tzinfo=timezone(timedelta(milliseconds=d.offset))) \
                         <= d.start_time <= end_time.replace(tzinfo=timezone(timedelta(milliseconds=d.offset))) \
                         and (admission_control == None or admission_control(d.sample)):
@@ -92,13 +117,18 @@ class SleepDurationPredictor:
         return allday_data
 
 
-    def get_sleep_duration(self, user_id, day):
+    def get_sleep_duration(self, user_id: str, day: datetime) -> DataPoint:
         """
         Calculates the sleep duration and returns a DataPoint with sample is list with index 0 as sleep duration
         It gets four streams (light, activity from android, phone screen on/off and audio energy) and convert them
         into a list of size 24*60*60 (total seconds in 24 hours). Then a unsupervised method written in
         SleepUnsupervisedPredictor class is used to get the sleep duration in hours. If there is not enough data,
         then it returns None.
+
+        :param str user_id: UUID of the stream owner
+        :param datetime day: Sleep calculation day
+        :return: DataPoint containing the total sleep time for last night in hour
+        :rtype: DataPoint
         """
         start_time, end_time = self.get_time_range(day)
         streams = self.CC.get_user_streams(user_id = user_id)

@@ -30,6 +30,7 @@ from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
 from core.computefeature import ComputeFeatureBase
 
+from typing import List
 import pprint as pp
 import numpy as np
 import pdb
@@ -58,14 +59,19 @@ class ExpectedArrivalTimes(ComputeFeatureBase):
     And in another stream each day's arrival_time is marked as In_expected_liberal_time or
     Before_expected_liberal_time or After_expected_liberal_time """
 
-    def listing_all_expected_arrival_times(self, user_id, all_days):
+    def listing_all_expected_arrival_times(self, user_id: str, all_days: List[str]):
         """
         Produce and save the list of work_day's arrival_time at office from
         "org.md2k.data_analysis.feature.working_days" stream and marked each day's
         arrival_time as In_expected_conservative_time or before_expected_conservative_time
         or after_expected_conservative_time in one stream and in another stream each day's
         arrival_time is marked as In_expected_liberal_time or before_expected_liberal_time or
-        after_expected_liberal_time """
+        after_expected_liberal_time
+
+        :param str user_id: UUID of the stream owner
+        :param List(str) all_days: All days of the user in the format 'YYYYMMDD'
+        :return:
+        """
 
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
@@ -177,7 +183,15 @@ class ExpectedArrivalTimes(ComputeFeatureBase):
                             'data points' %
                             (self.__class__.__name__, str(user_id),
                              len(expected_liberal_arrival_data)))
-    def process(self, user_id, all_days):
+
+    def process(self, user_id: str, all_days: List[str]):
+        """
+        Main processing function inherited from ComputerFeatureBase
+
+        :param str user_id: UUID of the user
+        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        :return:
+        """
         if self.CC is not None:
             self.CC.logging.log("Processing Expected Arrival Times")
             self.listing_all_expected_arrival_times(user_id, all_days)

@@ -32,29 +32,39 @@ import datetime
 import traceback
 from core.computefeature import ComputeFeatureBase
 
+from typing import List, Callable, Any, Tuple
+
 
 feature_class_name = 'PhoneDataYield'
 
 class PhoneDataYield(ComputeFeatureBase):
 
-    def get_filtered_data(self, data, admission_control=None):
+    def get_filtered_data(self, data: List[DataPoint],
+                          admission_control: Callable[[Any], bool] = None) -> List[DataPoint]:
         """
-        Helper method to get filtered data after applying admission control
-        :param data:
-        :param admission_control:
-        :return:
+        Return the filtered list of DataPoints according to the admission control provided
+
+        :param List(DataPoint) data: Input data list
+        :param Callable[[Any], bool] admission_control: Admission control lambda function, which accepts the sample and
+                returns a bool based on the data sample validity
+        :return: Filtered list of DataPoints
+        :rtype: List(DataPoint)
         """
         if admission_control is None:
             return data
         return [d for d in data if admission_control(d.sample)]
 
-    def get_data_by_stream_name(self, stream_name, user_id, day, localtime=True):
+    def get_data_by_stream_name(self, stream_name: str, user_id: str, day: str,
+                                localtime: bool=True) -> List[DataPoint]:
         """
-        method to get combined data from CerebralCortex as there can be multiple stream id for same stream
-        :param stream_name: Name of the stream corresponding to the datastream
-        :param user_id:
-        :param day:
-        :return: combined data if there are multiple stream id
+        Combines data from multiple streams data of same stream based on stream name.
+
+        :param str stream_name: Name of the stream
+        :param str user_id: UUID of the stream owner
+        :param str day: The day (YYYYMMDD) on which to operate
+        :param bool localtime: The way to structure time, True for operating in participant's local time, False for UTC
+        :return: Combined stream data if there are multiple stream id
+        :rtype: List(DataPoint)
         """
 
         stream_ids = self.CC.get_stream_id(user_id, stream_name)
@@ -65,11 +75,11 @@ class PhoneDataYield(ComputeFeatureBase):
                 if ds is not None:
                     if ds.data is not None:
                         data += ds.data
-        if len(stream_ids)>1:
+        if len(stream_ids) > 1:
             data = sorted(data, key=lambda x: x.start_time)
         return data
 
-    def get_end_time(self, p: DataPoint):
+    def get_end_time(self, p: DataPoint) -> datetime:
         """
         helper method to get the actual end time of a data point.
         :param p:
@@ -81,14 +91,17 @@ class PhoneDataYield(ComputeFeatureBase):
             s = p.start_time
         return s
 
-    def get_data_yield(self, data, max_data_gap_threshold_seconds=300):
+    def get_data_yield(self, data: List[DataPoint], max_data_gap_threshold_seconds: float=300) \
+            -> Tuple[List[DataPoint], float]:
         """
         This method produces series of data points containing interval of data present or not. In the sample
         a 0 means data is not present in this interval, 1 means data is there. Also it returns another data points
         with total hour of data is present in the data stream for a the whole day.
-        :param data: list of data points
-        :param max_data_gap_threshold_seconds: maximum allowed gap in seconds between two consecutive data points
-        :return:
+
+        :param List(DataPoint) data: list of data points
+        :param float max_data_gap_threshold_seconds: maximum allowed gap in seconds between two consecutive data points
+        :return: Interval when the data is available and total duration in hour of tha available data
+        :rtype: Tuple(List(DataPoint), float) or Tuple(None, None)
         """
         if not data:
             return None, None
@@ -137,24 +150,42 @@ class PhoneDataYield(ComputeFeatureBase):
         total_duration_data = [DataPoint(start_time, end_time, data[0].offset, round(data_duration.total_seconds()/(60*60), 2) )]
         return yield_data, total_duration_data
 
-    def process_stream_day_data(self, user_id, lightdata, input_lightstream, filenames):
+    def process_stream_day_data(self, user_id: str, data: List[DataPoint],
+                                input_stream: DataStream, filenames: List[str]):
+        """
+        process
+
+        :param str user_id: UUID of the stream owner
+        :param List(DataPoint) data: stream data
+        :param DataStream input_stream: DataStream object of the given stream
+        :param List(str) filenames: json file names
+        :return:
+        """
         try:
-            data1, data2 = self.get_data_yield(lightdata)
+            data1, data2 = self.get_data_yield(data)
             if data1:
                 self.store_stream(filepath=filenames[0],
-                                  input_streams=[input_lightstream],
+                                  input_streams=[input_stream],
                                   user_id=user_id, data=data1, localtime=False)
 
             if data2:
                 self.store_stream(filepath=filenames[1],
-                                  input_streams=[input_lightstream],
+                                  input_streams=[input_stream],
                                   user_id=user_id, data=data2, localtime=False)
 
         except Exception as e:
             self.CC.logging.log("Exception:", str(e))
             self.CC.logging.log(str(traceback.format_exc()))
 
-    def process_day_data(self, user_id, all_days):
+    def process_day_data(self, user_id: str, all_days: List[str]):
+        """
+        Getting all the necessary input datastreams for a user and run all feature processing modules for all the days
+        of the user.
+
+        :param str user_id: UUID of the stream owner
+        :param List(str) all_days: List of days with format 'YYYYMMDDD'
+        :return:
+        """
         streams = self.CC.get_user_streams(user_id)
         if not streams or not len(streams):
             self.CC.logging.log('No streams found for user %s for feature %s'
@@ -247,7 +278,15 @@ class PhoneDataYield(ComputeFeatureBase):
                 self.process_stream_day_data(user_id, accelerometerstream, input_accelerometerstream,
                                              ["phone_accelerometer_data_yield.json", "phone_accelerometer_data_yield_total.json"])
 
-    def process(self, user_id, all_days):
+    def process(self, user_id: str, all_days: List[str]):
+        """
+        Main processing function inherited from ComputerFeatureBase
+
+        :param str user_id: UUID of the user
+        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        :return:
+        """
+
         if self.CC is not None:
             self.CC.logging.log("Processing Phone Data Yield")
             self.process_day_data(user_id, all_days)
