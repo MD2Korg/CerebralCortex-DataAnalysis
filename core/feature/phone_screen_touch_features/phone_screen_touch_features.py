@@ -46,7 +46,7 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
                           admission_control: Callable[[Any], bool] = None) -> List[DataPoint]:
         """
         Return the filtered list of DataPoints according to the admission control provided
-
+        
         :param List(DataPoint) data: Input data list
         :param Callable[[Any], bool] admission_control: Admission control lambda function, which accepts the sample and
                 returns a bool based on the data sample validity
@@ -195,6 +195,7 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
         :param str appcategory_stream_name: App category stream name
         :return: GaussianMixture object of the created model
         :rtype: GaussianMixture
+
         """
         MIN_TAP_DATA = 100
         td = []

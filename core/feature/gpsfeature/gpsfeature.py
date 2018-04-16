@@ -52,6 +52,7 @@ class GPSFeatures(ComputeFeatureBase):
         """
         Calculate the great circle distance between two points
         on the earth (specified in decimal degrees)
+
         """
         # convert decimal degrees to radians
         lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
@@ -68,9 +69,11 @@ class GPSFeatures(ComputeFeatureBase):
 
     def total_distance_covered(self,data):
         """
+	Total distance covered in a day.
+
         :param data: datapoint array of centroid stream
         :return: total distance covered by participant in kilometers 
-        :stream name: org.md2k.data_analysis.feature.total_distance_covered
+        :rtype: List(DataPoint) with a single element.
         """
 
         total_distance = 0
@@ -112,9 +115,11 @@ class GPSFeatures(ComputeFeatureBase):
 
     def maximum_distance_between_two_locations(self,data):
         """
+	Maximum distance between two locations covered by participant in kilometers in a day.
+
         :param data: datapoint array of centroid stream
         :return: maximum distance between two locations covered by participant in kilometers 
-        :stream name: org.md2k.data_analysis.feature.maximum_distance_between_two_locations
+        :rtype: List(DataPoint) with a single element.
         """
 
         data_without_transit = []
@@ -156,9 +161,11 @@ class GPSFeatures(ComputeFeatureBase):
 
     def number_of_different_places(self,data):
         """
+	Number of different places the participant visited in a day.
+	
         :param data: datapoint array of centroid stream
         :return: number of different places the participant visited in a day
-        :stream name: org.md2k.data_analysis.feature.number_of_different_places
+        :rtype: List(DataPoint) with a single element.
         """
 
 
@@ -203,9 +210,11 @@ class GPSFeatures(ComputeFeatureBase):
 
     def standard_deviation_of_displacements(self,datawithtransit):
         """
-        :param data: datapoint array of centroid stream
+	Standard deviation of displacements of a user in a day.
+
+        :param datawithtransit: datapoint array of centroid stream
         :return: standard deviation of displacements in a day
-        :stream name: org.md2k.data_analysis.feature.standard_deviation_of_displacements
+        :rtype: List(DataPoint) with a single element.
         """
 
         data = []
@@ -253,9 +262,11 @@ class GPSFeatures(ComputeFeatureBase):
     
     def cumulative_staying_time(self,semanticdata):
         """
-        :param data: datapoint array of semantic stream
+	Cumulative staying time of one type of place. 
+
+        :param semanticdata: datapoint array of semantic stream
         :return: cumulative staying time at different types of locations
-        :stream name: org.md2k.data_analysis.feature.cumulative_staying_time
+        :rtype: List(DataPoint) with a single element (dictionary).
         """
         
         data = semanticdata
@@ -290,9 +301,11 @@ class GPSFeatures(ComputeFeatureBase):
     def transition_counter(self,semanticdata):
 
         """
-        :param data: datapoint array of semantic stream
+	Number of transitions from one type of place to another.
+
+        :param semanticdata: datapoint array of semantic stream
         :return: number of transitions from one type of location to another 
-        :stream name: org.md2k.data_analysis.feature.transition_counter
+        :rtype: List(DataPoint) with a single element (dictionary).
         """
 
         semanticwithouttransit = []
@@ -335,9 +348,12 @@ class GPSFeatures(ComputeFeatureBase):
 
     def maximum_distance_from_home(self, home_lattitude, home_longitude, centroiddata):
         """
-        :param home: semantic and centroid datapoint array
-        :param locationstream: location datastreaam of the participant
-        :return: maximum distance from home in kilometers
+	Maximum distance from home.
+
+        :param home_lattitude: lattitude of home's location
+        :param home_longitude: longitude of home's location
+        :param centroiddata: list of centroid datapoints.
+        :rtype: List(DataPoint) with a single element.
         """
         
         max = 0
@@ -377,9 +393,11 @@ class GPSFeatures(ComputeFeatureBase):
 
     def radius_of_gyration(self,centroiddatapoints):       
         """
+	Radius of gyration of a participant in a day.
+
         :param data: datapoint array of centroid stream
         :return: radius_of_gyration
-        :stream name: org.md2k.data_analysis.feature.radius_of_gyration
+        :rtype: List(DataPoint) with a single element.
         """
         data = []
         
@@ -435,6 +453,11 @@ class GPSFeatures(ComputeFeatureBase):
         """
         Returns list of lists places visited by the user in whole study. 
         Each element lists the places visited by the user in a day.
+
+        :param data: datapoint array of centroid stream
+        :return: Mobility places of one participant in a day ( with interval 15 minutes ).
+        :rtype: List(DataPoint).
+
         """        
 
         
@@ -480,6 +503,10 @@ class GPSFeatures(ComputeFeatureBase):
     def average_difference(self,datapoint1,datapoint2):
         """
         Average difference of the places visited by user in two different days.
+        :param data: datapoint array of centroid stream
+        :return: averaged different places in two days 
+        :rtype: number(float)
+
         """            
         data1 = datapoint1.sample
         data2 = datapoint2.sample
@@ -501,6 +528,11 @@ class GPSFeatures(ComputeFeatureBase):
     def routine_index(self,places):
         """
         Returns Routine Index for all days of the participant.
+
+        :param data: datapoint array of centroid stream
+        :return: total distance covered by participant in kilometers 
+        :rtype: List(DataPoint) with a single element.
+
         """            
 
         if len(places) <= 1:            
@@ -533,7 +565,13 @@ class GPSFeatures(ComputeFeatureBase):
 
 
     def available_data_in_time(self,data):
+        """
+	Available data of a participant in seconds.
 
+        :param data: datapoint array of centroid stream
+        :return: available data in a day in seconds
+        :rtype: List(DataPoint) with a single element.
+        """
         total_time = 0
         for dp in data:
             total_time += (dp.end_time - dp.start_time).total_seconds()
@@ -552,9 +590,7 @@ class GPSFeatures(ComputeFeatureBase):
 
 
     def process(self,user_id,all_days):
-#         stream_name_gps_cluster = "org.md2k.data_analysis.gps_clustering_episode_generation"
-#         stream_name_semantic_location = "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model"
-#         stream_name_semantic_location_user_marked="org.md2k.data_analysis.gps_episodes_and_semantic_location_user_marked"
+
         
         stream_name_gps_cluster = "org.md2k.data_analysis.gps_clustering_episode_generation_daily"
         stream_name_semantic_location = "org.md2k.data_analysis.gps_episodes_and_semantic_location_daily"
@@ -619,8 +655,6 @@ class GPSFeatures(ComputeFeatureBase):
                     home_present = False
                          
 
-                    
-        #this loop is for making an array for places visited for all days   
         day_places = []
         for day in all_days:
 
@@ -693,7 +727,7 @@ class GPSFeatures(ComputeFeatureBase):
                     streams = self.CC.get_user_streams(user_id)
                     for stream_name, stream_metadata in streams.items():
                         if stream_name == stream_name_gps_cluster:
-                            #print("---->",stream_metadata)
+
 
                             self.store_stream(filepath="gpsfeature_data_available.json",
                                       input_streams=[stream_metadata], 
@@ -717,7 +751,7 @@ class GPSFeatures(ComputeFeatureBase):
                 
             rad_gyr = self.radius_of_gyration(cluster_data)
                                  
-#             print (rad_gyr[0].sample)
+
             
             try:
                 if len(rad_gyr):
@@ -742,7 +776,6 @@ class GPSFeatures(ComputeFeatureBase):
                     
                     
             tot_dist = self.total_distance_covered(cluster_data)
-#             print ('here',day, tot_dist)
                               
 
             try:
@@ -750,9 +783,6 @@ class GPSFeatures(ComputeFeatureBase):
                     streams = self.CC.get_user_streams(user_id)
                     for stream_name, stream_metadata in streams.items():
                         if stream_name == stream_name_gps_cluster:
-    #                         print("---->",stream_metadata)
-
-#                             print (">>>>>>>>>>>>>>>>>>>>..................................")
 
                             self.store_stream(filepath="total_distance_covered.json",
                                       input_streams=[streams[stream_name]], 
@@ -804,7 +834,7 @@ class GPSFeatures(ComputeFeatureBase):
                     streams = self.CC.get_user_streams(user_id)
                     for stream_name, stream_metadata in streams.items():
                         if stream_name == stream_name_gps_cluster:
-                            #print("---->",stream_metadata)
+
 
                             self.store_stream(filepath="number_of_different_places.json",
                                       input_streams=[stream_metadata], 
@@ -830,7 +860,7 @@ class GPSFeatures(ComputeFeatureBase):
                     streams = self.CC.get_user_streams(user_id)
                     for stream_name, stream_metadata in streams.items():
                         if stream_name == stream_name_gps_cluster:
-                            #print("---->",stream_metadata)
+
 
                             self.store_stream(filepath="standard_deviation_of_displacements.json",
                                       input_streams=[stream_metadata], 
@@ -849,8 +879,6 @@ class GPSFeatures(ComputeFeatureBase):
 
 
             cumul_stay_data = self.cumulative_staying_time(semantic_data)
-#             for dp in cumul_stay_data:
-#                 print (dp)
             
             
             try:
@@ -858,7 +886,6 @@ class GPSFeatures(ComputeFeatureBase):
                     streams = self.CC.get_user_streams(user_id)
                     for stream_name, stream_metadata in streams.items():
                         if stream_name == stream_name_semantic_location:
-                            #print("---->",stream_metadata)
 
                             self.store_stream(filepath="cumulative_staying_time.json",
                                       input_streams=[stream_metadata], 
@@ -881,7 +908,6 @@ class GPSFeatures(ComputeFeatureBase):
                     streams = self.CC.get_user_streams(user_id)
                     for stream_name, stream_metadata in streams.items():
                         if stream_name == stream_name_semantic_location:
-                            #print("---->",stream_metadata)
 
                             self.store_stream(filepath="transition_counter.json",
                                       input_streams=[stream_metadata], 
