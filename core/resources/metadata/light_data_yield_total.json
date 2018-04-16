@@ -4,7 +4,8 @@
     {
       "name": "value",
       "type":"float",
-      "unit":"hour"
+      "unit":"hour",
+      "description": "Total time data presents in a day"
     }
   ],
   "execution_context":{

@@ -4,7 +4,8 @@
     {
       "name": "value",
       "type":"float",
-      "unit":"minute"
+      "unit":"minute",
+      "description": "Variance of time between two consecutive SMS."
     }
   ],
   "execution_context":{

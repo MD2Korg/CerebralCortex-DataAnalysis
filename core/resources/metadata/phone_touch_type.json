@@ -3,7 +3,8 @@
   "data_descriptor":[
     {
       "name": "type",
-      "type":"string"
+      "type":"string",
+      "description": "The value is one of the four verdicts [typing, pause, reading, unknown]."
     }
   ],
   "execution_context":{

@@ -4,7 +4,8 @@
     {
       "name": "value",
       "type":"float",
-      "unit":"minute"
+      "unit":"minute",
+      "description":"The average time between two consecutive sms"
     }
   ],
   "execution_context":{

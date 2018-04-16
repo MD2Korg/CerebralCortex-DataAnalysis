@@ -4,7 +4,8 @@
     {
       "name": "value",
       "type":"float",
-      "unit":"minute"
+      "unit":"minute",
+      "description": "Variance of SMS length."
     }
   ],
   "execution_context":{

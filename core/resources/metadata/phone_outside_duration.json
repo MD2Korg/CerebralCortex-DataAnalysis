@@ -3,7 +3,8 @@
   "data_descriptor":[
     {
       "name": "value",
-      "type":"string"
+      "type":"string",
+      "description": "'Outside' = the phone was outside of pocket or parse from start_time to end_time."
     }
   ],
   "execution_context":{
@@ -30,7 +31,7 @@
       "version":"0.0.1",
       "reference":{
       },
-      "description":"Duration when the phone was outside."
+      "description":"Duration when the phone was outside of pocket or parse."
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",

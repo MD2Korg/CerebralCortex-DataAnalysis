@@ -4,7 +4,8 @@
     {
       "name": "value",
       "type":"float",
-      "unit":"lux"
+      "unit":"lux",
+      "description":"The average ambient light"
     }
   ],
   "execution_context":{
