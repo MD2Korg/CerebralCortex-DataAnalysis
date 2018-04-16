@@ -396,7 +396,8 @@ def get_candidatePeaks(G_static: object) -> object:
     return Candidates_position, Candidates_LR
 
 
-def get_RRinter_cell(Peak_mat: object, Candidates_position: object, Z_output: object, int_RR_dist_obj: object) -> object:
+def get_RRinter_cell(Peak_mat: object, Candidates_position: object, Z_output: object,
+                     int_RR_dist_obj: object) -> object:
     """
 
     :rtype: object
@@ -418,7 +419,8 @@ def get_RRinter_cell(Peak_mat: object, Candidates_position: object, Z_output: ob
     return RR_interval_perrealization
 
 
-def GLRT_bayesianIP_HMM(X_ppg_input: object, H: object, w_r: object, w_l: object, pks_ecg: object, int_RR_dist_obj: object) -> object:
+def GLRT_bayesianIP_HMM(X_ppg_input: object, H: object, w_r: object, w_l: object, pks_ecg: object,
+                        int_RR_dist_obj: object) -> object:
     """
 
     :rtype: object

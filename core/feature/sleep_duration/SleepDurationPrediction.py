@@ -36,8 +36,8 @@ from datetime import datetime, timedelta, timezone, tzinfo
 from core.feature.sleep_duration.SleepUnsupervisedPredictor import SleepUnsupervisedPredictor
 
 # Sleep duration calculatation works from 8 PM (12 - 4) to 8 PM (12 + 20)
-DAY_START_HOUR = -4;
-DAY_END_HOUR = 20;
+DAY_START_HOUR = -4
+DAY_END_HOUR = 20
 
 
 class SleepDurationPredictor:
@@ -166,7 +166,7 @@ class SleepDurationPredictor:
                     if scr.sample.strip() == "true":
                         val = 1
                     else:
-                        val = 0;
+                        val = 0
 
                     idx = int((scr.start_time - st).total_seconds())
                     if idx > last_time:
@@ -178,7 +178,7 @@ class SleepDurationPredictor:
                     if scr.sample.strip() == "true":
                         val = 0
                     else:
-                        val = 1;
+                        val = 1
                     if len(screen_off) > last_time:
                         screen_off[last_time:] = val
 
@@ -215,7 +215,7 @@ class SleepDurationPredictor:
             return None
         sleep_predictor = SleepUnsupervisedPredictor()
         longest_start_idx, longest_end_idx, max_idx = sleep_predictor.predict(audio_amp, light_readings, activity_still,
-                                                                              screen_off);
+                                                                              screen_off)
         sleep_duration = (longest_end_idx - longest_start_idx) / 8.0
         # print(sleep_duration, longest_start_idx, longest_end_idx, max_idx)
         sample = [sleep_duration]

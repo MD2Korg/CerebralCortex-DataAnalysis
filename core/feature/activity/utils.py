@@ -82,7 +82,14 @@ MADGWICKFILTER_BETA = 0.4
 # ------------------------------------- end constants -------------------------------------
 
 
-def get_max_label(label1, label2):
+def get_max_label(label1: object, label2: object) -> object:
+    """
+
+    :rtype: object
+    :param label1:
+    :param label2:
+    :return:
+    """
     if label1 in ACTIVITY_LABELS and label2 in ACTIVITY_LABELS:
         if ACTIVITY_LABELS_INDEX_MAP[label1] > ACTIVITY_LABELS_INDEX_MAP[label2]:
             return label1
@@ -96,7 +103,15 @@ def get_max_label(label1, label2):
     return "UNDEFINED"
 
 
-def merge_left_right(left_data: List[DataPoint], right_data: List[DataPoint], window_size=10.0):
+def merge_left_right(left_data: List[DataPoint], right_data: List[DataPoint], window_size=10.0) -> object:
+    """
+
+    :rtype: object
+    :param left_data:
+    :param right_data:
+    :param window_size:
+    :return:
+    """
     data = left_data + right_data
     data.sort(key=lambda x: x.start_time)
 
@@ -126,7 +141,11 @@ def merge_left_right(left_data: List[DataPoint], right_data: List[DataPoint], wi
 
 def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
     """
-    Returns a list of days (string format: YearMonthDay (e.g., 20171206)
+    Returns a list of days (string format: YYYYMMDD (e.g., 20171206)
+
+    :rtype: object
+    :param CC:
+    :return:
     :param stream_id:
     """
     stream_dicts = CC.get_stream_duration(stream_id)
@@ -137,7 +156,18 @@ def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
     return stream_days
 
 
-def store_data(filepath, input_streams, user_id, data, str_sufix, instance):
+def store_data(filepath: object, input_streams: object, user_id: object, data: object, str_sufix: object,
+               instance: object) -> object:
+    """
+
+    :rtype: object
+    :param filepath:
+    :param input_streams:
+    :param user_id:
+    :param data:
+    :param str_sufix:
+    :param instance:
+    """
     output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(filepath + user_id + str_sufix)))
     cur_dir = os.path.dirname(os.path.abspath(__file__))
     newfilepath = os.path.join(cur_dir, filepath)

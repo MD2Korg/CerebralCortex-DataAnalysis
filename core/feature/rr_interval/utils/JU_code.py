@@ -43,6 +43,7 @@ def HMM_forward_smoothie(Candidates_LR: object, Candidates_position: object, int
     Delta_max = np.shape(int_RR_dist_obj[0, 0])[1]
     Z_size = np.shape(int_RR_dist_obj)[0]
     log_Gamma_R = np.zeros((Z_size, C_N))
+
     for z in range(Z_size):
         pi_R_z = np.squeeze(1 / np.dot(int_RR_dist_obj[z, 0], int_RR_dist_obj[z, 1].T))
         for i in range(C_N):
@@ -183,7 +184,8 @@ def HMM_stochastic_backward_smoothie(log_Gamma_R: object, Candidates_position: o
     return peak_mat
 
 
-def eval_int_RR_prob(R_sample_position: object, int_RR_dist_obj: object, z_idx: object, start_position: object, end_position: object) -> object:
+def eval_int_RR_prob(R_sample_position: object, int_RR_dist_obj: object, z_idx: object, start_position: object,
+                     end_position: object) -> object:
     """
 
     :rtype: object
@@ -238,7 +240,8 @@ def eval_int_RR_prob(R_sample_position: object, int_RR_dist_obj: object, z_idx: 
     return sequence_prob, pi_1z
 
 
-def z_sample_generation(Peak_mat: object, Candidates_position: object, pi_Z: object, int_RR_dist_obj: object, start_position: object, end_position: object) -> object:
+def z_sample_generation(Peak_mat: object, Candidates_position: object, pi_Z: object, int_RR_dist_obj: object,
+                        start_position: object, end_position: object) -> object:
     """
 
     :rtype: object
@@ -269,7 +272,8 @@ def z_sample_generation(Peak_mat: object, Candidates_position: object, pi_Z: obj
     return Z_L + 1
 
 
-def Bayesian_IP_memphis(Candidates_position: object, Candidates_LR: object, int_RR_dist_obj: object, start_position: object, end_position: object) -> object:
+def Bayesian_IP_memphis(Candidates_position: object, Candidates_LR: object, int_RR_dist_obj: object,
+                        start_position: object, end_position: object) -> object:
     """
 
     :rtype: object

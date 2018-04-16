@@ -30,6 +30,7 @@ from cerebralcortex.core.datatypes.datapoint import DataPoint
 
 feature_class_name = 'heart_rate'
 
+
 class heart_rate(ComputeFeatureBase):
     """
     This class extracts the pre computed rr interval timeseries and computes a continuous heart rate timeseries 
@@ -37,11 +38,11 @@ class heart_rate(ComputeFeatureBase):
     """
 
     def get_and_save_data(self,
-                          streams:dict,
-                          day:str,
-                          stream_identifier:str,
-                          user_id:str,
-                          json_path:str):
+                          streams: dict,
+                          day: str,
+                          stream_identifier: str,
+                          user_id: str,
+                          json_path: str):
         """
         This function takes all the streams of a user on a specific day alongwith the rr interval datastream name and 
         extracts the rr interval data for the day.
@@ -57,32 +58,29 @@ class heart_rate(ComputeFeatureBase):
         
         """
         rr_interval_data = self.CC.get_stream(streams[stream_identifier]["identifier"],
-                                              day=day,user_id=user_id,localtime=False)
-        print("-"*20," rr interval data ",len(rr_interval_data.data),"-"*20)
+                                              day=day, user_id=user_id, localtime=False)
+        print("-" * 20, " rr interval data ", len(rr_interval_data.data), "-" * 20)
         if not rr_interval_data.data:
             return
-        final_data= []
+        final_data = []
         for dp in rr_interval_data.data:
             if math.isnan(dp.sample[1]):
                 continue
             if not list(dp.sample[0]):
                 continue
-            initial = dp.start_time+ timedelta(seconds=4)
+            initial = dp.start_time + timedelta(seconds=4)
             step = timedelta(seconds=2)
             count = 0
             while initial <= dp.end_time and count < len(dp.sample[2][0]):
                 if not math.isnan(dp.sample[2][0][count]):
-                    final_data.append(DataPoint.from_tuple(start_time=initial,offset=dp.offset,sample=dp.sample[2][0][count]))
-                count+=1
-                initial+=step
-        print("-"*20,' final data length ',len(final_data),"-"*20)
-        self.store_stream(json_path,[streams[stream_identifier]],user_id,final_data,localtime=False)
+                    final_data.append(
+                        DataPoint.from_tuple(start_time=initial, offset=dp.offset, sample=dp.sample[2][0][count]))
+                count += 1
+                initial += step
+        print("-" * 20, ' final data length ', len(final_data), "-" * 20)
+        self.store_stream(json_path, [streams[stream_identifier]], user_id, final_data, localtime=False)
 
-
-
-
-    def process(self, user:str, all_days:list):
-
+    def process(self, user: str, all_days: list):
         """
         Takes the user identifier and the list of days and does the required processing  
         
@@ -109,8 +107,4 @@ class heart_rate(ComputeFeatureBase):
         user_id = user
         json_path = 'heart_rate.json'
         for day in all_days:
-            self.get_and_save_data(streams,day,rr_interval_identifier,user_id,json_path)
-
-
-
-
+            self.get_and_save_data(streams, day, rr_interval_identifier, user_id, json_path)

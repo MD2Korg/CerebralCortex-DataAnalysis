@@ -40,15 +40,16 @@ class ActivityFeature(ComputeFeatureBase):
 
     """
 
-    def get_day_data(self, stream_name, user_id, day):
-        '''
+    def get_day_data(self, stream_name: object, user_id: object, day: object) -> object:
+        """
         get list od DataPoint for the stream name
 
         :param string stream_name: Name of the stream
         :param string user_id: UID of the user
         :param string day: YMD
-        :return: list(Datapoint)
-        '''
+        :return:
+        :rtype: list(DataPoint)
+        """
         day_data = []
         stream_ids = self.CC.get_stream_id(user_id, stream_name)
         for stream_id in stream_ids:
@@ -63,21 +64,23 @@ class ActivityFeature(ComputeFeatureBase):
 
         return day_data
 
-    def compute_activity_features_hourly(self, STREAMNAME,
+    def compute_activity_features_hourly(self, STREAMNAME: object,
                                          activity_data: List[DataPoint],
-                                         streams, user):
-        '''
+                                         streams: object, user: object) -> object:
+        """
         compute activity output hourly
 
+        :rtype: object
         :param string STREAMNAME:  Name of the stream
         :param list(Datapoint) activity_data: list of Datapoint
         :param streams:
         :param user:
         :return:
-        '''
+        """
 
         if activity_data is None or len(activity_data) == 0:
             return
+
         walking_min_hourly = [0] * 24
         mod_min_hourly = [0] * 24
         high_min_hourly = [0] * 24
@@ -160,13 +163,14 @@ class ActivityFeature(ComputeFeatureBase):
 
         return walking_min_hourly, mod_min_hourly, high_min_hourly, total_min_per_hour
 
-    def compute_posture_features_hourly(self, posture_data, streams, user):
-        '''
-        :param list(Datapoint) activity_data: list of Datapoint
+    def compute_posture_features_hourly(self, posture_data: object, streams: object, user: object) -> object:
+        """
+
+        :param posture_data:
         :param streams:
         :param user:
         :return:
-        '''
+        """
 
         if posture_data is None or len(posture_data) == 0:
             return
@@ -228,15 +232,16 @@ class ActivityFeature(ComputeFeatureBase):
                           user_id=user,
                           data=standing_data)
 
-    def compute_hourly_mean_for_time_of_day(self, D: dict, days):
+    def compute_hourly_mean_for_time_of_day(self, D: dict, days: object) -> object:
 
-        '''
+        """
         computes
 
+        :rtype: object
         :param D: dictionary of activity output hourly
         :param list days:  all days
         :return: mean for hourly activity output
-        '''
+        """
 
         mean_walk_hourly = [0] * 24
         mean_mod_hourly = [0] * 24
@@ -263,14 +268,15 @@ class ActivityFeature(ComputeFeatureBase):
 
         return mean_walk_hourly, mean_mod_hourly, mean_high_hourly
 
-    def compute_hourly_mean_for_day_of_week(self, D: dict(), days):
+    def compute_hourly_mean_for_day_of_week(self, D: dict, days: object) -> object:
 
-        '''
+        """
 
+        :rtype: object
         :param D:
         :param days:
         :return:
-        '''
+        """
 
         dayOfWeek_mean = dict()
 
@@ -305,9 +311,18 @@ class ActivityFeature(ComputeFeatureBase):
                                     mean_high_hourly]
         return dayOfWeek_mean
 
+    def imputation_by_mean_data(self, D: dict, days: object, user_id: object,
+                                STREAMNAME: object, streams: object, offset: object) -> object:
+        """
 
-    def imputation_by_mean_data(self, D: dict, days, user_id,
-                                STREAMNAME, streams, offset):
+        :rtype: object
+        :param D:
+        :param days:
+        :param user_id:
+        :param STREAMNAME:
+        :param streams:
+        :param offset:
+        """
         mean_walk_hourly_tofd, mean_mod_hourly_tofd, mean_high_hourly_tofd = \
             self.compute_hourly_mean_for_time_of_day(D, days)
 
@@ -493,8 +508,12 @@ class ActivityFeature(ComputeFeatureBase):
                                                   end_time=end_time, offset=offset,
                                                   sample=total_imputed_day_of_week_high)])
 
+    def process(self, user: str, all_days: list):
+        """
 
-    def process(self, user, all_days):
+        :param user:
+        :param all_days:
+        """
         if self.CC is None:
             return
 

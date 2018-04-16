@@ -34,7 +34,7 @@ feature_class_name = 'TaskFeatures'
 
 class TaskFeatures(ComputeFeatureBase):
     """
-        Detects start and end sessions of postures like sitting and standing
+    Detects start and end sessions of postures like sitting and standing
     in office context and around office beacon context in a day. Also detects
     activity sessions like walking against the same office and office beacon
     context for the same day. Computes fraction of posture and activity time against

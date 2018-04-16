@@ -39,8 +39,10 @@ import uuid
 import json
 import traceback
 
+# TODO: Define constants
 feature_class_name = 'WorkingDaysFromBeacon'
 BEACON_WORK_BEACON_CONTEXT_STREAM = "org.md2k.data_analysis.feature.v6.beacon.work_beacon_context"
+
 
 class WorkingDaysFromBeacon(ComputeFeatureBase):
     """ Produce feature from gps location Only the days marked as "Work" in
@@ -50,7 +52,8 @@ class WorkingDaysFromBeacon(ComputeFeatureBase):
     leaving office office location according to gps location is taken as
     departure time Ofiice arrival time are marked as usual or before_time or
     after_time and staying time is also marked as usual, more_than_usual or
-    less_than_usual """
+    less_than_usual
+    """
 
     def listing_all_work_days_from_beacon(self, user_id: str, all_days: List[str]):
         """
@@ -74,7 +77,7 @@ class WorkingDaysFromBeacon(ComputeFeatureBase):
         for stream_id in stream_ids:
             for day in all_days:
                 beacon_location_data_stream = \
-                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime = True)
+                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime=True)
                 beacon_location_data += beacon_location_data_stream.data
         beacon_location_data = list(set(beacon_location_data))
         beacon_location_data.sort(key=lambda x: x.start_time)
@@ -87,12 +90,6 @@ class WorkingDaysFromBeacon(ComputeFeatureBase):
 
             d = DataPoint(data.start_time, data.end_time,
                           data.offset, data.sample)
-            #                     if d.offset:
-            #                         d.start_time += timedelta(milliseconds=d.offset)
-            #                         if d.end_time:
-            #                             d.end_time += timedelta(milliseconds=d.offset)
-            #                         else:
-            #                             continue
 
             if d.start_time.date() != current_day:
                 '''
@@ -123,7 +120,7 @@ class WorkingDaysFromBeacon(ComputeFeatureBase):
                 streams = self.CC.get_user_streams(user_id)
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == BEACON_WORK_BEACON_CONTEXT_STREAM:
-                        print("Going to pickle the file: ",work_data)
+                        print("Going to pickle the file: ", work_data)
 
                         self.store_stream(filepath="working_days_from_beacon.json",
                                           input_streams=[stream_metadata],
