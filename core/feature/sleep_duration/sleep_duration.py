@@ -41,6 +41,7 @@ import json
 import traceback
 import math
 
+# TODO: Comment and describe constants
 feature_class_name = 'SleepDurations'
 ACTIVITY_STREAM = 'ACTIVITY_TYPE--org.md2k.phonesensor--PHONE'
 LIGHT_STREAM = 'AMBIENT_LIGHT--org.md2k.phonesensor--PHONE'
@@ -52,11 +53,16 @@ OUTLIER_DETECTION_MULTIPLIER = 3
 
 class SleepDurations(ComputeFeatureBase):
     """
-    Produce feature from these four streams: CU_IS_SCREEN_ON--edu.dartmouth.eureka',
-    'ACTIVITY_TYPE--org.md2k.phonesensor--PHONE', 'AMBIENT_LIGHT--org.md2k.phonesensor--PHONE',
-    and CU_AUDIO_ENERGY--edu.dartmouth.eureka'. Sleep duration time is calculated from these
+    Produce feature from these four streams
+    1. CU_IS_SCREEN_ON--edu.dartmouth.eureka
+    2. ACTIVITY_TYPE--org.md2k.phonesensor--PHONE
+    3. AMBIENT_LIGHT--org.md2k.phonesensor--PHONE
+    4. CU_AUDIO_ENERGY--edu.dartmouth.eureka
+
+    Sleep duration time is calculated from these
     stream's data. And here usual sleep duration is a range of time. each day's sleep_duration
-    is marked as usual_sleep_duration or more_than_usual or less_than_usual """
+    is marked as usual_sleep_duration or more_than_usual or less_than_usual
+    """
 
     def listing_all_sleep_durations(self, user_id: str, all_days: List[str]):
         """
@@ -108,7 +114,7 @@ class SleepDurations(ComputeFeatureBase):
             elif sleep_duration < mean+standard_deviation and sleep_duration > mean-standard_deviation:
                 data.sample.append("usual_sleep_duration")
                 data.sample.append(0)
-        #print(sleep_duration_data)
+
         try:
             input_stream_names = [ACTIVITY_STREAM, LIGHT_STREAM, PHONE_SCREEN_STREAM, AUDIO_ENERGY_STREAM]
             input_streams = []
@@ -118,7 +124,7 @@ class SleepDurations(ComputeFeatureBase):
                     for stream_name, stream_metadata in streams.items():
                         if stream_name in input_stream_names:
                             input_streams.append(stream_metadata)
-                            #print("Going to pickle the file: ",sleep_duration_data)
+
 
                 self.store_stream(filepath="sleep_duration.json",
                                   input_streams=input_streams,

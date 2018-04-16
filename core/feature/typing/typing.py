@@ -43,48 +43,45 @@ motionsense_hrv_gyro_left = "GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--
 
 class TypingMarker(ComputeFeatureBase):
     """
-    Algorithm:
-    Step 1: For each user for each stream finds the stream ids
-    Step 2: For each stream id makes a dictionary with stream id as key and list
-            of dates as value
-    Step 3: Creates a set of dates for each dictionary(left accel and right accel)
-            Does not compute for left and right gyro, since if accel data is present,
-            then gyro data will be there too
-    Step 4: Creates a list of common dates from these two sets
-    Step 5: For each of these common dates, brings datapoints for each stream and
-            makes them into dataframes
-    step 6: Combines accel and gyro dataframes to a single dataframe, for left and
-            right wrists
-    step 7: Synchronizes left and right dataframes to a single dataframe
-    step 8: Uses the synchronized dataframe to produce typing episodes in a day
-            for a user
-    step 9: Stores the typing episodes as datapoints with start time, end time
-            and value as 1 for typing episode or 0 as no typing episode
-
     Detects Typing activity: Provides Start time and End-time of typing sessions.
     The typing sessions starts when the participant starts typing and ends when
     no key is pressed for more than 10 seconds. The inference is made from the
-    accl and gyro values of both motionsense wrist bands.
+    accelerometer and gyroscope values of both MotionSense wrist bands.
 
+    Algorithm::
+
+        Step 1: For each user for each stream finds the stream ids
+        Step 2: For each stream id makes a dictionary with stream id as key and list
+                of dates as value
+        Step 3: Creates a set of dates for each dictionary(left accel and right accel)
+                Does not compute for left and right gyro, since if accel data is present,
+                then gyro data will be there too
+        Step 4: Creates a list of common dates from these two sets
+        Step 5: For each of these common dates, brings DataPoints for each stream and
+                makes them into dataframes
+        Step 6: Combines accel and gyro dataframes to a single dataframe, for left and
+                right wrists
+        Step 7: Synchronizes left and right dataframes to a single dataframe
+        Step 8: Uses the synchronized dataframe to produce typing episodes in a day
+                for a user
+        Step 9: Stores the typing episodes as DataPoints with start time, end time
+                and value as 1 for typing episode or 0 as no typing episode
     """
 
-    # def __init__(self):
-    #     CC_CONFIG_PATH = '/home/md2k/cc_configuration.yml'
-    #     self.CC = CerebralCortex(CC_CONFIG_PATH)
-
-    def collect_data(self, dict: dict, day: str, user_id: str)->List[DataPoint]:
+    def collect_data(self, input_dict: dict, day: str, user_id: str) -> List[DataPoint]:
         """
         This function collects user data of all stream ids for a day
-        :param dict dict: a dictionary of all stream ids with dates
+
+        :param dict input_dict: a dictionary of all stream ids with dates
         :param str day: date on which to operate
         :param str user_id: UUID
-        :return: all datapoints of the day if any stream id has data
+        :return: all DataPoints of the day if any stream id has data
                 for that day
         :rtype: List(DataPoint)
         """
         all_data = []
-        for stream_id in dict:
-            if day in dict[stream_id]:
+        for stream_id in input_dict:
+            if day in input_dict[stream_id]:
                 data_stream = self.CC.get_stream(stream_id, user_id, day)
                 if len(data_stream.data) == 0:
                     continue
@@ -92,17 +89,18 @@ class TypingMarker(ComputeFeatureBase):
         all_data.sort(key=lambda x: x.start_time)
         return all_data
 
-    def get_common_days(self, user_id: str)->tuple:
+    def get_common_days(self, user_id: str) -> tuple:
         """
-         This function gets both wrists' accl and gyro steam ids with dates to
-         extract commons days for which both both wrists' accel and gyro
-         data exist. Also creates left,right accl and gyro streams' dictionaries
-         of stream ids, containing all the dates of each stream id.         .
+         This function gets both wrists' accelerometer and gyroscope steam ids with dates to
+         extract commons days for which both both wrists' accelerometer and gyroscope
+         data exist. Also creates left,right accelerometer and gyroscope streams' dictionaries
+         of stream ids, containing all the dates of each stream id.
+
         :param str user_id: UUID
         :return: list of common days and four dictionaries for
                 left, right acc and gyro with stream id as key and
                 list of dates as values
-        :rtype:tuple(List,dict)
+        :rtype: tuple(List,dict)
         """
 
         accel_right_stream_ids_with_date = {}
@@ -159,19 +157,17 @@ class TypingMarker(ComputeFeatureBase):
             accel_right_unique_days.intersection(accel_left_unique_days))
         common_days.sort()
 
-        return common_days, \
-               accel_right_stream_ids_with_date, \
-               gyro_right_stream_ids_with_date, \
-               accel_left_stream_ids_with_date, \
-               gyro_left_stream_ids_with_date
+        return common_days, accel_right_stream_ids_with_date, gyro_right_stream_ids_with_date, \
+            accel_left_stream_ids_with_date, gyro_left_stream_ids_with_date
 
-    def process(self, user, all_days ):
+    def process(self, user: str, all_days: list):
         """
          This function processes both wrists' accl and gyro data for the
          commons days to create data frames for left, right accl and gyro data.
          Makes two dataframes for left(accl,gyro) and right(accl,gyro).
-         Then uses the sync funtion to sync left and right dataframes.
-         Finally uses the typing_episodes funtion to detect typing episodes.
+         Then uses the sync function to sync left and right dataframes.
+         Finally uses the typing_episodes function to detect typing episodes.
+
         :param str user: UUID
         :param list all_days: list of days on which to operate
         """

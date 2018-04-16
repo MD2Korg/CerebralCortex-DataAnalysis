@@ -24,6 +24,7 @@
 import pickle
 import core.computefeature
 
+# TODO: Comment and describe constants
 Fs = 25
 window_size = 60
 window_offset = 60
@@ -31,11 +32,16 @@ path_to_model_files = 'core/resources/models/stress_wrist/'
 rr_interval_identifier = "org.md2k.data_analysis.feature.rr_interval.v1"
 no_of_feature = 16
 
+
 def get_model():
+    """
+    Retrieves the specific model files from storage
+
+    :return: Model and Scalar
+    :rtype: objects
+    """
     model = pickle.loads(core.computefeature.get_resource_contents(
-        path_to_model_files+'stress_model_final.model'))
+        path_to_model_files + 'stress_model_final.model'))
     scaler = pickle.loads(core.computefeature.get_resource_contents(
-        path_to_model_files+'stress_scaler_final.scaler'))
-    return model,scaler
-
-
+        path_to_model_files + 'stress_scaler_final.scaler'))
+    return model, scaler

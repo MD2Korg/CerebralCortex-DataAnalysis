@@ -30,7 +30,15 @@ from scipy.stats import kurtosis
 from cerebralcortex.core.datatypes.datastream import DataStream
 from core.feature.activity.utils import *
 
-def get_rate_of_change(timestamp, value):
+
+def get_rate_of_change(timestamp: object, value: object) -> object:
+    """
+
+    :rtype: object
+    :param timestamp:
+    :param value:
+    :return:
+    """
     roc = 0
     cnt = 0
     for i in range(len(value) - 1):
@@ -44,8 +52,17 @@ def get_rate_of_change(timestamp, value):
     return roc
 
 
-def get_magnitude(ax, ay, az):
+def get_magnitude(ax: object, ay: object, az: object) -> object:
+    """
+
+    :rtype: object
+    :param ax:
+    :param ay:
+    :param az:
+    :return:
+    """
     return math.sqrt(ax * ax + ay * ay + az * az)
+
 
 def spectral_entropy(data, sampling_freq, bands=None):
     """
@@ -58,6 +75,7 @@ def spectral_entropy(data, sampling_freq, bands=None):
     Where:
     :math:`PSD` is the normalised power spectrum (Power Spectrum Density), and
     :math:`f_s` is the sampling frequency
+
     :param data: a one dimensional floating-point array representing a time series.
     :type data: :class:`~numpy.ndarray` or :class:`~pyrem.time_series.Signal`
     :param sampling_freq: the sampling frequency
@@ -87,12 +105,26 @@ def spectral_entropy(data, sampling_freq, bands=None):
     return - np.sum(power_per_band * np.log2(power_per_band))
 
 
-def peak_frequency(data):
+def peak_frequency(data: object) -> object:
+    """
+
+    :rtype: object
+    :param data:
+    :return:
+    """
     w = np.fft.fft(data)
     freqs = np.fft.fftfreq(len(w))
     return freqs.max()
 
-def compute_basic_features(timestamp, data):
+
+def compute_basic_features(timestamp: object, data: object) -> object:
+    """
+
+    :rtype: object
+    :param timestamp:
+    :param data:
+    :return:
+    """
     mean = np.mean(data)
     median = np.median(data)
     std = np.std(data)
@@ -105,7 +137,21 @@ def compute_basic_features(timestamp, data):
 
     return mean, median, std, skewness, kurt, rate_of_changes, power, sp_entropy, peak_freq
 
-def computeFeatures(start_time, end_time, time, x, y, z, pid):
+
+def computeFeatures(start_time: object, end_time: object, time: object, x: object, y: object, z: object,
+                    pid: object) -> object:
+    """
+
+    :rtype: object
+    :param start_time:
+    :param end_time:
+    :param time:
+    :param x:
+    :param y:
+    :param z:
+    :param pid:
+    :return:
+    """
     mag = [0] * len(x)  # np.empty([len(x), 1])
     for i, value in enumerate(x):
         mag[i] = math.sqrt(x[i] * x[i] + y[i] * y[i] + z[i] * z[i])
@@ -135,9 +181,13 @@ def computeFeatures(start_time, end_time, time, x, y, z, pid):
 
     return f
 
+
 def compute_window_features(start_time, end_time,
                             data: List[DataPoint]) -> DataPoint:
-    """ Computes feature vector for single window
+    """
+    Computes feature vector for single window
+
+    :rtype: DataPoint
     :param start_time:
     :param end_time:
     :param data:
@@ -182,9 +232,13 @@ def compute_window_features(start_time, end_time,
     return DataPoint(start_time=start_time, end_time=end_time, offset=offset,
                      sample=feature_vector)
 
+
 def compute_accelerometer_features(accel_data: List[DataPoint],
-                                   window_size: float = 10.0):
-    """ Segment data and computes feature vector for each window
+                                   window_size: float = 10.0) -> object:
+    """
+    Segment data and computes feature vector for each window
+
+    :rtype: object
     :param accel_stream:
     :param window_size:
     :return: list of feature vectors
@@ -213,14 +267,5 @@ def compute_accelerometer_features(accel_data: List[DataPoint],
         all_features.append(feature_vector)
 
         cur_index = end_index
-
-    # TODO: I will remove this when windowing function works
-    # # perform windowing of datastream
-    # window_data = window_sliding(accel_stream.data, window_size, window_size)
-    # for key, value in window_data.items():
-    #     if len(value) > 200:
-    #         start_time, end_time = key
-    #         feature_list = compute_window_features(start_time, end_time, value)
-    #         all_features.append(feature_list)
 
     return all_features

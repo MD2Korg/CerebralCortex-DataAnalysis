@@ -28,7 +28,18 @@ from core.feature.activity.import_model_files import get_posture_model, \
     get_activity_model
 from typing import List
 
-def classify_posture(features: List[DataPoint], is_gravity) -> List[DataPoint]:
+
+def classify_posture(features: List[DataPoint], is_gravity: bool) -> List[DataPoint]:
+    """
+    Classify posture from a set of input features based on a predefined ML model.
+
+    :type is_gravity: bool
+    :type features: List[DataPoint]
+    :rtype: List[DataPoint]
+    :param features: A set of features to run posture classification on
+    :param is_gravity: Flag to account for gravity or not
+    :return: Labeled postures
+    """
     clf = get_posture_model(is_gravity)
     labels = []
 
@@ -40,7 +51,18 @@ def classify_posture(features: List[DataPoint], is_gravity) -> List[DataPoint]:
 
     return labels
 
+
 def classify_activity(features: List[DataPoint], is_gravity) -> List[DataPoint]:
+    """
+    Classify activity from a set of input features based on a predefined ML model.
+
+    :type is_gravity: bool
+    :type features: List[DataPoint]
+    :rtype: List[DataPoint]
+    :param features: A set of features to run activity classification on
+    :param is_gravity: Flag to account for gravity or not
+    :return: Labeled activities
+    """
     clf = get_activity_model(is_gravity)
     labels = []
 
