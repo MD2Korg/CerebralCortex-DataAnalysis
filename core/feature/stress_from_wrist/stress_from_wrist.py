@@ -29,10 +29,10 @@ import math
 import numpy as np
 from scipy.stats import iqr
 from scipy.stats import variation
-from copy import deepcopy
 from sklearn.preprocessing import StandardScaler
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-
+from datetime import datetime,timedelta
+import pytz
 feature_class_name = 'stress_from_wrist'
 
 
@@ -220,9 +220,19 @@ class stress_from_wrist(ComputeFeatureBase):
 
         self.store_stream(json_path[1],[streams[stream_identifier]],user_id,final_binary_data,localtime=False)
 
-
-
-
+        final_hourly_data = []
+        start_dp = final_binary_data[0].start_time
+        offset = final_binary_data[0].offset
+        start = datetime(year=start_dp.year,month=start_dp.month,day=start_dp.day,hour=start_dp.hour,tzinfo=pytz.UTC)
+        while start <= final_binary_data[-1].start_time:
+            finish = start+timedelta(minutes=59)
+            data_in_hour = np.array([dp.sample for i,dp in enumerate(final_binary_data) if
+                                     finish >= dp.start_time >= start])
+            if not list(data_in_hour):
+                continue
+            hourly_stress_prob = len(np.where(data_in_hour==1)[0])/len(data_in_hour)
+            final_hourly_data.append(DataPoint.from_tuple(start_time=start,offset=offset,sample=hourly_stress_prob))
+            start = start+timedelta(hours=1)
 
     def process(self, user:str, all_days):
 
