@@ -2,7 +2,7 @@
   "annotations": [],
   "data_descriptor": [
     {
-      "name": "Semantic name",
+      "name": "semantic_name",
       "type": "string",
       "description": "Semantic name of the co-ordinate using model"
     }

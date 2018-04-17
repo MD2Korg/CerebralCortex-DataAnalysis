@@ -2,8 +2,10 @@
   "annotations": [],
   "data_descriptor": [
     {
+      "name": "",
       "type": "list",
-      "unit": ""
+      "unit": "",
+      "description": ""
     }
   ],
   "execution_context": {

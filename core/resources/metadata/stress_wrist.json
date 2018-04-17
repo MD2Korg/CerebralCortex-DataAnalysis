@@ -3,7 +3,7 @@
   "data_descriptor": [
     {
       "name": "stress_value",
-      "type": "int",
+      "type": "integer",
       "description": "1 for stress and 0 for not-stress"
     }
   ],

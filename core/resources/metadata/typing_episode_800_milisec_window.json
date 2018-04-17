@@ -3,7 +3,7 @@
   "data_descriptor":[
     {
       "name":"typing_value",
-      "type":"int",
+      "type":"integer",
       "unit":"",
       "description": "Detects typing in a 800 mlsec window"
     }
