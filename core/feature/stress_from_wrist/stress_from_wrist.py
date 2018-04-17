@@ -33,6 +33,7 @@ from sklearn.preprocessing import StandardScaler
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from datetime import datetime,timedelta
 import pytz
+
 feature_class_name = 'stress_from_wrist'
 
 
@@ -62,7 +63,7 @@ class stress_from_wrist(ComputeFeatureBase):
             A datastream containing a list of datapoints, each DataPoint represents one minute where sample=0
             means the user was not stressed and sample=1 means the person was stressed
 
-        List of Features:
+        :Features:
             1. 82nd perentile
             2. 18th perentile
             3. mean
@@ -110,9 +111,10 @@ class stress_from_wrist(ComputeFeatureBase):
             15. median of inter percentile difference
             16. standard deviation of inter percentile difference 
         
-        :param rr: A list of numpy array. Each array contains a realization of RR interval timeseries for the same one 
+        :param list rr: A list of numpy array. Each array contains a realization of RR interval timeseries for the same one
         minute of data 
         :return: A numpy array of shape(1,16) representing the 16 features calculated from one minute of data
+        :rtype: np.ndarray
         """
 
         temp = np.zeros((len(rr),no_of_feature))
@@ -146,9 +148,7 @@ class stress_from_wrist(ComputeFeatureBase):
                           day:str,
                           stream_identifier:str,
                           user_id:str,
-                          json_path:list,
-                          model,
-                          scaler):
+                          json_path:list):
         """
         This  function takes all the streams of one user and extracts all the RR interval data the person has for a 
         specific day and calculates a feature matrix of shape (m,16) where m is the number of minutes of rr interval data
@@ -159,13 +159,11 @@ class stress_from_wrist(ComputeFeatureBase):
         
         It saves the stress datastream
         
-        :param streams: All the streams of a user 
-        :param day: day in string format
-        :param stream_identifier: stream name of rr interval
-        :param user_id: uuid of user
-        :param json_path: the name of the json file where the metadata of stress from wrist is written
-        :param model: a sklearn logistic regression model trained  
-        :param scaler: a sklearn standard transformation trained to standardize the feature the feature values
+        :param dict streams: All the streams of a user
+        :param str day: day in string format
+        :param str stream_identifier: stream name of rr interval
+        :param str user_id: uuid of user
+        :param list json_path: the name of the json file where the metadata of stress from wrist is written
         
         """
 
@@ -199,6 +197,9 @@ class stress_from_wrist(ComputeFeatureBase):
             st_et_offset_array.append([dp.start_time,dp.offset,dp.end_time])
         if not list(feature_matrix):
             return
+
+        model,scaler = get_model()
+
         feature_matrix = np.array(feature_matrix).reshape(len(feature_matrix),no_of_feature)
         normalized_feature_matrix = StandardScaler().fit_transform(feature_matrix)
         transformed_feature_matrix = scaler.transform(normalized_feature_matrix)
@@ -248,8 +249,8 @@ class stress_from_wrist(ComputeFeatureBase):
 
         """
         Takes the user identifier and the list of days and does the required processing  
-        :param user: user id string
-        :param all_days: list of days to compute
+        :param str user: user id string
+        :param list all_days: list of days to compute
         
         """
 
@@ -271,6 +272,5 @@ class stress_from_wrist(ComputeFeatureBase):
             return
         user_id = user
         json_path = ['stress_wrist.json','stress_wrist_likelihood.json','stress_wrist_minute_likelihood.json']
-        model,scaler = get_model()
         for day in all_days:
-            self.get_and_save_data(streams,day,rr_interval_identifier,user_id,json_path,model,scaler)
+            self.get_and_save_data(streams,day,rr_interval_identifier,user_id,json_path)

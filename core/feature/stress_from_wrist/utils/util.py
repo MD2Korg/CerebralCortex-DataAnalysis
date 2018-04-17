@@ -24,14 +24,19 @@
 import pickle
 import core.computefeature
 
-# TODO: Comment and describe constants
-Fs = 25
-window_size = 60
-window_offset = 60
-path_to_model_files = 'core/resources/models/stress_wrist/'
-rr_interval_identifier = "org.md2k.data_analysis.feature.rr_interval.v1"
-activity_identifier = "org.md2k.data_analysis.feature.activity.wrist.10_seconds"
-no_of_feature = 14
+Fs = 25 #sampling frequency
+
+window_size = 60 #sliding window size
+
+window_offset = 60 #sliding window offset
+
+path_to_model_files = 'core/resources/models/stress_wrist/' #path of storage
+
+rr_interval_identifier = "org.md2k.data_analysis.feature.rr_interval.v1" #identifier for rr_interval stream
+
+activity_identifier = "org.md2k.data_analysis.feature.activity.wrist.10_seconds" #identifier for activity
+
+no_of_feature = 14 #number of features the model was trained with
 
 
 def get_model():
