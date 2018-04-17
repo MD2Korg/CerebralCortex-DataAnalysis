@@ -49,6 +49,7 @@ class GPSFeatures(ComputeFeatureBase):
         """
         Calculate the great circle distance between two points
         on the earth (specified in decimal degrees)
+
         :rtype: object
         :param lon1:
         :param lat1:
@@ -163,7 +164,7 @@ class GPSFeatures(ComputeFeatureBase):
 
         ii = 0
         while ii < len(data):
-            if (float(data[ii].sample[1]) == -1.0):
+            if float(data[ii].sample[1]) == -1.0:
                 ii = ii + 1
                 continue
             concat_string = str(data[ii].sample[1]) + str(data[ii].sample[2])
@@ -247,7 +248,7 @@ class GPSFeatures(ComputeFeatureBase):
 
         :param semanticdata: DataPoint array of semantic stream
         :return: cumulative staying time at different types of locations
-        :rtype: List(DataPoint) with a single element (dictionary).
+        :rtype: List[DataPoint] with a single element (dictionary).
         """
 
         data = semanticdata
@@ -257,7 +258,7 @@ class GPSFeatures(ComputeFeatureBase):
         while i < len(data):
             get_time_datetime = data[i].end_time - data[i].start_time
             get_time = get_time_datetime.total_seconds()
-            # print ("this is time" + str(get_time))
+
             get_pre_time = 0
             if data[i].sample[0] in time_dictionary.keys():
                 get_pre_time = time_dictionary[data[i].sample]
@@ -295,7 +296,7 @@ class GPSFeatures(ComputeFeatureBase):
 
             pre_loc = semanticwithouttransit[i]
             post_loc = semanticwithouttransit[i + 1]
-            if (pre_loc.sample != post_loc.sample):
+            if pre_loc.sample != post_loc.sample:
                 key_string = pre_loc.sample + " " + post_loc.sample
                 get_pre_num = 0
                 if (key_string in number_of_trans_dict.keys()):
@@ -329,7 +330,7 @@ class GPSFeatures(ComputeFeatureBase):
         jj = 0
         centroidwithouttransit = []
         while jj < len(centroiddata):
-            if (float(centroiddata[jj].sample[1]) != -1.0):
+            if float(centroiddata[jj].sample[1]) != -1.0:
                 centroidwithouttransit.append(centroiddata[jj])
             jj = jj + 1
 

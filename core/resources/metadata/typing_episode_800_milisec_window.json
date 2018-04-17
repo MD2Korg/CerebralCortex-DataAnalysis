@@ -1,47 +1,45 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
-      "name":"typing_value",
-      "type":"int",
-      "descriptor":"Detects typing in a 800 miliseconds window"
+      "name": "typing_value",
+      "type": "int",
+      "description": "Detects typing in a 800 milliseconds window"
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.typing",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.typing",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
+      "input_parameters": {
         "window_size": "800 milisec"
       }
     },
-    "algorithm":{
-      "method":"core.feature.typing",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.typing",
+      "authors": [
         {
-          "name":"Mithun Saha",
-          "email":"amimithun@gmail.com"
-
+          "name": "Mithun Saha",
+          "email": "amimithun@gmail.com"
         },
         {
-          "name":"JEYA VIKRANTH JEYAKUMAR",
-          "email":"vikranth94@ucla.edu"
-
+          "name": "JEYA VIKRANTH JEYAKUMAR",
+          "email": "vikranth94@ucla.edu"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"Detects all the typing episodes in a day"
+      "description": "Detects all the typing episodes in a day"
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.v3.typing.episodes.day",
-  "owner":"",
-  "type":"1"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.v3.typing.episodes.day",
+  "owner": "",
+  "type": "1"
 }

@@ -1,42 +1,42 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
-      "name":"hourly_stress_percentage_value",
-      "type":"float",
-      "unit":"1 hour window",
-      "description":"ratio of stress windows per hour of day to the total number of windows"
+      "name": "hourly_stress_percentage_value",
+      "type": "float",
+      "unit": "1 hour window",
+      "description": "ratio of stress windows per hour of day to the total number of windows"
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.stress_from_wrist",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.stress_from_wrist",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
+      "input_parameters": {
         "window_size": "60 minutes"
       }
     },
-    "algorithm":{
-      "method":"core.feature.stress_from_wrist.stress_from_wrist",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.stress_from_wrist.stress_from_wrist",
+      "authors": [
         {
-          "name":"Md Azim Ullah",
-          "email":"mullah@memphis.edu"
+          "name": "Md Azim Ullah",
+          "email": "mullah@memphis.edu"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"calculates the portion of stress windows per hour of day from aggregation of per minute stress outputs in that hour"
+      "description": "calculates the portion of stress windows per hour of day from aggregation of per minute stress outputs in that hour"
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.stress.wrist.likelihood.60minutes.v1",
-  "owner":"",
-  "type":"1"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.stress.wrist.likelihood.60minutes.v1",
+  "owner": "",
+  "type": "1"
 }

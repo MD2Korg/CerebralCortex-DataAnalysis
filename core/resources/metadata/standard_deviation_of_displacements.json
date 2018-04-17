@@ -5,7 +5,7 @@
       "name": "value",
       "type": "float",
       "unit": "km",
-      "description": ""
+      "description": "Standard deviation of the displacements covered by participant in one day in kilometer."
     }
   ],
   "execution_context": {

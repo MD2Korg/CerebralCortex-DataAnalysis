@@ -2,10 +2,10 @@
   "annotations": [],
   "data_descriptor": [
     {
-      "name": "value",
+      "name": "distance",
       "type": "float",
       "unit": "km",
-      "description": ""
+      "description": "Total distance covered by participant in one day."
     }
   ],
   "execution_context": {
@@ -31,7 +31,7 @@
       "version": "0.0.1",
       "reference": {
       },
-      "description": "Total distance covered by participant in one day."
+      "description": "Computes the total distance covered by participant in one day based on gps location information."
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",

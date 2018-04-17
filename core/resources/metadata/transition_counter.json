@@ -2,9 +2,9 @@
   "annotations": [],
   "data_descriptor": [
     {
-      "name": "",
-      "type": "list",
-      "description": ""
+      "name": "value",
+      "type": "json",
+      "description": "A set of key-value pairs indicating the number of transitions between the types of locations where the key defines the position pairs."
     }
   ],
   "execution_context": {

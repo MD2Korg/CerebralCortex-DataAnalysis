@@ -2,9 +2,9 @@
   "annotations": [],
   "data_descriptor": [
     {
-      "name": "",
-      "description": "",
-      "type": "integer"
+      "name": "count",
+      "type": "integer",
+      "description": "Number of different places visited by participant in one day."
     }
   ],
   "execution_context": {
