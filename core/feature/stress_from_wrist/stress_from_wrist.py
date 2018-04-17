@@ -234,6 +234,10 @@ class stress_from_wrist(ComputeFeatureBase):
             start = start+timedelta(hours=1)
             if not list(data_in_hour):
                 continue
+
+            if len(data_in_hour)<10:
+                continue
+
             init_index = max(index_collection)
             hourly_stress_prob = len(np.where(data_in_hour==1)[0])/len(data_in_hour)
             final_hourly_data.append(DataPoint.from_tuple(start_time=start-timedelta(hours=1),
