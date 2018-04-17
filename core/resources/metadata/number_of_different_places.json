@@ -4,8 +4,7 @@
     {
       "name": "",
       "description": "",
-      "type": "int",
-      "unit": ""
+      "type": "integer"
     }
   ],
   "execution_context": {
