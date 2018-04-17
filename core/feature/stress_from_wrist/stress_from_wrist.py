@@ -224,15 +224,20 @@ class stress_from_wrist(ComputeFeatureBase):
         start_dp = final_binary_data[0].start_time
         offset = final_binary_data[0].offset
         start = datetime(year=start_dp.year,month=start_dp.month,day=start_dp.day,hour=start_dp.hour,tzinfo=pytz.UTC)
+        init_index = 0
         while start <= final_binary_data[-1].start_time:
             finish = start+timedelta(minutes=59)
-            data_in_hour = np.array([dp.sample for i,dp in enumerate(final_binary_data) if
-                                     finish >= dp.start_time >= start])
+            data_in_hour_tuple = np.array([(i,dp.sample) for i,dp in enumerate(final_binary_data[init_index:]) if
+                                           finish >= dp.start_time >= start])
+            data_in_hour = np.array([i[1] for i in data_in_hour_tuple])
+            index_collection = np.array([i[0] for i in data_in_hour_tuple])
+            init_index = max(index_collection)
+            start = start+timedelta(hours=1)
             if not list(data_in_hour):
                 continue
             hourly_stress_prob = len(np.where(data_in_hour==1)[0])/len(data_in_hour)
             final_hourly_data.append(DataPoint.from_tuple(start_time=start,offset=offset,sample=hourly_stress_prob))
-            start = start+timedelta(hours=1)
+
 
     def process(self, user:str, all_days):
 
