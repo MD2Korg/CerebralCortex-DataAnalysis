@@ -212,7 +212,7 @@ class stress_from_wrist(ComputeFeatureBase):
                                                           offset=dp[1],
                                                           sample=stress_likelihood_value[i][1]))
 
-        self.store_stream(json_path[1],[streams[stream_identifier]],user_id,final_binary_data,localtime=False)
+        self.store_stream(json_path[1],[streams[stream_identifier]],user_id,final_likelihood_data,localtime=False)
 
 
 
