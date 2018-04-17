@@ -260,7 +260,7 @@ class stress_from_wrist(ComputeFeatureBase):
         if rr_interval_identifier not in streams:
             return
         user_id = user
-        json_path = ['stress_wrist.json','stress_wrist_likelihood.json']
+        json_path = ['stress_wrist.json','stress_wrist_likelihood.json','stress_wrist_minute_likelihood.json']
         model,scaler = get_model()
         for day in all_days:
             self.get_and_save_data(streams,day,rr_interval_identifier,user_id,json_path,model,scaler)
