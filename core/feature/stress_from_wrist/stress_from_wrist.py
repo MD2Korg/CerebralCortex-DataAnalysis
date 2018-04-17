@@ -163,7 +163,7 @@ class stress_from_wrist(ComputeFeatureBase):
         :param str day: day in string format
         :param str stream_identifier: stream name of rr interval
         :param str user_id: uuid of user
-        :param list json_path: the name of the json file where the metadata of stress from wrist is written
+        :param list json_path: the names of the json files where the metadata of stress from wrist is written
         
         """
 
@@ -245,7 +245,7 @@ class stress_from_wrist(ComputeFeatureBase):
                                                           offset=offset,sample=hourly_stress_prob))
         self.store_stream(json_path[2],[streams[stream_identifier]],user_id,final_hourly_data,localtime=False)
 
-    def process(self, user:str, all_days):
+    def process(self, user:str, all_days:list):
 
         """
         Takes the user identifier and the list of days and does the required processing  
