@@ -28,9 +28,10 @@ from core.feature.stress_from_wrist.utils.ecg_feature_computation import ecg_fea
 import math
 import numpy as np
 from scipy.stats import iqr
-from scipy.stats import skew
-from scipy.stats import kurtosis
+from scipy.stats import variation
 from copy import deepcopy
+from sklearn.preprocessing import StandardScaler
+from cerebralcortex.core.datatypes.datapoint import DataPoint
 
 feature_class_name = 'stress_from_wrist'
 
@@ -118,20 +119,18 @@ class stress_from_wrist(ComputeFeatureBase):
             temp[k,3] = np.median(rr_final)
             temp[k,4] = np.std(rr_final)
             temp[k,5] = iqr(rr_final)
-            temp[k,6] = skew(rr_final)
-            temp[k,7] = kurtosis(rr_final)
-            b = np.copy(ecg_feature_computation(np.array(rr_final),np.array(rr_final)))
-            temp[k,8] = b[1]
-            temp[k,9] = b[2]
-            temp[k,10] = b[3]
-            temp[k,11] = b[4]
-            temp[k,12] = b[7]
-            temp[k,13] = b[-1]
-            pc = []
-            for p in range(1,100,1):
-                pc.append(np.percentile(rr_final,p))
-            temp[k,14] = np.median(np.diff(pc))
-            temp[k,15] = np.std(np.diff(pc))
+
+            b = np.copy(ecg_feature_computation(np.cumsum(rr_final),np.array(rr_final)))
+            temp[k,6] = b[1]
+            temp[k,7] = b[2]
+            temp[k,8] = b[3]
+            temp[k,9] = b[4]
+            temp[k,10] = b[-1]
+            pc = np.linspace(1,99,99)
+            pc_arr = list(map(lambda x:np.percentile(rr_final,x),pc))
+            temp[k,11] = np.std(np.diff(pc_arr))
+            temp[k,12] = np.std(pc_arr)
+            temp[k,13] = variation(rr_final)
         feature_one_row = np.zeros((1,no_of_feature))
         for j in range(np.shape(temp)[1]):
             feature_one_row[0,j] = np.median(temp[:,j])
@@ -142,7 +141,7 @@ class stress_from_wrist(ComputeFeatureBase):
                           day:str,
                           stream_identifier:str,
                           user_id:str,
-                          json_path:str,
+                          json_path:list,
                           model,
                           scaler):
         """
@@ -168,21 +167,53 @@ class stress_from_wrist(ComputeFeatureBase):
         rr_interval_data = self.CC.get_stream(streams[stream_identifier]["identifier"],
                                           day=day,user_id=user_id,localtime=False)
         print('-'*20," Got rr interval data ", len(rr_interval_data.data) ,'-'*20)
+
+        activity_data = self.CC.get_stream(streams[activity_identifier]["identifier"],
+                                           day=day,user_id=user_id,localtime=False)
         if not rr_interval_data.data:
             return
-        final_data= []
+
+        ts_arr = [i.start_time for i in activity_data.data]
+        sample_arr = [i.sample for i in activity_data.data]
+
+        feature_matrix = []
+        st_et_offset_array = []
         for dp in rr_interval_data.data:
+            ind = np.array([sample_arr[i] for i,item in enumerate(ts_arr) if ts_arr[i]>=dp.start_time and ts_arr[i]<= dp.end_time])
+
+            if list(ind).count('WALKING')+list(ind).count('MOD')+list(ind).count('HIGH')  >= len(ind)*.33:
+                continue
+
             if math.isnan(dp.sample[1]):
                continue
+
             if not list(dp.sample[0]):
                 continue
             feature_one_row = self.get_feature_for_one_window(dp.sample[0])
-            feature_one_row = scaler.transform(feature_one_row)
-            stress_value = model.predict(feature_one_row)
-            final_data.append(deepcopy(dp))
-            final_data[-1].sample = stress_value
-        print('-'*20," Got Stress data ", len(final_data) ,'-'*20)
-        self.store_stream(json_path,[streams[stream_identifier]],user_id,final_data,localtime=False)
+            feature_matrix.append(feature_one_row)
+            st_et_offset_array.append([dp.start_time,dp.offset,dp.end_time])
+
+        feature_matrix = np.array(feature_matrix).reshape(len(feature_matrix),no_of_feature)
+        normalized_feature_matrix = StandardScaler().fit_transform(feature_matrix)
+        transformed_feature_matrix = scaler.transform(normalized_feature_matrix)
+        stress_value = model.predict(transformed_feature_matrix)
+        final_binary_data = []
+        for i,dp in enumerate(st_et_offset_array):
+            final_binary_data.append(DataPoint.from_tuple(start_time=dp[0],end_time=dp[-1],
+                                                          offset=dp[1],
+                                                          sample=stress_value[i]))
+
+        self.store_stream(json_path[0],[streams[stream_identifier]],user_id,final_binary_data,localtime=False)
+
+        stress_likelihood_value = model.predict_proba(transformed_feature_matrix)
+        final_likelihood_data = []
+        for i,dp in enumerate(st_et_offset_array):
+            final_likelihood_data.append(DataPoint.from_tuple(start_time=dp[0],end_time=dp[-1],
+                                                          offset=dp[1],
+                                                          sample=stress_likelihood_value[i][1]))
+
+        self.store_stream(json_path[1],[streams[stream_identifier]],user_id,final_binary_data,localtime=False)
+
 
 
 
@@ -213,7 +244,7 @@ class stress_from_wrist(ComputeFeatureBase):
         if rr_interval_identifier not in streams:
             return
         user_id = user
-        json_path = 'stress_wrist.json'
+        json_path = ['stress_wrist.json']
         model,scaler = get_model()
         for day in all_days:
             self.get_and_save_data(streams,day,rr_interval_identifier,user_id,json_path,model,scaler)
