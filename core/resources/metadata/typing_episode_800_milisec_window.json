@@ -4,8 +4,7 @@
     {
       "name":"typing_value",
       "type":"int",
-      "unit":"",
-      "descriptor":"Detects typing in a 800 mlsec window"
+      "descriptor":"Detects typing in a 800 miliseconds window"
     }
   ],
   "execution_context":{
