@@ -218,7 +218,7 @@ class stress_from_wrist(ComputeFeatureBase):
                                                               offset=dp[1],
                                                               sample=stress_likelihood_value[i][1]))
 
-        self.store_stream(json_path[1],[streams[stream_identifier]],user_id,final_binary_data,localtime=False)
+        self.store_stream(json_path[1],[streams[stream_identifier]],user_id,final_likelihood_data,localtime=False)
 
         final_hourly_data = []
         start_dp = final_binary_data[0].start_time
@@ -231,13 +231,14 @@ class stress_from_wrist(ComputeFeatureBase):
                                            finish >= dp.start_time >= start])
             data_in_hour = np.array([i[1] for i in data_in_hour_tuple])
             index_collection = np.array([i[0] for i in data_in_hour_tuple])
-            init_index = max(index_collection)
             start = start+timedelta(hours=1)
             if not list(data_in_hour):
                 continue
+            init_index = max(index_collection)
             hourly_stress_prob = len(np.where(data_in_hour==1)[0])/len(data_in_hour)
-            final_hourly_data.append(DataPoint.from_tuple(start_time=start,offset=offset,sample=hourly_stress_prob))
-
+            final_hourly_data.append(DataPoint.from_tuple(start_time=start-timedelta(hours=1),
+                                                          offset=offset,sample=hourly_stress_prob))
+        self.store_stream(json_path[2],[streams[stream_identifier]],user_id,final_hourly_data,localtime=False)
 
     def process(self, user:str, all_days):
 
