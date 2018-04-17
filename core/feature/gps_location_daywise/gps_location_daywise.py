@@ -42,12 +42,14 @@ import traceback
 feature_class_name = 'GpsLocationDaywise'
 GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM = "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model"
 
+
 class GpsLocationDaywise(ComputeFeatureBase):
     """
     Produce feature from gps location from
     "org.md2k.data_analysis.gps_episodes_and_semantic_location" data stream. One data
     point is split into two when it starts from one day and ends in other day. In that way,
-    we are getting semantic location of daily data """
+    we are getting semantic location of daily data
+    """
 
     def listing_all_gps_location_daywise(self, user_id: str, all_days: List[str]):
         """
@@ -55,7 +57,6 @@ class GpsLocationDaywise(ComputeFeatureBase):
 
         :param str user_id: UUID of the stream owner
         :param List(str) all_days: All days of the user in the format 'YYYYMMDD'
-        :return:
         """
 
         self.CC.logging.log('%s started processing for user_id %s' %
@@ -67,12 +68,11 @@ class GpsLocationDaywise(ComputeFeatureBase):
 
             for day in all_days:
                 location_data_stream = \
-                    self.CC.get_stream(stream_id["identifier"], user_id, day,localtime=False)
-
+                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime=False)
 
                 for data in set(location_data_stream.data):
 
-                    if(data.start_time.date() != data.end_time.date()):
+                    if data.start_time.date() != data.end_time.date():
                         temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
                         start_day = data.start_time.date()
                         end_time = datetime.combine(start_day, time.max)
@@ -81,7 +81,7 @@ class GpsLocationDaywise(ComputeFeatureBase):
                         gps_data.append(temp)
 
                         end_day = data.end_time.date()
-                        start_day += timedelta(days = 1)
+                        start_day += timedelta(days=1)
                         while start_day != end_day:
                             temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
                             start_time = datetime.combine(start_day, time.min)
@@ -91,7 +91,7 @@ class GpsLocationDaywise(ComputeFeatureBase):
                             end_time = end_time.replace(tzinfo=data.start_time.tzinfo)
                             temp.end_time = end_time
                             gps_data.append(temp)
-                            start_day += timedelta(days = 1)
+                            start_day += timedelta(days=1)
                         temp = DataPoint(data.start_time, data.end_time, data.offset, data.sample)
                         start_time = datetime.combine(start_day, time.min)
                         start_time = start_time.replace(tzinfo=data.start_time.tzinfo)
@@ -113,12 +113,11 @@ class GpsLocationDaywise(ComputeFeatureBase):
         except Exception as e:
             self.CC.logging.log("Exception:", str(e))
             self.CC.logging.log(traceback.format_exc())
-        
+
         self.CC.logging.log('%s finished processing for user_id %s saved %d '
                             'data points' %
                             (self.__class__.__name__, str(user_id),
                              len(gps_data)))
-
 
     def process(self, user_id: str, all_days: List[str]):
         """
@@ -126,7 +125,6 @@ class GpsLocationDaywise(ComputeFeatureBase):
 
         :param str user_id: UUID of the user
         :param List(str) all_days: List of days with format 'YYYYMMDD'
-        :return:
         """
         if self.CC is not None:
             self.CC.logging.log("Processing Working Days")

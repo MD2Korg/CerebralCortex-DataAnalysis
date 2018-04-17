@@ -1,42 +1,42 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
       "name": "amount_of_high_activity_accel_only",
       "type": "float",
       "unit": "minute",
-      "descriptor": "Amount of high activity daily from accel only model"
+      "description": "Amount of high activity daily from accel only model"
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.activity_features",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.activity_features",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
+      "input_parameters": {
         "window_size": "1day"
       }
     },
-    "algorithm":{
-      "method":"core.feature.activity_features.activity_features",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.activity_features.activity_features",
+      "authors": [
         {
-          "name":"Sayma Akther",
-          "email":"sakther@memphis.edu"
+          "name": "Sayma Akther",
+          "email": "sakther@memphis.edu"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"Amount of high activity daily from accel only model"
+      "description": "Amount of high activity daily from accel only model"
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.activity_features.high_activity.daily",
-  "owner":"",
-  "type":"1"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.activity_features.high_activity.daily",
+  "owner": "",
+  "type": "1"
 }

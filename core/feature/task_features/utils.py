@@ -46,7 +46,7 @@ beacon_stream_name = 'org.md2k.data_analysis.feature.v6.beacon.work_beacon_conte
 
 def target_in_fraction_of_context(target_total_time: dict,
                                   context_with_time: dict,
-                                  offset: int, context: str)->List[DataPoint]:
+                                  offset: int, context: str) -> List[DataPoint]:
     """
     This function calculates total context time(office, around office beacon) in
     a day and finds fraction of times spent in sitting,standing and walking in minutes
@@ -57,12 +57,12 @@ def target_in_fraction_of_context(target_total_time: dict,
                                     in a day
     :param int offset: offset for local time
     :param str context: office(work)/work beacon(1)
-    :return: datapoints denoting time spent in minutes per hour for standing,
+    :return: DataPoints denoting time spent in minutes per hour for standing,
             sitting,walking in office and around office beacon context
     :rtype: List(DataPoint)
 
     """
-    outputstream = []  # list of datapoints for output
+    outputstream = []  # list of DataPoints for output
 
     total_context_time = timedelta(0)
 
@@ -74,63 +74,67 @@ def target_in_fraction_of_context(target_total_time: dict,
     context_with_time[context].sort()
     context_start_time = context_with_time[context][0][0]
     context_end_time = \
-    context_with_time[context][len(context_with_time[context]) - 1][1]
+        context_with_time[context][len(context_with_time[context]) - 1][1]
 
     for target in target_total_time:
         datapoint = DataPoint(context_start_time, context_end_time, offset,
                               [str(target),
-                               float(format(target_total_time[target]/total_context_time*60,'.3f'))])
+                               float(format(target_total_time[target] / total_context_time * 60, '.3f'))])
 
         outputstream.append(datapoint)
 
     return outputstream
 
+
 def output_stream(targetconstruct_with_time: dict, context_with_time: dict,
-                  offset: int)->tuple:
+                  offset: int) -> tuple:
     """
     This function compares time intervals of posture or activity with time
     intervals of office or beacon, to find overlapping time windows to
     extract time intervals, in which posture/activity occurs in office/around
     work beacon.
+
     :param dict targetconstruct_with_time: a dictionary of posture/activity time intervals
     :param dict context_with_time: a dictionary of office/beacon time intervals
     :param int offset: for local time information
     :return: total time spent for posture/activity,
-            datapoints for output stream
+            DataPoints for output stream
     :rtype: tuple(dict,List)
     """
 
-    target_total_time = {} #total time for posture/activity
-    outputstream=[] #list of datapoints for output
+    target_total_time = {}  # total time for posture/activity
+    outputstream = []  # list of DataPoints for output
 
     if targetconstruct_with_time and context_with_time:
         for target in targetconstruct_with_time:
-            #keeps running total time for posture/activity
+            # keeps running total time for posture/activity
             time_diff = timedelta(0)
             if target == 'sitting' or target == 'standing' or target == 'WALKING':
                 for time_slot in targetconstruct_with_time[target]:
                     for context in context_with_time:
                         if context == 'work' or context == '1':
                             for context_slot in context_with_time[context]:
-                                start_time = max(time_slot[0],context_slot[0])
-                                end_time = min(time_slot[1],context_slot[1])
-                                if end_time > start_time :
+                                start_time = max(time_slot[0], context_slot[0])
+                                end_time = min(time_slot[1], context_slot[1])
+                                if end_time > start_time:
                                     datapoint = DataPoint(start_time, end_time,
                                                           offset, [target, context])
 
-                                    time_diff += end_time-start_time
+                                    time_diff += end_time - start_time
                                     outputstream.append(datapoint)
 
-            if target == 'sitting'or target == 'standing'or target == 'WALKING':
+            if target == 'sitting' or target == 'standing' or target == 'WALKING':
                 target_total_time[target] = time_diff
 
-    return target_total_time,outputstream
+    return target_total_time, outputstream
 
-def process_data(data: List[DataPoint])->dict:
+
+def process_data(data: List[DataPoint]) -> dict:
     """
      This function takes a list of data points of a stream.
-     For each datapoint, based on sample value(sitting,standing,walking,work,1)
-     creats a dictionary of start and end time.
+     For each DataPoint, based on sample value(sitting,standing,walking,work,1)
+     creates a dictionary of start and end time.
+
     :param List[DataPoint] data: list of posture,activity,gps,beacon datapoints
     :return: dictionaries denoting start and end times for standing,
             sitting,walking, office and office beacon in a day
@@ -138,7 +142,7 @@ def process_data(data: List[DataPoint])->dict:
     """
     dicts = {}
 
-    if len(data)==0:
+    if len(data) == 0:
         return None
 
     for v in data:

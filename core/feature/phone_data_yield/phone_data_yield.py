@@ -34,8 +34,8 @@ from core.computefeature import ComputeFeatureBase
 
 from typing import List, Callable, Any, Tuple
 
-
 feature_class_name = 'PhoneDataYield'
+
 
 class PhoneDataYield(ComputeFeatureBase):
 
@@ -55,7 +55,7 @@ class PhoneDataYield(ComputeFeatureBase):
         return [d for d in data if admission_control(d.sample)]
 
     def get_data_by_stream_name(self, stream_name: str, user_id: str, day: str,
-                                localtime: bool=True) -> List[DataPoint]:
+                                localtime: bool = True) -> List[DataPoint]:
         """
         Combines data from multiple streams data of same stream based on stream name.
 
@@ -91,7 +91,7 @@ class PhoneDataYield(ComputeFeatureBase):
             s = p.start_time
         return s
 
-    def get_data_yield(self, data: List[DataPoint], max_data_gap_threshold_seconds: float=300) \
+    def get_data_yield(self, data: List[DataPoint], max_data_gap_threshold_seconds: float = 300) \
             -> Tuple[List[DataPoint], float]:
         """
         This method produces series of data points containing interval of data present or not. In the sample
@@ -107,9 +107,9 @@ class PhoneDataYield(ComputeFeatureBase):
             return None, None
 
         start_time = datetime.datetime.combine(data[0].start_time.date(), datetime.time.min)
-        start_time = start_time.replace(tzinfo = data[0].start_time.tzinfo)
+        start_time = start_time.replace(tzinfo=data[0].start_time.tzinfo)
         end_time = datetime.datetime.combine(data[0].start_time.date(), datetime.time.max)
-        end_time = end_time.replace(tzinfo = data[0].start_time.tzinfo)
+        end_time = end_time.replace(tzinfo=data[0].start_time.tzinfo)
         L = len(data)
         last = start_time
         yield_data = []
@@ -147,7 +147,8 @@ class PhoneDataYield(ComputeFeatureBase):
             yield_data.append(DataPoint(last, end_time, data[0].offset, 1))
             data_duration += (end_time - last)
 
-        total_duration_data = [DataPoint(start_time, end_time, data[0].offset, round(data_duration.total_seconds()/(60*60), 2) )]
+        total_duration_data = [
+            DataPoint(start_time, end_time, data[0].offset, round(data_duration.total_seconds() / (60 * 60), 2))]
         return yield_data, total_duration_data
 
     def process_stream_day_data(self, user_id: str, data: List[DataPoint],
@@ -224,7 +225,7 @@ class PhoneDataYield(ComputeFeatureBase):
         else:
             for day in all_days:
                 lightstream = self.get_data_by_stream_name(light_stream_name, user_id, day, localtime=False)
-                lightstream = self.get_filtered_data(lightstream, lambda x: (type(x) is float and x>=0))
+                lightstream = self.get_filtered_data(lightstream, lambda x: (type(x) is float and x >= 0))
                 self.process_stream_day_data(user_id, lightstream, input_lightstream, ["light_data_yield.json",
                                                                                        "light_data_yield_total.json"])
 
@@ -236,7 +237,7 @@ class PhoneDataYield(ComputeFeatureBase):
         else:
             for day in all_days:
                 batterystream = self.get_data_by_stream_name(battery_stream_name, user_id, day, localtime=False)
-                batterystream = self.get_filtered_data(batterystream, lambda x: (type(x) is list and len(x)==3))
+                batterystream = self.get_filtered_data(batterystream, lambda x: (type(x) is list and len(x) == 3))
                 self.process_stream_day_data(user_id, batterystream, input_batterystream,
                                              ["phone_battery_data_yield.json", "phone_battery_data_yield_total.json"])
 
@@ -260,9 +261,10 @@ class PhoneDataYield(ComputeFeatureBase):
         else:
             for day in all_days:
                 gyroscopestream = self.get_data_by_stream_name(gyroscope_stream_name, user_id, day, localtime=False)
-                gyroscopestream = self.get_filtered_data(gyroscopestream, lambda x: (type(x) is list and len(x)==3))
+                gyroscopestream = self.get_filtered_data(gyroscopestream, lambda x: (type(x) is list and len(x) == 3))
                 self.process_stream_day_data(user_id, gyroscopestream, input_gyroscopestream,
-                                             ["phone_gyroscope_data_yield.json", "phone_gyroscope_data_yield_total.json"])
+                                             ["phone_gyroscope_data_yield.json",
+                                              "phone_gyroscope_data_yield_total.json"])
 
         if not input_accelerometerstream:
             self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
@@ -274,9 +276,10 @@ class PhoneDataYield(ComputeFeatureBase):
                 accelerometerstream = self.get_data_by_stream_name(accelerometer_stream_name, user_id,
                                                                    day, localtime=False)
                 accelerometerstream = self.get_filtered_data(accelerometerstream,
-                                                             lambda x: (type(x) is list and len(x)==3))
+                                                             lambda x: (type(x) is list and len(x) == 3))
                 self.process_stream_day_data(user_id, accelerometerstream, input_accelerometerstream,
-                                             ["phone_accelerometer_data_yield.json", "phone_accelerometer_data_yield_total.json"])
+                                             ["phone_accelerometer_data_yield.json",
+                                              "phone_accelerometer_data_yield_total.json"])
 
     def process(self, user_id: str, all_days: List[str]):
         """

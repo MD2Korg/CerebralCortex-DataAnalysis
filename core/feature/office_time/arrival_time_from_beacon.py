@@ -40,10 +40,12 @@ import json
 import traceback
 import math
 
+# TODO: Define constants
 feature_class_name = 'ArrivalTimesFromBeacon'
 Working_Days_STREAM = "org.md2k.data_analysis.feature.working_days_from_beacon"
 MEDIAN_ABSOLUTE_DEVIATION_MULTIPLIER = 1.4826
 OUTLIER_DETECTION_MULTIPLIER = 3
+
 
 class ArrivalTimesFromBeacon(ComputeFeatureBase):
     """
@@ -52,7 +54,8 @@ class ArrivalTimesFromBeacon(ComputeFeatureBase):
     the first time of entering in his office's beacon range according to beacon data
     location is considered and only the hour and minute are taken for calculation. Usual
     arrival time is calculated from these data. And here usual time is a range of time.
-    Each day's arrival_time is marked as usual or before_time or after_time """
+    Each day's arrival_time is marked as usual or before_time or after_time
+    """
 
     def listing_all_arrival_times_from_beacon(self, user_id: str, all_days: List[str]):
         """
@@ -62,7 +65,6 @@ class ArrivalTimesFromBeacon(ComputeFeatureBase):
 
         :param str user_id: UUID of the stream owner
         :param List(str) all_days: All days of the user in the format 'YYYYMMDD'
-        :return:
         """
 
         self.CC.logging.log('%s started processing for user_id %s' %
@@ -75,11 +77,11 @@ class ArrivalTimesFromBeacon(ComputeFeatureBase):
         for stream_id in stream_ids:
             for day in all_days:
                 work_data_stream = \
-                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime = True)
+                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime=True)
 
                 for data in work_data_stream.data:
                     print(data)
-                    arrival_time = data.start_time.hour*60+data.start_time.minute
+                    arrival_time = data.start_time.hour * 60 + data.start_time.minute
                     office_arrival_times.append(arrival_time)
                     sample = []
                     temp = DataPoint(data.start_time, data.end_time, data.offset, sample)
@@ -96,37 +98,35 @@ class ArrivalTimesFromBeacon(ComputeFeatureBase):
         outlier_border = mad_value * OUTLIER_DETECTION_MULTIPLIER
         outlier_removed_office_arrival_times = []
         for arrival_time in office_arrival_times:
-            if arrival_time > (median - outlier_border) and arrival_time < (median + outlier_border):
+            if (median - outlier_border) < arrival_time < (median + outlier_border):
                 outlier_removed_office_arrival_times.append(arrival_time)
         if not len(outlier_removed_office_arrival_times):
             outlier_removed_office_arrival_times = office_arrival_times
         mean = np.mean(outlier_removed_office_arrival_times)
         standard_deviation = np.std(outlier_removed_office_arrival_times)
         for data in arrival_data:
-            arrival_time = data.start_time.hour*60 + data.start_time.minute
+            arrival_time = data.start_time.hour * 60 + data.start_time.minute
             data.sample.append(data.start_time.time())
-            if arrival_time > mean+standard_deviation:
+            if arrival_time > mean + standard_deviation:
                 data.sample.append("after_usual_time")
-                data.sample.append(math.ceil(arrival_time-(mean+standard_deviation)))
-            elif arrival_time < mean-standard_deviation:
+                data.sample.append(math.ceil(arrival_time - (mean + standard_deviation)))
+            elif arrival_time < mean - standard_deviation:
                 data.sample.append("before_usual_time")
-                data.sample.append(math.ceil(mean-standard_deviation-arrival_time))
+                data.sample.append(math.ceil(mean - standard_deviation - arrival_time))
             else:
                 data.sample.append("usual_time")
                 data.sample.append(0)
-        #print(arrival_data)
         try:
             if len(arrival_data):
                 streams = self.CC.get_user_streams(user_id)
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == Working_Days_STREAM:
-                        # print(stream_metadata)
-                        print("Going to pickle the file: ",arrival_data)
+                        print("Going to pickle the file: ", arrival_data)
 
                         self.store_stream(filepath="arrival_time_from_beacon.json",
                                           input_streams=[stream_metadata],
                                           user_id=user_id,
-                                          data=arrival_data, localtime = True)
+                                          data=arrival_data, localtime=True)
                         break
         except Exception as e:
             print("Exception:", str(e))

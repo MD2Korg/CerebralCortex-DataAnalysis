@@ -40,10 +40,12 @@ import json
 import traceback
 import math
 
+# TODO: Define constants
 feature_class_name = 'StayingTimesFromBeacon'
 Working_Days_STREAM = "org.md2k.data_analysis.feature.working_days_from_beacon"
 MEDIAN_ABSOLUTE_DEVIATION_MULTIPLIER = 1.4826
 OUTLIER_DETECTION_MULTIPLIER = 3
+
 
 class StayingTimesFromBeacon(ComputeFeatureBase):
     """
@@ -51,7 +53,8 @@ class StayingTimesFromBeacon(ComputeFeatureBase):
     "org.md2k.data_analysis.feature.working_days_from_beacon". The time extent between the first
     arrival time in beacon range and last time of leaving is taken as staying time. Usual staying
     time is calculated from these data. And here usual staying time is a range of time. each day's
-    staying_time is marked as usual_staying_time or more_than_usual or less_than_usual """
+    staying_time is marked as usual_staying_time or more_than_usual or less_than_usual
+    """
 
     def listing_all_staying_times_from_beacon(self, user_id: str, all_days: List[str]):
         """
@@ -75,11 +78,11 @@ class StayingTimesFromBeacon(ComputeFeatureBase):
         for stream_id in stream_ids:
             for day in all_days:
                 work_data_stream = \
-                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime = True)
+                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime=True)
 
                 for data in work_data_stream.data:
-                    arrival_time = data.start_time.hour*60+data.start_time.minute
-                    leave_time = data.end_time.hour*60 + data.end_time.minute
+                    arrival_time = data.start_time.hour * 60 + data.start_time.minute
+                    leave_time = data.end_time.hour * 60 + data.end_time.minute
                     staying_time = leave_time - arrival_time
                     office_staying_times.append(staying_time)
                     sample = []
@@ -98,7 +101,7 @@ class StayingTimesFromBeacon(ComputeFeatureBase):
         outlier_border = mad_value * OUTLIER_DETECTION_MULTIPLIER
         outlier_removed_office_staying_times = []
         for staying_time in office_staying_times:
-            if staying_time > (median - outlier_border) and staying_time < (median + outlier_border):
+            if (median - outlier_border) < staying_time < (median + outlier_border):
                 outlier_removed_office_staying_times.append(staying_time)
         if not len(outlier_removed_office_staying_times):
             outlier_removed_office_staying_times = office_staying_times
@@ -108,26 +111,24 @@ class StayingTimesFromBeacon(ComputeFeatureBase):
             staying_time = data.sample[0]
             if staying_time > mean + standard_deviation:
                 data.sample.append("more_than_usual")
-                data.sample.append(math.ceil(staying_time-(mean+standard_deviation)))
-            elif staying_time < mean-standard_deviation:
+                data.sample.append(math.ceil(staying_time - (mean + standard_deviation)))
+            elif staying_time < mean - standard_deviation:
                 data.sample.append("less_than_usual")
-                data.sample.append(math.ceil(mean-standard_deviation-staying_time))
+                data.sample.append(math.ceil(mean - standard_deviation - staying_time))
             else:
                 data.sample.append("usual_staying_time")
                 data.sample.append(0)
-        #print(staying_time_data)
         try:
             if len(staying_time_data):
                 streams = self.CC.get_user_streams(user_id)
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == Working_Days_STREAM:
-                        # print(stream_metadata)
-                        print("Going to pickle the file: ",staying_time_data)
+                        print("Going to pickle the file: ", staying_time_data)
 
                         self.store_stream(filepath="staying_time_from_beacon.json",
                                           input_streams=[stream_metadata],
                                           user_id=user_id,
-                                          data=staying_time_data, localtime = True)
+                                          data=staying_time_data, localtime=True)
                         break
         except Exception as e:
             print("Exception:", str(e))

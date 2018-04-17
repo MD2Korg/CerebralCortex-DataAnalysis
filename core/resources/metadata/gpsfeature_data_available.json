@@ -1,40 +1,41 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
-      "type":"float",
-      "unit":"seconds"
+      "name": "value",
+      "type": "float",
+      "unit": "seconds",
+      "description": ""
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.gpsfeature",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.gpsfeature",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
-        
+      "input_parameters": {
       }
     },
-    "algorithm":{
-      "method":"core.feature.gpsfeature.gpsfeature.available_data_in_time",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.gpsfeature.gpsfeature.available_data_in_time",
+      "authors": [
         {
-          "name":"Anik Khan",
-          "email":"aniknagato@gmail.com"
+          "name": "Anik Khan",
+          "email": "aniknagato@gmail.com"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"Duration of available GPS data in a day."
+      "description": "Duration of available GPS data in a day."
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.gps_feature_data_available",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.gps_feature_data_available",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
 }

@@ -1,40 +1,40 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
-      "type":"list",
-      "unit":""
+      "name": "",
+      "type": "list",
+      "description": ""
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.gpsfeature",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.gpsfeature",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
-        
+      "input_parameters": {
       }
     },
-    "algorithm":{
-      "method":"core.feature.gpsfeature.gpsfeature.transition_counter",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.gpsfeature.gpsfeature.transition_counter",
+      "authors": [
         {
-          "name":"Anik Khan",
-          "email":"aniknagato@gmail.com"
+          "name": "Anik Khan",
+          "email": "aniknagato@gmail.com"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"Sample is a dictionary. Key represents the transition and the corresponding value represents the number of transition. For example, transition between home to work will have 'Home Work' as key and the number of transition from 'Home' to 'Work' in a day as value."
+      "description": "Sample is a dictionary. Key represents the transition and the corresponding value represents the number of transition. For example, transition between home to work will have 'Home Work' as key and the number of transition from 'Home' to 'Work' in a day as value."
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.transition_counter",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.transition_counter",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
 }

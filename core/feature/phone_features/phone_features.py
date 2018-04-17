@@ -50,8 +50,6 @@ class PhoneFeatures(ComputeFeatureBase):
     """
     This class is responsible for computing features based on streams of data
     derived from the smartphone sensors.
-
-
     """
 
     def get_filtered_data(self, data: List[DataPoint],

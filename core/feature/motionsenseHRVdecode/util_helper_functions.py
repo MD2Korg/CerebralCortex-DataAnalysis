@@ -29,18 +29,16 @@ import numpy as np
 from core.feature.motionsenseHRVdecode.util_raw_byte_decode \
     import Preprc
 
-motionsense_hrv_left_raw = \
-    "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
-motionsense_hrv_right_raw = \
-    "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
-qualtrics_identifier = \
-    "org.md2k.data_qualtrics.feature.stress_MITRE.omnibus_stress_question.daily"
+motionsense_hrv_left_raw = "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
+motionsense_hrv_right_raw = "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
+qualtrics_identifier = "org.md2k.data_qualtrics.feature.stress_MITRE.omnibus_stress_question.daily"
 
 
-def get_decoded_matrix(data:np.ndarray,row_length=22):
+def get_decoded_matrix(data: np.ndarray, row_length=22):
     """
     given the raw byte array containing lists it returns the decoded values
 
+    :param row_length:
     :param data: input matrix(*,22) containing raw bytes
 
     :return: a matrix each row of which contains consecutively sequence
@@ -48,33 +46,38 @@ def get_decoded_matrix(data:np.ndarray,row_length=22):
     timestamp
     """
     ts = [i.start_time.timestamp() for i in data]
-    sample = np.zeros((len(ts),row_length))
-    sample[:,0] = ts;sample[:,1] = ts
+    sample = np.zeros((len(ts), row_length))
+    sample[:, 0] = ts;
+    sample[:, 1] = ts
     for k in range(len(ts)):
-        sample[k,2:] = [np.int8(np.float(dp)) for dp in (data[k].sample.split(','))]
-    ts_temp = np.array([0]+list(np.diff(ts)))
-    ind = np.where(ts_temp>1)[0]
+        sample[k, 2:] = [np.int8(np.float(dp)) for dp in (data[k].sample.split(','))]
+    ts_temp = np.array([0] + list(np.diff(ts)))
+    ind = np.where(ts_temp > 1)[0]
     initial = 0
-    sample_final  = [0]*int(row_length/2)
+    sample_final = [0] * int(row_length / 2)
     for k in ind:
-        sample_temp = Preprc(raw_data=sample[initial:k,:])
+        sample_temp = Preprc(raw_data=sample[initial:k, :])
         initial = k
         if not list(sample_temp):
             continue
-        sample_final = np.vstack((sample_final,sample_temp.values))
-    sample_temp = Preprc(raw_data=sample[initial:,:])
-    if np.shape(sample_temp)[0]>0:
-        sample_final = np.vstack((sample_final,sample_temp.values))
+        sample_final = np.vstack((sample_final, sample_temp.values))
+    sample_temp = Preprc(raw_data=sample[initial:, :])
+    if np.shape(sample_temp)[0] > 0:
+        sample_final = np.vstack((sample_final, sample_temp.values))
     if np.shape(sample_final)[0] == 1:
         return []
-    return sample_final[1:,:]
+    return sample_final[1:, :]
 
 
-def admission_control(data:List[DataPoint])->List[DataPoint]:
+def admission_control(data: List[DataPoint]) -> List[DataPoint]:
+    """
+
+    :rtype: object
+    :param data:
+    :return:
+    """
     final_data = []
     for dp in data:
-        if isinstance(dp.sample,str) and len(dp.sample.split(','))==20:
+        if isinstance(dp.sample, str) and len(dp.sample.split(',')) == 20:
             final_data.append(dp)
     return final_data
-
-

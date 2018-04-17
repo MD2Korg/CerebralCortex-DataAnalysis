@@ -10,7 +10,7 @@ export SPARK_HOME=/usr/local/spark/
 CC_CONFIG_FILEPATH="/cerebralcortex/code/config/cc_starwars_configuration.yml"
 
 # list of features to process, leave blank to process all features
-FEATURES="beacon,gps_location_daywise,gps_daily,gpsfeature,phone_features,office_time,phone_screen_touch_features,sleep_time,sleep_duration,sleep_duration_analysis,activity,activity_features,typing,task_features,rr_interval,respiration_cycle_statistics,stress_from_respiration,heart_rate,stress_from_wrist"
+FEATURES="gps"
 
 # study name
 STUDY_NAME="mperf"
@@ -36,7 +36,7 @@ SPARK_UI_PORT=4066
 MAX_CORES=48
 
 # set to True to make use of spark parallel execution
-SPARK_JOB="True"
+SPARK_JOB="False"
 
 # build before executing
 
