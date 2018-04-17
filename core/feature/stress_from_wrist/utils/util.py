@@ -34,7 +34,7 @@ path_to_model_files = 'core/resources/models/stress_wrist/' #path of storage
 
 rr_interval_identifier = "org.md2k.data_analysis.feature.rr_interval.v1" #identifier for rr_interval stream
 
-activity_identifier = "org.md2k.data_analysis.feature.activity.wrist.10_seconds" #identifier for activity
+activity_identifier = "org.md2k.data_analysis.feature.activity.wrist.accel_only.10_seconds" #identifier for activity
 
 no_of_feature = 14 #number of features the model was trained with
 
