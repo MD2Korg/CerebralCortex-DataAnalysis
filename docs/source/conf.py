@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('../../../CerebralCortex'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'Cerebral Cortex Data Analysis'
+project = 'Cerebral Cortex Feature and Marker Processor'
 copyright = '2018, MD2K.org'
 author = 'MD2K.org'
 
@@ -45,6 +45,7 @@ extensions = [
     'sphinx.ext.imgmath',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    'sphinx.ext.autosummary'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -103,11 +104,13 @@ html_static_path = ['_static']
 #
 # html_sidebars = {}
 
+autosummary_generate=True
+
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'CerebralCortexDataAnalysisdoc'
+htmlhelp_basename = 'CC_Doc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -134,7 +137,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'CerebralCortexDataAnalysis.tex', 'Cerebral Cortex Data Analysis Documentation',
+    (master_doc, 'CerebralCortexDataAnalysis.tex', 'Cerebral Cortex Feature and Marker Processor Documentation',
      'MD2K.org', 'manual'),
 ]
 
@@ -144,7 +147,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'cerebralcortexdataanalysis', 'Cerebral Cortex Data Analysis Documentation',
+    (master_doc, 'cerebralcortexdataanalysis', 'Cerebral Cortex Feature and Marker Processor Documentation',
      [author], 1)
 ]
 
@@ -155,7 +158,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'CerebralCortexDataAnalysis', 'Cerebral Cortex Data Analysis Documentation',
+    (master_doc, 'CerebralCortexDataAnalysis', 'Cerebral Cortex Feature and Marker Processor Documentation',
      author, 'CerebralCortexDataAnalysis', 'One line description of project.',
      'Miscellaneous'),
 ]

@@ -144,14 +144,14 @@ def classify_data_points(data: list,
 
     :param data: A list of Datapoints-current window
     :param signal_type: The check for if the signal passed is respiration or ECG. True for ECG, False for Respiration
-    :param threshold_slope: The Slope threshold of ECG/Respiration signal- No consecutive datapoints can have this
+    :param threshold_slope: The Slope threshold of ECG/Respiration signal- No consecutive DataPoints can have this
     difference in values(expressed as percentage of ADC range)
     :param outlier_threshold_high: The percentage of ADC range above which any value is considered an outlier
     :param outlier_threshold_low: The percentage of ADC range below which any value is considered an outlier
     :param adc_range:  Maximum possible ADC value
 
     :return:
-    no_of_outliers: The number of datapoints  in the current window assigned as outliers
+    no_of_outliers: The number of DataPoints  in the current window assigned as outliers
     max_value: The maximum non-outlier sample value in the window
     min_value: The minimum non-outlier sample value in the window
     """
@@ -186,7 +186,7 @@ def classify_data_points(data: list,
 def classify_segment(data: list, no_of_outliers: int, acceptable_outlier_percent: float = .34) -> object:
     """
     :param data: A list of Datapoints-current window
-    :param no_of_outliers: The number of datapoints  in the current window assigned as outliers
+    :param no_of_outliers: The number of DataPoints  in the current window assigned as outliers
     :param acceptable_outlier_percent: The acceptable outlier percentage in a window default is 34 percent
 
     :return: The quality of the current window in terms of outliers
@@ -236,7 +236,7 @@ def compute_data_quality(data: list,
     :param range_memory: The array containing the range of each window on a sequential basis
     :param signal_type: The check for if the signal passed is respiration or ECG
     :param threshold_band_loose: The Band Loose Threshold for ECG/Respiration signal expressed in the percentage of ADC range
-    :param threshold_slope: The Slope threshold of ECG/Respiration signal- No consecutive datapoints can have this
+    :param threshold_slope: The Slope threshold of ECG/Respiration signal- No consecutive DataPoints can have this
     difference in values(expressed as percentage of ADC range)
     :param acceptable_outlier_percent: The acceptable outlier percentage in a window default is 34 percent
     :param outlier_threshold_high: The percentage of ADC range above which any value is considered an outlier
@@ -283,7 +283,7 @@ def ecg_data_quality(datastream: DataStream,
     :param outlier_threshold_high: The percentage of ADC range above which any value is considered an outlier
     :param outlier_threshold_low: The percentage of ADC range below which any value is considered an outlier
     :param ecg_threshold_band_loose: The Band Loose Threshold for ECG signal expressed in the percentage of ADC range
-    :param ecg_threshold_slope: The Slope threshold of ECG signal- No consecutive datapoints can have this
+    :param ecg_threshold_slope: The Slope threshold of ECG signal- No consecutive DataPoints can have this
     difference in values(expressed as percentage of ADC range)
     :param buffer_length: This specifies the memory of the data quality computation. Meaning this number of past windows
     will also have a role to decide the quality of the current window
@@ -331,7 +331,7 @@ def rip_data_quality(datastream: DataStream,
     :param outlier_threshold_high: The percentage of ADC range above which any value is considered an outlier
     :param outlier_threshold_low: The percentage of ADC range below which any value is considered an outlier
     :param rip_threshold_band_loose: The Band Loose Threshold for Respiration signal expressed in the percentage of ADC range
-    :param rip_threshold_slope: The Slope threshold of Respiration signal- No consecutive datapoints can have this
+    :param rip_threshold_slope: The Slope threshold of Respiration signal- No consecutive DataPoints can have this
     difference in values(expressed as percentage of ADC range)
     :param buffer_length: This specifies the memory of the data quality computation. Meaning this number of past windows
     will also have a role to decide the quality of the current window

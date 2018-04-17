@@ -1,45 +1,68 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
-      "type":"List",
-      "unit":"",
-      "List_Annotations": "Restaurant, School, Place_Of_Worship, Entertainment, Store, Sports"
+      "name": "restaurant_bar_nearby",
+      "type": "integer",
+      "description": "1 if there is a restaurant/bar within 500m, else 0"
+    },
+    {
+      "name": "school",
+      "type": "integer",
+      "description": "1 if there is a school within 500m, else 0"
+    },
+    {
+      "name": "place_of_worship_nearby",
+      "type": "integer",
+      "description": "1 if there is a place of worship within 500m, else 0"
+    },
+    {
+      "name": "entertainment_nearby",
+      "type": "integer",
+      "description": "1 if there is an entertainment within 500m, else 0"
+    },
+    {
+      "name": "store_nearby",
+      "type": "integer",
+      "description": "1 if there is a store within 500m, else 0"
+    },
+    {
+      "name": "sports_arena_nearby",
+      "type": "integer",
+      "description": "1 if there is a sports arena within 500m, else 0"
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"GPS Episodes and Semantic Location From Places",
-      "confidential":"False",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "GPS Episodes and Semantic Location From Places",
+      "confidential": "False",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
-        "geo_fence_dist":2,
-        "min_points_in_cluster":500,
-        "max_dist_assign_centroid":1000
+      "input_parameters": {
+        "radius": 500
       }
     },
-    "algorithm":{
-      "method":"https://github.com/MD2Korg/CerebralCortex-DataAnalysis/tree/master/core/feature/gps/gps.py",
-      "authors":[
+    "algorithm": {
+      "method": "https://github.com/MD2Korg/CerebralCortex-DataAnalysis/tree/master/core/feature/gps/gps.py",
+      "authors": [
         {
-          "name":"Soujanya Chatterjee",
-          "email":"soujanya.chatterjee@gmail.com"
+          "name": "Soujanya Chatterjee",
+          "email": "soujanya.chatterjee@gmail.com"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
-        "url":"http://geoffboeing.com/2014/08/clustering-to-reduce-spatial-data-set-size/"
+      "version": "0.0.1",
+      "reference": {
+        "url": "http://geoffboeing.com/2014/08/clustering-to-reduce-spatial-data-set-size/"
       },
-      "description":"Cluster GPS data points and create time epochs of dwell time in each cluster for facilitating feature computations"
+      "description": "Takes raw gps data, finds frequently visited places"
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.gps_episodes_and_semantic_location_from_places",
-  "owner":"CC_OWNER_CC",
-  "type":"1"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_places",
+  "owner": "CC_OWNER_CC",
+  "type": "1"
 }

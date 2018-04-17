@@ -1,40 +1,42 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
-      "type":"float",
-      "unit":"hour"
+      "name": "value",
+      "type": "float",
+      "unit": "hour",
+      "description": ""
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.phone_data_yield",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.phone_data_yield",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
-        "max_data_gap_threshold_seconds": 60
+      "input_parameters": {
+        "max_data_gap_threshold_seconds": 300
       }
     },
-    "algorithm":{
-      "method":"core.feature.phone_data_yield.data_yield",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.phone_data_yield.data_yield",
+      "authors": [
         {
-          "name":"Md Shiplu Hawlader",
-          "email":"shiplu.cse.du@gmail.com"
+          "name": "Md Shiplu Hawlader",
+          "email": "shiplu.cse.du@gmail.com"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"Each data points contains total number of hours the pressure data from phone is present for a day"
+      "description": "Each data points contains total number of hours the pressure data from phone is present for a day"
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.phone.pressure_data_yield_total",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.v2.phone.pressure_data_yield_total",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
 }

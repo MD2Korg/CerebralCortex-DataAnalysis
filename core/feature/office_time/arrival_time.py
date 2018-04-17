@@ -30,6 +30,7 @@ from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
 from core.computefeature import ComputeFeatureBase
 
+from typing import List
 import pprint as pp
 import numpy as np
 import pdb
@@ -39,10 +40,12 @@ import json
 import traceback
 import math
 
+# TODO: Define constants
 feature_class_name = 'ArrivalTimes'
 Working_Days_STREAM = "org.md2k.data_analysis.feature.working_days"
 MEDIAN_ABSOLUTE_DEVIATION_MULTIPLIER = 1.4826
 OUTLIER_DETECTION_MULTIPLIER = 3
+
 
 class ArrivalTimes(ComputeFeatureBase):
     """
@@ -51,13 +54,19 @@ class ArrivalTimes(ComputeFeatureBase):
     time of entering in office location according to gps location is considered and only
     the hour and minute are taken for calculation. Usual arrival time is calculated from
     these data. And here usual time is a range of time. each day's arrival_time is
-    marked as usual or before_time or after_time """
+    marked as usual or before_time or after_time
+    """
 
-    def listing_all_arrival_times(self, user_id, all_days):
+    def listing_all_arrival_times(self, user_id: str, all_days: List[str]):
         """
         Produce and save the list of work_day's arrival_time at office from
         "org.md2k.data_analysis.feature.working_days" stream and marked each
-        day's arrival_time as usual or before_time or after_time """
+        day's arrival_time as usual or before_time or after_time
+
+        :param str user_id: UUID of the stream owner
+        :param List(str) all_days: All days of the user in the format 'YYYYMMDD'
+        :return:
+        """
 
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
@@ -69,10 +78,10 @@ class ArrivalTimes(ComputeFeatureBase):
         for stream_id in stream_ids:
             for day in all_days:
                 work_data_stream = \
-                    self.CC.get_stream(stream_id["identifier"], user_id, day)
+                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime=True)
 
                 for data in work_data_stream.data:
-                    arrival_time = data.start_time.hour*60+data.start_time.minute
+                    arrival_time = data.start_time.hour * 60 + data.start_time.minute
                     office_arrival_times.append(arrival_time)
                     sample = []
                     temp = DataPoint(data.start_time, data.end_time, data.offset, sample)
@@ -89,37 +98,35 @@ class ArrivalTimes(ComputeFeatureBase):
         outlier_border = mad_value * OUTLIER_DETECTION_MULTIPLIER
         outlier_removed_office_arrival_times = []
         for arrival_time in office_arrival_times:
-            if arrival_time > (median - outlier_border) and arrival_time < (median + outlier_border):
+            if (median - outlier_border) < arrival_time < (median + outlier_border):
                 outlier_removed_office_arrival_times.append(arrival_time)
         if not len(outlier_removed_office_arrival_times):
             outlier_removed_office_arrival_times = office_arrival_times
         mean = np.mean(outlier_removed_office_arrival_times)
         standard_deviation = np.std(outlier_removed_office_arrival_times)
         for data in arrival_data:
-            arrival_time = data.start_time.hour*60 + data.start_time.minute
+            arrival_time = data.start_time.hour * 60 + data.start_time.minute
             data.sample.append(data.start_time.time())
-            if arrival_time > mean+standard_deviation:
+            if arrival_time > mean + standard_deviation:
                 data.sample.append("after_usual_time")
-                data.sample.append(math.ceil(arrival_time-(mean+standard_deviation)))
-            elif arrival_time < mean-standard_deviation:
+                data.sample.append(math.ceil(arrival_time - (mean + standard_deviation)))
+            elif arrival_time < mean - standard_deviation:
                 data.sample.append("before_usual_time")
-                data.sample.append(math.ceil(mean-standard_deviation-arrival_time))
+                data.sample.append(math.ceil(mean - standard_deviation - arrival_time))
             else:
                 data.sample.append("usual_time")
                 data.sample.append(0)
-        #print(arrival_data)
         try:
             if len(arrival_data):
                 streams = self.CC.get_user_streams(user_id)
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == Working_Days_STREAM:
-                        # print(stream_metadata)
-                        print("Going to pickle the file: ",arrival_data)
+                        print("Going to pickle the file: ", arrival_data)
 
                         self.store_stream(filepath="arrival_time.json",
                                           input_streams=[stream_metadata],
                                           user_id=user_id,
-                                          data=arrival_data)
+                                          data=arrival_data, localtime=True)
                         break
         except Exception as e:
             print("Exception:", str(e))
@@ -128,7 +135,15 @@ class ArrivalTimes(ComputeFeatureBase):
                             'data points' %
                             (self.__class__.__name__, str(user_id),
                              len(arrival_data)))
-    def process(self, user_id, all_days):
+
+    def process(self, user_id: str, all_days: List[str]):
+        """
+        Main processing function inherited from ComputerFeatureBase
+
+        :param str user_id: UUID of the user
+        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        :return:
+        """
         if self.CC is not None:
             self.CC.logging.log("Processing Arrival Times")
             self.listing_all_arrival_times(user_id, all_days)

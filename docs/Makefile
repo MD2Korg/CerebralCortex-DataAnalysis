@@ -10,7 +10,6 @@ BUILDDIR      = build
 SPHINXAPIOPTS = -fMeE
 SPHINXAPIDOC  = sphinx-apidoc
 
-
 # Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
@@ -22,3 +21,4 @@ help:
 %: Makefile
 	@$(SPHINXAPIDOC) $(SPHINXAPIOPTS) -o "$(SOURCEDIR)" ../core/
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+

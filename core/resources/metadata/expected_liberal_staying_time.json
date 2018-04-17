@@ -1,40 +1,41 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
-      "type":"list",
-      "unit":""
+      "name": "",
+      "type": "list",
+      "unit": "",
+      "description": ""
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.office_time",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.office_time",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
-
+      "input_parameters": {
       }
     },
-    "algorithm":{
-      "method":"core.feature.office_time.ExpectedStayingTimes.listing_all_expected_staying_times",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.office_time.ExpectedStayingTimes.listing_all_expected_staying_times",
+      "authors": [
         {
-          "name":"Alina Zaman",
-          "email":"alina.cse@gmail.com"
+          "name": "Alina Zaman",
+          "email": "alina.cse@gmail.com"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"Expected liberal staying time in office with verdict of more than or less than expected liberal staying time. Sample is a list with three elements as follows: 0 - Total staying time in minutes, 1 - verdict (more_than_expected_liberal_time, less_than_expected_liberal_time, in_expected_liberal_time), 2 - deviation from the expected liberal staying time in minutes."
+      "description": "Expected liberal staying time in office with verdict of more than or less than expected liberal staying time. Sample is a list with three elements as follows: 0 - Total staying time in minutes, 1 - verdict (more_than_expected_liberal_time, less_than_expected_liberal_time, in_expected_liberal_time), 2 - deviation from the expected liberal staying time in minutes."
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.expected_liberal_office_staying_times",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.expected_liberal_office_staying_times",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
 }

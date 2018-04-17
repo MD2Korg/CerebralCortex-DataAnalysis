@@ -1,105 +1,105 @@
 {
-    "annotations": [],
-    "data_descriptor": [
-        {
-            "NAME": "Accelerometer X",
-            "UNIT": "g",
-            "DATA_TYPE": "double",
-            "DESCRIPTION": "Accelerometer X",
-            "MIN_VALUE": "-2",
-            "MAX_VALUE": "2"
-        },
-        {
-            "NAME": "Accelerometer Y",
-            "UNIT": "g",
-            "DATA_TYPE": "double",
-            "DESCRIPTION": "Accelerometer Y",
-            "MIN_VALUE": "-2",
-            "MAX_VALUE": "2"
-        },
-        {
-            "NAME": "Accelerometer Z",
-            "UNIT": "g",
-            "DATA_TYPE": "double",
-            "DESCRIPTION": "Accelerometer Z",
-            "MIN_VALUE": "-2",
-            "MAX_VALUE": "2"
-        },
-        {
-            "NAME": "Gyroscope X",
-            "UNIT": "degree/second",
-            "DATA_TYPE": "double",
-            "MAX_VALUE": "250",
-            "MIN_VALUE": "-250",
-            "DESCRIPTION": "Angular speed around the x-axis"
-        },
-        {
-            "NAME": "Gyroscope Y",
-            "UNIT": "degree/second",
-            "DATA_TYPE": "double",
-            "MAX_VALUE": "250",
-            "MIN_VALUE": "-250",
-            "DESCRIPTION": "Angular speed around the y-axis"
-        },
-        {
-            "NAME": "Gyroscope Z",
-            "UNIT": "degree/second",
-            "DATA_TYPE": "double",
-            "MAX_VALUE": "250",
-            "MIN_VALUE": "-250",
-            "DESCRIPTION": "Angular speed around the z-axis"
-        },
-        {
-            "NAME": "Red",
-            "DATA_TYPE": "double",
-            "MAX_VALUE": "250",
-            "MIN_VALUE": "-250",
-            "DESCRIPTION": "Value of Red LED"
-        },
-        {
-            "NAME": "Infrared",
-            "DATA_TYPE": "double",
-            "MAX_VALUE": "250",
-            "MIN_VALUE": "-250",
-            "DESCRIPTION": "Value of Infrared LED"
-        },
-        {
-            "NAME": "Green",
-            "DATA_TYPE": "double",
-            "MAX_VALUE": "250",
-            "MIN_VALUE": "-250",
-            "DESCRIPTION": "Value of Green LED"
-        }
-    ],
-    "execution_context": {
-        "processing_module": {
-            "name": "core.feature.motionsenseHRVdecode",
-            "input_streams": [
-                {
-                    "id": "CC_INPUT_STREAM_ID_CC",
-                    "name": "CC_INPUT_STREAM_NAME_CC"
-                }
-            ],
-            "input_parameters": {
-                "sampling frequency": "25"
-            }
-        },
-        "algorithm": {
-            "method": "core.",
-            "authors": [
-                {
-                    "name": "Md Azim Ullah",
-                    "email": "mullah@memphis.edu"
-                }
-            ],
-            "version": "0.0.1",
-            "reference": {
-            },
-            "description": "Decodes the LED values from raw byte array and interpolates the timestamps based on sequence number"
-        }
+  "annotations": [],
+  "data_descriptor": [
+    {
+      "name": "accelerometer_x",
+      "unit": "g",
+      "type": "double",
+      "description": "Accelerometer X",
+      "min_value": "-2",
+      "max_value": "2"
     },
-    "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-    "name": "org.md2k.feature.decodedLED.rightwrist",
-    "owner": "CC_OWNER_CC",
-    "type": "datastream"
+    {
+      "name": "accelerometer_y",
+      "unit": "g",
+      "type": "double",
+      "description": "Accelerometer Y",
+      "min_value": "-2",
+      "max_value": "2"
+    },
+    {
+      "name": "accelerometer_z",
+      "unit": "g",
+      "type": "double",
+      "description": "Accelerometer Z",
+      "min_value": "-2",
+      "max_value": "2"
+    },
+    {
+      "name": "gyroscope_x",
+      "unit": "degree/second",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "Angular speed around the x-axis"
+    },
+    {
+      "name": "gyroscope_y",
+      "unit": "degree/second",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "Angular speed around the y-axis"
+    },
+    {
+      "name": "gyroscope_z",
+      "unit": "degree/second",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "Angular speed around the z-axis"
+    },
+    {
+      "name": "red",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "Value of Red LED"
+    },
+    {
+      "name": "infrared",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "Value of Infrared LED"
+    },
+    {
+      "name": "green",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "Value of Green LED"
+    }
+  ],
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.motionsenseHRVdecode",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+        "sampling frequency": "25"
+      }
+    },
+    "algorithm": {
+      "method": "core.",
+      "authors": [
+        {
+          "name": "Md Azim Ullah",
+          "email": "mullah@memphis.edu"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+      },
+      "description": "Decodes the LED values from raw byte array and interpolates the timestamps based on sequence number"
+    }
+  },
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.feature.decodedLED.rightwrist",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
 }

@@ -34,7 +34,7 @@ from cerebralcortex.core.datatypes.datastream import DataStream
 def filter_bad_ecg(ecg: DataStream,
                    ecg_quality: DataStream) -> DataStream:
     """
-    This function combines the raw ecg and ecg data quality datastream and only keeps those datapoints that are assigned acceptable in data quality
+    This function combines the raw ecg and ecg data quality datastream and only keeps those DataPoints that are assigned acceptable in data quality
 
     :param ecg: raw ecg datastream
     :param ecg_quality: ecg quality datastream

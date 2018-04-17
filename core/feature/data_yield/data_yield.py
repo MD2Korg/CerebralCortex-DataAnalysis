@@ -28,13 +28,33 @@ from core.signalprocessing.window import window_sliding
 
 feature_class_name = 'data_yield'
 
-class data_yield(ComputeFeatureBase):
 
-    def calculate_yield(self,user_id,stream_identifier,all_days,all_streams,json_path):
+class data_yield(ComputeFeatureBase):
+    """
+    Class to calculate the the motionsenseHRV data yield for each minute of the day when data is present 
+    rendering a list of datapoints. each DataPoint contains a boolean decision indicating if the sensor was worn or not
+    """
+
+    def calculate_yield(self,
+                        user_id: str,
+                        stream_identifier: str,
+                        all_days: list,
+                        all_streams: dict,
+                        json_path: str) -> list:
+        """
+        Function to calculate the motionsenseHRV data yield for each minute of the day when data is present 
+        rendering a list of datapoints. each DataPoint contains a boolean decision indicating if the sensor was worn or not
+
+        :param user_id: 
+        :param stream_identifier: 
+        :param all_days: 
+        :param all_streams: 
+        :param json_path: 
+        :return: A list of DataPoints each DataPoint contains a boolean decision indicating if the sensor was worn or not
+        """
         for day in all_days:
-            final_data = []
             motionsense_raw = self.CC.get_stream(all_streams[stream_identifier]["identifier"],
-                                                 day=day,user_id=user_id,localtime=False)
+                                                 day=day, user_id=user_id, localtime=False)
             if not list(motionsense_raw.data):
                 continue
             data = admission_control(motionsense_raw.data)
@@ -42,7 +62,7 @@ class data_yield(ComputeFeatureBase):
                 continue
             decoded_data = decode_only(data)
             offset = decoded_data[0].offset
-            windowed_decoded_data = window_sliding(decoded_data,window_size=window_size_60sec,
+            windowed_decoded_data = window_sliding(decoded_data, window_size=window_size_60sec,
                                                    window_offset=window_size_60sec)
             final_yield = []
             for key in windowed_decoded_data.keys():
@@ -50,24 +70,25 @@ class data_yield(ComputeFeatureBase):
                 window_data_10sec = window_sliding(window_data_60sec,
                                                    window_size=window_size_10sec,
                                                    window_offset=window_size_10sec)
-                quality = get_quality(window_data_10sec,Fs)
+                quality = get_quality(window_data_10sec, Fs)
                 final_yield.append(DataPoint.from_tuple(start_time=key[0],
                                                         end_time=key[1],
                                                         offset=offset,
-                                                        sample = quality))
+                                                        sample=quality))
             if not final_yield:
                 continue
             self.store_stream(json_path,
                               [all_streams[stream_identifier]],
                               user_id,
-                              final_yield,localtime=False)
+                              final_yield, localtime=False)
 
-    def process(self, user, all_days):
+    def process(self, user, all_days: list):
         """
-
+        Takes the user identifier and the list of days and does the required processing  
+        
         :param user: user id string
         :param all_days: list of days to compute
-
+        
         """
         if not all_days:
             return
@@ -82,14 +103,10 @@ class data_yield(ComputeFeatureBase):
         user_id = user
         json_path = 'data_yield.json'
         if motionsense_hrv_left in all_streams:
-            self.calculate_yield(user_id,motionsense_hrv_left,all_days,all_streams,json_path)
+            self.calculate_yield(user_id, motionsense_hrv_left, all_days, all_streams, json_path)
         if motionsense_hrv_right in all_streams:
-            self.calculate_yield(user_id,motionsense_hrv_right,all_days,all_streams,json_path)
+            self.calculate_yield(user_id, motionsense_hrv_right, all_days, all_streams, json_path)
         if motionsense_hrv_left_cat in all_streams:
-            self.calculate_yield(user_id,motionsense_hrv_left_cat,all_days,all_streams,json_path)
+            self.calculate_yield(user_id, motionsense_hrv_left_cat, all_days, all_streams, json_path)
         if motionsense_hrv_right_cat in all_streams:
-            self.calculate_yield(user_id,motionsense_hrv_right_cat,all_days,all_streams,json_path)
-
-
-
-
+            self.calculate_yield(user_id, motionsense_hrv_right_cat, all_days, all_streams, json_path)

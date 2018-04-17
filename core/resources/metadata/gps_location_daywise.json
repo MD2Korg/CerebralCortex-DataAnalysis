@@ -1,0 +1,40 @@
+{
+  "annotations": [],
+  "data_descriptor": [
+    {
+      "name": "location",
+      "type": "string",
+      "description": "Time interval at a specific location, if the interval spans into multiple days, it is divided into multiple data points. The split was done according to UTC time. location value can be 'work', 'home' or 'UNDEFINED'"
+    }
+  ],
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.gps_location_daywise",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.gps_location_daywise.listing_all_gps_location_daywise",
+      "authors": [
+        {
+          "name": "Alina Zaman",
+          "email": "alina.cse@gmail.com"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+      },
+      "description": "Time interval at a specific location, if the interval spans into multiple days, it is divided into multiple data points. The split was done according to UTC time."
+    }
+  },
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.gps_semantic_location.daywise_split.utc",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
+}

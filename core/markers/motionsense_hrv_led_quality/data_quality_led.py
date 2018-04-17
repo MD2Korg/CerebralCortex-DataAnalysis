@@ -66,7 +66,7 @@ def bandpassfilter(x,fs):
 def compute_quality(window):
     """
     
-    :param window: a window containing list of datapoints 
+    :param window: a window containing list of DataPoints
     :return: an integer reptresenting the status of the window 0= attached, 1 = not attached
     """
     if len(window)==0:

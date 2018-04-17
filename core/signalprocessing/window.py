@@ -130,7 +130,7 @@ def create_all_windows(datapoint: List[DataPoint], window_size: float, window_of
             key = (window_start_time, window_end_time)
             yield key, window_data
             window_data = []
-            # when datapoint is not in current range, identify emtpy windows and yield.
+            # when DataPoint is not in current range, identify emtpy windows and yield.
             _w_start_time = window_end_time
             _w_end_time = _w_start_time + timedelta(seconds=window_size)
             while dp.start_time > _w_end_time:
