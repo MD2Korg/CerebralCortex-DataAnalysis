@@ -44,5 +44,5 @@ def get_model():
     model = pickle.loads(core.computefeature.get_resource_contents(
         path_to_model_files+'stress_model_final_final.model'))
     scaler = pickle.loads(core.computefeature.get_resource_contents(
-        path_to_model_files + 'stress_scaler_final.scaler'))
+        path_to_model_files + 'stress_scaler_final_final.scaler'))
     return model, scaler
