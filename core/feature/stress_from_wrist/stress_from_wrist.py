@@ -185,14 +185,15 @@ class stress_from_wrist(ComputeFeatureBase):
                 continue
 
             if math.isnan(dp.sample[1]):
-               continue
+                continue
 
             if not list(dp.sample[0]):
                 continue
             feature_one_row = self.get_feature_for_one_window(dp.sample[0])
             feature_matrix.append(feature_one_row)
             st_et_offset_array.append([dp.start_time,dp.offset,dp.end_time])
-
+        if not list(feature_matrix):
+            return
         feature_matrix = np.array(feature_matrix).reshape(len(feature_matrix),no_of_feature)
         normalized_feature_matrix = StandardScaler().fit_transform(feature_matrix)
         transformed_feature_matrix = scaler.transform(normalized_feature_matrix)
