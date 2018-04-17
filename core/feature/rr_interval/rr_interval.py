@@ -31,9 +31,8 @@ feature_class_name = 'rr_interval'
 
 class rr_interval(ComputeFeatureBase):
     """
-    
     This class takes the raw datastream of motionsenseHRV and motionsenseHRV+ which contains a byte array 
-    in each datapoint and decodes them to get the PPG signal in RED,INFRARED,GREEN channel. This is done for 
+    in each DataPoint and decodes them to get the PPG signal in RED,INFRARED,GREEN channel. This is done for
     both left and right/only left/only right sensors whichever is applicable for the person wearing the sensor suite.
     Depending on the presence of PPG signal this code tries to combine information of both the wrists in a one minute 
     window. Then a subspace based method is applied to generate the initial likelihood of the presence of R-peaks in 
@@ -48,9 +47,8 @@ class rr_interval(ComputeFeatureBase):
         2. Standard Deviation of Heart Rate within the minute
         3. A list corresponding to the heart rate values calculated from variable realizations of the RR interval on a 
         sliding window of window size = 8 second and window offset = 2 second.
-        
-    
     """
+
     def get_data_around_stress_survey(self,
                                       all_streams:dict,
                                       day:str,
@@ -58,16 +56,17 @@ class rr_interval(ComputeFeatureBase):
                                       raw_byte_array:list)->list:
         """
         This function checks for qualtrics stress survey data present on the day 
-        specified and finds those datapoints which are only 60 minutes behind the
+        specified and finds those DataPoints which are only 60 minutes behind the
         time of taking the survey. The motivation is to predict the stress value 
         we would be more concerned with the 60 minutes of data beforehand 
         
-        :param all_streams: a dictionery of all the streams of the partiipant
-        :param day: a string in 'YYYYMMDD' format 
-        :param user_id: uuid string representing the user identifier
-        :param raw_byte_array: A list of all the datapoints for that user on that day
+        :rtype: list
+        :param dict all_streams: a dictionery of all the streams of the partiipant
+        :param str day: a string in 'YYYYMMDD' format
+        :param str user_id: uuid string representing the user identifier
+        :param list raw_byte_array: A list of all the DataPoints for that user on that day
         
-        :return: A list of only those datapoints those are 60 minutes behind the timing of stress survey 
+        :return: A list of only those DataPoints those are 60 minutes behind the timing of stress survey
         """
         if qualtrics_identifier in all_streams:
             data = self.CC.get_stream(all_streams[qualtrics_identifier][
@@ -78,7 +77,7 @@ class rr_interval(ComputeFeatureBase):
                 s1 = data[0].end_time
                 for dp in raw_byte_array:
                     s2 = dp.start_time
-                    if s1 > s2 and s2 + timedelta(minutes=60) > s1 :
+                    if s2 < s1 < s2 + timedelta(minutes=60):
                         final_data.append(dp)
                 return final_data
         return []
@@ -87,10 +86,10 @@ class rr_interval(ComputeFeatureBase):
 
     def process(self, user:str, all_days:list):
         """
-        Takes the user identifier and the list of days and does the required processing  
+        Takes the user identifier and the list of days and does the required processing
+
         :param user: user id string
         :param all_days: list of days to compute
-        
         """
         if not all_days:
             return
@@ -142,11 +141,6 @@ class rr_interval(ComputeFeatureBase):
 
             left_data = admission_control(left_data)
             right_data = admission_control(right_data)
-
-            # left_data = self.get_data_around_stress_survey(all_streams,day,user_id,
-            #                                                left_data)
-            # right_data = self.get_data_around_stress_survey(all_streams,day,user_id,
-            #                                                 right_data)
 
             if not left_data and not right_data:
                 print('-'*20," No data after admission control ",'-'*20)

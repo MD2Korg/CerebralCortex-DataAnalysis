@@ -1,4 +1,3 @@
-
 # Copyright (c) 2018, MD2K Center of Excellence
 # All rights reserved.
 #
@@ -24,13 +23,23 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import pickle
 import core.computefeature
+
+# TODO: Comment and describe constants
 respiration_cycle_feature = "org.md2k.feature.respirationcyclefeature.v3"
 path_to_model_files = 'core/resources/models/stress_respiration/'
 window_size = 60
 window_offset = 60
+
+
 def get_model():
+    """
+    Retrieves the specific model files from storage
+
+    :return: Model and Scalar
+    :rtype: objects
+    """
     model = pickle.loads(core.computefeature.get_resource_contents(
-        path_to_model_files+'stress_model_respiration.model'))
+        path_to_model_files + 'stress_model_respiration.model'))
     scaler = pickle.loads(core.computefeature.get_resource_contents(
-        path_to_model_files+'stress_scaler_respiration.model'))
-    return model,scaler
+        path_to_model_files + 'stress_scaler_respiration.model'))
+    return model, scaler

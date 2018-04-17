@@ -25,21 +25,24 @@ from core.computefeature import ComputeFeatureBase
 import numpy as np
 from core.signalprocessing.window import window_sliding
 from core.feature.stress_from_respiration.utils.util import *
+
 feature_class_name = 'stress_from_respiration'
 
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 
-class stress_from_respiration(ComputeFeatureBase):
 
+class stress_from_respiration(ComputeFeatureBase):
     """
     This class applies a pretrained Support Vector Machine model with radial basis kernel to one minute of 
     respiration cycle features 
     and produces a binary output of Stress/Not Stressed.
     
     The model was trained with python scikit-learn library with 21 participants data.
+
     The hyperparameters of the model are:
         1. C = 10.0
         2. Gamma = 0.01
+
     The model takes 14 input features as listed:
         1.  inspiration_duration
         2.  expiration_duration
@@ -68,10 +71,12 @@ class stress_from_respiration(ComputeFeatureBase):
     ACM UbiComp, pp. 493-504, 2015.
         
     """
-    def process(self, user:str, all_days:list):
+
+    def process(self, user: str, all_days: list):
 
         """
-        Takes the user identifier and the list of days and does the required processing  
+        Takes the user identifier and the list of days and does the required processing
+
         :param user: user id string
         :param all_days: list of days to compute
 
@@ -98,11 +103,11 @@ class stress_from_respiration(ComputeFeatureBase):
 
         for day in all_days:
             respiration_cycle_stream = self.CC.get_stream(streams[
-                                                      respiration_cycle_feature][
-                                                      "identifier"],
-                                                      day=day,
-                                                      user_id=user_id,
-                                                      localtime=False)
+                                                              respiration_cycle_feature][
+                                                              "identifier"],
+                                                          day=day,
+                                                          user_id=user_id,
+                                                          localtime=False)
             if len(respiration_cycle_stream.data) < window_size:
                 continue
             offset = respiration_cycle_stream.data[0].offset
@@ -110,15 +115,15 @@ class stress_from_respiration(ComputeFeatureBase):
                                            window_size=window_size,
                                            window_offset=window_offset)
             final_stress = []
-            model,scaler = get_model()
+            model, scaler = get_model()
             for key in windowed_data.keys():
                 st = key[0]
                 et = key[0]
                 sample = np.array([i.sample for i in windowed_data[key]])
-                if np.shape(sample)[0]>1:
-                    sample_final = np.zeros((1,14))
+                if np.shape(sample)[0] > 1:
+                    sample_final = np.zeros((1, 14))
                     for k in range(14):
-                        sample_final[0,k] = np.median(sample[:,k])
+                        sample_final[0, k] = np.median(sample[:, k])
                     sample_transformed = scaler.transform(sample_final)
                     stress = model.predict(sample_transformed)
                     final_stress.append(DataPoint.from_tuple(start_time=st,
@@ -129,4 +134,4 @@ class stress_from_respiration(ComputeFeatureBase):
             self.store_stream(json_path,
                               [streams[respiration_cycle_feature]],
                               user_id,
-                              final_stress,localtime=False)
+                              final_stress, localtime=False)

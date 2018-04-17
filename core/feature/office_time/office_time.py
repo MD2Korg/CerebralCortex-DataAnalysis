@@ -48,8 +48,10 @@ import uuid
 import json
 import traceback
 
+# TODO: Define constants
 feature_class_name = 'WorkingDays'
 GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM = "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model"
+
 
 class WorkingDays(ComputeFeatureBase):
     """
@@ -60,7 +62,8 @@ class WorkingDays(ComputeFeatureBase):
     leaving office office location according to gps location is taken as
     departure time Ofiice arrival time are marked as usual or before_time or
     after_time and staying time is also marked as usual, more_than_usual or
-    less_than_usual """
+    less_than_usual
+    """
 
     def listing_all_work_days(self, user_id: str, all_days: List[str]):
         """
@@ -84,7 +87,7 @@ class WorkingDays(ComputeFeatureBase):
             current_day = None  # in beginning current day is null
             for day in all_days:
                 location_data_stream = \
-                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime = True)
+                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime=True)
                 location_data += location_data_stream.data
         location_data = list(set(location_data))
         location_data.sort(key=lambda x: x.start_time)
@@ -96,12 +99,6 @@ class WorkingDays(ComputeFeatureBase):
 
             d = DataPoint(data.start_time, data.end_time,
                           data.offset, data.sample)
-            #                     if d.offset:
-            #                         d.start_time += timedelta(milliseconds=d.offset)
-            #                         if d.end_time:
-            #                             d.end_time += timedelta(milliseconds=d.offset)
-            #                         else:
-            #                             continue
 
             if d.start_time.date() != current_day:
                 '''
@@ -126,19 +123,16 @@ class WorkingDays(ComputeFeatureBase):
             temp.end_time = work_end_time
             temp.sample = 'Office'
             work_data.append(temp)
-        #print(work_data)
+
         try:
             if len(work_data):
                 streams = self.CC.get_user_streams(user_id)
                 for stream_name, stream_metadata in streams.items():
                     if stream_name == GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM:
-                       # print(stream_metadata)
-                       # print("Going to pickle the file: ",work_data)
-
                         self.store_stream(filepath="working_days.json",
                                           input_streams=[stream_metadata],
                                           user_id=user_id,
-                                          data=work_data, localtime = True)
+                                          data=work_data, localtime=True)
                         break
         except Exception as e:
             print("Exception:", str(e))
@@ -147,8 +141,6 @@ class WorkingDays(ComputeFeatureBase):
                             'data points' %
                             (self.__class__.__name__, str(user_id),
                              len(work_data)))
-
-
 
     def process(self, user_id: str, all_days: List[str]):
         """
@@ -175,8 +167,8 @@ class WorkingDays(ComputeFeatureBase):
             expected_staying_time_data_feature = ExpectedStayingTimes(self.CC)
             expected_staying_time_data_feature.process(user_id, all_days)
 
-            #Office Time Calculation from Beacon
-            working_days_from_beacon_feature =  WorkingDaysFromBeacon(self.CC)
+            # Office Time Calculation from Beacon
+            working_days_from_beacon_feature = WorkingDaysFromBeacon(self.CC)
             working_days_from_beacon_feature.process(user_id, all_days)
 
             arrival_data_from_beacon_feature = ArrivalTimesFromBeacon(self.CC)
@@ -190,4 +182,3 @@ class WorkingDays(ComputeFeatureBase):
 
             expected_staying_time_data_from_beacon_feature = ExpectedStayingTimesFromBeacon(self.CC)
             expected_staying_time_data_from_beacon_feature.process(user_id, all_days)
-

@@ -4,8 +4,7 @@
     {
       "name": "activity_type",
       "type": "string",
-      "unit": "",
-      "descriptor": "Detects activity types (NO, LOW, WALKING, MOD, HIGH) in 10 seconds window using wrist accelerometer"
+      "description": "Detects activity types (NO, LOW, WALKING, MOD, HIGH) in 10 seconds window using wrist accelerometer"
     }
   ],
   "execution_context":{

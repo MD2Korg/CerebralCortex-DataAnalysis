@@ -46,21 +46,20 @@ import os
 from core.computefeature import get_resource_contents
 
 TYPING_MODEL_FILENAME = 'core/resources/models/typing/Convbn_LSTM_100.h5'
-WINDOW_SIZE = 20 #for a 800ms window (at 25Hz we get a value every 40ms.
-                                    #  40*20 = 800ms)
-STRIDE = 5 #we make a prediction every 200ms
+WINDOW_SIZE = 20  # for a 800ms window (at 25Hz we get a value every 40ms.)
+STRIDE = 5  # we make a prediction every 200ms
 
-# coded by JEYA VIKRANTH JEYAKUMAR
-# def typing_episodes(dataset, offset, CC):
-def typing_episodes(dataset: pd.DataFrame, offset: int)->List[DataPoint]:
 
+def typing_episodes(dataset: pd.DataFrame, offset: int) -> List[DataPoint]:
     """
     This function detects typing episodes.
+
     Makes a prediction every 200ms using values from a window of 800ms.
     This means there will be a overlap of 600ms between each sample window.
+
     :param pd.DataFrame dataset: the synced dataframe of left and right accl and gyro data
     :param int offset: offset for local time
-    :return: datapoints of typing episodes
+    :return: DataPoints of typing episodes
     :rtype:List(DataPoint)
     """
 
@@ -78,7 +77,7 @@ def typing_episodes(dataset: pd.DataFrame, offset: int)->List[DataPoint]:
     data_slide = np.zeros((int((n_samples - WINDOW_SIZE) / STRIDE) + 1,
                            WINDOW_SIZE, d))
 
-    #stores staring time for each window
+    # stores staring time for each window
     time_t = np.zeros((int((n_samples - WINDOW_SIZE) / STRIDE) + 1, 1))
     k = 0
     for i in range(0, n_samples - WINDOW_SIZE, STRIDE):  # 400ms
@@ -90,7 +89,6 @@ def typing_episodes(dataset: pd.DataFrame, offset: int)->List[DataPoint]:
     X_test0 = data_slide[z:]
 
     # Load Trained Model
-    # model = load_model(TYPING_MODEL_FILENAME)
 
     tmpfile = tempfile.NamedTemporaryFile(delete=True)
     tmpfile.write(get_resource_contents(TYPING_MODEL_FILENAME))
@@ -109,14 +107,14 @@ def typing_episodes(dataset: pd.DataFrame, offset: int)->List[DataPoint]:
 
     # Smoothing - to reduce noisy predictions
     indices_type = np.where(y_pred == 1)[0]
-    time_type = time_t[indices_type] #contains timestamps of when user is typing
+    time_type = time_t[indices_type]  # contains timestamps of when user is typing
     data = []
 
     # smooth_labels_3: final output prediction
     # start_time: start time of the typing seesion
     # end_time of the typing session
 
-    if (len(indices_type) > 0):
+    if len(indices_type) > 0:
         pred_l = len(y_pred)
         ind_l = len(indices_type)
         smooth_labels_3 = np.zeros((pred_l, 1))
@@ -125,66 +123,65 @@ def typing_episodes(dataset: pd.DataFrame, offset: int)->List[DataPoint]:
         end_time = []
 
         for i in range(0, ind_l - 1):
-            if (s == 0):
+            if s == 0:
                 start_time.append(time_type[i])
                 s = 1
 
-            if ((time_type[i + 1] - time_type[i]) < 10000): #10000 = 10 seconds
+            if (time_type[i + 1] - time_type[i]) < 10000:  # 10000 = 10 seconds
                 smooth_labels_3[indices_type[i]:indices_type[i + 1]] = 1
             else:
-                end_time.append(time_type[i] + 200) #200 = 200 miliseconds
+                end_time.append(time_type[i] + 200)  # 200 = 200 milliseconds
                 s = 0
-        end_time.append(time_type[-1] + 200) #200 = 200 miliseconds
+        end_time.append(time_type[-1] + 200)  # 200 = 200 milliseconds
 
         for i in range(0, len(start_time)):
             st = datetime.fromtimestamp(int(float(start_time[i])))
             et = datetime.fromtimestamp(int(float(end_time[i])))
             if st.day != et.day:
-                et = datetime(st.year,st.month,st.day) + timedelta(hours=23, minutes=59, seconds=59)
+                et = datetime(st.year, st.month, st.day) + timedelta(hours=23, minutes=59, seconds=59)
 
-            data.append(DataPoint(start_time=st, end_time=et, offset=offset,
-                                  sample=1))
+            data.append(DataPoint(start_time=st, end_time=et, offset=offset,sample=1))
 
-    # else:
-    #     CC.logging.log("No typing episode found for this dataset.")
     return data
 
 
-# coded by JEYA VIKRANTH JEYAKUMAR
-def _data_reshaping(X_va: np.ndarray, network_type: str)->np.ndarray:
+def _data_reshaping(x_va: np.ndarray, network_type: str) -> np.ndarray:
     """
     This function is used to reshape the data into a particular form
     to make use of the keras tensorflow api.
-    :param np.ndarray X_va: dataset
+
+    :param np.ndarray x_va: dataset
     :param str network_type: model type
     :return: reshaped dataset
     :rtype: np.ndarray
     """
-    _, win_len, dim = X_va.shape
+    _, win_len, dim = x_va.shape
 
     if network_type == 'CNN' or network_type == 'ConvLSTM':
-    # make it into (frame_number, dimension, window_size, channel=1) for convNet
-        X_va = np.swapaxes(X_va, 1, 2)
-        X_va = np.reshape(X_va, (-1, dim, win_len, 1))
+        # make it into (frame_number, dimension, window_size, channel=1) for convNet
+        x_va = np.swapaxes(x_va, 1, 2)
+        x_va = np.reshape(x_va, (-1, dim, win_len, 1))
 
-    return X_va
+    return x_va
 
-# coded by JEYA VIKRANTH JEYAKUMAR
-def sync_left_right_accel(dl: pd.Dataframe, dr: pd.DataFrame)->pd.Dataframe:
+
+
+def sync_left_right_accel(dl: pd.DataFrame, dr: pd.DataFrame) -> pd.DataFrame:
     """
     This function is used to sync and combine the left,right accl and gyro dataframes.
-    :param pd.Dataframe dl: combined dataframe of left accelerometer and gyroscope data
-    :param pd.Dataframe dr: combined dataframe of right accelerometer and gyroscope data
+
+    :param pd.DataFrame dl: combined dataframe of left accelerometer and gyroscope data
+    :param pd.DataFrame dr: combined dataframe of right accelerometer and gyroscope data
     :return: a synced and combined dataframe of left and right accelerometer and gyroscope
             dataframes
-    :rtype:pd.Dataframe
+    :rtype:pd.DataFrame
     """
 
     dl_new = dl
     dr_new = dr
 
-    time_l = np.array(dl[dl.columns[0]]) # making a numpy array
-    time_r = np.array(dr[dr.columns[0]]) # making a numpy array
+    time_l = np.array(dl[dl.columns[0]])  # making a numpy array
+    time_r = np.array(dr[dr.columns[0]])  # making a numpy array
 
     # taking the max of two time values left and right arrays
     max_val = np.amax((time_r[0], time_l[0]))
@@ -221,38 +218,40 @@ def sync_left_right_accel(dl: pd.Dataframe, dr: pd.DataFrame)->pd.Dataframe:
     return (dataset)
 
 
-
-def unique_days_of_one_stream(dict: dict)->set:
+def unique_days_of_one_stream(input_dict: dict) -> set:
     """
     This function takes a dictionary of stream ids with dates of each stream
     and makes a unique set of dates for all the stream ids
-    :param dict dict: a dictionary of stream ids as keys with dates as values
+
+    :param dict input_dict: a dictionary of stream ids as keys with dates as values
     :return: a set of dates for all the stream ids of one stream for a day
     :rtype: set
     """
     merged_dates = []
 
-    for stream_id in dict:
-        merged_dates = list(set(merged_dates + dict[stream_id]))
+    for stream_id in input_dict:
+        merged_dates = list(set(merged_dates + input_dict[stream_id]))
 
     merged_dates_set = set(merged_dates)
     return merged_dates_set
 
-def get_dataframe(data: List[DataPoint], var_name: list)->pd.DataFrame:
+
+def get_dataframe(data: List[DataPoint], var_name: list) -> pd.DataFrame:
     """
-    This function takes a list of datapoints of each stream
+    This function takes a list of DataPoints of each stream
     and makes a dataframe with unique set of column names
-    :param List[DataPoint] data: a list of datapoints
+
+    :param List[DataPoint] data: a list of DataPoints
     :param list var_name: a list of X,Y,Z column names for left and right accelerometer
                           and gyroscope data
-    :return: a dataframe of one stream (like left acclerometer)
+    :return: a dataframe of one stream (like left accelerometer)
     :rtype: pd.DataFrame
     """
 
-    # this function takes a list of datapoints and make them into a dataframe
+    # this function takes a list of DataPoints and make them into a dataframe
     if len(data) == 0:
         return None
-    D = []
+    d = []
 
     for v in data:
         if type(v.sample) != list or len(v.sample) != 3:
@@ -260,16 +259,16 @@ def get_dataframe(data: List[DataPoint], var_name: list)->pd.DataFrame:
 
         for index in range(len(v.sample)):
             if type(v.sample[index]) == str:
-            #    print("string Data:",v.sample)
-                v.sample[index] = v.sample[index].replace('\x00','0')
+                #    print("string Data:",v.sample)
+                v.sample[index] = v.sample[index].replace('\x00', '0')
                 try:
                     v.sample[index] = float(v.sample[index])
                 except:
                     v.sample[index] = 0
-             #   print("converted data:",v.sample)
+            #   print("converted data:",v.sample)
 
-        D.append([v.start_time.timestamp(), v.sample[0], v.sample[1], v.sample[2]])
+        d.append([v.start_time.timestamp(), v.sample[0], v.sample[1], v.sample[2]])
 
-    data_frame = pd.DataFrame(D, columns=var_name)
+    data_frame = pd.DataFrame(d, columns=var_name)
 
     return data_frame

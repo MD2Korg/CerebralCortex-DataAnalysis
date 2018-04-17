@@ -29,7 +29,14 @@ from core.feature.activity.utils import *
 from core.computefeature import get_resource_contents
 import os
 
-def get_posture_model(is_gravity) -> RandomForestClassifier:
+
+def get_posture_model(is_gravity: bool) -> RandomForestClassifier:
+    """
+
+    :rtype: object
+    :param bool is_gravity:
+    :return:
+    """
     if is_gravity:
         model_file_contents = get_resource_contents(POSTURE_MODEL_FILENAME)
     else:
@@ -38,7 +45,14 @@ def get_posture_model(is_gravity) -> RandomForestClassifier:
     clf = pickle.loads(model_file_contents)
     return clf
 
-def get_activity_model(is_gravity):
+
+def get_activity_model(is_gravity: bool):
+    """
+
+    :rtype: object
+    :param bool is_gravity:
+    :return:
+    """
     if is_gravity:
         model_file_contents = get_resource_contents(ACTIVITY_MODEL_FILENAME)
     else:

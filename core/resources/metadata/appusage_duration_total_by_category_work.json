@@ -1,41 +1,41 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
       "name": "duration",
-      "type":"json",
-       "description": "Sample contains a dictionary, where the key are the google play store app categories and value is the number of minutes the person used these categorical apps during he/she was in workplace" 
+      "type": "json",
+      "description": "Sample contains a dictionary, where the key are the google play store app categories and value is the number of minutes the person used these categorical apps during he/she was in workplace"
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.phone_feature",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.phone_feature",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
+      "input_parameters": {
         "max_data_gap_threshold_seconds": 300
       }
     },
-    "algorithm":{
-      "method":"core.feature.phone_features.phone",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.phone_features.phone",
+      "authors": [
         {
-          "name":"Md Shiplu Hawlader",
-          "email":"shiplu.cse.du@gmail.com"
+          "name": "Md Shiplu Hawlader",
+          "email": "shiplu.cse.du@gmail.com"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"Sample contains a dictionary, where the key are the google play store app categories and value is the number of minutes the person used these categorical apps during he/she was in workplace"
+      "description": "Sample contains a dictionary, where the key are the google play store app categories and value is the number of minutes the person used these categorical apps during he/she was in workplace"
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.phone.app_usage.work.total",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.phone.app_usage.work.total",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
 }

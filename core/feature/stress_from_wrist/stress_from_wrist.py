@@ -35,29 +35,33 @@ from cerebralcortex.core.datatypes.datapoint import DataPoint
 
 feature_class_name = 'stress_from_wrist'
 
+
 class stress_from_wrist(ComputeFeatureBase):
     """
     This class extracts all the RR interval data that is present for a person on a specific day.
     Calculates the necessary features from the rr interval data and assigns each minute of the day as 
     Stress/Not stress state.
     
-    ..algorithm:
+    Algorithm::
+
         Input:
             RR interval datastream. 
-            Each datapoint contains the following three things
+            Each DataPoint contains the following three things
                 1. A list of RR-interval array. Each entry in the list corresponds to a realization 
                 of the position of R peaks in that minute
                 2. Standard Deviation of Heart Rate within the minute
                 3. A list corresponding to the heart rate values calculated from variable realizations 
                 of the RR interval on a sliding window of window size = 8 second and window offset = 2 second.
+
         Steps:
             1. Extract all the RR interval data for a user on a specific day
             2. Extract all the 16 features per minute of the RR interval data
             3. Standardize each feature row and output stress/not stress state
         
         Output:
-            A datastream containing a list of datapoints, each datapoint represents one minute where sample=0 
+            A datastream containing a list of datapoints, each DataPoint represents one minute where sample=0
             means the user was not stressed and sample=1 means the person was stressed
+
         List of Features:
             1. 82nd perentile
             2. 18th perentile
@@ -75,7 +79,8 @@ class stress_from_wrist(ComputeFeatureBase):
             14. heart rate
             15. median of inter percentile difference
             16. standard deviation of inter percentile difference 
-        References:
+
+    :References
             K. Hovsepian, M. al’Absi, E. Ertin, T. Kamarck, M. Nakajima, and S. Kumar, 
             "cStress: Towards a Gold Standard for Continuous Stress Assessment in the Mobile Environment," 
             ACM UbiComp, pp. 493-504, 2015.
@@ -165,7 +170,7 @@ class stress_from_wrist(ComputeFeatureBase):
         """
 
         rr_interval_data = self.CC.get_stream(streams[stream_identifier]["identifier"],
-                                          day=day,user_id=user_id,localtime=False)
+                                              day=day,user_id=user_id,localtime=False)
         print('-'*20," Got rr interval data ", len(rr_interval_data.data) ,'-'*20)
 
         activity_data = self.CC.get_stream(streams[activity_identifier]["identifier"],
@@ -203,17 +208,17 @@ class stress_from_wrist(ComputeFeatureBase):
             final_binary_data.append(DataPoint.from_tuple(start_time=dp[0],end_time=dp[-1],
                                                           offset=dp[1],
                                                           sample=stress_value[i]))
-
+        print('-'*20,' got stress data ',len(final_binary_data),'-'*20)
         self.store_stream(json_path[0],[streams[stream_identifier]],user_id,final_binary_data,localtime=False)
 
         stress_likelihood_value = model.predict_proba(transformed_feature_matrix)
         final_likelihood_data = []
         for i,dp in enumerate(st_et_offset_array):
             final_likelihood_data.append(DataPoint.from_tuple(start_time=dp[0],end_time=dp[-1],
-                                                          offset=dp[1],
-                                                          sample=stress_likelihood_value[i][1]))
+                                                              offset=dp[1],
+                                                              sample=stress_likelihood_value[i][1]))
 
-        self.store_stream(json_path[1],[streams[stream_identifier]],user_id,final_likelihood_data,localtime=False)
+        self.store_stream(json_path[1],[streams[stream_identifier]],user_id,final_binary_data,localtime=False)
 
 
 
@@ -249,7 +254,3 @@ class stress_from_wrist(ComputeFeatureBase):
         model,scaler = get_model()
         for day in all_days:
             self.get_and_save_data(streams,day,rr_interval_identifier,user_id,json_path,model,scaler)
-
-
-
-

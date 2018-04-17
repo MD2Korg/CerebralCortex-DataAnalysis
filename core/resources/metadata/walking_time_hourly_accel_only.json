@@ -1,48 +1,48 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
       "name": "amount_of_walking_accel_only",
       "type": "float",
       "unit": "minute",
-      "descriptor": "Amount of walking of that hour from accel only model"
+      "description": "Amount of walking of that hour from accel only model"
     },
     {
       "name": "amount_of_data_accel_only",
       "type": "float",
       "unit": "minute",
-      "descriptor": "Amount of data of that hour from accel only model"
+      "description": "Amount of data of that hour from accel only model"
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.activity_features",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.activity_features",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
+      "input_parameters": {
         "window_size": "1hour"
       }
     },
-    "algorithm":{
-      "method":"core.feature.activity_features.activity_features",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.activity_features.activity_features",
+      "authors": [
         {
-          "name":"Sayma Akther",
-          "email":"sakther@memphis.edu"
+          "name": "Sayma Akther",
+          "email": "sakther@memphis.edu"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"Computes walking time hourly and amount of data of that hour from accel only model"
+      "description": "Computes walking time hourly and amount of data of that hour from accel only model"
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.activity_features.walking.hourly",
-  "owner":"",
-  "type":"1"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.activity_features.walking.hourly",
+  "owner": "",
+  "type": "1"
 }
