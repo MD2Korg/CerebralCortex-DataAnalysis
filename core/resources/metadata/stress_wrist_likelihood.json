@@ -3,7 +3,7 @@
   "data_descriptor":[
     {
       "name":"stress_likelihood_value",
-      "type":"int",
+      "type":"float",
       "unit":"1 minute window",
       "description":"probability of stress"
     }
