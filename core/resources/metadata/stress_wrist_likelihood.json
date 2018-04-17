@@ -36,7 +36,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.stress.wrist.likelihood.60seconds",
+  "name":"org.md2k.data_analysis.feature.stress.wrist.likelihood.60seconds.v1",
   "owner":"",
   "type":"1"
 }
