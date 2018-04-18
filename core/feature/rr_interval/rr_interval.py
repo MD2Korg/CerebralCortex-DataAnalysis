@@ -109,6 +109,9 @@ class rr_interval(ComputeFeatureBase):
                         motionsense_hrv_right_raw_cat not in all_streams:
             return
 
+        if qualtrics_identifier not in all_streams:
+            return
+
         user_id = user
         for day in all_days:
 
