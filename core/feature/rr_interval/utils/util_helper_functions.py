@@ -46,6 +46,8 @@ motionsense_hrv_left_raw_cat = \
     "RAW--CHARACTERISTIC_LED--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
 motionsense_hrv_right_raw_cat = \
     "RAW--CHARACTERISTIC_LED--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
+activity_identifier = \
+    "org.md2k.data_analysis.feature.activity.wrist.accel_only.10_seconds"
 
 path_to_stress_files = 'core/resources/stress_files/'
 

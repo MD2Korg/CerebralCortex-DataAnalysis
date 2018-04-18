@@ -77,7 +77,7 @@ class rr_interval(ComputeFeatureBase):
                 s1 = data[0].end_time
                 for dp in raw_byte_array:
                     s2 = dp.start_time
-                    if s2 < s1 < s2 + timedelta(minutes=60):
+                    if s2 <= s1 <= s2 + timedelta(minutes=120):
                         final_data.append(dp)
                 return final_data
         return []
@@ -142,22 +142,44 @@ class rr_interval(ComputeFeatureBase):
             left_data = admission_control(left_data)
             right_data = admission_control(right_data)
 
+
             if not left_data and not right_data:
                 print('-'*20," No data after admission control ",'-'*20)
+                continue
+
+
+            left_data = self.get_data_around_stress_survey(all_streams=all_streams,day=day,
+                                                           user_id=user_id,raw_byte_array=left_data)
+            right_data = self.get_data_around_stress_survey(all_streams=all_streams,day=day,
+                                                           user_id=user_id,raw_byte_array=right_data)
+
+            if not left_data and not right_data:
+                print('-'*20," No data before 120 minutes of stress survey ",'-'*20)
                 continue
 
             left_decoded_data = decode_only(left_data)
             right_decoded_data = decode_only(right_data)
             print('-'*20,len(left_decoded_data),'-'*20,len(right_decoded_data),'-'*20,' decoded length')
+
+
             window_data = find_sample_from_combination_of_left_right(left_decoded_data,right_decoded_data)
             if not list(window_data):
                 print('-'*20," No window data available ",'-'*20)
                 continue
             print('-'*20,len(window_data),'-'*20,' window length')
+
             int_RR_dist_obj,H,w_l,w_r,fil_type = get_constants()
             ecg_pks = []
             final_data = []
+            activity_data = self.CC.get_stream(all_streams[activity_identifier]["identifier"],
+                                               day=day,user_id=user_id,localtime=False)
+            ts_arr = [i.start_time for i in activity_data.data]
+            sample_arr = [i.sample for i in activity_data.data]
+
             for dp in window_data:
+                ind = np.array([sample_arr[i] for i,item in enumerate(ts_arr) if ts_arr[i]>=dp.start_time and ts_arr[i]<= dp.end_time])
+                if list(ind).count('WALKING')+list(ind).count('MOD')+list(ind).count('HIGH')  >= len(ind)*.33:
+                    continue
                 RR_interval_all_realization,score,HR = [],np.nan,[]
                 led_input = dp.sample
                 try:
