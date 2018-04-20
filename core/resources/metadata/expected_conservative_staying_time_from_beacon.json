@@ -2,10 +2,21 @@
   "annotations": [],
   "data_descriptor": [
     {
-      "name": "",
-      "type": "list",
-      "unit": "",
-      "description": ""
+      "name": "staying_time_around_beacon",
+      "type": "integer",
+      "unit": "minute",
+      "description": "Office staying time (total time between first entering time around the office beacon and last departure time from office beacon) according to Beacon model"
+    },
+    {
+      "name": "verdict",
+      "type": "string",
+      "description": "Analysis of the staying time which is one of the three verdict: 1. less_than_expected_conservative_time 2. more_than_expected_conservative_time 3. in_expected_conservative_time. Expected conservative time is the half_hourly time of average staying time. For example if average staying time is 8 hour 20 minute then expected conservative time is 8 hour 30 minute on the other hand if average staying time is 8 hour 37 minute then expected conservative time is 9 hour. The staying time which are less than expected conservative time are labeled less_than_expected_conservative_time and the staying time which are more than expected conservative time are labeled as more_than_expected_conservative_time, the staying time which are exactly same as the expected conservative time are labeled as in_expected_conservative_time."
+    },
+    {
+      "name": "deviation",
+      "type": "integer",
+      "unit": "minute",
+      "description": "How much deviated from the expected conservative time (in minutes)."
     }
   ],
   "execution_context": {

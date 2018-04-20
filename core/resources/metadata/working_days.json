@@ -2,9 +2,9 @@
   "annotations": [],
   "data_descriptor": [
     {
-      "name": "",
+      "name": "office_day's_annotation_from_gps_location_model",
       "type": "string",
-      "description": ""
+      "description": "Office"
     }
   ],
   "execution_context": {
