@@ -1,40 +1,52 @@
 {
-  "annotations": [],
-  "data_descriptor": [
+  "annotations":[],
+  "data_descriptor":[
     {
-      "name": "",
-      "type": "list",
-      "description": ""
+      "name": "arrival_time_around_beacon",
+      "type":"datetime",
+      "description": "Office arrival time (entering time into the office location) according to beacon model"
+    },
+    {
+      "name": "verdict",
+      "type":"string",
+      "description": "Analysis of the arrival time which is one of the three verdict: 1. before_usual_time 2. after_usual_time 3. usual_time. Usual time is a range from (mean - standard_deviation) to (mean + standard_deviation). The arrival time which are earlier than usual range are before_usual_time and the arrival time which are later than the usual range are after_usual_time ."
+    },
+    {
+      "name": "deviation",
+      "type":"integer",
+      "unit":"minute",
+      "description": "How much deviated from the usual time (in minutes)."
     }
   ],
-  "execution_context": {
-    "processing_module": {
-      "name": "core.feature.office_time",
-      "input_streams": [
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.office_time",
+      "input_streams":[
         {
-          "id": "CC_INPUT_STREAM_ID_CC",
-          "name": "CC_INPUT_STREAM_NAME_CC"
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters": {
+      "input_parameters":{
+
       }
     },
-    "algorithm": {
-      "method": "core.feature.office_time.ArrivalTimesFromBeacon.listing_all_arrival_times_from_beacon",
-      "authors": [
+    "algorithm":{
+      "method":"core.feature.office_time.ArrivalTimesFromBeacon.listing_all_arrival_times_from_beacon",
+      "authors":[
         {
-          "name": "Alina Zaman",
-          "email": "alina.cse@gmail.com"
+          "name":"Alina Zaman",
+          "email":"alina.cse@gmail.com"
         }
       ],
-      "version": "0.0.1",
-      "reference": {
+      "version":"0.0.1",
+      "reference":{
       },
-      "description": "Office arrival time with verdict of before, after or usual arriving. Sample is a list with three elements as follows: 0 - Office arrival time according to beacon, 1 - verdict (after_usual_time, before_usual_time, usual_time), 2 - deviation from the usual range of time in minutes. All arrival data are according to beacon"
+      "description":"Office arrival time with verdict of before, after or usual arriving. Sample is a list with three elements as follows: 0 - Office arrival time according to beacon, 1 - verdict (after_usual_time, before_usual_time, usual_time), 2 - deviation from the usual range of time in minutes. All arrival data are according to beacon"
     }
   },
-  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.office_arrival_times_from_beacon",
-  "owner": "CC_OWNER_CC",
-  "type": "datastream"
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.feature.office_arrival_times_from_beacon",
+  "owner":"CC_OWNER_CC",
+  "type":"datastream"
 }
