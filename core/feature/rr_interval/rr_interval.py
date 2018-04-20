@@ -116,6 +116,7 @@ class rr_interval(ComputeFeatureBase):
                 rr_interval_data = self.CC.get_stream(all_streams[rr_interval_identifier]["identifier"],
                                                   day=day,user_id=user_id,localtime=False)
                 if len(rr_interval_data.data)>0:
+                    print("This day was done before")
                     continue
 
             left_data = []
