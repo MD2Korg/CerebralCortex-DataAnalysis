@@ -35,6 +35,7 @@ from sklearn.preprocessing import normalize
 from copy import deepcopy
 import pytz
 
+from cerebralcortex.cerebralcortex import CerebralCortex
 # TODO: Comment and describe constants
 motionsense_hrv_left_raw = \
     "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
@@ -49,7 +50,20 @@ motionsense_hrv_right_raw_cat = \
 activity_identifier = \
     "org.md2k.data_analysis.feature.activity.wrist.accel_only.10_seconds"
 
+rr_interval_identifier = \
+    "org.md2k.data_analysis.feature.rr_interval.v1"
+
 path_to_stress_files = 'core/resources/stress_files/'
+
+def get_datastream(CC:CerebralCortex,identifier,day,user_id,localtime):
+    stream_ids = CC.get_stream_id(user_id,identifier)
+    data = []
+    for stream_id in stream_ids:
+        temp_data = CC.get_stream(stream_id=stream_id['identifier'],user_id=user_id,day=day,localtime=localtime)
+        if len(temp_data.data)>0:
+            data.extend(temp_data)
+    return data
+
 
 
 def admission_control(data: List[DataPoint]) -> List[DataPoint]:
