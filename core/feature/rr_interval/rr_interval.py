@@ -145,6 +145,7 @@ class rr_interval(ComputeFeatureBase):
             left_data = admission_control(left_data)
             right_data = admission_control(right_data)
 
+            print('-'*20,len(left_data),'-'*20,len(right_data),'-'*20,' after admission control length')
 
             if not left_data and not right_data:
                 print('-'*20," No data after admission control ",'-'*20)
@@ -155,6 +156,7 @@ class rr_interval(ComputeFeatureBase):
                                                            user_id=user_id,raw_byte_array=left_data)
             right_data = self.get_data_around_stress_survey(all_streams=all_streams,day=day,
                                                            user_id=user_id,raw_byte_array=right_data)
+
 
             if not left_data and not right_data:
                 print('-'*20," No data before 120 minutes of stress survey ",'-'*20)
