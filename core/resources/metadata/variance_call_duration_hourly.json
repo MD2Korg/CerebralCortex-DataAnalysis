@@ -1,0 +1,42 @@
+{
+  "annotations": [],
+  "data_descriptor": [
+    {
+      "name": "value",
+      "type": "float",
+      "unit": "minute",
+      "description": "Variance of phone call duration."
+    }
+  ],
+  "execution_context": {
+    "processing_module": {
+      "name": "variance_call_duration_hourly",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+        "window_size": "1hour"
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.phone_features.phone",
+      "authors": [
+        {
+          "name": "Md Shiplu Hawlader",
+          "email": "shiplu.cse.du@gmail.com"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+      },
+      "description": "The variance of phone call duration in minutes for each one hour window in a day"
+    }
+  },
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.phone.call_duration.hour.variance",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
+}

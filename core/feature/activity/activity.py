@@ -36,6 +36,7 @@ from core.computefeature import ComputeFeatureBase
 
 feature_class_name = 'ActivityMarker'
 
+
 class ActivityMarker(ComputeFeatureBase):
     """
     Detects activity and posture per 10 seconds window from
@@ -47,6 +48,15 @@ class ActivityMarker(ComputeFeatureBase):
     """
 
     def get_day_data(self, stream_name, user_id, day):
+        """
+        get list od DataPoint for the stream name
+
+        :param string stream_name: Name of the stream
+        :param string user_id: UID of the user
+        :param string day: YMD
+        :return:
+        """
+
         day_data = []
         stream_ids = self.CC.get_stream_id(user_id, stream_name)
         for stream_id in stream_ids:
@@ -65,6 +75,8 @@ class ActivityMarker(ComputeFeatureBase):
                                             wrist: str,
                                             is_gravity):
         """ Process activity and posture detection fro single wrist
+        :param day:
+        :param is_gravity:
         :param streams: all the streams of user with user-id
         :param user_id:
         :param wrist: either left or right
@@ -105,8 +117,8 @@ class ActivityMarker(ComputeFeatureBase):
         activity_features = compute_accelerometer_features(accel_data,
                                                            window_size=TEN_SECONDS)
 
-        print("Accel Len:",len(activity_features))
-        
+        print("Accel Len:", len(activity_features))
+
         posture_labels = classify_posture(activity_features, is_gravity)
         activity_labels = classify_activity(activity_features, is_gravity)
 
@@ -129,7 +141,7 @@ class ActivityMarker(ComputeFeatureBase):
         for day in all_days:
             is_gravity = True
             self.CC.logging.log("Processing Activity for user: %s for day %s"
-                                %(user, str(day)))
+                                % (user, str(day)))
 
             posture_labels_left, activity_labels_left = \
                 self.process_activity_and_posture_marker(streams,
@@ -142,7 +154,6 @@ class ActivityMarker(ComputeFeatureBase):
                                                          RIGHT_WRIST,
                                                          is_gravity)
 
-
             activity_labels = merge_left_right(activity_labels_left,
                                                activity_labels_right,
                                                window_size=TEN_SECONDS)
@@ -152,7 +163,7 @@ class ActivityMarker(ComputeFeatureBase):
 
             self.CC.logging.log("is_gravity TRUE activity_type_stream: %d" %
                                 (len(activity_labels)))
-            self.CC.logging.log("is_gravity TRUE posture_stream: %d " % 
+            self.CC.logging.log("is_gravity TRUE posture_stream: %d " %
                                 (len(posture_labels)))
 
             if len(activity_labels) > 0:
@@ -182,8 +193,8 @@ class ActivityMarker(ComputeFeatureBase):
 
             self.CC.logging.log("is_gravity FALSE activity_type_stream: %d" %
                                 (len(activity_labels)))
-            self.CC.logging.log("is_gravity FALSE posture_stream: %d " % 
-                                 (len(posture_labels)))
+            self.CC.logging.log("is_gravity FALSE posture_stream: %d " %
+                                (len(posture_labels)))
 
             if len(activity_labels) > 0:
                 self.store_stream(

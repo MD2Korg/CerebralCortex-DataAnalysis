@@ -1,0 +1,41 @@
+{
+  "annotations": [],
+  "data_descriptor": [
+    {
+      "name": "radius",
+      "type": "float",
+      "unit": "km",
+      "description": "Radius of Gyration of a participant in one day."
+    }
+  ],
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.gpsfeature",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.gpsfeature.gpsfeature.radius_of_gyration",
+      "authors": [
+        {
+          "name": "Anik Khan",
+          "email": "aniknagato@gmail.com"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+      },
+      "description": "Radius of Gyration of a participant in one day in kilometers."
+    }
+  },
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.radius_of_gyration",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
+}

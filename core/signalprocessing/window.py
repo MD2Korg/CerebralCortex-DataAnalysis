@@ -130,7 +130,7 @@ def create_all_windows(datapoint: List[DataPoint], window_size: float, window_of
             key = (window_start_time, window_end_time)
             yield key, window_data
             window_data = []
-            # when datapoint is not in current range, identify emtpy windows and yield.
+            # when DataPoint is not in current range, identify emtpy windows and yield.
             _w_start_time = window_end_time
             _w_end_time = _w_start_time + timedelta(seconds=window_size)
             while dp.start_time > _w_end_time:
@@ -190,11 +190,13 @@ def merge_consective_windows(data: OrderedDict) -> List[DataPoint]:
                 element = val
                 end = key[1]
             else:
-                merged_windows.append(DataPoint(start, end, element))
+                merged_windows.append(DataPoint(start_time=start, end_time=end,
+                                                sample=element))
                 element = val
                 start = key[0]
                 end = key[1]
         if val is not None:
-            merged_windows.append(DataPoint(start, end, val))
+            merged_windows.append(DataPoint(start_time=start, end_time=end,
+                                            sample=val))
 
     return merged_windows

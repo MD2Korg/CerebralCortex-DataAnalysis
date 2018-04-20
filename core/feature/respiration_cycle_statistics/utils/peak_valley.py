@@ -27,12 +27,22 @@ from enum import Enum
 import numpy as np
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 
+
+# TODO: What is this?
 class Quality(Enum):
     ACCEPTABLE = 1
     UNACCEPTABLE = 0
 
+
 def smooth(data: List[DataPoint],
-                 span: int = 5) -> List[DataPoint]:
+           span: int = 5) -> List[DataPoint]:
+    """
+
+    :rtype: object
+    :param data:
+    :param span:
+    :return:
+    """
     if data is None or len(data) == 0:
         return []
 
@@ -54,11 +64,13 @@ def smooth(data: List[DataPoint],
 
     return data_smooth
 
+
 def moving_average_curve(data: List[DataPoint],
                          window_length: int) -> List[DataPoint]:
     """
     Moving average curve from filtered (using moving average) samples.
 
+    :rtype: object
     :return: mac
     :param data:
     :param window_length:
@@ -74,8 +86,9 @@ def moving_average_curve(data: List[DataPoint],
 
     return mac
 
+
 def compute_peak_valley(rip: List[DataPoint],
-                        rip_quality: List[DataPoint]=None,
+                        rip_quality: List[DataPoint] = None,
                         fs: float = 21.33,
                         smoothing_factor: int = 5,
                         time_window: int = 8,
@@ -88,6 +101,7 @@ def compute_peak_valley(rip: List[DataPoint],
     """
     Compute peak and valley from rip data and filter peak and valley.
 
+    :rtype: object
     :param minimum_peak_to_valley_time_diff:
     :param inspiration_amplitude_threshold_perc:
     :param smoothing_factor:
@@ -117,50 +131,47 @@ def compute_peak_valley(rip: List[DataPoint],
                                                         data_start_time_to_index=data_smooth_start_time_to_index)
 
     up_intercepts_filtered, down_intercepts_filtered = filter_intercept_outlier(up_intercepts=up_intercepts,
-                                                              down_intercepts=down_intercepts)
+                                                                                down_intercepts=down_intercepts)
 
     peaks, valleys = generate_peak_valley(up_intercepts=up_intercepts_filtered,
                                           down_intercepts=down_intercepts_filtered,
                                           data=data_smooth)
 
     valleys_corrected = correct_valley_position(peaks=peaks,
-                                      valleys=valleys,
-                                      up_intercepts=up_intercepts_filtered,
-                                      data=data_smooth,
-                                      data_start_time_to_index=data_smooth_start_time_to_index)
+                                                valleys=valleys,
+                                                up_intercepts=up_intercepts_filtered,
+                                                data=data_smooth,
+                                                data_start_time_to_index=data_smooth_start_time_to_index)
 
     peaks_corrected = correct_peak_position(peaks=peaks,
-                                  valleys=valleys_corrected,
-                                  up_intercepts=up_intercepts_filtered,
-                                  data=data_smooth,
-                                  max_amplitude_change_peak_correction=max_amplitude_change_peak_correction,
-                                  min_neg_slope_count_peak_correction=min_neg_slope_count_peak_correction,
-                                  data_start_time_to_index=data_smooth_start_time_to_index)
+                                            valleys=valleys_corrected,
+                                            up_intercepts=up_intercepts_filtered,
+                                            data=data_smooth,
+                                            max_amplitude_change_peak_correction=max_amplitude_change_peak_correction,
+                                            min_neg_slope_count_peak_correction=min_neg_slope_count_peak_correction,
+                                            data_start_time_to_index=data_smooth_start_time_to_index)
 
     # remove too close valley peak pair.
     peaks_filtered_close, valleys_filtered_close = remove_close_valley_peak_pair(peaks=peaks_corrected,
-                                                   valleys=valleys_corrected,
-                                                   minimum_peak_to_valley_time_diff=minimum_peak_to_valley_time_diff)
+                                                                                 valleys=valleys_corrected,
+                                                                                 minimum_peak_to_valley_time_diff=minimum_peak_to_valley_time_diff)
 
     # Remove small  Expiration duration < 0.31
     peaks_filtered_exp_dur, valleys_filtered_exp_dur = filter_expiration_duration_outlier(peaks=peaks_filtered_close,
-                                                        valleys=valleys_filtered_close,
-                                                        threshold_expiration_duration=threshold_expiration_duration)
+                                                                                          valleys=valleys_filtered_close,
+                                                                                          threshold_expiration_duration=threshold_expiration_duration)
 
     # filter out peak valley pair of inspiration of small amplitude.
-    peaks_filtered_insp_amp, valleys_filtered_insp_amp = filter_small_amp_inspiration_peak_valley(peaks=peaks_filtered_exp_dur,
-                                                              valleys=valleys_filtered_exp_dur,
-                                                              inspiration_amplitude_threshold_perc=inspiration_amplitude_threshold_perc)
+    peaks_filtered_insp_amp, valleys_filtered_insp_amp = filter_small_amp_inspiration_peak_valley(
+        peaks=peaks_filtered_exp_dur,
+        valleys=valleys_filtered_exp_dur,
+        inspiration_amplitude_threshold_perc=inspiration_amplitude_threshold_perc)
 
     # filter out peak valley pair of expiration of small amplitude.
-    peaks_filtered_exp_amp, valleys_filtered_exp_amp = filter_small_amp_expiration_peak_valley(peaks=peaks_filtered_insp_amp,
-                                                             valleys=valleys_filtered_insp_amp,
-                                                             expiration_amplitude_threshold_perc=expiration_amplitude_threshold_perc)
-
-    # peak_datastream = DataStream.from_datastream([rip])
-    # peak_datastream.data = peaks_filtered_exp_amp
-    # valley_datastream = DataStream.from_datastream([rip])
-    # valley_datastream.data = valleys_filtered_exp_amp
+    peaks_filtered_exp_amp, valleys_filtered_exp_amp = filter_small_amp_expiration_peak_valley(
+        peaks=peaks_filtered_insp_amp,
+        valleys=valleys_filtered_insp_amp,
+        expiration_amplitude_threshold_perc=expiration_amplitude_threshold_perc)
 
     return peaks_filtered_exp_amp, valleys_filtered_exp_amp
 
@@ -173,6 +184,7 @@ def filter_small_amp_expiration_peak_valley(peaks: List[DataPoint],
     Filter out peak valley pair if their expiration amplitude is less than or equal to 10% of
     average expiration amplitude.
 
+    :rtype: object
     :return: peaks_updated, valleys_updated:
     :param: peaks:
     :param: valleys:
@@ -207,6 +219,7 @@ def filter_small_amp_inspiration_peak_valley(peaks: List[DataPoint],
     Filter out peak valley pair if their inspiration amplitude is less than or to equal 10% of
     average inspiration amplitude.
 
+    :rtype: object
     :return peaks_updated, valleys_updated:
     :param peaks:
     :param valleys:
@@ -233,6 +246,7 @@ def filter_expiration_duration_outlier(peaks: List[DataPoint],
     """
     Filter out peak valley pair for which expiration duration is too small.
 
+    :rtype: object
     :return peaks_updated, valleys_updated:
     :param peaks:
     :param valleys:
@@ -260,6 +274,7 @@ def remove_close_valley_peak_pair(peaks: List[DataPoint],
     """
     Filter out too close valley peak pair.
 
+    :rtype: object
     :return peaks_updated, valleys_updated:
     :param peaks:
     :param valleys:
@@ -291,6 +306,7 @@ def correct_peak_position(peaks: List[DataPoint],
     Our hypothesis is most of breathing in done for that cycle. We assume insignificant amount of
     breath is taken or some new cycle started after the notch.
 
+    :rtype: object
     :return peaks:
     :param peaks:
     :param valleys:
@@ -305,7 +321,8 @@ def correct_peak_position(peaks: List[DataPoint],
         if valleys[i].start_time < up_intercepts[i].start_time < peaks[i].start_time:
             up_intercept = up_intercepts[i]
             # points between current valley and UI.
-            if up_intercept.start_time not in data_start_time_to_index or peaks[i].start_time not in data_start_time_to_index:
+            if up_intercept.start_time not in data_start_time_to_index or peaks[
+                i].start_time not in data_start_time_to_index:
                 exception_message = 'Data has no start time for peak or up intercept start time at index ' + str(i)
                 raise Exception(exception_message)
             else:
@@ -333,8 +350,8 @@ def correct_peak_position(peaks: List[DataPoint],
                                 peaks[i] = peak_new  # 60% inspiration is done at that point.
 
         else:
-            # TODO: Discuss whether raise exception or not for this scenerio.
-            break # up intercept at i is not between valley and peak at i
+            # TODO: Discuss whether raise exception or not for this scenario.
+            break  # up intercept at i is not between valley and peak at i
 
     return peaks
 
@@ -353,6 +370,7 @@ def correct_valley_position(peaks: List[DataPoint],
     Calculate slopes at those points.
     Ensure that valley resides at the begining of inhalation cycle where inhalation slope is maximum.
 
+    :rtype: object
     :return valley_updated:
     :param peaks:
     :param valleys:
@@ -405,6 +423,7 @@ def generate_peak_valley(up_intercepts: List[DataPoint],
     """
     Compute peak valley from up intercepts and down intercepts indices.
 
+    :rtype: object
     :return peaks, valleys:
     :param up_intercepts:
     :param down_intercepts:
@@ -440,6 +459,7 @@ def filter_intercept_outlier(up_intercepts: List[DataPoint],
     """
     Remove two or more consecutive up or down intercepts.
 
+    :rtype: object
     :return up_intercepts_updated, down_intercepts_updated:
     :param up_intercepts:
     :param down_intercepts:
@@ -490,6 +510,7 @@ def filter_intercept_outlier(up_intercepts: List[DataPoint],
 
     return up_intercepts_updated, down_intercepts_updated
 
+
 def up_down_intercepts(data: List[DataPoint],
                        mac: List[DataPoint],
                        data_start_time_to_index: dict) -> [List[DataPoint], List[DataPoint]]:
@@ -498,6 +519,8 @@ def up_down_intercepts(data: List[DataPoint],
     Moving Average Centerline curve intersects breath cycle twice. Once in the inhalation branch
     (Up intercept) and in the exhalation branch (Down intercept).
 
+    :param data_start_time_to_index:
+    :rtype: object
     :return up_intercepts, down_intercepts:
     :param data:
     :param mac:

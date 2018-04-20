@@ -22,31 +22,44 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from computefeature import ComputeFeatureBase
+from core.computefeature import ComputeFeatureBase
 import syslog
-from syslog import LOG_ERR
 
 # Initialize logging
 syslog.openlog(ident="CerebralCortex-ExampleFeature")
 
-feature_class_name='ExampleFeature'
+# This variable must match the class name
+feature_class_name = 'ExampleFeature'
 
-'''
-This is an example that demonstrates how to write a feature.
-'''
+
 class ExampleFeature(ComputeFeatureBase):
-    def helper_function(self):
+    """
+    Class specific documentation goes here.
+    """
+
+    def helper_function(self, user_id: str, day: str):
+        """
+        This method performs relevant computations for computing a feature
+
+        :param str user_id: User identifier in UUID format
+        :param str day: Date string (YYYYMMDD) for which participant day to operate on
+        """
+
+        # store your results by calling the store() method in ComputeFeatureBase
         pass
 
-    def process(self):
+    def process(self, user_id: str, all_days: list):
+        """
+        This is the main entry point for feature computation and is called by the main driver application
+
+        :param str user_id: User identifier in UUID format
+        :param list all_days: List of all days to run this feature over
+        """
         syslog.syslog("Processing ExampleFeature")
         # Get data streams
         # Apply admission control on your data streams
         # process your data streams, optionally you may define other helper_functions ()
         #     to make your code more readable
 
-        self.helper_function()
-        # store your results by calling the store() method in ComputeFeatureBase
-        
-        
-
+        for day in all_days:
+            self.helper_function(user_id, day)

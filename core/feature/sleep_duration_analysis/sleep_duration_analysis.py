@@ -30,6 +30,7 @@ from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
 from core.computefeature import ComputeFeatureBase
 
+from typing import List
 import pprint as pp
 import numpy as np
 import pdb
@@ -39,6 +40,7 @@ import json
 import traceback
 import math
 
+# TODO: Comment and describe constants
 feature_class_name = 'SleepDurationAnalysis'
 Sleep_Durations_STREAM = 'org.md2k.data_analysis.feature.v2.sleep_durations'
 MEDIAN_ABSOLUTE_DEVIATION_MULTIPLIER = 1.4826
@@ -50,14 +52,20 @@ class SleepDurationAnalysis(ComputeFeatureBase):
     Produce feature from these stream: 'org.md2k.data_analysis.feature.v2.sleep_durations. Sleep
     duration time is taken from the stream's data sample. And here usual sleep duration is a range
     of time. each day's sleep_duration is marked as usual_sleep_duration or more_than_usual or
-    less_than_usual """
+    less_than_usual
+    """
 
-    def listing_all_sleep_duration_analysis(self, user_id, all_days):
+    def listing_all_sleep_duration_analysis(self, user_id: str, all_days: List[str]):
         """
         Produce and save the list of sleep duration acoording to day in one stream and marked
         each day's staying_time as Usual_sleep_duration or More_than_usual or Less_than_usual.
         Sleep duration is saved in hour. For each day's sleep duration the deviation from usual
-        sleep duration is saved. All measure are in hour """
+        sleep duration is saved. All measure are in hour
+
+        :param str user_id: UUID of the stream owner
+        :param List(str) all_days: All days of the user in the format 'YYYYMMDD'
+        :return:
+        """
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
 
@@ -107,14 +115,14 @@ class SleepDurationAnalysis(ComputeFeatureBase):
             else:
                 data.sample.append("usual_sleep_duration")
                 data.sample.append(0)
-        #print(sleep_duration_data)
+
         try:
             if len(sleep_duration_data)>0:
                 streams = self.CC.get_user_streams(user_id)
                 if streams:
                     for stream_name, stream_metadata in streams.items():
                         if stream_name == Sleep_Durations_STREAM:
-                            #print("Going to pickle the file: ",sleep_duration_data)
+
                             self.store_stream(filepath="sleep_duration_analysis.json",
                                               input_streams=[stream_metadata],
                                               user_id=user_id,
@@ -127,7 +135,15 @@ class SleepDurationAnalysis(ComputeFeatureBase):
                             'data points' %
                             (self.__class__.__name__, str(user_id),
                              len(sleep_duration_data)))
-    def process(self, user_id, all_days):
+
+    def process(self, user_id: str, all_days: List[str]):
+        """
+        Main processing function inherited from ComputerFeatureBase
+
+        :param str user_id: UUID of the user
+        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        :return:
+        """
         if self.CC is not None:
             self.CC.logging.log("Processing Sleep Duration Analysis")
             self.listing_all_sleep_duration_analysis(user_id, all_days)

@@ -35,7 +35,7 @@ from cerebralcortex.core.datatypes.datastream import DataStream
 def filter_bad_rip(rip: DataStream,
                    rip_quality: DataStream) -> DataStream:
     """
-    This function combines the raw rip and rip data quality datastream and only keeps those datapoints that are assigned acceptable in data quality
+    This function combines the raw rip and rip data quality datastream and only keeps those DataPoints that are assigned acceptable in data quality
 
     :param rip: raw respiration datastream
     :param rip_quality: respiration quality datastream

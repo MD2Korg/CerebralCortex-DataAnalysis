@@ -2,8 +2,9 @@
   "annotations":[],
   "data_descriptor":[
     {
-      "type":"json",
-      "unit":"int or NA"
+      "name":"value",
+      "type":"float",
+      "description":"qualtrics recorded value"
     }
   ],
   "execution_context":{
@@ -29,7 +30,5 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_qualtrics.feature.anxiety_omnibus.anxiety_question.daily",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "name":"org.md2k.data_qualtrics.feature.v12.anxiety.d"
 }
