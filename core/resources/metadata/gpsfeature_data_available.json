@@ -2,10 +2,10 @@
   "annotations": [],
   "data_descriptor": [
     {
-      "name": "value",
+      "name": "duration",
       "type": "float",
       "unit": "seconds",
-      "description": ""
+      "description": "Amount of GPS data available in a day."
     }
   ],
   "execution_context": {

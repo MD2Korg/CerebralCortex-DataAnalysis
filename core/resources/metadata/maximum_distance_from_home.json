@@ -2,10 +2,10 @@
   "annotations": [],
   "data_descriptor": [
     {
-      "name": "",
+      "name": "distance",
       "type": "float",
       "unit": "km",
-      "description": ""
+      "description": "Maximum distance from home in kilometers in a day."
     }
   ],
   "execution_context": {

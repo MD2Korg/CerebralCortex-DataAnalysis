@@ -2,9 +2,10 @@
   "annotations": [],
   "data_descriptor": [
     {
-      "name": "stress_value",
-      "type": "integer",
-      "description": "1 for stress and 0 for not-stress"
+      "name": "hourly_stress_percentage_value",
+      "type": "float",
+      "unit": "1 hour window",
+      "description": "ratio of stress windows per hour of day to the total number of windows"
     }
   ],
   "execution_context": {
@@ -17,11 +18,11 @@
         }
       ],
       "input_parameters": {
-        "window_size": "60 seconds"
+        "window_size": "60 minutes"
       }
     },
     "algorithm": {
-      "method": "core.feature.stress_from_wrist.stress_from_wrist.v1",
+      "method": "core.feature.stress_from_wrist.stress_from_wrist",
       "authors": [
         {
           "name": "Md Azim Ullah",
@@ -31,11 +32,11 @@
       "version": "0.0.1",
       "reference": {
       },
-      "description": "Assigns each one minute window as stress or not-stress through calculating RR interval statistics calculated from wrist ppg"
+      "description": "calculates the portion of stress windows per hour of day from aggregation of per minute stress outputs in that hour"
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.stress.wrist.60seconds.v1",
+  "name": "org.md2k.data_analysis.feature.stress.wrist.likelihood.60minutes.v1",
   "owner": "",
   "type": "1"
 }

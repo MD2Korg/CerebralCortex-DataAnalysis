@@ -275,8 +275,8 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                         place_list_length += 1
                 else:
                     self.CC.logging.log('No cache entry found for %s ' %
-                                        (self.query_cache[(latitude, longitude,
-                                                           a_place)]))
+                                        (str((latitude, longitude,
+                                                           a_place))))
                     try:
                         query_res = google_places.nearby_search(
                             lat_lng={'lat': latitude, 'lng': longitude},
