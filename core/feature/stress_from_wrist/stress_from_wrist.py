@@ -167,12 +167,10 @@ class stress_from_wrist(ComputeFeatureBase):
         
         """
 
-        rr_interval_data = self.CC.get_stream(streams[stream_identifier]["identifier"],
-                                              day=day,user_id=user_id,localtime=False)
+        rr_interval_data = get_datastream(self.CC,rr_interval_identifier,day,user_id,False)
         print('-'*20," Got rr interval data ", len(rr_interval_data.data) ,'-'*20)
 
-        activity_data = self.CC.get_stream(streams[activity_identifier]["identifier"],
-                                           day=day,user_id=user_id,localtime=False)
+        activity_data = get_datastream(self.CC,activity_identifier,day,user_id,False)
         if not rr_interval_data.data:
             return
 

@@ -57,8 +57,7 @@ class heart_rate(ComputeFeatureBase):
         :param json_path: name of the file which contains the metadata
         
         """
-        rr_interval_data = self.CC.get_stream(streams[stream_identifier]["identifier"],
-                                              day=day, user_id=user_id, localtime=False)
+        rr_interval_data = get_datastream(self.CC,stream_identifier,day,user_id,False)
         print("-" * 20, " rr interval data ", len(rr_interval_data.data), "-" * 20)
         if not rr_interval_data.data:
             return
