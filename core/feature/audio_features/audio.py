@@ -73,7 +73,7 @@ class AudioFeatures(ComputeFeatureBase):
                                          localtime= True)
 
             if len(stream1.data) >0:
-                print("1")
+               
                 self.audio_context(user_id,input_streams_audio,stream1.data,
                                    input_streams_audio)
 
