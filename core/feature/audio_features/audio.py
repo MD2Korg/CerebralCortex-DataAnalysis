@@ -1,3 +1,4 @@
+
 # Copyright (c) 2018, MD2K Center of Excellence
 # -Rabin Banjade <rbnjade1@memphis.edu;rabin.banjade@gmail.com>
 # All rights reserved.
@@ -22,6 +23,7 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 
 import os
 import datetime
@@ -73,7 +75,6 @@ class AudioFeatures(ComputeFeatureBase):
                                          localtime= True)
 
             if len(stream1.data) >0:
-               
                 self.audio_context(user_id,input_streams_audio,stream1.data,
                                    input_streams_audio)
 

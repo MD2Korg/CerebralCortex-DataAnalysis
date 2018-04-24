@@ -1,0 +1,42 @@
+{
+  "annotations": [],
+  "data_descriptor": [
+    {
+      "name": "value",
+      "type": "int",
+      "unit": "minute",
+      "description": "Average duration of voiced segments within an hour for a particular day"
+    }
+  ],
+  "execution_context": {
+    "processing_module": {
+      "name": "voiced_segments_hourly",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+        "window_size": "1hour"
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.audio_features.audio",
+      "authors": [
+        {
+          "name": "Rabin Banjade",
+          "email": "rbnjade1@memphis.edu"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+      },
+      "description": "Duration of voiced segments within an hour"
+    }
+  },
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.v2.audio.voice_segments_office.hour.average",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
+}
