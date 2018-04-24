@@ -1,41 +1,41 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
       "name": "value",
-      "type":"integer",
+      "type": "integer",
       "description": "Number of event call"
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.phone_feature",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.phone_feature",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
+      "input_parameters": {
         "window_size": "4hours"
       }
     },
-    "algorithm":{
-      "method":"core.feature.phone_features.phone",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.phone_features.phone",
+      "authors": [
         {
-          "name":"Md Shiplu Hawlader",
-          "email":"shiplu.cse.du@gmail.com"
+          "name": "Md Shiplu Hawlader",
+          "email": "shiplu.cse.du@gmail.com"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"Total number of call  events for each four hour window in a day."
+      "description": "Total number of call  events for each four hour window in a day."
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.phone.call.four_hour.count",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.phone.call.four_hour.count",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
 }

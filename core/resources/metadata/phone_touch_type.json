@@ -1,40 +1,40 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
       "name": "type",
-      "type":"string"
+      "type": "string",
+      "description": "The value is one of the four verdicts [typing, pause, reading, unknown]."
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.phone_feature",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.phone_feature",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
-
+      "input_parameters": {
       }
     },
-    "algorithm":{
-      "method":"core.feature.phone_features.phone",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.phone_features.phone",
+      "authors": [
         {
-          "name":"Md Shiplu Hawlader",
-          "email":"shiplu.cse.du@gmail.com"
+          "name": "Md Shiplu Hawlader",
+          "email": "shiplu.cse.du@gmail.com"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"Duration of touch event. The output is one of the four verdicts [typing, pause, reading, unknown]. The touch screen data was analyzed using Gaussian Mixture algorithm on Productivity and Communication app only."
+      "description": "Duration of touch event. The output is one of the four verdicts [typing, pause, reading, unknown]. The touch screen data was analyzed using Gaussian Mixture algorithm on Productivity and Communication app only."
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.phone.touch_type",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.phone.touch_type",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
 }

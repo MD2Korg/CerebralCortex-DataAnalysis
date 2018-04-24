@@ -8,3 +8,4 @@ build/
 dist/
 MD2K_Cerebral_Cortex_DataAnalysis_compute_features.egg-info/
 docs/source/*.rst
+*.iml

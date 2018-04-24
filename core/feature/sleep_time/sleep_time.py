@@ -31,6 +31,7 @@ from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
 from core.computefeature import ComputeFeatureBase
 from core.feature.sleep_time.SleepDurationPrediction import SleepDurationPredictor
+from typing import List
 
 import pprint as pp
 import numpy as np
@@ -41,6 +42,7 @@ import json
 import traceback
 import math
 
+# TODO: Comment and describe constants
 feature_class_name = 'SleepTime'
 ACTIVITY_STREAM = 'ACTIVITY_TYPE--org.md2k.phonesensor--PHONE'
 LIGHT_STREAM = 'AMBIENT_LIGHT--org.md2k.phonesensor--PHONE'
@@ -50,13 +52,22 @@ AUDIO_ENERGY_STREAM = 'CU_AUDIO_ENERGY--edu.dartmouth.eureka'
 
 class SleepTime(ComputeFeatureBase):
     """
-    Produce feature from these four streams: CU_IS_SCREEN_ON--edu.dartmouth.eureka',
-    'ACTIVITY_TYPE--org.md2k.phonesensor--PHONE', 'AMBIENT_LIGHT--org.md2k.phonesensor--PHONE',
-    and CU_AUDIO_ENERGY--edu.dartmouth.eureka'. Sleep time is calculated from these
-    stream's data."""
+    Produce feature from these four streams:
+    1. CU_IS_SCREEN_ON--edu.dartmouth.eureka
+    2. ACTIVITY_TYPE--org.md2k.phonesensor--PHONE
+    3. AMBIENT_LIGHT--org.md2k.phonesensor--PHONE
+    4. CU_AUDIO_ENERGY--edu.dartmouth.eureka
 
-    def listing_all_sleep_times(self, user_id, all_days):
-        """ Produce and save the list of sleep time intervals according to day in one stream """
+    Sleep time is calculated from these stream's data.
+    """
+
+    def listing_all_sleep_times(self, user_id: str, all_days: List[str]):
+        """
+        Produce and save the list of sleep time intervals according to day in one stream
+
+        :param str user_id: UUID of the stream owner
+        :param List(str) all_days: All days of the user in the format 'YYYYMMDD'
+        """
         try:
             input_stream_names = [ACTIVITY_STREAM, LIGHT_STREAM, PHONE_SCREEN_STREAM, AUDIO_ENERGY_STREAM]
             input_streams = []
@@ -72,7 +83,7 @@ class SleepTime(ComputeFeatureBase):
             for day in all_days:
                 sleep_date = datetime.strptime(day, "%Y%m%d")
                 sleep_duration = sleep_predictor.get_sleep_time(user_id, sleep_date)
-                #print(sleep_duration)
+
                 if sleep_duration:
                     self.store_stream(filepath="sleep_time.json",
                                       input_streams=input_streams,
@@ -82,7 +93,13 @@ class SleepTime(ComputeFeatureBase):
             self.CC.logging.log("Exception:", str(e))
             self.CC.logging.log(str(traceback.format_exc()))
 
-    def process(self, user_id, all_days):
+    def process(self, user_id: str, all_days: List[str]):
+        """
+        Main processing function inherited from ComputerFeatureBase
+
+        :param str user_id: UUID of the user
+        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        """
         if self.CC is not None:
             self.CC.logging.log("Processing Sleep Times")
             self.listing_all_sleep_times(user_id, all_days)

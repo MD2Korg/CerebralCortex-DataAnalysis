@@ -29,106 +29,134 @@ from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.datatypes.datastream import DataPoint
-
+from typing import List, Tuple, Callable
 import numpy
 from datetime import datetime, timedelta, timezone, tzinfo
-
 
 from core.feature.sleep_duration.SleepUnsupervisedPredictor import SleepUnsupervisedPredictor
 
 # Sleep duration calculatation works from 8 PM (12 - 4) to 8 PM (12 + 20)
-DAY_START_HOUR = -4;
-DAY_END_HOUR = 20;
+DAY_START_HOUR = -4
+DAY_END_HOUR = 20
+
 
 class SleepDurationPredictor:
 
     def __init__(self, CC):
         self.CC = CC
 
-    def get_time_range(self, day):
+    def get_time_range(self, day: datetime) -> Tuple[datetime, datetime]:
         """
         Calculates the time range for example 8 PM of previous day
         to 8 PM of current day
+
+        :param datetime day: user calculation date
+        :return: Adjusted start and end time
+        :rtype: Tuple(datetime, datetime)
         """
         start_time = day + timedelta(hours=DAY_START_HOUR)
         end_time = day + timedelta(hours=DAY_END_HOUR)
         return start_time, end_time
 
+    def get_data_by_stream_name(self, stream_name: str, user_id: str, day: str,
+                                localtime: bool = False) -> List[DataPoint]:
+        """
+        Combines data from multiple streams data of same stream based on stream name.
 
-    def get_data_by_stream_name(self, stream_name, user_id, day, localtime=False):
+        :param str stream_name: Name of the stream
+        :param str user_id: UUID of the stream owner
+        :param str day: The day (YYYYMMDD) on which to operate
+        :param bool localtime: The way to structure time, True for operating in participant's local time, False for UTC
+        :return: Combined stream data if there are multiple stream id
+        :rtype: List(DataPoint)
         """
-        Get all the data under a single stream name by gathering all the stream ids
-        and getting data from them
-        """
+
         stream_ids = self.CC.get_stream_id(user_id, stream_name)
         data = []
         for stream in stream_ids:
-            d = self.CC.get_stream(stream['identifier'], user_id = user_id, day=day, localtime=localtime).data
-            if d:
-                data += d
-
+            if stream is not None:
+                ds = self.CC.get_stream(stream['identifier'], user_id=user_id, day=day, localtime=localtime)
+                if ds is not None:
+                    if ds.data is not None:
+                        data += ds.data
+        if len(stream_ids) > 1:
+            data = sorted(data, key=lambda x: x.start_time)
         return data
 
-
-    def get_data(self, stream_name, user_id, start_time, end_time, admission_control = None):
+    def get_data(self, stream_name: str, user_id: str, start_time: datetime, end_time: datetime,
+                 admission_control: Callable = None) -> List[DataPoint]:
         """
         Get data for sleep, as it is requires 24 hour window data from two days
+
+        :param str stream_name: Stream name of which data to be fetched
+        :param str user_id: UUID of the stream owner
+        :param datetime start_time: Start time of the data collection duration
+        :param datetime end_time: End time of the data collection duration
+        :param Callable admission_control: Lambda function to filter corrupted data
+        :return: DataPoints of the given stream name from start time to end time
+        :rtype: List(DataPoint)
         """
         start_date = start_time.date()
         end_date = end_time.date()
         allday_data = []
 
-
         while start_date <= end_date:
             ds = self.get_data_by_stream_name(stream_name, user_id, start_date.strftime("%Y%m%d"))
             for d in ds:
-                d.start_time = d.start_time.replace(tzinfo=timezone.utc)
+                if not d.start_time.tzinfo:
+                    d.start_time = d.start_time.replace(tzinfo=timezone.utc)
                 if start_time.replace(tzinfo=timezone(timedelta(milliseconds=d.offset))) \
                         <= d.start_time <= end_time.replace(tzinfo=timezone(timedelta(milliseconds=d.offset))) \
                         and (admission_control == None or admission_control(d.sample)):
                     allday_data.append(d)
-            start_date += timedelta(days = 1)
+            start_date += timedelta(days=1)
 
         return allday_data
 
-
-    def get_sleep_duration(self, user_id, day):
+    def get_sleep_duration(self, user_id: str, day: datetime) -> DataPoint:
         """
         Calculates the sleep duration and returns a DataPoint with sample is list with index 0 as sleep duration
         It gets four streams (light, activity from android, phone screen on/off and audio energy) and convert them
         into a list of size 24*60*60 (total seconds in 24 hours). Then a unsupervised method written in
         SleepUnsupervisedPredictor class is used to get the sleep duration in hours. If there is not enough data,
         then it returns None.
+
+        :param str user_id: UUID of the stream owner
+        :param datetime day: Sleep calculation day
+        :return: DataPoint containing the total sleep time for last night in hour
+        :rtype: DataPoint
         """
         start_time, end_time = self.get_time_range(day)
-        streams = self.CC.get_user_streams(user_id = user_id)
+        streams = self.CC.get_user_streams(user_id=user_id)
         if streams is None:
             return None
         flag = 0
-        for stream_name,stream_metadata in streams.items():
-            if stream_name=='ACTIVITY_TYPE--org.md2k.phonesensor--PHONE':
+        for stream_name, stream_metadata in streams.items():
+            if stream_name == 'ACTIVITY_TYPE--org.md2k.phonesensor--PHONE':
                 activity_data = self.get_data('ACTIVITY_TYPE--org.md2k.phonesensor--PHONE', user_id, \
                                               start_time, end_time, lambda x: (type(x) == list and len(x) == 2 \
-                                                                               and type(x[0])==float and type(x[1]) == float and 0<=x[0]<=7 and 0<=x[1]<=100))
+                                                                               and type(x[0]) == float and type(
+                                x[1]) == float and 0 <= x[0] <= 7 and 0 <= x[1] <= 100))
 
-                if len(activity_data)<100:
+                if len(activity_data) < 100:
                     return None
                 flag += 1
                 if activity_data:
                     st = start_time.replace(tzinfo=timezone(timedelta(milliseconds=activity_data[0].offset)))
-                activity_still =  numpy.full(int((end_time - start_time).total_seconds()), True, dtype=bool)
+                activity_still = numpy.full(int((end_time - start_time).total_seconds()), True, dtype=bool)
                 for avt in activity_data:
                     idx = int((avt.start_time - st).total_seconds())
                     if avt.sample[0] != 0.0:
                         activity_still[idx] = False
 
-            elif stream_name=='CU_IS_SCREEN_ON--edu.dartmouth.eureka':
+            elif stream_name == 'CU_IS_SCREEN_ON--edu.dartmouth.eureka':
                 screen_data = self.get_data('CU_IS_SCREEN_ON--edu.dartmouth.eureka', user_id, \
-                                            start_time, end_time, lambda x: type(x) == str and (x.strip()=="true" or x.strip() == "false"))
+                                            start_time, end_time,
+                                            lambda x: type(x) == str and (x.strip() == "true" or x.strip() == "false"))
 
-                if len(screen_data)<10:
+                if len(screen_data) < 10:
                     return None
-                screen_off =  -1 * numpy.ones(int((end_time - start_time).total_seconds()), dtype=int)
+                screen_off = -1 * numpy.ones(int((end_time - start_time).total_seconds()), dtype=int)
                 if screen_data:
                     st = start_time.replace(tzinfo=timezone(timedelta(milliseconds=screen_data[0].offset)))
 
@@ -138,30 +166,29 @@ class SleepDurationPredictor:
                     if scr.sample.strip() == "true":
                         val = 1
                     else:
-                        val = 0;
-
+                        val = 0
 
                     idx = int((scr.start_time - st).total_seconds())
-                    if idx>last_time:
+                    if idx > last_time:
                         screen_off[last_time:idx] = val
                     last_time = idx
                 flag += 1
-                if len(screen_data)>0:
+                if len(screen_data) > 0:
                     scr = screen_data[-1]
                     if scr.sample.strip() == "true":
                         val = 0
                     else:
-                        val = 1;
-                    if len(screen_off)>last_time:
+                        val = 1
+                    if len(screen_off) > last_time:
                         screen_off[last_time:] = val
 
-            elif stream_name=='CU_AUDIO_ENERGY--edu.dartmouth.eureka':
+            elif stream_name == 'CU_AUDIO_ENERGY--edu.dartmouth.eureka':
                 audio_data = self.get_data('CU_AUDIO_ENERGY--edu.dartmouth.eureka', user_id, \
-                                           start_time, end_time, lambda x: type(x) == float )
+                                           start_time, end_time, lambda x: type(x) == float)
 
-                if len(audio_data)<1000:
+                if len(audio_data) < 1000:
                     return None
-                audio_amp =  numpy.zeros(int((end_time - start_time).total_seconds()), dtype=float)
+                audio_amp = numpy.zeros(int((end_time - start_time).total_seconds()), dtype=float)
                 if audio_data:
                     st = start_time.replace(tzinfo=timezone(timedelta(milliseconds=audio_data[0].offset)))
                 cnt = 0
@@ -170,14 +197,14 @@ class SleepDurationPredictor:
                     idx = int((ad.start_time - st).total_seconds())
                     audio_amp[idx] = max(audio_amp[idx], ad.sample)
 
-            elif stream_name=='AMBIENT_LIGHT--org.md2k.phonesensor--PHONE':
+            elif stream_name == 'AMBIENT_LIGHT--org.md2k.phonesensor--PHONE':
                 light_data = self.get_data('AMBIENT_LIGHT--org.md2k.phonesensor--PHONE', user_id, \
                                            start_time, end_time, lambda x: type(x) == float)
 
-                if len(light_data)<1000:
+                if len(light_data) < 1000:
                     return None
                 flag += 1
-                light_readings =  numpy.zeros(int((end_time - start_time).total_seconds()), dtype=float)
+                light_readings = numpy.zeros(int((end_time - start_time).total_seconds()), dtype=float)
                 if light_data:
                     st = start_time.replace(tzinfo=timezone(timedelta(milliseconds=light_data[0].offset)))
                 for ld in light_data:
@@ -187,12 +214,11 @@ class SleepDurationPredictor:
         if flag < 4:
             return None
         sleep_predictor = SleepUnsupervisedPredictor()
-        longest_start_idx, longest_end_idx, max_idx = sleep_predictor.predict(audio_amp, light_readings, activity_still, screen_off);
+        longest_start_idx, longest_end_idx, max_idx = sleep_predictor.predict(audio_amp, light_readings, activity_still,
+                                                                              screen_off)
         sleep_duration = (longest_end_idx - longest_start_idx) / 8.0
         # print(sleep_duration, longest_start_idx, longest_end_idx, max_idx)
         sample = [sleep_duration]
         utc_day = day.replace(tzinfo=light_data[0].start_time.tzinfo)
         temp = DataPoint(utc_day, utc_day + timedelta(hours=23, minutes=59), light_data[0].offset, sample)
         return temp
-
-

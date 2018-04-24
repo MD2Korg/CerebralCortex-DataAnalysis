@@ -1,40 +1,52 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
-      "type":"list",
-      "unit":""
+      "name": "staying_time_around_beacon",
+      "type": "integer",
+      "unit": "minute",
+      "description": "Office staying time (total time between first entering time around the office beacon and last departure time from office beacon) according to Beacon model"
+    },
+    {
+      "name": "verdict",
+      "type": "string",
+      "description": "Analysis of the staying time which is one of the three verdict: 1. less_than_usual 2. more_than_usual 3. usual_staying_time. Usual time is a range from (mean - standard_deviation) to (mean + standard_deviation). The staying time which are less than usual time are labeled less_than_usual and the staying time which are more than usual are labeled as more_than_usual, the staying time which are in the range of  usual time are labeled as usual_staying_time."
+    },
+    {
+      "name": "deviation",
+      "type": "integer",
+      "unit": "minute",
+      "description": "How much deviated from the usual time (in minutes)."
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.office_time",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.office_time",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
-
+      "input_parameters": {
       }
     },
-    "algorithm":{
-      "method":"core.feature.office_time.StayingTimesFromBeacon.listing_all_staying_times_from_beacon",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.office_time.StayingTimesFromBeacon.listing_all_staying_times_from_beacon",
+      "authors": [
         {
-          "name":"Alina Zaman",
-          "email":"alina.cse@gmail.com"
+          "name": "Alina Zaman",
+          "email": "alina.cse@gmail.com"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"Staying time in office with verdict of usual, more than usual or less than usual time. Sample is a list with three elements as follows: 0 - Total staying time in minutes, 1 - verdict (more_than_usual, less_than_usual, usual_staying_time), 2 - deviation from the usual staying time in minutes. All staying times are only according to beacon"
+      "description": "Staying time in office with verdict of usual, more than usual or less than usual time. Sample is a list with three elements as follows: 0 - Total staying time in minutes, 1 - verdict (more_than_usual, less_than_usual, usual_staying_time), 2 - deviation from the usual staying time in minutes. All staying times are only according to beacon"
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.office_staying_times_from_beacon",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.office_staying_times_from_beacon",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
 }

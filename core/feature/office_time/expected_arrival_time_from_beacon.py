@@ -30,6 +30,7 @@ from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
 from core.computefeature import ComputeFeatureBase
 
+from typing import List
 import pprint as pp
 import numpy as np
 import pdb
@@ -39,6 +40,7 @@ import json
 import traceback
 import math
 
+# TODO: Define constants
 feature_class_name = 'ExpectedArrivalTimesFromBeacon'
 Working_Days_STREAM = "org.md2k.data_analysis.feature.working_days_from_beacon"
 MEDIAN_ABSOLUTE_DEVIATION_MULTIPLIER = 1.4826
@@ -56,16 +58,22 @@ class ExpectedArrivalTimesFromBeacon(ComputeFeatureBase):
     arrival time. Each day's arrival_time is marked as In_expected_conservative_time or
     Before_expected_conservative_time or After_expected_conservative_time in one stream.
     And in another stream each day's arrival_time is marked as In_expected_liberal_time or
-    Before_expected_liberal_time or After_expected_liberal_time """
+    Before_expected_liberal_time or After_expected_liberal_time
+    """
 
-    def listing_all_expected_arrival_times_from_beacon(self, user_id, all_days):
+    def listing_all_expected_arrival_times_from_beacon(self, user_id: str, all_days: List[str]):
         """
         Produce and save the list of work_day's arrival_time at office from
         "org.md2k.data_analysis.feature.working_days_from_beacon" stream and marked each day's
         arrival_time as In_expected_conservative_time or before_expected_conservative_time
         or after_expected_conservative_time in one stream and in another stream each day's
         arrival_time is marked as In_expected_liberal_time or before_expected_liberal_time or
-        after_expected_liberal_time """
+        after_expected_liberal_time
+
+        :param str user_id: UUID of the stream owner
+        :param List(str) all_days: All days of the user in the format 'YYYYMMDD'
+        :return:
+        """
 
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
@@ -78,10 +86,10 @@ class ExpectedArrivalTimesFromBeacon(ComputeFeatureBase):
         for stream_id in stream_ids:
             for day in all_days:
                 work_data_stream = \
-                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime = True)
+                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime=True)
 
                 for data in work_data_stream.data:
-                    arrival_time = data.start_time.hour*60+data.start_time.minute
+                    arrival_time = data.start_time.hour * 60 + data.start_time.minute
                     office_arrival_times.append(arrival_time)
                     sample = []
                     temp = DataPoint(data.start_time, data.end_time, data.offset, sample)
@@ -98,13 +106,13 @@ class ExpectedArrivalTimesFromBeacon(ComputeFeatureBase):
         outlier_border = mad_value * OUTLIER_DETECTION_MULTIPLIER
         outlier_removed_office_arrival_times = []
         for arrival_time in office_arrival_times:
-            if arrival_time > (median - outlier_border) and arrival_time < (median + outlier_border):
+            if (median - outlier_border) < arrival_time < (median + outlier_border):
                 outlier_removed_office_arrival_times.append(arrival_time)
         if not len(outlier_removed_office_arrival_times):
             outlier_removed_office_arrival_times = office_arrival_times
         actual_time = np.mean(outlier_removed_office_arrival_times)
-        actual_minute = int(actual_time%60)
-        actual_hour = int(actual_time/60)
+        actual_minute = int(actual_time % 60)
+        actual_hour = int(actual_time / 60)
         conservative_hour = actual_hour
         liberal_hour = actual_hour
         if actual_minute < 30:
@@ -112,21 +120,21 @@ class ExpectedArrivalTimesFromBeacon(ComputeFeatureBase):
             liberal_minute = 30
         else:
             conservative_minute = 30
-            liberal_minute=0
+            liberal_minute = 0
             liberal_hour += 1
-        conservative_time = conservative_hour*60 + conservative_minute
-        liberal_time = liberal_hour*60 + liberal_minute
+        conservative_time = conservative_hour * 60 + conservative_minute
+        liberal_time = liberal_hour * 60 + liberal_minute
         for data in expected_conservative_arrival_data:
             sample = []
             temp = DataPoint(data.start_time, data.end_time, data.offset, sample)
-            arrival_time = data.start_time.hour*60 + data.start_time.minute
+            arrival_time = data.start_time.hour * 60 + data.start_time.minute
             data.sample.append(data.start_time.time())
             if arrival_time > conservative_time:
                 data.sample.append("after_expected_conservative_time")
                 data.sample.append(math.ceil(arrival_time - conservative_time))
             elif arrival_time < conservative_time:
                 data.sample.append("before_expected_conservative_time")
-                data.sample.append(math.ceil(conservative_time-arrival_time))
+                data.sample.append(math.ceil(conservative_time - arrival_time))
             elif arrival_time == conservative_time:
                 data.sample.append("in_expected_conservative_time")
                 data.sample.append(0)
@@ -136,7 +144,7 @@ class ExpectedArrivalTimesFromBeacon(ComputeFeatureBase):
                 temp.sample.append(math.ceil(arrival_time - liberal_time))
             elif arrival_time < liberal_time:
                 temp.sample.append("before_expected_liberal_time")
-                temp.sample.append(math.ceil(liberal_time-arrival_time))
+                temp.sample.append(math.ceil(liberal_time - arrival_time))
             elif arrival_time == liberal_time:
                 temp.sample.append("in_expected_liberal_time")
                 temp.sample.append(0)
@@ -150,7 +158,7 @@ class ExpectedArrivalTimesFromBeacon(ComputeFeatureBase):
                         self.store_stream(filepath="expected_conservative_arrival_time_from_beacon.json",
                                           input_streams=[stream_metadata],
                                           user_id=user_id,
-                                          data=expected_conservative_arrival_data, localtime = True)
+                                          data=expected_conservative_arrival_data, localtime=True)
                         break
         except Exception as e:
             print("Exception:", str(e))
@@ -167,7 +175,7 @@ class ExpectedArrivalTimesFromBeacon(ComputeFeatureBase):
                         self.store_stream(filepath="expected_liberal_arrival_time_from_beacon.json",
                                           input_streams=[stream_metadata],
                                           user_id=user_id,
-                                          data=expected_liberal_arrival_data, localtime = True)
+                                          data=expected_liberal_arrival_data, localtime=True)
                         break
         except Exception as e:
             print("Exception:", str(e))
@@ -176,7 +184,15 @@ class ExpectedArrivalTimesFromBeacon(ComputeFeatureBase):
                             'data points' %
                             (self.__class__.__name__, str(user_id),
                              len(expected_liberal_arrival_data)))
-    def process(self, user_id, all_days):
+
+    def process(self, user_id: str, all_days: List[str]):
+        """
+        Main processing function inherited from ComputerFeatureBase
+
+        :param str user_id: UUID of the user
+        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        :return:
+        """
         if self.CC is not None:
             self.CC.logging.log("Processing Expected Arrival Times From Beacon")
             self.listing_all_expected_arrival_times_from_beacon(user_id, all_days)

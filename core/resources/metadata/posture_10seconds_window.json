@@ -4,8 +4,7 @@
     {
       "name": "posture_type",
       "type": "string",
-      "unit": "",
-      "descriptor": "Detects posture types (LYING, SITTING, STANDING) in 10 seconds window  using wrist accelerometer and gyroscope"
+      "description": "Detects posture types (LYING, SITTING, STANDING) in 10 seconds window  using wrist accelerometer and gyroscope"
     }
   ],
   "execution_context": {

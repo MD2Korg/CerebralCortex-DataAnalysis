@@ -30,6 +30,7 @@ from cerebralcortex.core.datatypes.datastream import DataPoint
 from datetime import datetime, timedelta
 from core.computefeature import ComputeFeatureBase
 
+from typing import List
 import pprint as pp
 import numpy as np
 import pdb
@@ -39,10 +40,12 @@ import json
 import traceback
 import math
 
+# TODO: Define constants
 feature_class_name = 'ExpectedStayingTimes'
 Working_Days_STREAM = "org.md2k.data_analysis.feature.working_days"
 MEDIAN_ABSOLUTE_DEVIATION_MULTIPLIER = 1.4826
 OUTLIER_DETECTION_MULTIPLIER = 3
+
 
 class ExpectedStayingTimes(ComputeFeatureBase):
     """
@@ -54,16 +57,22 @@ class ExpectedStayingTimes(ComputeFeatureBase):
     Each day's staying_time is marked as in_expected_conservative_time or
     more_than_expected_conservative_time or less_than_expected_conservative_time in one stream.
     And in another stream each day's staying_time is marked as in_expected_liberal_time or
-    more_than_expected_liberal_time or less_than_expected_liberal_time """
+    more_than_expected_liberal_time or less_than_expected_liberal_time
+    """
 
-    def listing_all_expected_staying_times(self, user_id, all_days):
+    def listing_all_expected_staying_times(self, user_id: str, all_days: List[str]):
         """
         Produce and save the list of work_day's staying_time at office from
         "org.md2k.data_analysis.feature.working_days" stream and marked each day's
         staying_time as in_expected_conservative_time or more_than_expected_conservative_time
         or less_than_expected_conservative_time in one stream and in another stream each day's
         staying_time is marked as in_expected_liberal_time or more_than_expected_liberal_time
-        or less_than_expected_liberal_time """
+        or less_than_expected_liberal_time
+
+        :param str user_id: UUID of the stream owner
+        :param List(str) all_days: All days of the user in the format 'YYYYMMDD'
+        :return:
+        """
 
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
@@ -79,11 +88,11 @@ class ExpectedStayingTimes(ComputeFeatureBase):
                 continue
             for day in all_days:
                 work_data_stream = \
-                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime = True)
+                    self.CC.get_stream(stream_id["identifier"], user_id, day, localtime=True)
 
                 for data in work_data_stream.data:
-                    arrival_time = data.start_time.hour*60+data.start_time.minute
-                    leave_time = data.end_time.hour*60 + data.end_time.minute
+                    arrival_time = data.start_time.hour * 60 + data.start_time.minute
+                    leave_time = data.end_time.hour * 60 + data.end_time.minute
                     staying_time = leave_time - arrival_time
                     office_staying_times.append(staying_time)
                     sample = []
@@ -102,13 +111,13 @@ class ExpectedStayingTimes(ComputeFeatureBase):
         outlier_border = mad_value * OUTLIER_DETECTION_MULTIPLIER
         outlier_removed_office_staying_times = []
         for staying_time in office_staying_times:
-            if staying_time > (median - outlier_border) and staying_time < (median + outlier_border):
+            if (median - outlier_border) < staying_time < (median + outlier_border):
                 outlier_removed_office_staying_times.append(staying_time)
         if not len(outlier_removed_office_staying_times):
             outlier_removed_office_staying_times = office_staying_times
         actual_staying_time = np.mean(outlier_removed_office_staying_times)
-        actual_minute = int(actual_staying_time%60)
-        actual_hour = int(actual_staying_time/60)
+        actual_minute = int(actual_staying_time % 60)
+        actual_hour = int(actual_staying_time / 60)
         conservative_hour = actual_hour
         liberal_hour = actual_hour
         if actual_minute < 30:
@@ -118,8 +127,8 @@ class ExpectedStayingTimes(ComputeFeatureBase):
             conservative_minute = 0
             liberal_minute = 30
             conservative_hour += 1
-        conservative_time = conservative_hour*60 + conservative_minute
-        liberal_time = liberal_hour*60 + liberal_minute
+        conservative_time = conservative_hour * 60 + conservative_minute
+        liberal_time = liberal_hour * 60 + liberal_minute
         for data in expected_conservative_staying_data:
             sample = []
             temp = DataPoint(data.start_time, data.end_time, data.offset, sample)
@@ -144,10 +153,7 @@ class ExpectedStayingTimes(ComputeFeatureBase):
                 temp.sample.append("in_expected_liberal_time")
                 temp.sample.append(0)
             expected_liberal_staying_data.append(temp)
-        #         for data in expected_conservative_staying_data:
-        #             print(data.start_time,data.sample)
-        #         for data in expected_liberal_staying_data:
-        #             print(data.start_time,data.sample)
+
         try:
             if len(expected_conservative_staying_data):
                 streams = self.CC.get_user_streams(user_id)
@@ -156,7 +162,7 @@ class ExpectedStayingTimes(ComputeFeatureBase):
                         self.store_stream(filepath="expected_conservative_staying_time.json",
                                           input_streams=[stream_metadata],
                                           user_id=user_id,
-                                          data=expected_conservative_staying_data, localtime = True)
+                                          data=expected_conservative_staying_data, localtime=True)
                         break
         except Exception as e:
             print("Exception:", str(e))
@@ -173,7 +179,7 @@ class ExpectedStayingTimes(ComputeFeatureBase):
                         self.store_stream(filepath="expected_liberal_staying_time.json",
                                           input_streams=[stream_metadata],
                                           user_id=user_id,
-                                          data=expected_liberal_staying_data, localtime = True)
+                                          data=expected_liberal_staying_data, localtime=True)
                         break
         except Exception as e:
             print("Exception:", str(e))
@@ -182,7 +188,15 @@ class ExpectedStayingTimes(ComputeFeatureBase):
                             'data points' %
                             (self.__class__.__name__, str(user_id),
                              len(expected_liberal_staying_data)))
-    def process(self, user_id, all_days):
+
+    def process(self, user_id: str, all_days: List[str]):
+        """
+        Main processing function inherited from ComputerFeatureBase
+
+        :param str user_id: UUID of the user
+        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        :return:
+        """
         if self.CC is not None:
             self.CC.logging.log("Processing Expected Staying Times")
             self.listing_all_expected_staying_times(user_id, all_days)

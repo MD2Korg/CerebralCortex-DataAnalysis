@@ -8,8 +8,9 @@ Created on Sat Mar 10 23:19:15 2018
 from typing import List
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 
+
 def rip_cycle_feature_computation(peaks_datastream: List[DataPoint],
-                                  valleys_datastream: List[DataPoint]):
+                                  valleys_datastream: List[DataPoint]) -> object:
     """
     Respiration Feature Implementation. The respiration feature values are
     derived from the following paper:
@@ -17,12 +18,12 @@ def rip_cycle_feature_computation(peaks_datastream: List[DataPoint],
     Removed due to lack of current use in the implementation
     roc_max = []  # 8. ROC_MAX = max(sample[j]-sample[j-1])
     roc_min = []  # 9. ROC_MIN = min(sample[j]-sample[j-1])
+
     :param peaks_datastream: list of peak datapoints
     :param valleys_datastream: list of valley datapoints
-    :return: lists of datapoints each representing a specific feature calculated from the respiration cycle 
+    :return: lists of DataPoints each representing a specific feature calculated from the respiration cycle
     found from the peak valley inputs 
     """
-
 
     inspiration_duration = []  # 1 Inhalation duration
     expiration_duration = []  # 2 Exhalation duration
@@ -47,8 +48,8 @@ def rip_cycle_feature_computation(peaks_datastream: List[DataPoint],
 
     for i, peak in enumerate(peaks):
         valley_start_time = valleys[i].start_time
-        valley_end_time = valleys[i+1].start_time
-        
+        valley_end_time = valleys[i + 1].start_time
+
         delta = peak.start_time - valleys[i].start_time
         inspiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time,
                                                          sample=delta.total_seconds(),
@@ -73,60 +74,60 @@ def rip_cycle_feature_computation(peaks_datastream: List[DataPoint],
                                             sample=value,
                                             end_time=valley_end_time))
 
-    for i,point in enumerate(inspiration_duration):
+    for i, point in enumerate(inspiration_duration):
         valley_start_time = valleys[i].start_time
-        valley_end_time = valleys[i+1].start_time
+        valley_end_time = valleys[i + 1].start_time
         if i == 0:  # Edge case
             delta_previous_inspiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=0.0,
-                                                                           end_time=valley_end_time))
+                                                                            end_time=valley_end_time))
             delta_previous_expiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=0.0,
-                                                                          end_time=valley_end_time))
-            delta_previous_respiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=0.0,
                                                                            end_time=valley_end_time))
+            delta_previous_respiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=0.0,
+                                                                            end_time=valley_end_time))
             delta_previous_stretch_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=0.0,
-                                                                       end_time=valley_end_time))
+                                                                        end_time=valley_end_time))
         else:
             delta = inspiration_duration[i].sample - inspiration_duration[i - 1].sample
             delta_previous_inspiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=delta,
-                                                                           end_time=valley_end_time))
+                                                                            end_time=valley_end_time))
 
             delta = expiration_duration[i].sample - expiration_duration[i - 1].sample
             delta_previous_expiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=delta,
-                                                                          end_time=valley_end_time))
+                                                                           end_time=valley_end_time))
 
             delta = respiration_duration[i].sample - respiration_duration[i - 1].sample
             delta_previous_respiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=delta,
-                                                                           end_time=valley_end_time))
+                                                                            end_time=valley_end_time))
 
             delta = stretch[i].sample - stretch[i - 1].sample
             delta_previous_stretch_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=delta,
-                                                                       end_time=valley_end_time))
+                                                                        end_time=valley_end_time))
 
         if i == len(inspiration_duration) - 1:
             delta_next_inspiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=0.0,
-                                                                       end_time=valley_end_time))
+                                                                        end_time=valley_end_time))
             delta_next_expiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=0.0,
-                                                                      end_time=valley_end_time))
-            delta_next_respiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=0.0,
                                                                        end_time=valley_end_time))
+            delta_next_respiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=0.0,
+                                                                        end_time=valley_end_time))
             delta_next_stretch_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=0.0,
-                                                                   end_time=valley_end_time))
+                                                                    end_time=valley_end_time))
         else:
             delta = inspiration_duration[i].sample - inspiration_duration[i + 1].sample
             delta_next_inspiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=delta,
-                                                                       end_time=valley_end_time))
+                                                                        end_time=valley_end_time))
 
             delta = expiration_duration[i].sample - expiration_duration[i + 1].sample
             delta_next_expiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=delta,
-                                                                      end_time=valley_end_time))
+                                                                       end_time=valley_end_time))
 
             delta = respiration_duration[i].sample - respiration_duration[i + 1].sample
             delta_next_respiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=delta,
-                                                                       end_time=valley_end_time))
+                                                                        end_time=valley_end_time))
 
             delta = stretch[i].sample - stretch[i + 1].sample
             delta_next_stretch_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=delta,
-                                                                   end_time=valley_end_time))
+                                                                    end_time=valley_end_time))
 
         stretch_average = 0
         expiration_average = 0
@@ -143,11 +144,11 @@ def rip_cycle_feature_computation(peaks_datastream: List[DataPoint],
 
         ratio = stretch[i].sample / stretch_average
         neighbor_ratio_stretch_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=ratio,
-                                                                   end_time=valley_end_time))
+                                                                    end_time=valley_end_time))
 
         ratio = expiration_duration[i].sample / expiration_average
         neighbor_ratio_expiration_duration.append(DataPoint.from_tuple(start_time=valley_start_time, sample=ratio,
-                                                                      end_time=valley_end_time))
+                                                                       end_time=valley_end_time))
 
     # Begin assembling datastream for output
     inspiration_duration_datastream = inspiration_duration
@@ -185,7 +186,7 @@ def rip_cycle_feature_computation(peaks_datastream: List[DataPoint],
     neighbor_ratio_stretch_datastream = neighbor_ratio_stretch_duration
 
     return peaks_datastream, \
-           valleys_datastream,\
+           valleys_datastream, \
            inspiration_duration_datastream, \
            expiration_duration_datastream, \
            respiration_duration_datastream, \

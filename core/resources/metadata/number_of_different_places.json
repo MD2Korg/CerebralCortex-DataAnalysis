@@ -1,40 +1,40 @@
 {
-  "annotations":[],
-  "data_descriptor":[
+  "annotations": [],
+  "data_descriptor": [
     {
-      "type":"int",
-      "unit": ""
+      "name": "count",
+      "type": "integer",
+      "description": "Number of different places visited by participant in one day."
     }
   ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.gpsfeature",
-      "input_streams":[
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.gpsfeature",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
-        
+      "input_parameters": {
       }
     },
-    "algorithm":{
-      "method":"core.feature.gpsfeature.gpsfeature.maximum_distance_covered",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.gpsfeature.gpsfeature.maximum_distance_covered",
+      "authors": [
         {
-          "name":"Anik Khan",
-          "email":"aniknagato@gmail.com"
+          "name": "Anik Khan",
+          "email": "aniknagato@gmail.com"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "0.0.1",
+      "reference": {
       },
-      "description":"Number of different places visited by participant in one day."
+      "description": "Number of different places visited by participant in one day."
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.number_of_different_places",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.number_of_different_places",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
 }
