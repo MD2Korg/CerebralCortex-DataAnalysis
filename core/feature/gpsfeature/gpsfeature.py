@@ -291,6 +291,8 @@ class GPSFeatures(ComputeFeatureBase):
 
         number_of_trans_dict = {}
         i = 0
+        to_work_transitions = 0
+        to_home_transitions = 0
 
         while i < len(semanticwithouttransit) - 1:
 
@@ -299,6 +301,13 @@ class GPSFeatures(ComputeFeatureBase):
             if pre_loc.sample != post_loc.sample:
                 key_string = pre_loc.sample + " " + post_loc.sample
                 get_pre_num = 0
+
+                if post_loc.sample.lower() == 'work':
+                    to_work_transitions += 1
+                if post_loc.sample.lower() == 'home':
+                    to_home_transitions += 1
+
+
                 if (key_string in number_of_trans_dict.keys()):
                     get_pre_num = number_of_trans_dict[key_string]
                 new_num = get_pre_num + 1
@@ -310,8 +319,18 @@ class GPSFeatures(ComputeFeatureBase):
         end_time = semanticdata[-1].end_time
         offset = semanticdata[0].offset
 
-        ouput_datapoint = DataPoint(start_time, end_time, offset, number_of_trans_dict)
-        return [ouput_datapoint]
+        output_datapoint = DataPoint(start_time, end_time, offset, number_of_trans_dict)
+        to_work_transitions_datapoint = DataPoint(start_time, end_time, offset,
+                                                 to_work_transitions)
+        to_home_transitions_datapoint = DataPoint(start_time, end_time, offset,
+                                                 to_home_transitions)
+        print(to_home_transitions_datapoint )
+        print(to_work_transitions_datapoint )
+        toreturn = []
+        toreturn.append(output_datapoint)
+        toreturn.append(to_work_transitions_datapoint)
+        toreturn.append(to_home_transitions_datapoint)
+        return toreturn
 
     def maximum_distance_from_home(self, home_lattitude: object, home_longitude: object,
                                    centroiddata: object) -> object:
@@ -803,7 +822,15 @@ class GPSFeatures(ComputeFeatureBase):
                             self.store_stream(filepath="transition_counter.json",
                                               input_streams=[stream_metadata],
                                               user_id=user_id,
-                                              data=trans_fre)
+                                              data=[trans_fre[0]])
+                            self.store_stream(filepath="to_work_transitions.json",
+                                              input_streams=[stream_metadata],
+                                              user_id=user_id,
+                                              data=[trans_fre[1]])
+                            self.store_stream(filepath="to_home_transitions.json",
+                                              input_streams=[stream_metadata],
+                                              user_id=user_id,
+                                              data=[trans_fre[2]])
                             break
             except Exception as e:
                 print("Exception:", str(e))
