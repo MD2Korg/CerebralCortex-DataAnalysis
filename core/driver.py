@@ -46,9 +46,10 @@ def process_features(feature_list, all_users, all_days, num_cores=1):
     '''
     for module in feature_list:
         if num_cores > 1:
-            print('Driver: Spark job')
+            print('Driver: Spark job',module)
             spark_context = get_or_create_sc(type="sparkContext")
-            if 'gps' in str(module) or 'sleep_duration_analysis' in str(module) \
+            if 'core.feature.gps.gps' == str(module) \
+                or 'sleep_duration_analysis' in str(module) \
                 or 'office_time' in str(module) \
                 or 'phone_screen_touch_features' in str(module) \
                 or 'gps_location_daywise' in str(module):
@@ -72,7 +73,7 @@ def process_features(feature_list, all_users, all_days, num_cores=1):
                         parallelize_per_day.append((usr,[day]))
 
                 shuffle(parallelize_per_day)
-                rdd = spark_context.parallelize(parallelize_per_day, num_cores*4)
+                rdd = spark_context.parallelize(parallelize_per_day, num_cores)
                 results = rdd.map(
                     lambda user_day: process_feature_on_user(user_day[0],
                                                              module, user_day[1], 
@@ -235,7 +236,7 @@ def main():
 
     found_features = discover_features(feature_list)
     feature_to_process = generate_feature_processing_order(found_features)
-    process_features(feature_to_process, all_users, all_days, num_cores)
+    process_features(feature_to_process, all_users, all_days, num_cores*4)
     
 if __name__ == '__main__':
     main()
