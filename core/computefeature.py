@@ -23,6 +23,8 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import traceback
+from typing import List
+
 import pkg_resources
 from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.core.log_manager.log_handler import LogTypes
@@ -37,7 +39,7 @@ class ComputeFeatureBase(object):
     This module describes the ComputeFeatureBase class.
     Feature modules should inherit from ComputeFeatureBase.
     '''
-    def process(self):
+    def process(self, user: str, all_days: List[str]):
         '''
         Use this method as an entry point for all your computations.
         '''

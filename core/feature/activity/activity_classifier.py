@@ -24,52 +24,55 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from cerebralcortex.core.datatypes.datastream import DataPoint
-from core.feature.activity.import_model_files import get_posture_model, \
-    get_activity_model
+from core.feature.activity.import_model_files import get_posture_model, get_activity_model
 from typing import List
 
 
+def _classify(clf, features):
+    """ Classifier helper method
+
+    Args:
+        clf: ML model
+        features: A set of features to run posture classification on
+
+    Returns:
+        List[DataPoints]: Labeled events
+    """
+    labels = []
+    prediction_values = [dp.sample for dp in features]
+    predictions = clf.predict(prediction_values)
+    for i, dp in enumerate(features):
+        labels.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time,
+                                offset=dp.offset, sample=str(predictions[i])))
+    return labels
+
+
 def classify_posture(features: List[DataPoint], is_gravity: bool) -> List[DataPoint]:
-    """
-    Classify posture from a set of input features based on a predefined ML model.
+    """Classify posture from a set of input features based on a predefined ML model.
 
-    :type is_gravity: bool
-    :type features: List[DataPoint]
-    :rtype: List[DataPoint]
-    :param features: A set of features to run posture classification on
-    :param is_gravity: Flag to account for gravity or not
-    :return: Labeled postures
+    Args:
+        features: A set of features to run posture classification on
+        is_gravity: Flag to account for gravity or not
+
+    Returns:
+        List[DataPoints]: Labeled postures
     """
+
     clf = get_posture_model(is_gravity)
-    labels = []
-
-    prediction_values = [dp.sample for dp in features]
-    preds = clf.predict(prediction_values)
-    for i, dp in enumerate(features):
-        labels.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time,
-                                offset=dp.offset, sample=str(preds[i])))
-
-    return labels
+    return _classify(clf, features)
 
 
-def classify_activity(features: List[DataPoint], is_gravity) -> List[DataPoint]:
+def classify_activity(features: List[DataPoint], is_gravity: bool) -> List[DataPoint]:
+    """Classify activity from a set of input features based on a predefined ML model.
+
+    Args:
+        features: A set of features to run activity classification on
+        is_gravity: Flag to account for gravity or not
+
+    Returns:
+        List[DataPoints]: Labeled activities
+
     """
-    Classify activity from a set of input features based on a predefined ML model.
 
-    :type is_gravity: bool
-    :type features: List[DataPoint]
-    :rtype: List[DataPoint]
-    :param features: A set of features to run activity classification on
-    :param is_gravity: Flag to account for gravity or not
-    :return: Labeled activities
-    """
     clf = get_activity_model(is_gravity)
-    labels = []
-
-    prediction_values = [dp.sample for dp in features]
-    preds = clf.predict(prediction_values)
-    for i, dp in enumerate(features):
-        labels.append(DataPoint(start_time=dp.start_time, end_time=dp.end_time,
-                                offset=dp.offset, sample=str(preds[i])))
-
-    return labels
+    return _classify(clf, features)

@@ -22,29 +22,33 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+import datetime
+from typing import Tuple
+
+import numpy
 
 import numpy as np
 import math
 from scipy.stats import skew
 from scipy.stats import kurtosis
-from cerebralcortex.core.datatypes.datastream import DataStream
 from core.feature.activity.utils import *
 
 
-def get_rate_of_change(timestamp: object, value: object) -> object:
-    """
+def get_rate_of_change(timestamps: List[datetime], values: List) -> float:  # TODO: What is the type of value?
+    """# TODO: What is this supposed to do?
 
-    :rtype: object
-    :param timestamp:
-    :param value:
-    :return:
+    Args:
+        timestamps:
+        values:
+
+    Returns:
+        float: Rate of change of ???
     """
     roc = 0
     cnt = 0
-    for i in range(len(value) - 1):
-        if (timestamp[i + 1] - timestamp[i]).total_seconds() > 0:
-            roc = roc + (((value[i + 1] - value[i]) / (
-                    timestamp[i + 1] - timestamp[i]).total_seconds()))
+    for i in range(len(values) - 1):
+        if (timestamps[i + 1] - timestamps[i]).total_seconds() > 0:
+            roc = roc + ((values[i + 1] - values[i]) / (timestamps[i + 1] - timestamps[i]).total_seconds())
             cnt = cnt + 1
     if cnt > 0:
         roc = roc / cnt
@@ -52,21 +56,22 @@ def get_rate_of_change(timestamp: object, value: object) -> object:
     return roc
 
 
-def get_magnitude(ax: object, ay: object, az: object) -> object:
-    """
+def get_magnitude(data_point: DataPoint) -> float:
+    """Return the 3-axis magnitude calculation
 
-    :rtype: object
-    :param ax:
-    :param ay:
-    :param az:
-    :return:
+    Args:
+        data_point: 3-dimensional vector
+    Returns:
+        float: magnitude of three values
     """
-    return math.sqrt(ax * ax + ay * ay + az * az)
+    return math.sqrt(data_point.sample[0] * data_point.sample[0] +
+                     data_point.sample[1] * data_point.sample[1] +
+                     data_point.sample[2] * data_point.sample[2])
 
 
-def spectral_entropy(data, sampling_freq, bands=None):
-    """
-    Compute spectral entropy of a  signal with respect to frequency bands.
+def spectral_entropy(data: numpy.ndarray, sampling_freq: float, bands: List[float] = None) -> numpy.ndarray:
+    """Compute spectral entropy of a  signal with respect to frequency bands.
+
     The power spectrum is computed through fft. Then, it is normalised and
     assimilated to a probability density function.
     The entropy of the signal :math:`x` can be expressed by:
@@ -76,15 +81,17 @@ def spectral_entropy(data, sampling_freq, bands=None):
     :math:`PSD` is the normalised power spectrum (Power Spectrum Density), and
     :math:`f_s` is the sampling frequency
 
-    :param data: a one dimensional floating-point array representing a time series.
-    :type data: :class:`~numpy.ndarray` or :class:`~pyrem.time_series.Signal`
-    :param sampling_freq: the sampling frequency
-    :type sampling_freq:  float
-    :param bands: a list of numbers delimiting the bins of the frequency bands.
-    If None the entropy is computed over the whole range of the DFT
-    (from 0 to :math:`f_s/2`)
-    :return: the spectral entropy; a scalar
+    Args:
+        data: a one dimensional floating-point array representing a time series.
+        sampling_freq: sampling frequency
+        bands: a list of numbers delimiting the bins of the frequency bands.
+            If None the entropy is computed over the whole range of the DFT
+            (from 0 to :math:`f_s/2`)
+
+    Returns:
+        numpy.ndarray: the spectral entropy
     """
+
     psd = np.abs(np.fft.rfft(data)) ** 2
     psd /= np.sum(psd)  # psd as a pdf (normalised to one)
 
@@ -105,26 +112,33 @@ def spectral_entropy(data, sampling_freq, bands=None):
     return - np.sum(power_per_band * np.log2(power_per_band))
 
 
-def peak_frequency(data: object) -> object:
-    """
+def peak_frequency(data: object) -> numpy.ndarray:
+    """# TODO: Fix this
 
-    :rtype: object
-    :param data:
-    :return:
+    Args:
+        data:
+
+    Returns:
+
     """
     w = np.fft.fft(data)
-    freqs = np.fft.fftfreq(len(w))
-    return freqs.max()
+    frequencies = np.fft.fftfreq(len(w))
+    return frequencies.max()
 
 
-def compute_basic_features(timestamp: object, data: object) -> object:
+def compute_basic_features(timestamp: object, data: object) \
+        -> Tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray,
+                 numpy.ndarray, float, numpy.ndarray, numpy.ndarray, numpy.ndarray]:
+    """# TODO: Fix this
+
+    Args:
+        timestamp:
+        data:
+
+    Returns:
+        Tuple[numpy.ndarray,numpy.ndarray,numpy.ndarray,numpy.ndarray,numpy.ndarray,float,numpy.ndarray,numpy.ndarray,numpy.ndarray]
     """
 
-    :rtype: object
-    :param timestamp:
-    :param data:
-    :return:
-    """
     mean = np.mean(data)
     median = np.median(data)
     std = np.std(data)
@@ -138,134 +152,142 @@ def compute_basic_features(timestamp: object, data: object) -> object:
     return mean, median, std, skewness, kurt, rate_of_changes, power, sp_entropy, peak_freq
 
 
-def computeFeatures(start_time: object, end_time: object, time: object, x: object, y: object, z: object,
-                    pid: object) -> object:
-    """
-
-    :rtype: object
-    :param start_time:
-    :param end_time:
-    :param time:
-    :param x:
-    :param y:
-    :param z:
-    :param pid:
-    :return:
-    """
-    mag = [0] * len(x)  # np.empty([len(x), 1])
-    for i, value in enumerate(x):
-        mag[i] = math.sqrt(x[i] * x[i] + y[i] * y[i] + z[i] * z[i])
-
-    mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rateOfChanges, \
-    mag_power, mag_sp_entropy, mag_peak_freq = compute_basic_features(time, mag)
-    x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power, \
-    x_sp_entropy, x_peak_freq = compute_basic_features(time, x)
-    y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power, \
-    y_sp_entropy, y_peak_freq = compute_basic_features(time, y)
-    z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power, \
-    z_sp_entropy, z_peak_freq = compute_basic_features(time, z)
-
-    f = [pid, start_time, end_time, mag_mean, mag_median, mag_std, mag_skewness,
-         mag_kurt, mag_rateOfChanges, mag_power,
-         mag_sp_entropy, mag_peak_freq]
-
-    f.extend(
-        [x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power,
-         x_sp_entropy, x_peak_freq])
-    f.extend(
-        [y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power,
-         y_sp_entropy, y_peak_freq])
-    f.extend(
-        [z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power,
-         z_sp_entropy, z_peak_freq])
-
-    return f
+# def computeFeatures(start_time: object, end_time: object, time: object, x: object, y: object, z: object,
+#                     pid: object) -> object:
+#     """
+#
+#     :rtype: object
+#     :param start_time:
+#     :param end_time:
+#     :param time:
+#     :param x:
+#     :param y:
+#     :param z:
+#     :param pid:
+#     :return:
+#     """
+#     mag = [0] * len(x)
+#     for i, value in enumerate(x):
+#         mag[i] = math.sqrt(x[i] * x[i] + y[i] * y[i] + z[i] * z[i])
+#
+#     mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rateOfChanges, mag_power, mag_sp_entropy, mag_peak_freq = compute_basic_features(time, mag)
+#     x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power, x_sp_entropy, x_peak_freq = compute_basic_features(time, x)
+#     y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power, y_sp_entropy, y_peak_freq = compute_basic_features(time, y)
+#     z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power, z_sp_entropy, z_peak_freq = compute_basic_features(time, z)
+#
+#     f = [pid, start_time, end_time, mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rateOfChanges, mag_power, mag_sp_entropy, mag_peak_freq]
+#
+#     f.extend([x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power,x_sp_entropy, x_peak_freq])
+#     f.extend([y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power, y_sp_entropy, y_peak_freq])
+#     f.extend([z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power,z_sp_entropy, z_peak_freq])
+#
+#     return f
 
 
-def compute_window_features(start_time, end_time,
-                            data: List[DataPoint]) -> DataPoint:
-    """
-    Computes feature vector for single window
+def compute_window_features(start_time: datetime, end_time: datetime, data: List[DataPoint]) -> DataPoint:
+    """Computes the feature vector for a single window
 
-    :rtype: DataPoint
-    :param start_time:
-    :param end_time:
-    :param data:
-    :return: feature vector as DataPoint
+    Args:
+        start_time: Starting point
+        end_time: Ending point
+        data: Data to utilize in the computation
+
+    Returns:
+        DataPoint: DataPoint containing the computed feature vector
     """
 
     offset = 0
     if len(data) > 0:
         offset = data[0].offset
+
     timestamps = [v.start_time for v in data]
-    accel_x = [v.sample[0] for v in data]
-    accel_y = [v.sample[1] for v in data]
-    accel_z = [v.sample[2] for v in data]
-    accel_magnitude = [
-        get_magnitude(value.sample[0], value.sample[1], value.sample[2]) for
-        value in data]
 
-    mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rateOfChanges, mag_power, mag_sp_entropy, mag_peak_freq = \
-        compute_basic_features(timestamps, accel_magnitude)
-    x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power, x_sp_entropy, x_peak_freq = \
-        compute_basic_features(timestamps, accel_x)
-    y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power, y_sp_entropy, y_peak_freq = \
-        compute_basic_features(timestamps, accel_y)
-    z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power, z_sp_entropy, z_peak_freq = \
-        compute_basic_features(timestamps, accel_z)
+    accelerometer_x = [v.sample[0] for v in data]
+    accelerometer_y = [v.sample[1] for v in data]
+    accelerometer_z = [v.sample[2] for v in data]
 
-    feature_vector = [mag_mean, mag_median, mag_std, mag_skewness, mag_kurt,
-                      mag_rateOfChanges, mag_power,
-                      mag_sp_entropy,
+    accel_magnitude = [get_magnitude(value) for value in data]
+
+    mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rate_of_change, mag_power, mag_spectral_entropy, mag_peak_freq = compute_basic_features(timestamps, accel_magnitude)
+    x_mean, x_median, x_std, x_skewness, x_kurt, x_rate_of_change, x_power, x_spectral_entropy, x_peak_freq = compute_basic_features(timestamps, accelerometer_x)
+    y_mean, y_median, y_std, y_skewness, y_kurt, y_rate_of_change, y_power, y_spectral_entropy, y_peak_freq = compute_basic_features(timestamps, accelerometer_y)
+    z_mean, z_median, z_std, z_skewness, z_kurt, z_rate_of_change, z_power, z_spectral_entropy, z_peak_freq = compute_basic_features(timestamps, accelerometer_z)
+
+    feature_vector = [mag_mean,
+                      mag_median,
+                      mag_std,
+                      mag_skewness,
+                      mag_kurt,
+                      mag_rate_of_change,
+                      mag_power,
+                      mag_spectral_entropy,
                       mag_peak_freq]
 
-    feature_vector.extend(
-        [x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power,
-         x_sp_entropy, x_peak_freq])
-    feature_vector.extend(
-        [y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power,
-         y_sp_entropy, y_peak_freq])
-    feature_vector.extend(
-        [z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power,
-         z_sp_entropy, z_peak_freq])
+    feature_vector.extend([x_mean,
+                           x_median,
+                           x_std,
+                           x_skewness,
+                           x_kurt,
+                           x_rate_of_change,
+                           x_power,
+                           x_spectral_entropy,
+                           x_peak_freq])
+    feature_vector.extend([y_mean,
+                           y_median,
+                           y_std,
+                           y_skewness,
+                           y_kurt,
+                           y_rate_of_change,
+                           y_power,
+                           y_spectral_entropy,
+                           y_peak_freq])
+    feature_vector.extend([z_mean,
+                           z_median,
+                           z_std,
+                           z_skewness,
+                           z_kurt,
+                           z_rate_of_change,
+                           z_power,
+                           z_spectral_entropy,
+                           z_peak_freq])
 
-    return DataPoint(start_time=start_time, end_time=end_time, offset=offset,
-                     sample=feature_vector)
+    return DataPoint(start_time=start_time, end_time=end_time, offset=offset, sample=feature_vector)
 
 
-def compute_accelerometer_features(accel_data: List[DataPoint],
-                                   window_size: float = 10.0) -> object:
+def compute_accelerometer_features(accelerometer_data: List[DataPoint],
+                                   window_size: float = 10.0) -> List[DataPoint]:
+    """Segment data and computes feature vector for each window
+
+    Args:
+        accelerometer_data: Input data
+        window_size: Length of window to operate over in seconds
+
+    Returns:
+        List[DataPoint]: A list of DataPoints containing feature vectors
     """
-    Segment data and computes feature vector for each window
 
-    :rtype: object
-    :param accel_stream:
-    :param window_size:
-    :return: list of feature vectors
-    """
     all_features = []
 
-    cur_index = 0
+    current_index = 0
 
-    while cur_index < len(accel_data):
-        start_index = cur_index
-        end_index = cur_index
+    while current_index < len(accelerometer_data):
+        start_index = current_index
+        end_index = current_index
 
-        accel_window = []
+        accelerometer_window = []
         win_size = timedelta(seconds=window_size)
 
-        while (accel_data[end_index].start_time - accel_data[
-            start_index].start_time) < win_size:
-            accel_window.append(accel_data[end_index])
+        while (accelerometer_data[end_index].start_time - accelerometer_data[start_index].start_time) < win_size:
+            accelerometer_window.append(accelerometer_data[end_index])
             end_index = end_index + 1
-            if end_index >= len(accel_data):
+            if end_index >= len(accelerometer_data):
                 break
 
-        feature_vector = compute_window_features(accel_window[0].start_time,
-                                                 accel_window[-1].start_time,
-                                                 accel_window)
+        feature_vector = compute_window_features(accelerometer_window[0].start_time,
+                                                 accelerometer_window[-1].start_time,
+                                                 accelerometer_window)
         all_features.append(feature_vector)
 
-        cur_index = end_index
+        current_index = end_index
 
     return all_features

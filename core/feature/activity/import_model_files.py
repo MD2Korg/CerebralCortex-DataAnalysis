@@ -27,16 +27,18 @@ import pickle
 from sklearn.ensemble import RandomForestClassifier
 from core.feature.activity.utils import *
 from core.computefeature import get_resource_contents
-import os
 
 
 def get_posture_model(is_gravity: bool) -> RandomForestClassifier:
+    """Loads a pre-trained posture model file
+
+    Args:
+        is_gravity: Flag to account for gravity or not
+
+    Returns:
+        RandomForestClassifier: Pre-trained model
     """
 
-    :rtype: object
-    :param bool is_gravity:
-    :return:
-    """
     if is_gravity:
         model_file_contents = get_resource_contents(POSTURE_MODEL_FILENAME)
     else:
@@ -46,13 +48,16 @@ def get_posture_model(is_gravity: bool) -> RandomForestClassifier:
     return clf
 
 
-def get_activity_model(is_gravity: bool):
+def get_activity_model(is_gravity: bool) -> RandomForestClassifier:
+    """Loads a pre-trained activity model file
+
+    Args:
+        is_gravity: Flag to account for gravity or not
+
+    Returns:
+        RandomForestClassifier: Pre-trained model
     """
 
-    :rtype: object
-    :param bool is_gravity:
-    :return:
-    """
     if is_gravity:
         model_file_contents = get_resource_contents(ACTIVITY_MODEL_FILENAME)
     else:

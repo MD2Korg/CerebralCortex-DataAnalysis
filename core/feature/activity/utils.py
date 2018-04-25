@@ -82,36 +82,43 @@ MADGWICKFILTER_BETA = 0.4
 # ------------------------------------- end constants -------------------------------------
 
 
-def get_max_label(label1: object, label2: object) -> object:
+def get_max_label(left_data: str, right_data: str) -> str:
+    """ Identifies the highest priority activity/posture label across both inputs
+
+    Args:
+        left_data: Activity/Posture label
+        right_data: Activity/Posture label
+
+    Returns:
+        str: Activity/Posture label
     """
 
-    :rtype: object
-    :param label1:
-    :param label2:
-    :return:
-    """
-    if label1 in ACTIVITY_LABELS and label2 in ACTIVITY_LABELS:
-        if ACTIVITY_LABELS_INDEX_MAP[label1] > ACTIVITY_LABELS_INDEX_MAP[label2]:
-            return label1
+    if left_data in ACTIVITY_LABELS and right_data in ACTIVITY_LABELS:
+        if ACTIVITY_LABELS_INDEX_MAP[left_data] > ACTIVITY_LABELS_INDEX_MAP[right_data]:
+            return left_data
         else:
-            return label2
-    elif label1 in POSTURE_LABELS and label2 in POSTURE_LABELS:
-        if POSTURE_LABELS_INDEX_MAP[label1] > POSTURE_LABELS_INDEX_MAP[label2]:
-            return label1
+            return right_data
+    elif left_data in POSTURE_LABELS and right_data in POSTURE_LABELS:
+        if POSTURE_LABELS_INDEX_MAP[left_data] > POSTURE_LABELS_INDEX_MAP[right_data]:
+            return left_data
         else:
-            return label2
+            return right_data
     return "UNDEFINED"
 
 
-def merge_left_right(left_data: List[DataPoint], right_data: List[DataPoint], window_size=10.0) -> object:
+def merge_left_right(left_data: List[DataPoint], right_data: List[DataPoint], window_size: float = 10.0) \
+        -> List[DataPoint]:
+    """ Merges two streams of DataPoints based on start timestamps.
+
+    Args:
+        left_data: DataPoint List
+        right_data: DataPoint List
+        window_size: # TODO: Missing window_size
+
+    Returns:
+        List[DataPoint]: List of merged DataPoints
     """
 
-    :rtype: object
-    :param left_data:
-    :param right_data:
-    :param window_size:
-    :return:
-    """
     data = left_data + right_data
     data.sort(key=lambda x: x.start_time)
 
@@ -119,73 +126,16 @@ def merge_left_right(left_data: List[DataPoint], right_data: List[DataPoint], wi
     win_size = timedelta(seconds=window_size)
 
     index = 0
-    while index < len(data) - 1:
+    while index < len(data) - 1:  # TODO: TWH What does this loop do?
         if data[index].start_time + win_size > data[index + 1].start_time:
-            updated_label = get_max_label(data[index].sample,
-                                          data[index + 1].sample)
+            updated_label = get_max_label(data[index].sample, data[index + 1].sample)
 
-            merged_data.append(DataPoint(start_time=data[index].start_time,
-                                         end_time=data[index].end_time,
-                                         offset=data[index].offset,
-                                         sample=updated_label))
+            merged_data.append(DataPoint(start_time=data[index].start_time, end_time=data[index].end_time,
+                                         offset=data[index].offset, sample=updated_label))
             index = index + 2
 
         else:
-            merged_data.append(DataPoint(start_time=data[index].start_time,
-                                         end_time=data[index].end_time,
-                                         offset=data[index].offset,
-                                         sample=data[index].sample))
+            merged_data.append(DataPoint(start_time=data[index].start_time, end_time=data[index].end_time,
+                                         offset=data[index].offset, sample=data[index].sample))
             index = index + 1
     return merged_data
-
-
-def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
-    """
-    Returns a list of days (string format: YYYYMMDD (e.g., 20171206)
-
-    :rtype: object
-    :param CC:
-    :return:
-    :param stream_id:
-    """
-    stream_dicts = CC.get_stream_duration(stream_id)
-    stream_days = []
-    days = stream_dicts["end_time"] - stream_dicts["start_time"]
-    for day in range(days.days + 1):
-        stream_days.append((stream_dicts["start_time"] + timedelta(days=day)).strftime('%Y%m%d'))
-    return stream_days
-
-
-def store_data(filepath: object, input_streams: object, user_id: object, data: object, str_sufix: object,
-               instance: object) -> object:
-    """
-
-    :rtype: object
-    :param filepath:
-    :param input_streams:
-    :param user_id:
-    :param data:
-    :param str_sufix:
-    :param instance:
-    """
-    output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(filepath + user_id + str_sufix)))
-    cur_dir = os.path.dirname(os.path.abspath(__file__))
-    newfilepath = os.path.join(cur_dir, filepath)
-
-    with open(newfilepath, "r") as f:
-        metadata = f.read()
-        metadata = metadata.replace("CC_INPUT_STREAM_ID_CC",
-                                    input_streams[0]["identifier"])
-        metadata = metadata.replace("CC_INPUT_STREAM_NAME_CC",
-                                    input_streams[0]["name"])
-        metadata = metadata.replace("CC_OUTPUT_STREAM_IDENTIFIER_CC",
-                                    output_stream_id)
-        metadata = metadata.replace("CC_OWNER_CC", user_id)
-        metadata = json.loads(metadata)
-
-        instance.store(identifier=output_stream_id, owner=user_id,
-                       name=metadata["name"],
-                       data_descriptor=metadata["data_descriptor"],
-                       execution_context=metadata["execution_context"],
-                       annotations=metadata["annotations"],
-                       stream_type="datastream", data=data)
