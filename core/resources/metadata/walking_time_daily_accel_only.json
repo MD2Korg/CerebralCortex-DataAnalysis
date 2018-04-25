@@ -36,7 +36,7 @@
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.activity_features.walking.daily",
+  "name": "org.md2k.data_analysis.feature.activity_features.walking.accel_only.daily",
   "owner": "",
   "type": "1"
 }

@@ -36,7 +36,7 @@
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.activity_features.moderate_activity.imputed_time_of_day.daily",
+  "name": "org.md2k.data_analysis.feature.activity_features.moderate_activity.imputed_time_of_day.accel_only.daily",
   "owner": "",
   "type": "1"
 }
