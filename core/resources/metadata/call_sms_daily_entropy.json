@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "value",
-      "type": "float",
-      "description": "Entropy of event (sms and call)"
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "float",
+    "description": "Entropy of event (sms and call)"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.phone_feature",

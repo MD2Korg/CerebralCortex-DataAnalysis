@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "duration",
-      "type": "float",
-      "description": "Sample contains the number of minutes per hour the person used this category apps during she was at home"
-    }
-  ],
+  "data_descriptor": {
+    "name": "duration",
+    "type": "float",
+    "description": "Sample contains the number of minutes per hour the person used this category apps during she was at home"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.phone_app_usage",

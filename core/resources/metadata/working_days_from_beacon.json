@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "office_day's_annotation_from_beacon_model",
-      "type": "string",
-      "description": "work"
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "string",
+    "description": "work"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.office_time",

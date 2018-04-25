@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "value",
-      "type": "float",
-      "unit": "minute",
-      "description": "The average time between two consecutive events (call and sms)"
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "float",
+    "unit": "minute",
+    "description": "The average time between two consecutive events (call and sms)"
+  },
   "execution_context": {
     "processing_module": {
       "name": "average_inter_phone_call_time_sms_four_hourly",

@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "duration",
-      "type": "float",
-      "description": "Sample contains a float, indicating the number of minutes per hour this google play store app category was used."
-    }
-  ],
+  "data_descriptor": {
+    "name": "duration",
+    "type": "float",
+    "description": "Sample contains a float, indicating the number of minutes per hour this google play store app category was used."
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.phone_app_usage",

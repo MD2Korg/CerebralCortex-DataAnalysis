@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "value",
-      "type": "int",
-      "unit": "minute",
-      "description": "Average duration of voiced segments within an hour for a particular day"
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "int",
+    "unit": "minute",
+    "description": "Average duration of voiced segments within an hour for a particular day"
+  },
   "execution_context": {
     "processing_module": {
       "name": "voiced_segments_hourly",

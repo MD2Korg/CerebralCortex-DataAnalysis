@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "amount_of_high_activity_accel_only",
-      "type": "float",
-      "unit": "minute",
-      "description": "Amount of high activity daily from accel only model"
-    }
-  ],
+  "data_descriptor": {
+    "name": "amount_of_high_activity_accel_only",
+    "type": "float",
+    "unit": "minute",
+    "description": "Amount of high activity daily from accel only model"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.activity_features",

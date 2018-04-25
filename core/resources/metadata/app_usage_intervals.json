@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "app_name",
-      "type": "string",
-      "description": "Sample contains the category of the app that used during the interval of this DataPoint"
-    }
-  ],
+  "data_descriptor": {
+    "name": "app_name",
+    "type": "string",
+    "description": "Sample contains the category of the app that used during the interval of this DataPoint"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.phone_app_usage",

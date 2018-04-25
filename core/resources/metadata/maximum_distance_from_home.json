@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "distance",
-      "type": "float",
-      "unit": "km",
-      "description": "Maximum distance from home in kilometers in a day."
-    }
-  ],
+  "data_descriptor": {
+    "name": "distance",
+    "type": "float",
+    "unit": "km",
+    "description": "Maximum distance from home in kilometers in a day."
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.gpsfeature",

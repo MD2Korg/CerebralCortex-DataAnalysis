@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "activity_type",
-      "type": "string",
-      "description": "Detects activity types (NO, LOW, WALKING, MOD, HIGH) in 10 seconds window using wrist accelerometer"
-    }
-  ],
+  "data_descriptor": {
+    "name": "activity_type",
+    "type": "string",
+    "description": "Detects activity types (NO, LOW, WALKING, MOD, HIGH) in 10 seconds window using wrist accelerometer"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.activity",

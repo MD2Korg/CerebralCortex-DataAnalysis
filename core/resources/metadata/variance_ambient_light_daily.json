@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "value",
-      "type": "float",
-      "unit": "lux",
-      "description": "Variance of ambient light"
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "float",
+    "unit": "lux",
+    "description": "Variance of ambient light"
+  },
   "execution_context": {
     "processing_module": {
       "name": "variance_ambient_light_daily",

@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "hourly_stress_percentage_value",
-      "type": "float",
-      "unit": "1 hour window",
-      "description": "ratio of stress windows per hour of day to the total number of windows"
-    }
-  ],
+  "data_descriptor": {
+    "name": "hourly_stress_percentage_value",
+    "type": "float",
+    "unit": "1 hour window",
+    "description": "ratio of stress windows per hour of day to the total number of windows"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.stress_from_wrist",
