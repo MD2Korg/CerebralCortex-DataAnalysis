@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "value",
-      "type": "integer",
-      "description": "Number of event (call and sms)"
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "integer",
+    "description": "Number of events (call and sms)"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.phone_feature",

@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "value",
-      "type": "float",
-      "description": "The average length of a SMS"
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "float",
+    "description": "The average length of a SMS"
+  },
   "execution_context": {
     "processing_module": {
       "name": "average_sms_length_daily",

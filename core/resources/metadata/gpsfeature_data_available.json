@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "duration",
-      "type": "float",
-      "unit": "seconds",
-      "description": "Amount of GPS data available in a day."
-    }
-  ],
+  "data_descriptor": {
+    "name": "duration",
+    "type": "float",
+    "unit": "seconds",
+    "description": "Amount of GPS data available in a day."
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.gpsfeature",
