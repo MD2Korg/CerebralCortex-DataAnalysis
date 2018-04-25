@@ -49,7 +49,6 @@ class AudioFeatures(ComputeFeatureBase):
     sent)
     '''
 
-    CC = CerebralCortex("/home/md2k/cc_configuration.yml")
 
     def mark_audio_stream(self, streams:dict, stream1_name:str,stream2_name:str,
                           user_id:str,day:str):
