@@ -91,13 +91,13 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     QUERY_LIMIT = 130000
     QUERY_DONE = 0
 
-    def process(self, user, all_days):
-        """
-        Process GPS data
+    def process(self, user_id: str, all_days: List[str]):
+        """This is the main entry point for feature computation and is called by the main driver application
 
-        :param string user: User
-        :param list all_days: List of all days
-        :return: None
+        Args:
+            user_id: User identifier in UUID format
+            all_days: List of all days to run this feature over
+
         """
         self.CC.logging.log('Computing for user %s cache length '
                             '%d' % (user, len(GPSClusteringEpochComputation.PLACES_QUERY_CACHE)))

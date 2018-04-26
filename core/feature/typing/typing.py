@@ -160,7 +160,7 @@ class TypingMarker(ComputeFeatureBase):
         return common_days, accel_right_stream_ids_with_date, gyro_right_stream_ids_with_date, \
             accel_left_stream_ids_with_date, gyro_left_stream_ids_with_date
 
-    def process(self, user: str, all_days: list):
+    def process(self, user_id: str, all_days: List[str]):
         """
          This function processes both wrists' accl and gyro data for the
          commons days to create data frames for left, right accl and gyro data.
@@ -168,8 +168,10 @@ class TypingMarker(ComputeFeatureBase):
          Then uses the sync function to sync left and right dataframes.
          Finally uses the typing_episodes function to detect typing episodes.
 
-        :param str user: UUID
-        :param list all_days: list of days on which to operate
+        Args:
+            user_id: User identifier in UUID format
+            all_days: List of all days to run this feature over
+
         """
 
         if self.CC is None:

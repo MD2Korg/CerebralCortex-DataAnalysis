@@ -282,12 +282,12 @@ class PhoneDataYield(ComputeFeatureBase):
                                               "phone_accelerometer_data_yield_total.json"])
 
     def process(self, user_id: str, all_days: List[str]):
-        """
-        Main processing function inherited from ComputerFeatureBase
+        """This is the main entry point for feature computation and is called by the main driver application
 
-        :param str user_id: UUID of the user
-        :param List(str) all_days: List of days with format 'YYYYMMDD'
-        :return:
+        Args:
+            user_id: User identifier in UUID format
+            all_days: List of all days to run this feature over
+
         """
 
         if self.CC is not None:

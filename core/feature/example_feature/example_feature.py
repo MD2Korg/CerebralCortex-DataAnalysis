@@ -33,29 +33,38 @@ feature_class_name = 'ExampleFeature'
 
 
 class ExampleFeature(ComputeFeatureBase):
-    """
-    Class specific documentation goes here.
+    """Short Description (one sentence or less)
+
+    Long Description (paragraph describing this module)
+
+    Notes:
+        Algorithm here
+
+    References:
+        1.
     """
 
     def helper_function(self, user_id: str, day: str):
-        """
-        This method performs relevant computations for computing a feature
+        """This method performs relevant computations for computing a feature
 
-        :param str user_id: User identifier in UUID format
-        :param str day: Date string (YYYYMMDD) for which participant day to operate on
+        Args:
+            user_id: User identifier in UUID format
+            day: Date string (YYYYMMDD) for which participant day to operate on
+
         """
 
         # store your results by calling the store() method in ComputeFeatureBase
         pass
 
-    def process(self, user_id: str, all_days: list):
-        """
-        This is the main entry point for feature computation and is called by the main driver application
+    def process(self, user_id: str, all_days: List[str]):
+        """This is the main entry point for feature computation and is called by the main driver application
 
-        :param str user_id: User identifier in UUID format
-        :param list all_days: List of all days to run this feature over
+        Args:
+            user_id: User identifier in UUID format
+            all_days: List of all days to run this feature over
+
         """
-        syslog.syslog("Processing ExampleFeature")
+        self.CC.logging.log("Processing ExampleFeature")
         # Get data streams
         # Apply admission control on your data streams
         # process your data streams, optionally you may define other helper_functions ()

@@ -21,11 +21,12 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-"""Short Description (one sentence or less)
+"""Activity features from motion data
 
 Long Description (paragraph describing this module)
 
-
+Notes:
+    Algorithm here
 
 References:
     1.

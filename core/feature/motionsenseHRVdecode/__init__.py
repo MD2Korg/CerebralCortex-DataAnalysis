@@ -21,14 +21,13 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"""MotionSenseHRV Decoder
 
-"""
-Takes as input raw datastreams from motionsenseHRV and decodes them 
-to get the Accelerometer, Gyroscope, PPG, Sequence number timeseries. 
-Last of all it does timestamp correction on all the timeseries and saves them. 
+Takes as input raw datastreams from motionsenseHRV and decodes them
+to get the Accelerometer, Gyroscope, PPG, Sequence number timeseries.
+Last of all it does timestamp correction on all the timeseries and saves them.
 
-Algorithm::
-
+Notes:
     Input:
         Raw datastream of motionsenseHRV and motionsenseHRV+
         Each DataPoint contains a 20 byte array that was transmitted to the mobile phone by the sensors itself
@@ -42,4 +41,7 @@ Algorithm::
         motionsenseHRV decoded datastream. Each DataPoint sample contains a list of 9 values with the first 3
         corresponding to accelerometer, next three corresponding to gyroscope and the last three are Red, Infrered,
         Green channels of PPG
+
+References:
+    1.
 """

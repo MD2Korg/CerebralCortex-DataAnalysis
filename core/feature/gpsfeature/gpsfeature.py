@@ -533,11 +533,13 @@ class GPSFeatures(ComputeFeatureBase):
 
         return [datapoint]
 
-    def process(self, user_id: object, all_days: object):
-        """
+    def process(self, user_id: str, all_days: List[str]):
+        """This is the main entry point for feature computation and is called by the main driver application
 
-        :param user_id:
-        :param all_days:
+        Args:
+            user_id: User identifier in UUID format
+            all_days: List of all days to run this feature over
+
         """
         stream_name_gps_cluster = "org.md2k.data_analysis.gps_clustering_episode_generation_daily"
         stream_name_semantic_location = "org.md2k.data_analysis.gps_episodes_and_semantic_location_daily"

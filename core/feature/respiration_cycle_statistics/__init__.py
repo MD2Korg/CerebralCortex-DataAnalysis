@@ -21,21 +21,20 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"""Respiration Cycle Statistics
 
-"""
-Combines Respiration raw datastream with respiration baseline datastream and identifies the respiration 
+Combines Respiration raw datastream with respiration baseline datastream and identifies the respiration
 cycles through identification of peak and valley DataPoints. Then for each respiration cycle a set of 21
 features are calculated.
-      
-Algorithm::
 
+Notes:
     Input:
         1. Respiration Raw datastream
         2. Respiration baseline datastream
 
     Steps:
         1. Combine the respiration raw with respiration baseline datastream on a DataPoint by DataPoint basis
-        2. Filter the combined respiration raw and baseline datastream to get rid of the signal at 
+        2. Filter the combined respiration raw and baseline datastream to get rid of the signal at
         times when the person was not wearing the sensor suite
         3. Identify the Respiration Cycles by getting the peak and valley points
         4. Compute the features
@@ -66,13 +65,13 @@ Algorithm::
             20.  correlation_previous_cycle
             21.  correlation_next_cycle
 
-:References:
-        "Rummana Bari, Roy J. Adams, Md. Mahbubur Rahman, Megan Battles Parsons, Eugene H. Buder, and Santosh Kumar. 2018. 
-        rConverse: Moment by Moment Conversation Detection Using a Mobile Respiration Sensor. 
-        Proc. ACM Interact. Mob. Wearable Ubiquitous Technol. 2, 1, Article 2 (March 2018), 27 pages. 
+References:
+    1. "Rummana Bari, Roy J. Adams, Md. Mahbubur Rahman, Megan Battles Parsons, Eugene H. Buder, and Santosh Kumar. 2018.
+        rConverse: Moment by Moment Conversation Detection Using a Mobile Respiration Sensor.
+        Proc. ACM Interact. Mob. Wearable Ubiquitous Technol. 2, 1, Article 2 (March 2018), 27 pages.
         DOI: https://doi.org/10.1145/3191734"
-        
-        K. Hovsepian, M. al’Absi, E. Ertin, T. Kamarck, M. Nakajima, and S. Kumar, 
-        "cStress: Towards a Gold Standard for Continuous Stress Assessment in the Mobile Environment," 
+
+    2. K. Hovsepian, M. al’Absi, E. Ertin, T. Kamarck, M. Nakajima, and S. Kumar,
+        "cStress: Towards a Gold Standard for Continuous Stress Assessment in the Mobile Environment,"
         ACM UbiComp, pp. 493-504, 2015.
 """

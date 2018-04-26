@@ -27,36 +27,40 @@ from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from core.feature.activity_features.utils import *
 from core.computefeature import ComputeFeatureBase
 from datetime import timedelta, datetime
-from typing import List
+from typing import List, Tuple, Dict
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 
 feature_class_name = 'ActivityFeature'
 
 
 class ActivityFeature(ComputeFeatureBase):
-    """
-    Computes activity features and posture features per hour from
-        activity and posture outputs
+    """Computes activity features and posture features per hour from activity and posture outputs
 
-    """
+        Notes:
+            1.
 
-    def get_day_data(self, stream_name: object, user_id: object, day: object) -> object:
+        References:
+            1.
         """
-        get list od DataPoint for the stream name
 
-        :param string stream_name: Name of the stream
-        :param string user_id: UID of the user
-        :param string day: YMD
-        :return:
-        :rtype: list(DataPoint)
+    def get_day_data(self, stream_name: str, user_id: str, day: str) -> List[DataPoint]:
+        """Get a list of data points for the specified day
+
+        Args:
+            stream_name: input stream name
+            user_id: input user id
+            day: day string in YYYYMMDD format
+
+        Returns:
+            List[DataPoint]: A list of DataPoints
         """
+
         day_data = []
         stream_ids = self.CC.get_stream_id(user_id, stream_name)
         for stream_id in stream_ids:
-            data_stream = self.CC.get_stream(stream_id["identifier"],
-                                             day=day,
-                                             user_id=user_id,
-                                             data_type=DataSet.COMPLETE)
+            data_stream = self.CC.get_stream(stream_id["identifier"], day=day,
+                                             user_id=user_id, data_type=DataSet.COMPLETE)
+
             if data_stream is not None and len(data_stream.data) > 0:
                 day_data.extend(data_stream.data)
 
@@ -64,73 +68,69 @@ class ActivityFeature(ComputeFeatureBase):
 
         return day_data
 
-    def compute_activity_features_hourly(self, STREAMNAME: object,
-                                         activity_data: List[DataPoint],
-                                         streams: object, user: object) -> object:
-        """
-        compute activity output hourly
+    def compute_activity_features_hourly(self, stream_name: str, activity_data: List[DataPoint],
+                                         streams: dict, user: str) \
+            -> Tuple[List[float], List[float], List[float], List[float]]:
+        """Compute activity output hourly
 
-        :rtype: object
-        :param string STREAMNAME:  Name of the stream
-        :param list(Datapoint) activity_data: list of Datapoint
-        :param streams:
-        :param user:
-        :return:
+        Args:
+            stream_name: Name of the stream
+            activity_data: Activity DataPoints
+            streams:
+            user:
+
+        Returns:
+           Tuple[List[float], List[float], List[float], List[float]]: walking_minutes_per_hour, moderate_minutes_per_hour, high_minutes_per_hour, total_minutes_per_hour
         """
 
         if activity_data is None or len(activity_data) == 0:
             return
 
-        walking_min_hourly = [0] * 24
-        mod_min_hourly = [0] * 24
-        high_min_hourly = [0] * 24
-        total_min_per_hour = [0] * 24
+        walking_minutes_per_hour = [0] * 24
+        moderate_minutes_per_hour = [0] * 24
+        high_minutes_per_hour = [0] * 24
+        total_minutes_per_hour = [0] * 24
 
-        for v in activity_data:
-            hr = int(v.start_time.hour)
-            label = v.sample
-            if label == WALKING:
-                walking_min_hourly[hr] = walking_min_hourly[hr] + 1
-            if label == MODERATE_ACT:
-                mod_min_hourly[hr] = mod_min_hourly[hr] + 1
-            if label == HIGH_ACT:
-                high_min_hourly[hr] = high_min_hourly[hr] + 1
-            total_min_per_hour[hr] = total_min_per_hour[hr] + 1
+        for value in activity_data:
+            hr = int(value.start_time.hour)
+            if value.sample == WALKING:
+                walking_minutes_per_hour[hr] = walking_minutes_per_hour[hr] + 1
+            elif value.sample == MODERATE_ACT:
+                moderate_minutes_per_hour[hr] = moderate_minutes_per_hour[hr] + 1
+            elif value.sample == HIGH_ACT:
+                high_minutes_per_hour[hr] = high_minutes_per_hour[hr] + 1
 
-        walking_min_hourly = [v / 6 for v in walking_min_hourly]
-        mod_min_hourly = [v / 6 for v in mod_min_hourly]
-        high_min_hourly = [v / 6 for v in high_min_hourly]
-        total_min_per_hour = [v / 6 for v in total_min_per_hour]
+            total_minutes_per_hour[hr] = total_minutes_per_hour[hr] + 1
 
-        y = activity_data[0].start_time.year
-        m = activity_data[0].start_time.month
-        d = activity_data[0].start_time.day
+        walking_minutes_per_hour = [v / 6 for v in walking_minutes_per_hour]
+        moderate_minutes_per_hour = [v / 6 for v in moderate_minutes_per_hour]
+        high_minutes_per_hour = [v / 6 for v in high_minutes_per_hour]
+        total_minutes_per_hour = [v / 6 for v in total_minutes_per_hour]
+
         offset = activity_data[0].offset
 
         walk_data = []
-        mod_data = []
+        moderate_data = []
         high_data = []
         for hour in range(0, 24):
-            start_time = get_local_datetime(year=y, month=m, day=d, hour=hour,
-                                            minute=0, second=0, offset=offset)
-            end_time = start_time + timedelta(minutes=59)
-            walk_data.append(
-                DataPoint(start_time=start_time, end_time=end_time,
-                          offset=offset,
-                          sample=[walking_min_hourly[hour],
-                                  total_min_per_hour[hour]]))
-            mod_data.append(
-                DataPoint(start_time=start_time, end_time=end_time,
-                          offset=offset,
-                          sample=[mod_min_hourly[hour],
-                                  total_min_per_hour[hour]]))
-            high_data.append(
-                DataPoint(start_time=start_time, end_time=end_time,
-                          offset=offset,
-                          sample=[high_min_hourly[hour],
-                                  total_min_per_hour[hour]]))
+            start_time = get_local_datetime(year=activity_data[0].start_time.year,
+                                            month=activity_data[0].start_time.month,
+                                            day=activity_data[0].start_time.day,
+                                            hour=hour,
+                                            minute=0,
+                                            second=0,
+                                            offset=offset)
 
-        if STREAMNAME == ACTIVITY_STREAMNAME:
+            end_time = start_time + timedelta(hours=1)
+
+            walk_data.append(DataPoint(start_time=start_time, end_time=end_time, offset=offset,
+                                       sample=[walking_minutes_per_hour[hour], total_minutes_per_hour[hour]]))
+            moderate_data.append(DataPoint(start_time=start_time, end_time=end_time, offset=offset,
+                                           sample=[moderate_minutes_per_hour[hour], total_minutes_per_hour[hour]]))
+            high_data.append(DataPoint(start_time=start_time, end_time=end_time, offset=offset,
+                                       sample=[high_minutes_per_hour[hour], total_minutes_per_hour[hour]]))
+
+        if stream_name == ACTIVITY_STREAMNAME:
             self.store_stream(filepath=WALKING_HOURLY,
                               input_streams=[streams[ACTIVITY_STREAMNAME]],
                               user_id=user,
@@ -138,86 +138,83 @@ class ActivityFeature(ComputeFeatureBase):
             self.store_stream(filepath=MODERATE_ACTIVITY_HOURLY,
                               input_streams=[streams[ACTIVITY_STREAMNAME]],
                               user_id=user,
-                              data=mod_data)
+                              data=moderate_data)
             self.store_stream(filepath=HIGH_ACTIVITY_HOURLY,
                               input_streams=[streams[ACTIVITY_STREAMNAME]],
                               user_id=user,
                               data=high_data)
 
-        if STREAMNAME == ACCEL_ONLY_ACTIVITY_STREAMNAME:
+        if stream_name == ACCEL_ONLY_ACTIVITY_STREAMNAME:
             self.store_stream(filepath=WALKING_HOURLY_ACCEL_ONLY,
-                              input_streams=[
-                                  streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                              input_streams=[streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
                               user_id=user,
                               data=walk_data)
             self.store_stream(filepath=MODERATE_ACTIVITY_HOURLY_ACCEL_ONLY,
-                              input_streams=[
-                                  streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                              input_streams=[streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
                               user_id=user,
-                              data=mod_data)
+                              data=moderate_data)
             self.store_stream(filepath=HIGH_ACTIVITY_HOURLY_ACCEL_ONLY,
-                              input_streams=[
-                                  streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                              input_streams=[streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
                               user_id=user,
                               data=high_data)
 
-        return walking_min_hourly, mod_min_hourly, high_min_hourly, total_min_per_hour
+        return walking_minutes_per_hour, moderate_minutes_per_hour, high_minutes_per_hour, total_minutes_per_hour
 
-    def compute_posture_features_hourly(self, posture_data: object, streams: object, user: object) -> object:
-        """
+    def compute_posture_features_hourly(self, posture_data: List[DataPoint], streams: dict, user: str)
+        """Compute posture output hourly
 
-        :param posture_data:
-        :param streams:
-        :param user:
-        :return:
+        Args:
+            posture_data: Posture DataPoints
+            streams:
+            user:
         """
 
         if posture_data is None or len(posture_data) == 0:
             return
 
-        lying_min_hourly = [0] * 24
-        sitting_min_hourly = [0] * 24
-        standing_min_hourly = [0] * 24
-        total_posture_min_hourly = [0] * 24
-        for v in posture_data:
-            hr = int(v.start_time.hour)
-            label = v.sample
-            if label == LYING:
-                lying_min_hourly[hr] = lying_min_hourly[hr] + 1
-            if label == SITTING:
-                sitting_min_hourly[hr] = sitting_min_hourly[hr] + 1
-            if label == STANDING:
-                standing_min_hourly[hr] = standing_min_hourly[hr] + 1
-            total_posture_min_hourly[hr] = total_posture_min_hourly[hr] + 1
+        lying_minutes_per_hour = [0] * 24
+        sitting_minutes_per_hour = [0] * 24
+        standing_minutes_per_hour = [0] * 24
+        total_posture_minutes_per_hour = [0] * 24
 
-        y = posture_data[0].start_time.year
-        m = posture_data[0].start_time.month
-        d = posture_data[0].start_time.day
+        for value in posture_data:
+            hr = int(value.start_time.hour)
+            if value.sample == LYING:
+                lying_minutes_per_hour[hr] = lying_minutes_per_hour[hr] + 1
+            if value.sample == SITTING:
+                sitting_minutes_per_hour[hr] = sitting_minutes_per_hour[hr] + 1
+            if value.sample == STANDING:
+                standing_minutes_per_hour[hr] = standing_minutes_per_hour[hr] + 1
+            total_posture_minutes_per_hour[hr] = total_posture_minutes_per_hour[hr] + 1
+
         offset = posture_data[0].offset
 
         lying_data = []
         sitting_data = []
         standing_data = []
         for hour in range(0, 24):
-            start_time = get_local_datetime(year=y, month=m, day=d, hour=hour,
-                                            minute=0, second=0, offset=offset)
-            end_time = start_time + timedelta(minutes=59)
+            start_time = get_local_datetime(year=posture_data[0].start_time.year,
+                                            month=posture_data[0].start_time.month,
+                                            day=posture_data[0].start_time.day,
+                                            hour=hour,
+                                            minute=0,
+                                            second=0,
+                                            offset=offset)
 
-            lying_data.append(
-                DataPoint(start_time=start_time, end_time=end_time,
-                          offset=offset,
-                          sample=[lying_min_hourly[hour],
-                                  total_posture_min_hourly[hour]]))
-            sitting_data.append(
-                DataPoint(start_time=start_time, end_time=end_time,
-                          offset=offset,
-                          sample=[sitting_min_hourly[hour],
-                                  total_posture_min_hourly[hour]]))
-            standing_data.append(
-                DataPoint(start_time=start_time, end_time=end_time,
-                          offset=offset,
-                          sample=[standing_min_hourly[hour],
-                                  total_posture_min_hourly[hour]]))
+            end_time = start_time + timedelta(hours=1)
+
+            lying_data.append(DataPoint(start_time=start_time, end_time=end_time,
+                                        offset=offset,
+                                        sample=[lying_minutes_per_hour[hour],
+                                                total_posture_minutes_per_hour[hour]]))
+            sitting_data.append(DataPoint(start_time=start_time, end_time=end_time,
+                                          offset=offset,
+                                          sample=[sitting_minutes_per_hour[hour],
+                                                  total_posture_minutes_per_hour[hour]]))
+            standing_data.append(DataPoint(start_time=start_time, end_time=end_time,
+                                           offset=offset,
+                                           sample=[standing_minutes_per_hour[hour],
+                                                   total_posture_minutes_per_hour[hour]]))
 
         self.store_stream(filepath=LYING_HOURLY,
                           input_streams=[streams[POSTURE_STREAMNAME]],
@@ -232,116 +229,100 @@ class ActivityFeature(ComputeFeatureBase):
                           user_id=user,
                           data=standing_data)
 
-    def compute_hourly_mean_for_time_of_day(self, D: dict, days: object) -> object:
-
-        """
-        computes
-
-        :rtype: object
-        :param D: dictionary of activity output hourly
-        :param list days:  all days
-        :return: mean for hourly activity output
+    def compute_hourly_mean_for_time_of_day(self, activity: dict, days: List[str]) \
+            -> Tuple[List[float], List[float], List[float]]:
         """
 
-        mean_walk_hourly = [0] * 24
-        mean_mod_hourly = [0] * 24
-        mean_high_hourly = [0] * 24
+        Args:
+            activity: activity output by hour
+            days: all available days
+
+        Returns:
+            Tuple[List[float], List[float], List[float]]: mean_walking_minutes_per_hour, mean_moderate_minutes_per_hour, mean_high_minutes_per_hour
+        """
+
+        mean_walking_minutes_per_hour = [0] * 24
+        mean_moderate_minutes_per_hour = [0] * 24
+        mean_high_minutes_per_hour = [0] * 24
         day_count = [0] * 24
 
         for day in days:
-            walkH, modH, highH, hourCount = D[day]
+            walk, moderate, high, hour_count = activity[day]
             for i in range(24):
-                if hourCount[i] >= 30:
-                    mean_walk_hourly[i] = mean_walk_hourly[i] + (
-                            walkH[i] * 60) / hourCount[i]
-                    mean_mod_hourly[i] = mean_mod_hourly[i] + (modH[i] * 60) / \
-                                         hourCount[i]
-                    mean_high_hourly[i] = mean_high_hourly[i] + (
-                            highH[i] * 60) / hourCount[i]
+                if hour_count[i] >= 30:
+                    mean_walking_minutes_per_hour[i] += (walk[i] * 60) / hour_count[i]
+                    mean_moderate_minutes_per_hour[i] += (moderate[i] * 60) / hour_count[i]
+                    mean_high_minutes_per_hour[i] += (high[i] * 60) / hour_count[i]
                     day_count[i] = day_count[i] + 1
 
         for i in range(24):
             if day_count[i] > 0:
-                mean_walk_hourly[i] = mean_walk_hourly[i] / day_count[i]
-                mean_mod_hourly[i] = mean_mod_hourly[i] / day_count[i]
-                mean_high_hourly[i] = mean_high_hourly[i] / day_count[i]
+                mean_walking_minutes_per_hour[i] /= day_count[i]
+                mean_moderate_minutes_per_hour[i] /= day_count[i]
+                mean_high_minutes_per_hour[i] /= day_count[i]
 
-        return mean_walk_hourly, mean_mod_hourly, mean_high_hourly
+        return mean_walking_minutes_per_hour, mean_moderate_minutes_per_hour, mean_high_minutes_per_hour
 
-    def compute_hourly_mean_for_day_of_week(self, D: dict, days: object) -> object:
+    def compute_hourly_mean_for_day_of_week(self, activity: dict, days: List[str]) -> Dict[int]:
+        """
+
+        Args:
+            activity:
+            days:
+
+        Returns:
 
         """
 
-        :rtype: object
-        :param D:
-        :param days:
-        :return:
-        """
+        day_of_week_mean = dict()
 
-        dayOfWeek_mean = dict()
+        for day_of_week in range(7):
+            mean_walking_minutes_per_hour = [0] * 24
+            mean_moderate_minutes_per_hour = [0] * 24
+            mean_high_minutes_per_hour = [0] * 24
+            count = [0] * 24
 
-        for week in range(7):
-            mean_walk_hourly = [0] * 24
-            mean_mod_hourly = [0] * 24
-            mean_high_hourly = [0] * 24
-            nCount = [0] * 24
-
-            same_week_days = [day for day in days if datetime.strptime(day,
-                                                                       '%Y%m%d').weekday() == week]
+            same_week_days = [day for day in days if datetime.strptime(day, '%Y%m%d').weekday() == day_of_week]
 
             for day in same_week_days:
-                walkH, modH, highH, hourCount = D[day]
+                walking_hour, moderate_hour, high_hour, hour_count = activity[day]
                 for i in range(24):
-                    if hourCount[i] >= 30:
-                        mean_walk_hourly[i] = mean_walk_hourly[i] + (
-                                walkH[i] * 60) / hourCount[i]
-                        mean_mod_hourly[i] = mean_mod_hourly[i] + (
-                                modH[i] * 60) / hourCount[i]
-                        mean_high_hourly[i] = mean_high_hourly[i] + (
-                                highH[i] * 60) / hourCount[i]
-                        nCount[i] = nCount[i] + 1
+                    if hour_count[i] >= 30:
+                        mean_walking_minutes_per_hour[i] += (walking_hour[i] * 60) / hour_count[i]
+                        mean_moderate_minutes_per_hour[i] += (moderate_hour[i] * 60) / hour_count[i]
+                        mean_high_minutes_per_hour[i] += (high_hour[i] * 60) / hour_count[i]
+                        count[i] = count[i] + 1
 
             for i in range(24):
-                if nCount[i] > 0:
-                    mean_walk_hourly[i] = mean_walk_hourly[i] / nCount[i]
-                    mean_mod_hourly[i] = mean_mod_hourly[i] / nCount[i]
-                    mean_high_hourly[i] = mean_high_hourly[i] / nCount[i]
+                if count[i] > 0:
+                    mean_walking_minutes_per_hour[i] /= count[i]
+                    mean_moderate_minutes_per_hour[i] /= count[i]
+                    mean_high_minutes_per_hour[i] /= count[i]
 
-            dayOfWeek_mean[week] = [mean_walk_hourly, mean_mod_hourly,
-                                    mean_high_hourly]
-        return dayOfWeek_mean
+            day_of_week_mean[day_of_week] = [mean_walking_minutes_per_hour,
+                                             mean_moderate_minutes_per_hour,
+                                             mean_high_minutes_per_hour]
+        return day_of_week_mean
 
-    def imputation_by_mean_data(self, D: dict, days: object, user_id: object,
-                                STREAMNAME: object, streams: object, offset: object) -> object:
-        """
+    def imputation_by_mean_data(self, activity: dict, days: List[str], user_id: str, stream_name: str, streams: dict, offset: int):
 
-        :rtype: object
-        :param D:
-        :param days:
-        :param user_id:
-        :param STREAMNAME:
-        :param streams:
-        :param offset:
-        """
-        mean_walk_hourly_tofd, mean_mod_hourly_tofd, mean_high_hourly_tofd = \
-            self.compute_hourly_mean_for_time_of_day(D, days)
 
-        dayOfWeek_hourly_mean = self.compute_hourly_mean_for_day_of_week(D,
-                                                                         days)
+        mean_walk_minutes_per_hour, mean_moderate_minutes_per_hour, mean_high_minutes_per_hour = self.compute_hourly_mean_for_time_of_day(activity, days)
+
+        day_of_week_per_hour_mean = self.compute_hourly_mean_for_day_of_week(activity,days)
 
         for day in days:
 
             daytime = datetime.strptime(day, '%Y%m%d')
             week_id = daytime.weekday()
 
-            mean_walk_hourly_dofw, mean_mod_hourly_dofw, mean_high_hourly_dofw = \
-                dayOfWeek_hourly_mean[week_id]
+            walking_by_hour, moderate_by_hour, high_by_hour = day_of_week_per_hour_mean[week_id]
 
-            walkH_prev, modH_prev, highH_prev, hourCount = D[day]
+            previous_walking_hour, previous_moderate_hour, previous_high_hour, hour_count = activity[day]
 
-            total_walking = sum(walkH_prev)
-            total_mod = sum(modH_prev)
-            total_high = sum(highH_prev)
+            total_walking = sum(previous_walking_hour)
+            total_mod = sum(previous_moderate_hour)
+            total_high = sum(previous_high_hour)
 
             walkH_tofd = [0] * 24
             modH_tofd = [0] * 24
@@ -351,21 +332,21 @@ class ActivityFeature(ComputeFeatureBase):
             highH_dofw = [0] * 24
 
             for i in range(24):
-                if hourCount[i] < 30:
-                    walkH_tofd[i] = mean_walk_hourly_tofd[i]
-                    modH_tofd[i] = mean_mod_hourly_tofd[i]
-                    highH_tofd[i] = mean_high_hourly_tofd[i]
-                    walkH_dofw[i] = mean_walk_hourly_dofw[i]
-                    modH_dofw[i] = mean_mod_hourly_dofw[i]
-                    highH_dofw[i] = mean_high_hourly_dofw[i]
+                if hour_count[i] < 30:
+                    walkH_tofd[i] = mean_walk_minutes_per_hour[i]
+                    modH_tofd[i] = mean_moderate_minutes_per_hour[i]
+                    highH_tofd[i] = mean_high_minutes_per_hour[i]
+                    walkH_dofw[i] = walking_by_hour[i]
+                    modH_dofw[i] = moderate_by_hour[i]
+                    highH_dofw[i] = high_by_hour[i]
                 else:
-                    walkH_tofd[i] = (walkH_prev[i] * 60) / hourCount[i]
-                    modH_tofd[i] = (modH_prev[i] * 60) / hourCount[i]
-                    highH_tofd[i] = (highH_prev[i] * 60) / hourCount[i]
+                    walkH_tofd[i] = (previous_walking_hour[i] * 60) / hour_count[i]
+                    modH_tofd[i] = (previous_moderate_hour[i] * 60) / hour_count[i]
+                    highH_tofd[i] = (previous_high_hour[i] * 60) / hour_count[i]
 
-                    walkH_dofw[i] = (walkH_prev[i] * 60) / hourCount[i]
-                    modH_dofw[i] = (modH_prev[i] * 60) / hourCount[i]
-                    highH_dofw[i] = (highH_prev[i] * 60) / hourCount[i]
+                    walkH_dofw[i] = (previous_walking_hour[i] * 60) / hour_count[i]
+                    modH_dofw[i] = (previous_moderate_hour[i] * 60) / hour_count[i]
+                    highH_dofw[i] = (previous_high_hour[i] * 60) / hour_count[i]
 
             total_imputed_time_of_day_walk = sum(walkH_tofd)
             total_imputed_time_of_day_mod = sum(modH_tofd)
@@ -382,7 +363,7 @@ class ActivityFeature(ComputeFeatureBase):
             start_time = get_local_datetime(y, m, d, 0, 0, 0, offset=offset)
             end_time = get_local_datetime(y, m, d, 23, 59, 59, offset=offset)
 
-            if STREAMNAME == ACTIVITY_STREAMNAME:
+            if stream_name == ACTIVITY_STREAMNAME:
                 self.store_stream(filepath=WALKING_DAILY,
                                   input_streams=[streams[ACTIVITY_STREAMNAME]],
                                   user_id=user_id,
@@ -441,32 +422,28 @@ class ActivityFeature(ComputeFeatureBase):
                                                   end_time=end_time, offset=offset,
                                                   sample=total_imputed_day_of_week_high)])
 
-            if STREAMNAME == ACCEL_ONLY_ACTIVITY_STREAMNAME:
+            if stream_name == ACCEL_ONLY_ACTIVITY_STREAMNAME:
                 self.store_stream(filepath=WALKING_DAILY,
-                                  input_streams=[
-                                      streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                                  input_streams=[streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
                                   user_id=user_id,
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time, offset=offset,
                                                   sample=total_walking)])
                 self.store_stream(filepath=WALKING_IMPUTED_TIME_OF_DAY_DAILY,
-                                  input_streams=[
-                                      streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                                  input_streams=[streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
                                   user_id=user_id,
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time, offset=offset,
                                                   sample=total_imputed_time_of_day_walk)])
                 self.store_stream(filepath=WALKING_IMPUTED_DAY_OF_WEEK_DAILY,
-                                  input_streams=[
-                                      streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                                  input_streams=[streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
                                   user_id=user_id,
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time, offset=offset,
                                                   sample=total_imputed_day_of_week_walk)])
 
                 self.store_stream(filepath=MODERATE_ACTIVITY_DAILY,
-                                  input_streams=[
-                                      streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                                  input_streams=[streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
                                   user_id=user_id,
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time, offset=offset,
@@ -479,41 +456,40 @@ class ActivityFeature(ComputeFeatureBase):
                                     end_time=end_time, offset=offset,
                                     sample=total_imputed_time_of_day_mod)])
                 self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
-                                  input_streams=[
-                                      streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                                  input_streams=[streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
                                   user_id=user_id,
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time, offset=offset,
                                                   sample=total_imputed_day_of_week_mod)])
 
                 self.store_stream(filepath=HIGH_ACTIVITY_DAILY,
-                                  input_streams=[
-                                      streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                                  input_streams=[streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
                                   user_id=user_id,
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time, offset=offset,
                                                   sample=total_high)])
                 self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
-                                  input_streams=[
-                                      streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                                  input_streams=[streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
                                   user_id=user_id,
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time, offset=offset,
                                                   sample=total_imputed_time_of_day_high)])
                 self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_DAY_OF_WEEK_DAILY,
-                                  input_streams=[
-                                      streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
+                                  input_streams=[streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
                                   user_id=user_id,
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time, offset=offset,
                                                   sample=total_imputed_day_of_week_high)])
 
-    def process(self, user: str, all_days: list):
+    def process(self, user: str, all_days: List[str]):
+        """Main entry point for a feature computation module
+
+        Args:
+            user: User id (UUID)
+            all_days: What days (YYYYMMDD) to compute over
+
         """
 
-        :param user:
-        :param all_days:
-        """
         if self.CC is None:
             return
 
@@ -523,54 +499,40 @@ class ActivityFeature(ComputeFeatureBase):
         streams = self.CC.get_user_streams(user)
 
         if not streams:
-            self.CC.logging.log(
-                "Activity and posture features - no streams found for user: %s" %
-                (user))
+            self.CC.logging.log("Activity and posture features - no streams found for user: %s" % user)
             return
 
-        D = dict()
-        D_accel = dict()
+        activity_data = dict()
+        activity_data_accelerometer = dict()
 
         day_list = []
-        day_list_accel = []
+        day_list_accelerometer = []
 
         offset = 0
         for day in all_days:
             activity_data = self.get_day_data(ACTIVITY_STREAMNAME, user, day)
             if len(activity_data) > 0:
-                walking_min_hourly, mod_min_hourly, high_min_hourly, total_min_per_hour = \
-                    self.compute_activity_features_hourly(ACTIVITY_STREAMNAME,
-                                                          activity_data, streams,
-                                                          user)
-                D[day] = [walking_min_hourly, mod_min_hourly, high_min_hourly,
-                          total_min_per_hour]
+                walking_min_hourly, mod_min_hourly, high_min_hourly, total_min_per_hour = self.compute_activity_features_hourly(ACTIVITY_STREAMNAME,activity_data, streams,user)
+                activity_data[day] = [walking_min_hourly, mod_min_hourly, high_min_hourly,total_min_per_hour]
                 day_list.append(day)
 
-            activity_data_accel_only = \
-                self.get_day_data(ACCEL_ONLY_ACTIVITY_STREAMNAME, user, day)
-            if len(activity_data_accel_only) > 0:
-                walking_min_hourly_accel_only, mod_min_hourly_accel_only, high_min_hourly_accel_only, total_min_per_hour_accel_only = \
-                    self.compute_activity_features_hourly(
-                        ACCEL_ONLY_ACTIVITY_STREAMNAME, activity_data_accel_only,
-                        streams, user)
-                D_accel[day] = [walking_min_hourly_accel_only,
-                                mod_min_hourly_accel_only,
-                                high_min_hourly_accel_only,
-                                total_min_per_hour_accel_only]
-                day_list_accel.append(day)
+            activity_data_accelerometer_only = self.get_day_data(ACCEL_ONLY_ACTIVITY_STREAMNAME, user, day)
+            if len(activity_data_accelerometer_only) > 0:
+                walking_min_hourly_accelerometer_only, mod_min_hourly_accelerometer_only, high_min_hourly_accelerometer_only, total_min_per_hour_accelerometer_only = self.compute_activity_features_hourly(ACCEL_ONLY_ACTIVITY_STREAMNAME, activity_data_accelerometer_only,streams, user)
+                activity_data_accelerometer[day] = [walking_min_hourly_accelerometer_only,
+                                                    mod_min_hourly_accelerometer_only,
+                                                    high_min_hourly_accelerometer_only,
+                                                    total_min_per_hour_accelerometer_only]
+                day_list_accelerometer.append(day)
 
             posture_data = self.get_day_data(POSTURE_STREAMNAME, user, day)
             self.compute_posture_features_hourly(posture_data, streams, user)
+
             if len(activity_data) > 0:
                 offset = activity_data[0].offset
 
-        self.imputation_by_mean_data(D, day_list, user,
-                                     ACTIVITY_STREAMNAME, streams, offset)
+        self.imputation_by_mean_data(activity_data, day_list, user,ACTIVITY_STREAMNAME, streams, offset)
 
-        self.imputation_by_mean_data(D_accel, day_list_accel, user,
-                                     ACCEL_ONLY_ACTIVITY_STREAMNAME, streams,
-                                     offset)
+        self.imputation_by_mean_data(activity_data_accelerometer, day_list_accelerometer, user,ACCEL_ONLY_ACTIVITY_STREAMNAME, streams,offset)
 
-        self.CC.logging.log(
-            "Finished processing activity and posture features for user: %s" % (
-                user))
+        self.CC.logging.log("Finished processing activity and posture features for user: %s" % user)

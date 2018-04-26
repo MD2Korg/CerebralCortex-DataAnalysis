@@ -40,12 +40,7 @@ window_size_10sec = 10
 
 
 def admission_control(data: List[DataPoint]) -> List[DataPoint]:
-    """
 
-    :rtype: List[DataPoint]
-    :param List[DataPoint] data:
-    :return:
-    """
     final_data = []
     for dp in data:
         if isinstance(dp.sample, str) and len(dp.sample.split(',')) == 20:
@@ -56,12 +51,7 @@ def admission_control(data: List[DataPoint]) -> List[DataPoint]:
 
 
 def decode_only(data: object) -> object:
-    """
 
-    :rtype: object
-    :param data:
-    :return:
-    """
     final_data = []
     for dp in data:
         if isinstance(dp.sample, str):
@@ -69,20 +59,20 @@ def decode_only(data: object) -> object:
             str_sample_list = str_sample.split(',')
             if len(str_sample_list) != 20:
                 continue
-            Vals = [np.int8(np.float(val)) for val in str_sample_list]
+            values = [np.int8(np.float(val)) for val in str_sample_list]
         elif isinstance(dp.sample, list):
-            Vals = [np.int8(val) for val in dp.sample]
+            values = [np.int8(val) for val in dp.sample]
         else:
             continue
         sample = np.array([0] * 3)
-        sample[0] = (np.uint8(Vals[12]) << 10) | (np.uint8(Vals[13]) << 2) | \
-                    ((np.uint8(Vals[14]) & int('11000000', 2)) >> 6)
-        sample[1] = ((np.uint8(Vals[14]) & int('00111111', 2)) << 12) | \
-                    (np.uint8(Vals[15]) << 4) | \
-                    ((np.uint8(Vals[16]) & int('11110000', 2)) >> 4)
-        sample[2] = ((np.uint8(Vals[16]) & int('00001111', 2)) << 14) | \
-                    (np.uint8(Vals[17]) << 6) | \
-                    ((np.uint8(Vals[18]) & int('11111100', 2)) >> 2)
+        sample[0] = (np.uint8(values[12]) << 10) | (np.uint8(values[13]) << 2) | \
+                    ((np.uint8(values[14]) & int('11000000', 2)) >> 6)
+        sample[1] = ((np.uint8(values[14]) & int('00111111', 2)) << 12) | \
+                    (np.uint8(values[15]) << 4) | \
+                    ((np.uint8(values[16]) & int('11110000', 2)) >> 4)
+        sample[2] = ((np.uint8(values[16]) & int('00001111', 2)) << 14) | \
+                    (np.uint8(values[17]) << 6) | \
+                    ((np.uint8(values[18]) & int('11111100', 2)) >> 2)
         final_data.append(deepcopy(dp))
         final_data[-1].sample = sample
     return final_data
@@ -97,20 +87,15 @@ def bandpassfilter(x: object, fs: object) -> object:
     :return: filtered list
     """
     x = signal.detrend(x)
-    b = signal.firls(129, [0, 0.6 * 2 / fs, 0.7 * 2 / fs, 3 * 2 / fs, 3.5 * 2 / fs, 1], [0, 0, 1, 1, 0, 0],
+    b = signal.firls(129,
+                     [0, 0.6 * 2 / fs, 0.7 * 2 / fs, 3 * 2 / fs, 3.5 * 2 / fs, 1],
+                     [0, 0, 1, 1, 0, 0],
                      [100 * 0.02, 0.02, 0.02])
     return signal.convolve(x, b, 'valid')
 
 
 def isDatapointsWithinRange(red: object, infrared: object, green: object) -> bool:
-    """
 
-    :rtype: bool
-    :param red:
-    :param infrared:
-    :param green:
-    :return:
-    """
     a = len(np.where((red >= 14000) & (red <= 170000))[0]) < .64 * len(red)
     b = len(np.where((infrared >= 100000) & (infrared <= 245000))[0]) < .64 * len(infrared)
     c = len(np.where((green >= 800) & (green <= 20000))[0]) < .64 * len(green)
@@ -121,11 +106,7 @@ def isDatapointsWithinRange(red: object, infrared: object, green: object) -> boo
 
 def compute_quality(red: object, infrared: object, green: object, fs: object) -> bool:
     """
-    
-    :param red:
-    :param infrared:
-    :param green:
-    :param fs:
+
     :return: True/False where 0 = attached, 1 = not attached TODO: Confirm 0/1 values
     """
 
@@ -135,7 +116,7 @@ def compute_quality(red: object, infrared: object, green: object, fs: object) ->
     if np.mean(red) < 5000 and np.mean(infrared) < 5000 and np.mean(green) < 5000:
         return False
 
-    if not (np.mean(red) > np.mean(green) and np.mean(infrared) > np.mean(red)):
+    if not (np.mean(green) < np.mean(red) < np.mean(infrared)):
         return False
 
     diff = 30000
@@ -145,31 +126,26 @@ def compute_quality(red: object, infrared: object, green: object, fs: object) ->
     if not (np.mean(red) - np.mean(green) > diff and np.mean(infrared) - np.mean(red) > diff):
         return False
 
-    if np.std(bandpassfilter(red, fs)) <= 5 and np.std(bandpassfilter(infrared, fs)) <= 5 and np.std(
-            bandpassfilter(green, fs)) <= 5:
+    if np.std(bandpassfilter(red, fs)) <= 5 and \
+            np.std(bandpassfilter(infrared, fs)) <= 5 and \
+            np.std(bandpassfilter(green, fs)) <= 5:
         return False
 
     return True
 
 
-def get_quality(windowed_data: object, Fs: object) -> object:
-    """
+def get_quality(windowed_data: object, fs: object) -> object:
 
-    :rtype: object
-    :param windowed_data:
-    :param Fs:
-    :return:
-    """
     quality = []
     for key in windowed_data.keys():
         data = windowed_data[key]
-        if len(data) < .64 * Fs * 10:
+        if len(data) < .64 * fs * 10:
             quality.append(False)
             continue
         red = np.array([i.sample[0] for i in data])
         infrared = np.array([i.sample[1] for i in data])
         green = np.array([i.sample[2] for i in data])
-        quality.append(compute_quality(red, infrared, green, Fs))
+        quality.append(compute_quality(red, infrared, green, fs))
     if not quality:
         return False
     value, count = Counter(quality).most_common()[0]

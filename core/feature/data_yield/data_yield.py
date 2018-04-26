@@ -82,13 +82,13 @@ class data_yield(ComputeFeatureBase):
                               user_id,
                               final_yield, localtime=False)
 
-    def process(self, user, all_days: list):
-        """
-        Takes the user identifier and the list of days and does the required processing  
-        
-        :param user: user id string
-        :param all_days: list of days to compute
-        
+    def process(self, user: str, all_days: List[str]):
+        """Main entry point for a feature computation module
+
+        Args:
+            user: User id (UUID)
+            all_days: What days (YYYYMMDD) to compute over
+
         """
         if not all_days:
             return

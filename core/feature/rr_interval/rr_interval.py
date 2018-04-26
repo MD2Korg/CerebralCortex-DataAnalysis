@@ -84,12 +84,13 @@ class rr_interval(ComputeFeatureBase):
 
 
 
-    def process(self, user:str, all_days:list):
-        """
-        Takes the user identifier and the list of days and does the required processing
+    def process(self, user_id: str, all_days: List[str]):
+        """This is the main entry point for feature computation and is called by the main driver application
 
-        :param user: user id string
-        :param all_days: list of days to compute
+        Args:
+            user_id: User identifier in UUID format
+            all_days: List of all days to run this feature over
+
         """
         if not all_days:
             return
@@ -98,7 +99,7 @@ class rr_interval(ComputeFeatureBase):
         if not user:
             return
 
-        all_streams = self.CC.get_user_streams(user_id=user)
+        all_streams = self.CC.get_user_streams(user_id=user_id)
 
         if all_streams is None:
             return
@@ -112,7 +113,6 @@ class rr_interval(ComputeFeatureBase):
         if qualtrics_identifier not in all_streams:
             return
 
-        user_id = user
         for day in all_days:
 
             left_data = []

@@ -94,11 +94,12 @@ class SleepTime(ComputeFeatureBase):
             self.CC.logging.log(str(traceback.format_exc()))
 
     def process(self, user_id: str, all_days: List[str]):
-        """
-        Main processing function inherited from ComputerFeatureBase
+        """This is the main entry point for feature computation and is called by the main driver application
 
-        :param str user_id: UUID of the user
-        :param List(str) all_days: List of days with format 'YYYYMMDD'
+        Args:
+            user_id: User identifier in UUID format
+            all_days: List of all days to run this feature over
+
         """
         if self.CC is not None:
             self.CC.logging.log("Processing Sleep Times")

@@ -85,8 +85,9 @@ class TaskFeatures(ComputeFeatureBase):
 
         return day_data
 
-    def process(self, user: str, all_days: list):
+    def process(self, user_id: str, all_days: List[str]):
         """
+
         This function collects user data of individual streams like posture,
         activity, gps locations and office beacon. Creates dictionaries of time intervals
         for postures like sitting, standing; activity like walking; gps semantic
@@ -94,6 +95,12 @@ class TaskFeatures(ComputeFeatureBase):
         intervals of sitting,standing and walking in office and office beacon context.
         Finally calculates the proportion of sitting,standing,walking time in
         office and office beacon context and converts them to minutes per hour.
+
+        Args:
+            user_id: User identifier in UUID format
+            all_days: List of all days to run this feature over
+
+        """
 
         :param str user: UUID
         :param list all_days: list of days on which to operate

@@ -169,13 +169,12 @@ class respiration_cycle_statistics(ComputeFeatureBase):
 
         return conversation_feature
 
-    def process(self, user: str, all_days: list):
+    def process(self, user_id: str, all_days: List[str]):
+        """This is the main entry point for feature computation and is called by the main driver application
 
-        """
-        Takes the user identifier and the list of days and does the required processing
-
-        :param str user: user id string
-        :param list all_days: list of days to compute
+        Args:
+            user_id: User identifier in UUID format
+            all_days: List of all days to run this feature over
 
         """
         if not list(all_days):

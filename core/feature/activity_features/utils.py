@@ -78,19 +78,21 @@ SITTING_HOURLY = 'sitting_time_hourly.json'
 STANDING_HOURLY = 'standing_time_hourly.json'
 
 
+def get_local_datetime(year: int, month: int, day: int, hour: int = 0, minute: int = 0, second: int = 0,
+                       offset: int = 0) -> datetime:
+    """Wrapper function for acquiring a datetime object.
 
-def get_local_datetime(year, month, day, hour=0, minute=0, second=0, offset=0):
-    """
+    Args:
+        year: Year
+        month: Month
+        day: Day
+        hour: Hour
+        minute: Minute
+        second: Second
+        offset: Offset in milliseconds
 
-    :rtype: object
-    :param year:
-    :param month:
-    :param day:
-    :param hour:
-    :param minute:
-    :param second:
-    :param offset:
-    :return:
+    Returns:
+        datetime:
     """
     tz = timezone(timedelta(milliseconds=offset))
     return datetime(year, month, day, hour, minute, second, tzinfo=tz)

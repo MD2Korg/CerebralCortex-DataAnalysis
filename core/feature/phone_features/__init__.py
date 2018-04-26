@@ -21,85 +21,85 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"""Short Description (one sentence or less)
 
-"""
-This documentation block describes the how the feature is computed
+Long Description (paragraph describing this module)
 
-Feature list
+Features:
+    1. Entropy
+        - Hourly
+            - Call
+            - SMS
+            - Call and SMS
+        - Four Hourly
+            - Call
+            - SMS
+            - Call and SMS
+        - Daily
+            - Call
+            - SMS
+            - Call and SMS
+    2. Frequency
+        - Hourly
+            - Call
+            - SMS
+            - Call and SMS
+        - Four Hourly
+            - Call
+            - SMS
+            - Call and SMS
+        - Daily
+            - Call
+            - SMS
+            - Call and SMS
+    3. Inter Event Time
+        - Hourly
+            - Average
+                - Call
+                - SMS
+                - Call and SMS
+            - Variance
+                - Call
+                - SMS
+                - Call and SMS
+        - Four Hourly
+            - Average
+                - Call
+                - SMS
+                - Call and SMS
+            - Variance
+                - Call
+                - SMS
+                - Call and SMS
+        - Daily
+            - Average
+                - Call
+                - SMS
+                - Call and SMS
+            - Variance
+                - Call
+                - SMS
+                - Call and SMS
+    4. App Usage Duration
+        - At Work
+        - At HOme
+        - At Other places
+        - At all places
+    5. Ambient Light
+        - Hourly
+            - Average
+            - Variance
+        - Four Hourly
+            - Average
+            - Variance
+        - Daily
+            - Average
+            - Variance
+    6. App Category
 
-1. Entropy
-    - Hourly
-        - Call
-        - SMS
-        - Call and SMS
-    - Four Hourly
-        - Call
-        - SMS
-        - Call and SMS
-    - Daily
-        - Call
-        - SMS
-        - Call and SMS
-2. Frequency
-    - Hourly
-        - Call
-        - SMS
-        - Call and SMS
-    - Four Hourly
-        - Call
-        - SMS
-        - Call and SMS
-    - Daily
-        - Call
-        - SMS
-        - Call and SMS
-3. Inter Event Time
-    - Hourly
-        - Average
-            - Call
-            - SMS
-            - Call and SMS
-        - Variance
-            - Call
-            - SMS
-            - Call and SMS
-    - Four Hourly
-        - Average
-            - Call
-            - SMS
-            - Call and SMS
-        - Variance
-            - Call
-            - SMS
-            - Call and SMS
-    - Daily
-        - Average
-            - Call
-            - SMS
-            - Call and SMS
-        - Variance
-            - Call
-            - SMS
-            - Call and SMS
-4. App Usage Duration
-    - At Work
-    - At HOme
-    - At Other places
-    - At all places
-5. Ambient Light
-    - Hourly
-        - Average
-        - Variance
-    - Four Hourly
-        - Average
-        - Variance
-    - Daily
-        - Average
-        - Variance
-6. App Category
+Notes:
+    Algorithm here
 
-
-:References:
-1. Book or article reference, URL or whatever.
-2. Book or article reference, URL or whatever.
+References:
+    1.
 """

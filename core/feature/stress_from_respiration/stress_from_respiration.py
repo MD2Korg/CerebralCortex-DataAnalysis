@@ -72,13 +72,12 @@ class stress_from_respiration(ComputeFeatureBase):
         
     """
 
-    def process(self, user: str, all_days: list):
+    def process(self, user_id: str, all_days: List[str]):
+        """This is the main entry point for feature computation and is called by the main driver application
 
-        """
-        Takes the user identifier and the list of days and does the required processing
-
-        :param user: user id string
-        :param all_days: list of days to compute
+        Args:
+            user_id: User identifier in UUID format
+            all_days: List of all days to run this feature over
 
         """
 
