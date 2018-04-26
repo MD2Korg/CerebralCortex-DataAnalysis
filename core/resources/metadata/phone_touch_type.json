@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "type",
-      "type": "string",
-      "description": "The value is one of the four verdicts [typing, pause, reading, unknown]."
-    }
-  ],
+  "data_descriptor": {
+    "name": "type",
+    "type": "string",
+    "description": "The value is one of the four verdicts [typing, pause, reading, unknown]."
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.phone_feature",

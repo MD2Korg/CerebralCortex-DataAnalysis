@@ -72,7 +72,7 @@ def process_features(feature_list, all_users, all_days, num_cores=1):
                         parallelize_per_day.append((usr,[day]))
 
                 shuffle(parallelize_per_day)
-                rdd = spark_context.parallelize(parallelize_per_day, num_cores)
+                rdd = spark_context.parallelize(parallelize_per_day, num_cores*4)
                 results = rdd.map(
                     lambda user_day: process_feature_on_user(user_day[0],
                                                              module, user_day[1], 

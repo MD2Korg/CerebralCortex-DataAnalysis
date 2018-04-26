@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "value",
-      "type": "float",
-      "unit": "minute",
-      "description": "Variance of time between two consecutive events (call and sms)."
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "float",
+    "unit": "minute",
+    "description": "Variance of time between two consecutive events (call and sms)."
+  },
   "execution_context": {
     "processing_module": {
       "name": "variance_inter_phone_call_sms_time_four_hourly",

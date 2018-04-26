@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "amount_of_high_activity",
-      "type": "float",
-      "unit": "minute",
-      "description": "Amount of high activity daily"
-    }
-  ],
+  "data_descriptor": {
+    "name": "amount_of_high_activity",
+    "type": "float",
+    "unit": "minute",
+    "description": "Amount of high activity daily"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.activity_features",
