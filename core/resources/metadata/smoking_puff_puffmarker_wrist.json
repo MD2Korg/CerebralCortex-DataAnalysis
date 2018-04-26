@@ -1,11 +1,10 @@
 {
   "annotations":[],
-  "data_descriptor":[
-    {
-      "type":"int",
-      "unit":"0: non_puff, 1:puff_left, 2:puff_right"
-    }
-  ],
+  "data_descriptor": {
+    "name": "smoking_puff",
+    "type": "int",
+    "description": "Classification outputs of smoking puffs (0: non_puff, 1:puff_left, 2:puff_right) for each hand-to-mouth gesture"
+  },
   "execution_context":{
     "processing_module":{
       "name":"core.feature.puffmarker",

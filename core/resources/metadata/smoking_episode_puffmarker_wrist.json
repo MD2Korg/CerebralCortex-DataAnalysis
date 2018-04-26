@@ -1,11 +1,10 @@
 {
   "annotations":[],
-  "data_descriptor":[
-    {
-      "type":"int",
-      "unit":""
-    }
-  ],
+  "data_descriptor": {
+    "name": "smoking_episode",
+    "type": "int",
+    "description": "Smoking episode, use start time and end time"
+  },
   "execution_context":{
     "processing_module":{
       "name":"core.feature.puffmarker",
