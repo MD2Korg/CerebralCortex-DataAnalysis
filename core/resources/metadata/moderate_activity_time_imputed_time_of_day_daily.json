@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "amount_of_moderate_activity",
-      "type": "float",
-      "unit": "minute",
-      "description": "amount of moderate activity daily. If missing data of any hour is more than 50% then imputed with mean moderate activity of that time of day."
-    }
-  ],
+  "data_descriptor": {
+    "name": "amount_of_moderate_activity",
+    "type": "float",
+    "unit": "minute",
+    "description": "amount of moderate activity daily. If missing data of any hour is more than 50% then imputed with mean moderate activity of that time of day."
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.activity_features",

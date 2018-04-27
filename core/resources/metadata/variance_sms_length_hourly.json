@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "value",
-      "type": "float",
-      "unit": "minute",
-      "description": "Variance of SMS length."
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "float",
+    "unit": "minute",
+    "description": "Variance of SMS length."
+  },
   "execution_context": {
     "processing_module": {
       "name": "variance_sms_length_hourly",

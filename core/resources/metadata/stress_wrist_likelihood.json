@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "stress_likelihood_value",
-      "type": "float",
-      "unit": "1 minute window",
-      "description": "probability of stress"
-    }
-  ],
+  "data_descriptor": {
+    "name": "stress_likelihood_value",
+    "type": "float",
+    "unit": "1 minute window",
+    "description": "probability of stress"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.stress_from_wrist",

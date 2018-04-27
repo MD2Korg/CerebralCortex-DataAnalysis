@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "value",
-      "type": "string",
-      "description": "'Outside' = the phone was outside of pocket or parse from start_time to end_time."
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "string",
+    "description": "'Outside' = the phone was outside of pocket or parse from start_time to end_time."
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.phone_feature",
