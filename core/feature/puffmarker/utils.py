@@ -82,14 +82,13 @@ MINIMUM_TIME_DIFFERENCE_FIRST_AND_LAST_PUFFS = 7 * 60  # seconds
 MINIMUM_INTER_PUFF_DURATION = 5  # seconds
 MINIMUM_PUFFS_IN_EPISODE = 4
 
+# change orientation of the device
 CONV_R = [[0, 1, 0],
           [-1, 0, 0],
           [0, 0, 1]]
 CONV_L = [[0, 1, 0],
           [1, 0, 0],
           [0, 0, 1]]
-
-
 # sample = [x, y, z]
 # new_sample = list(np.dot(CONV,sample))
 
@@ -143,8 +142,8 @@ def merge_two_datastream(accel: List[DataPoint], gyro: List[DataPoint]):
 def magnitude(data: List[DataPoint]) -> List[DataPoint]:
     """
 
-    :param datastream:
-    :return:
+    :param list[DataPoint] data:
+    :return: magnitude of the data
     """
     if data is None or len(data) == 0:
         result = []
@@ -175,7 +174,7 @@ def moving_average_convergence_divergence(
     :param slow_moving_average_data:
     :param fast_moving_average_data:
     :param THRESHOLD: Cut-off value
-    :param near: # of nearest point to ignore
+    :param near: # of nearest points to ignore; i.e. gap between two segment should be greater than near
     :return:
     '''
     slow_moving_average = np.array(
@@ -214,42 +213,3 @@ def moving_average_convergence_divergence(
                           sample=[index_list[index], index_list[index + 1]]))
 
     return intersection_points
-
-# def get_stream_days(stream_id: uuid, CC: CerebralCortex) -> List:
-#     """
-#     Returns a list of days (string format: YearMonthDay (e.g., 20171206)
-#     :param stream_id:
-#     """
-#     stream_dicts = CC.get_stream_duration(stream_id)
-#     stream_days = []
-#     days = stream_dicts["end_time"] - stream_dicts["start_time"]
-#     for day in range(days.days + 1):
-#         stream_days.append(
-#             (stream_dicts["start_time"] + timedelta(days=day)).strftime(
-#                 '%Y%m%d'))
-#     return stream_days
-
-
-# def store_data(filepath, input_streams, user_id, data, instance):
-#     output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(
-#         filepath + user_id + "SMOKING EPISODE")))
-#
-#     cur_dir = os.path.dirname(os.path.abspath(__file__))
-#     new_file_path = os.path.join(cur_dir, filepath)
-#     with open(new_file_path, "r") as f:
-#         metadata = f.read()
-#         metadata = metadata.replace("CC_INPUT_STREAM_ID_CC",
-#                                     input_streams[0].identifier)
-#         metadata = metadata.replace("CC_INPUT_STREAM_NAME_CC",
-#                                     input_streams[0].name)
-#         metadata = metadata.replace("CC_OUTPUT_STREAM_IDENTIFIER_CC",
-#                                     output_stream_id)
-#         metadata = metadata.replace("CC_OWNER_CC", user_id)
-#         metadata = json.loads(metadata)
-#
-#         instance.store(identifier=output_stream_id, owner=user_id,
-#                        name=metadata["name"],
-#                        data_descriptor=metadata["data_descriptor"],
-#                        execution_context=metadata["execution_context"],
-#                        annotations=metadata["annotations"],
-#                        stream_type="datastream", data=data)

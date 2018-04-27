@@ -25,9 +25,7 @@
 
 
 import math
-from typing import List
-
-import numpy as np
+from core.feature.puffmarker.utils import *
 
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from core.feature.puffmarker.utils import moving_average_convergence_divergence, \
@@ -125,15 +123,6 @@ def compute_candidate_features(gyr_intersections, gyr_mag_data, roll_list,
         Gmag_sub = [gyr_mag_data[i].sample for i in
                     range(start_index, end_index)]
 
-        # temp_roll = [v.sample for v in roll_list if
-        #              (start_time <= v.start_time <= end_time)]
-        # temp_pitch = [v.sample for v in pitch_list if
-        #               (start_time <= v.start_time <= end_time)]
-        # temp_yaw = [v.sample for v in yaw_list if
-        #             (start_time <= v.start_time <= end_time)]
-        # Gmag_sub = [v.sample for v in gyr_mag_data if
-        #             (start_time <= v.start_time <= end_time)]
-
         duration = 1000 * (
                 end_time - start_time).total_seconds()  # convert to milliseconds
 
@@ -162,7 +151,8 @@ def compute_candidate_features(gyr_intersections, gyr_mag_data, roll_list,
 
 def compute_wrist_features(accel_data: List[DataPoint],
                            gyro_data: List[DataPoint],
-                           fast_moving_avg_size=13, slow_moving_avg_size=131):
+                           fast_moving_avg_size=FAST_MOVING_AVG_SIZE,
+                           slow_moving_avg_size=SLOW_MOVING_AVG_SIZE):
     gyr_mag_data = magnitude(gyro_data)
 
     roll_list, pitch_list, yaw_list = calculate_roll_pitch_yaw(accel_data)

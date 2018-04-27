@@ -24,15 +24,13 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-from datetime import timedelta
-from typing import List
 from core.feature.puffmarker.utils import *
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 
 
 def get_smoking_wrist(only_puff_list, start_index, end_index):
     '''
-    Based on majority vote detects smoking hand
+    Based on majority voting detects smoking hand
 
     :param only_puff_list:
     :param start_index:

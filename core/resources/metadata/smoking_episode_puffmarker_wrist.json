@@ -34,6 +34,6 @@
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name":"org.md2k.data_analysis.feature.puffmarker.smoking_episode",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "owner":"",
+  "type":"1"
 }
