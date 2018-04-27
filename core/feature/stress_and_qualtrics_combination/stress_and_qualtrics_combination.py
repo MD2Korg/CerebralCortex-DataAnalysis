@@ -111,7 +111,7 @@ class stress_and_qualtrics_combination(ComputeFeatureBase):
                                                                user_id=user_id,raw_byte_array=data,mins=min)
 
                 if len(data_final)>0:
-                    json_path = 'stress_likelihood_'+str(min)+'min'
+                    json_path = 'stress_likelihood_'+str(min)+'min.json'
                     self.store_stream(json_path,
                                       [all_streams[stress_identifier]],
                                       user_id,
