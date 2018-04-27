@@ -46,6 +46,8 @@ def process_features(feature_list, all_users, all_days, num_cores=1):
     '''
     for module in feature_list:
         if num_cores > 1:
+            num_cores *= 4
+
             print('Driver: Spark job',module)
             spark_context = get_or_create_sc(type="sparkContext")
             if 'core.feature.gps.gps' == str(module) \
@@ -236,7 +238,7 @@ def main():
 
     found_features = discover_features(feature_list)
     feature_to_process = generate_feature_processing_order(found_features)
-    process_features(feature_to_process, all_users, all_days, num_cores*4)
+    process_features(feature_to_process, all_users, all_days, num_cores)
     
 if __name__ == '__main__':
     main()
