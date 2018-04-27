@@ -28,6 +28,7 @@ import numpy as np
 from copy import deepcopy
 from scipy import signal
 from collections import Counter
+from cerebralcortex.cerebralcortex import CerebralCortex
 
 motionsense_hrv_left = "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
 motionsense_hrv_right = "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
@@ -38,6 +39,18 @@ Fs = 25
 window_size_60sec = 60
 window_size_10sec = 10
 
+def get_datastream(CC:CerebralCortex,
+                   identifier:str,
+                   day:str,
+                   user_id:str,
+                   localtime:bool)->List[DataPoint]:
+    stream_ids = CC.get_stream_id(user_id,identifier)
+    data = []
+    for stream_id in stream_ids:
+        temp_data = CC.get_stream(stream_id=stream_id['identifier'],user_id=user_id,day=day,localtime=localtime)
+        if len(temp_data.data)>0:
+            data.extend(temp_data.data)
+    return data
 
 def admission_control(data: List[DataPoint]) -> List[DataPoint]:
     """
