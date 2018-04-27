@@ -31,7 +31,7 @@ qualtrics_identifier = \
 stress_identifier = \
     "org.md2k.data_analysis.feature.stress.wrist.likelihood.60seconds.v1"
 
-minutes = [10,20,30]
+minutes = [10,15,20,30]
 
 def get_datastream(CC:CerebralCortex,
                    identifier:str,
