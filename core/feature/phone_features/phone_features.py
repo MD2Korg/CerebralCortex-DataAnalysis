@@ -2724,7 +2724,8 @@ class PhoneFeatures(ComputeFeatureBase):
         end_time = end_time.replace(tzinfo=data[0].start_time.tzinfo)
         return [DataPoint(start_time, end_time, data[0].offset, total/60)]
 
-    def process_phone_activity_day_data(self, user_id, activity_data, input_activity_stream):
+    def process_phone_activity_day_data(self, user_id: str, activity_data: List[DataPoint],
+                                        input_activity_stream: DataStream):
         """
         Process all phone activity API stream related features
 
