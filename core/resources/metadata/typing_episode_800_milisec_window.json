@@ -5,7 +5,13 @@
       "name":"typing_value",
       "type":"int",
       "descriptor":"Detects typing in a 800 miliseconds window"
-    }
+    },
+    {
+      "name": "typing_time",
+      "type": "float",
+      "unit": "minute",	  
+      "description": "The participant's time duration of each typing episode."
+    }	
   ],
   "execution_context":{
     "processing_module":{
@@ -37,11 +43,11 @@
       "version":"0.0.1",
       "reference":{
       },
-      "description":"Detects all the typing episodes in a day"
+      "description":"Detects typing episodes and their duration in a day."
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.v3.typing.episodes.day",
+  "name":"org.md2k.data_analysis.feature.v4.typing.episodes.day",
   "owner":"",
   "type":"1"
 }

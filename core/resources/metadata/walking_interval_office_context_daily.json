@@ -1,0 +1,46 @@
+{
+  "annotations": [],
+  "data_descriptor": [
+    {
+      "name": "found_activity",
+      "type": "string",
+      "description": "The participant's time intervals of activity, activity = walking"
+    },
+    {
+      "name": "context_type",
+      "type": "string",
+      "description": "The participant's time intervals of activity in context, context = office"
+    }
+  ],
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.task_features",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+        "window_size": "24 Hours"
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.task_features",
+      "authors": [
+        {
+          "name": "Mithun Saha",
+          "email": "amimithun@gmail.com"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+      },
+      "description": "The participants' walking time intervals in office context"
+    }
+  },
+  "identifier": "",
+  "name": "org.md2k.data_analysis.feature.task_features.walking_interval_office_context.daily",
+  "owner": "",
+  "type": "1"
+}
