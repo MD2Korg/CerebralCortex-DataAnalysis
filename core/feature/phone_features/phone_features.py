@@ -45,6 +45,8 @@ from typing import List, Callable, Any
 
 feature_class_name = 'PhoneFeatures'
 
+# Constants
+IN_VEHICLE = 6.0
 
 class PhoneFeatures(ComputeFeatureBase):
     """
@@ -2689,6 +2691,57 @@ class PhoneFeatures(ComputeFeatureBase):
             self.CC.logging.log("Exception:", str(e))
             self.CC.logging.log(str(traceback.format_exc()))
 
+    def get_total_driving_time(self, data: List[DataPoint]) -> List[DataPoint]:
+        """
+        Total driving time (In vehicle) in a day.
+
+        :param List(DataPoint) data: Phone activity API stream data points
+        :return: List with single data point including the total driving time
+        :rtype: List(DataPoint)
+        """
+
+        if not data:
+            return None
+        i = 0
+        total = 0
+
+        while i < len(data):
+            if data[i].sample[0] == IN_VEHICLE:
+                start = data[i].start_time
+                i += 1
+                while i < len(data) and data[i].sample[0] == IN_VEHICLE:
+                    i += 1
+                if i == len(data):
+                    last = data[-1].start_time
+                else:
+                    last = data[i].start_time
+                total += (last - start).total_seconds()
+            i += 1
+
+        start_time = copy.deepcopy(data[0].start_time)
+        start_time = start_time.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_time = datetime.datetime.combine(start_time.date(), datetime.time.max)
+        end_time = end_time.replace(tzinfo=data[0].start_time.tzinfo)
+        return [DataPoint(start_time, end_time, data[0].offset, total/60)]
+
+    def process_phone_activity_day_data(self, user_id, activity_data, input_activity_stream):
+        """
+        Process all phone activity API stream related features
+
+        :param str user_id: UUID of the stream owner
+        :param List(DataPoint) activity_data: Phone activity API stream data points
+        :param DataStream input_activity_stream: DataStream object of phone activity data
+        :return:
+        """
+        try:
+            data = self.get_total_driving_time(activity_data)
+            self.store_stream(filepath="driving_time_from_phone_activity.json",
+                              input_streams=[input_activity_stream], user_id=user_id,
+                              data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
     def process_data(self, user_id: str, all_user_streams: dict, all_days: List[str]):
         """
         Getting all the necessary input datastreams for a user
@@ -2711,6 +2764,7 @@ class PhoneFeatures(ComputeFeatureBase):
         input_gpssemanticstream = None
         input_callnumberstream = None
         input_smsnumberstream = None
+        input_activity_stream = None
 
         call_stream_name = 'CU_CALL_DURATION--edu.dartmouth.eureka'
         sms_stream_name = 'CU_SMS_LENGTH--edu.dartmouth.eureka'
@@ -2722,6 +2776,7 @@ class PhoneFeatures(ComputeFeatureBase):
         gpssemantic_stream_name = "org.md2k.data_analysis.feature.gps_semantic_location.daywise_split.utc"
         call_number_stream_name = "CU_CALL_NUMBER--edu.dartmouth.eureka"
         sms_number_stream_name = "CU_SMS_NUMBER--edu.dartmouth.eureka"
+        activity_stream_name = "ACTIVITY_TYPE--org.md2k.phonesensor--PHONE"
 
         streams = all_user_streams
         days = None
@@ -2746,6 +2801,8 @@ class PhoneFeatures(ComputeFeatureBase):
                 input_callnumberstream = stream_metadata
             elif stream_name == sms_number_stream_name:
                 input_smsnumberstream = stream_metadata
+            elif stream_name == activity_stream_name:
+                input_activity_stream = stream_metadata
 
         # Processing Call and SMS related features
         if not input_callstream:
@@ -2871,6 +2928,19 @@ class PhoneFeatures(ComputeFeatureBase):
                 smsnumberdata = self.get_filtered_data(smsnumberdata, lambda x: (type(x) is str))
                 self.process_callsmsnumber_day_data(user_id, callnumberdata, smsnumberdata, input_callnumberstream,
                                                     input_smsnumberstream)
+
+
+        # processing phone activity data related features
+        if not input_activity_stream:
+            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
+                                "USERID %s" %
+                                (self.__class__.__name__, activity_stream_name,
+                                 str(user_id)))
+        else:
+            for day in all_days:
+                activity_data = self.get_data_by_stream_name(activity_stream_name, user_id, day, localtime=False)
+                activity_data = self.get_filtered_data(activity_data, lambda x: (type(x) is list and len(x) == 2))
+                self.process_phone_activity_day_data(user_id, activity_data, input_activity_stream)
 
     def process(self, user_id: str, all_days: List[str]):
         """
