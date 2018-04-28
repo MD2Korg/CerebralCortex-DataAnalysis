@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "value",
-      "type": "float",
-      "unit": "hour",
-      "description": ""
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "float",
+    "unit": "hour",
+    "description": "Total time data presents in a day"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.phone_data_yield",

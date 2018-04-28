@@ -3,17 +3,17 @@
   "data_descriptor": [
     {
       "name": "rr_interval_list",
-      "type": "list",
-      "description": "A list fo all the realizations of RR interval given in number of samples"
+      "type": "object",
+      "description": "A list for all the realizations of RR interval given in number of samples"
     },
     {
       "name": "standard_deviation_heart_rate",
-      "type": "list",
+      "type": "float",
       "description": "Standard deviation of heart rate within a minute"
     },
     {
       "name": "heart_rate_list",
-      "type": "list",
+      "type": "object",
       "description": "A list of heart rate values within the minute calculated on window size = 8 seconds,window offset = 2 seconds"
     }
   ],

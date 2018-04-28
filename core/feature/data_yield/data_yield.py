@@ -53,8 +53,7 @@ class data_yield(ComputeFeatureBase):
         :return: A list of DataPoints each DataPoint contains a boolean decision indicating if the sensor was worn or not
         """
         for day in all_days:
-            motionsense_raw = self.CC.get_stream(all_streams[stream_identifier]["identifier"],
-                                                 day=day, user_id=user_id, localtime=False)
+            motionsense_raw = get_datastream(self.CC,stream_identifier,day,user_id,False)
             if not list(motionsense_raw.data):
                 continue
             data = admission_control(motionsense_raw.data)

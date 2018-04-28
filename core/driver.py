@@ -46,9 +46,12 @@ def process_features(feature_list, all_users, all_days, num_cores=1):
     '''
     for module in feature_list:
         if num_cores > 1:
-            print('Driver: Spark job')
+            num_cores *= 4
+
+            print('Driver: Spark job',module)
             spark_context = get_or_create_sc(type="sparkContext")
-            if 'gps' in str(module) or 'sleep_duration_analysis' in str(module) \
+            if 'core.feature.gps.gps' == str(module) \
+                or 'sleep_duration_analysis' in str(module) \
                 or 'office_time' in str(module) \
                 or 'phone_screen_touch_features' in str(module) \
                 or 'gps_location_daywise' in str(module):

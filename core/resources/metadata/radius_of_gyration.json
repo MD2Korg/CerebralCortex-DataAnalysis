@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "",
-      "type": "float",
-      "unit": "km",
-      "description": ""
-    }
-  ],
+  "data_descriptor": {
+    "name": "radius",
+    "type": "float",
+    "unit": "km",
+    "description": "Radius of Gyration of a participant in one day."
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.gpsfeature",
@@ -31,7 +29,7 @@
       "version": "0.0.1",
       "reference": {
       },
-      "description": "Radius of Gyration of a participant in one day in kilometer."
+      "description": "Radius of Gyration of a participant in one day in kilometers."
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",

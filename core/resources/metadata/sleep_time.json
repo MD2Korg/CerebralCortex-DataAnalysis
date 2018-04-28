@@ -46,7 +46,7 @@
       "reference": {
         "paper": "http://ieeexplore.ieee.org/document/6563918/"
       },
-      "description": ""
+      "description": "Sleep duration in hours including sleep onset and offset."
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",

@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "",
-      "type": "List",
-      "description": ""
-    }
-  ],
+  "data_descriptor": {
+    "name": "semantic_name",
+    "type": "string",
+    "description": "Semantic name of the co-ordinate using user markings"
+  },
   "execution_context": {
     "processing_module": {
       "name": "GPS Episodes and Semantic Location User Marked",

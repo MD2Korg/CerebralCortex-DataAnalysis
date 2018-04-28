@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "value",
-      "type": "float",
-      "unit": "lux",
-      "description": ""
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "float",
+    "unit": "lux",
+    "description": "The average ambient light"
+  },
   "execution_context": {
     "processing_module": {
       "name": "average_ambient_light_four_hourly",

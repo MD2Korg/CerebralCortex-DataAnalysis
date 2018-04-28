@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "value",
-      "type": "integer",
-      "description": ""
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "integer",
+    "description": "value = 1, means data present from start_time to end_time, value = 0, means data not present"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.phone_data_yield",

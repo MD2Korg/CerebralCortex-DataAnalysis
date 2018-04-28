@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "amount_of_high_activity_accel_only",
-      "type": "float",
-      "unit": "minute",
-      "description": "Imputed (by time of day of week) and scaled up amount of high activity daily from accel only model"
-    }
-  ],
+  "data_descriptor": {
+    "name": "amount_of_high_activity_accel_only",
+    "type": "float",
+    "unit": "minute",
+    "description": "Imputed (by time of day of week) and scaled up amount of high activity daily from accel only model"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.activity_features",
@@ -36,7 +34,7 @@
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.activity_features.high_activity.imputed_day_of_week.daily",
+  "name": "org.md2k.data_analysis.feature.activity_features.high_activity.imputed_day_of_week.accel_only.daily",
   "owner": "",
   "type": "1"
 }

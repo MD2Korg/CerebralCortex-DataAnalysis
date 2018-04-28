@@ -36,7 +36,6 @@ from cerebralcortex.core.datatypes.datastream import DataStream
 from cerebralcortex.cerebralcortex import CerebralCortex
 import cerebralcortex.cerebralcortex
 
-print('-'*10,os.path.abspath(cerebralcortex.__file__))
 
 
 CC_CONFIG_PATH = '/home/vagrant/CerebralCortex-DockerCompose/cc_config_file/cc_vagrant_configuration.yml'
@@ -171,6 +170,8 @@ user_id_mappings={}
 
 # Timezone in which all times are recorded
 centraltz=pytz.timezone('US/Central')
+easterntz=pytz.timezone('US/Eastern')
+pacifictz=pytz.timezone('US/Pacific')
 
 
 # CC intialization
@@ -222,7 +223,14 @@ def process_feature(file_path, metadata_path):
         
         user_id = user_id_mappings[row[0]]
         start_time = datetime.strptime(row[1], '%m/%d/%Y %H:%M')
-        start_time = centraltz.localize(start_time)
+        if len(user_id) == 4 and int(user_id[0]) == 5: # all 5xxx users are incentral
+            start_time = centraltz.localize(start_time)
+        elif len(user_id) == 4 and int(user_id[0]) == 1: # all 1xxx users are east
+            start_time = easterntz.localize(start_time)
+        elif len(user_id) == 4 and int(user_id[0]) == 9: # all 9xxx users are west
+            start_time = pacifictz.localize(start_time)
+        else:
+            start_time = centraltz.localize(start_time)
         
         # handling the different format of the IGTB file
         if 'IGTB' not in file_path:
