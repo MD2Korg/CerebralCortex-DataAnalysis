@@ -42,7 +42,7 @@
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.activity_features.high_activity.hourly",
+  "name": "org.md2k.data_analysis.feature.activity_features.high_activity.accel_only.hourly",
   "owner": "",
   "type": "1"
 }

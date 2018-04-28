@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "yield_value",
-      "type": "boolean",
-      "description": "True indicating sensor was worn, False indicating sensor not worn"
-    }
-  ],
+  "data_descriptor": {
+    "name": "yield_value",
+    "type": "boolean",
+    "description": "True indicating sensor was worn, False indicating sensor not worn"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.data_yield",

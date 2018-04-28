@@ -43,6 +43,8 @@ class BeaconFeatures(ComputeFeatureBase):
     work beacon,1: around home beacon or work beacon
     """
 
+
+
     def mark_beacons(self, streams: dict, stream_name: str, user_id: str, day: str):
         """
         fetches datastream for home beacons and calls home_beacon context
@@ -246,7 +248,6 @@ class BeaconFeatures(ComputeFeatureBase):
     def process(self, user: str, all_days: list):
         """
         lists requried streams needed for computation.
-
         :param str user_id: id of user
         :param List all_days: Input list of days
         """

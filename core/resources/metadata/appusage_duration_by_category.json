@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "duration",
-      "type": "json",
-      "description": "Sample contains a dictionary, where the key are the google play store app categories and value is a list of dictionaries, where each internal dictionary contains the start and end time of the app usage of the given category"
-    }
-  ],
+  "data_descriptor": {
+    "name": "duration",
+    "type": "json",
+    "description": "Sample contains a dictionary, where the key are the google play store app categories and value is a list of dictionaries, where each internal dictionary contains the start and end time of the app usage of the given category"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.phone_feature",

@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "posture_type",
-      "type": "string",
-      "description": "Detects posture types (LYING, SITTING, STANDING) in 10 seconds window  using wrist accelerometer"
-    }
-  ],
+  "data_descriptor": {
+    "name": "posture_type",
+    "type": "string",
+    "description": "Detects posture types (LYING, SITTING, STANDING) in 10 seconds window  using wrist accelerometer"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.activity",

@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "index",
-      "type": "integer",
-      "description": "Index of gps centroid"
-    }
-  ],
+  "data_descriptor": {
+    "name": "index",
+    "type": "integer",
+    "description": "Index of gps centroid"
+  },
   "execution_context": {
     "processing_module": {
       "name": "Gps Data Centroid Index",

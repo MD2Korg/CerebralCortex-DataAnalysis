@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "typing_value",
-      "type": "int",
-      "description": "Detects typing in a 800 milliseconds window"
-    }
-  ],
+  "data_descriptor": {
+    "name": "typing_value",
+    "type": "integer",
+    "description": "Detects typing in a 800 milliseconds window"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.typing",
