@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "",
-      "type": "string",
-      "description": ""
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "string",
+    "description": "work"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.office_time",

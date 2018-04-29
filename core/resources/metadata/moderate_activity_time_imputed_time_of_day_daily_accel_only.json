@@ -1,13 +1,11 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "amount_of_moderate_activity_accel_only",
-      "type": "float",
-      "unit": "minute",
-      "description": "amount of moderate activity daily from accel only model. If missing data of any hour is more than 50% then imputed with mean moderate activity of that time of day."
-    }
-  ],
+  "data_descriptor": {
+    "name": "amount_of_moderate_activity_accel_only",
+    "type": "float",
+    "unit": "minute",
+    "description": "amount of moderate activity daily from accel only model. If missing data of any hour is more than 50% then imputed with mean moderate activity of that time of day."
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.activity_features",
@@ -36,7 +34,7 @@
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.activity_features.moderate_activity.imputed_time_of_day.daily",
+  "name": "org.md2k.data_analysis.feature.activity_features.moderate_activity.imputed_time_of_day.accel_only.daily",
   "owner": "",
   "type": "1"
 }

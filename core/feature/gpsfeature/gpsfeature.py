@@ -49,6 +49,7 @@ class GPSFeatures(ComputeFeatureBase):
         """
         Calculate the great circle distance between two points
         on the earth (specified in decimal degrees)
+
         :rtype: object
         :param lon1:
         :param lat1:
@@ -163,7 +164,7 @@ class GPSFeatures(ComputeFeatureBase):
 
         ii = 0
         while ii < len(data):
-            if (float(data[ii].sample[1]) == -1.0):
+            if float(data[ii].sample[1]) == -1.0:
                 ii = ii + 1
                 continue
             concat_string = str(data[ii].sample[1]) + str(data[ii].sample[2])
@@ -247,7 +248,7 @@ class GPSFeatures(ComputeFeatureBase):
 
         :param semanticdata: DataPoint array of semantic stream
         :return: cumulative staying time at different types of locations
-        :rtype: List(DataPoint) with a single element (dictionary).
+        :rtype: List[DataPoint] with a single element (dictionary).
         """
 
         data = semanticdata
@@ -257,7 +258,7 @@ class GPSFeatures(ComputeFeatureBase):
         while i < len(data):
             get_time_datetime = data[i].end_time - data[i].start_time
             get_time = get_time_datetime.total_seconds()
-            # print ("this is time" + str(get_time))
+
             get_pre_time = 0
             if data[i].sample[0] in time_dictionary.keys():
                 get_pre_time = time_dictionary[data[i].sample]
@@ -290,14 +291,23 @@ class GPSFeatures(ComputeFeatureBase):
 
         number_of_trans_dict = {}
         i = 0
+        to_work_transitions = 0
+        to_home_transitions = 0
 
         while i < len(semanticwithouttransit) - 1:
 
             pre_loc = semanticwithouttransit[i]
             post_loc = semanticwithouttransit[i + 1]
-            if (pre_loc.sample != post_loc.sample):
+            if pre_loc.sample != post_loc.sample:
                 key_string = pre_loc.sample + " " + post_loc.sample
                 get_pre_num = 0
+
+                if post_loc.sample.lower() == 'work':
+                    to_work_transitions += 1
+                if post_loc.sample.lower() == 'home':
+                    to_home_transitions += 1
+
+
                 if (key_string in number_of_trans_dict.keys()):
                     get_pre_num = number_of_trans_dict[key_string]
                 new_num = get_pre_num + 1
@@ -309,8 +319,18 @@ class GPSFeatures(ComputeFeatureBase):
         end_time = semanticdata[-1].end_time
         offset = semanticdata[0].offset
 
-        ouput_datapoint = DataPoint(start_time, end_time, offset, number_of_trans_dict)
-        return [ouput_datapoint]
+        output_datapoint = DataPoint(start_time, end_time, offset, number_of_trans_dict)
+        to_work_transitions_datapoint = DataPoint(start_time, end_time, offset,
+                                                 to_work_transitions)
+        to_home_transitions_datapoint = DataPoint(start_time, end_time, offset,
+                                                 to_home_transitions)
+        print(to_home_transitions_datapoint )
+        print(to_work_transitions_datapoint )
+        toreturn = []
+        toreturn.append(output_datapoint)
+        toreturn.append(to_work_transitions_datapoint)
+        toreturn.append(to_home_transitions_datapoint)
+        return toreturn
 
     def maximum_distance_from_home(self, home_lattitude: object, home_longitude: object,
                                    centroiddata: object) -> object:
@@ -329,7 +349,7 @@ class GPSFeatures(ComputeFeatureBase):
         jj = 0
         centroidwithouttransit = []
         while jj < len(centroiddata):
-            if (float(centroiddata[jj].sample[1]) != -1.0):
+            if float(centroiddata[jj].sample[1]) != -1.0:
                 centroidwithouttransit.append(centroiddata[jj])
             jj = jj + 1
 
@@ -802,7 +822,15 @@ class GPSFeatures(ComputeFeatureBase):
                             self.store_stream(filepath="transition_counter.json",
                                               input_streams=[stream_metadata],
                                               user_id=user_id,
-                                              data=trans_fre)
+                                              data=[trans_fre[0]])
+                            self.store_stream(filepath="to_work_transitions.json",
+                                              input_streams=[stream_metadata],
+                                              user_id=user_id,
+                                              data=[trans_fre[1]])
+                            self.store_stream(filepath="to_home_transitions.json",
+                                              input_streams=[stream_metadata],
+                                              user_id=user_id,
+                                              data=[trans_fre[2]])
                             break
             except Exception as e:
                 print("Exception:", str(e))

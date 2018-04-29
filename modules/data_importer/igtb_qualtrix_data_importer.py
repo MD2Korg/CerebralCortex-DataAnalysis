@@ -161,7 +161,14 @@ def process_feature(file_path, metadata_path):
         
         user_id = user_id_mappings[row[0]]
         start_time = datetime.strptime(row[1], '%m/%d/%Y %H:%M')
-        start_time = centraltz.localize(start_time)
+        if len(user_id) == 4 and int(user_id[0]) == 5: # all 5xxx users are incentral
+            start_time = centraltz.localize(start_time)
+        elif len(user_id) == 4 and int(user_id[0]) == 1: # all 1xxx users are east
+            start_time = easterntz.localize(start_time)
+        elif len(user_id) == 4 and int(user_id[0]) == 9: # all 9xxx users are west
+            start_time = pacifictz.localize(start_time)
+        else:
+            start_time = centraltz.localize(start_time)
         
         utc_offset = start_time.utcoffset().total_seconds() * 1000
         # -1000 - DataPoint expects offset to be in milliseconds and negative is

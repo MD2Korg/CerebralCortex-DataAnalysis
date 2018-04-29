@@ -23,4 +23,20 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # TODO: What is this?
+from cerebralcortex.cerebralcortex import CerebralCortex
+from cerebralcortex.core.datatypes.datapoint import DataPoint
+from typing import List
 rr_interval_identifier = "org.md2k.data_analysis.feature.rr_interval.v1"
+
+def get_datastream(CC:CerebralCortex,
+                   identifier:str,
+                   day:str,
+                   user_id:str,
+                   localtime:bool)->List[DataPoint]:
+    stream_ids = CC.get_stream_id(user_id,identifier)
+    data = []
+    for stream_id in stream_ids:
+        temp_data = CC.get_stream(stream_id=stream_id['identifier'],user_id=user_id,day=day,localtime=localtime)
+        if len(temp_data.data)>0:
+            data.extend(temp_data.data)
+    return data

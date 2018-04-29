@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "",
-      "type": "Dictionary",
-      "description": ""
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "json",
+    "description": "A set of key-value pairs indicating the cumulative time spent at defined locations."
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.gpsfeature",

@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "beacon_received",
-      "type": "integer",
-      "description": "The participants context based on proximity to work beacon,Values = Not_work_beacon(0),Around_work1_beacon(1),Around_work2_beacon(2)"
-    }
-  ],
+  "data_descriptor": {
+    "name": "beacon_received",
+    "type": "integer",
+    "description": "The participants context based on proximity to work beacon,Values = Not_work_beacon(0),Around_work1_beacon(1),Around_work2_beacon(2)"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.work_beacon_feature",
