@@ -4,7 +4,7 @@
     {
       "name":"typing_value",
       "type":"int",
-      "descriptor":"Detects typing in a 1000 miliseconds window"
+      "descriptor":"Detects typing episodes in a 1000 miliseconds window"
     },
     {
       "name": "typing_time",

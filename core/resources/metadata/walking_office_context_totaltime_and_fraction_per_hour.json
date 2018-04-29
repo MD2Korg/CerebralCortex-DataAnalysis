@@ -4,7 +4,7 @@
     {
       "name": "activity_type",
       "type": "string",
-      "description": "The participant's activity time - total and per hour, activity = standing"
+      "description": "The participant's activity time - total and per hour, activity = walking"
     },
     {
       "name": "activity_time_total",
