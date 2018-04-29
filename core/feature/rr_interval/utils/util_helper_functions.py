@@ -35,13 +35,14 @@ from sklearn.preprocessing import normalize
 from copy import deepcopy
 import pytz
 
+from cerebralcortex.cerebralcortex import CerebralCortex
 # TODO: Comment and describe constants
 motionsense_hrv_left_raw = \
     "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
 motionsense_hrv_right_raw = \
     "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
 qualtrics_identifier = \
-    "org.md2k.data_qualtrics.feature.v6.stress_MITRE.omnibus_stress_question.daily"
+    "org.md2k.data_qualtrics.feature.v12.stress.d"
 motionsense_hrv_left_raw_cat = \
     "RAW--CHARACTERISTIC_LED--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST"
 motionsense_hrv_right_raw_cat = \
@@ -49,7 +50,24 @@ motionsense_hrv_right_raw_cat = \
 activity_identifier = \
     "org.md2k.data_analysis.feature.activity.wrist.accel_only.10_seconds"
 
+rr_interval_identifier = \
+    "org.md2k.data_analysis.feature.rr_interval.v1"
+
 path_to_stress_files = 'core/resources/stress_files/'
+
+def get_datastream(CC:CerebralCortex,
+                   identifier:str,
+                   day:str,
+                   user_id:str,
+                   localtime:bool)->List[DataPoint]:
+    stream_ids = CC.get_stream_id(user_id,identifier)
+    data = []
+    for stream_id in stream_ids:
+        temp_data = CC.get_stream(stream_id=stream_id['identifier'],user_id=user_id,day=day,localtime=localtime)
+        if len(temp_data.data)>0:
+            data.extend(temp_data.data)
+    return data
+
 
 
 def admission_control(data: List[DataPoint]) -> List[DataPoint]:

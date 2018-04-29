@@ -23,6 +23,9 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import pickle
 import core.computefeature
+from cerebralcortex.cerebralcortex import CerebralCortex
+from cerebralcortex.core.datatypes.datapoint import DataPoint
+from typing import List
 
 Fs = 25 #sampling frequency
 
@@ -38,6 +41,21 @@ activity_identifier = "org.md2k.data_analysis.feature.activity.wrist.accel_only.
 
 no_of_feature = 14 #number of features the model was trained with
 
+
+
+
+def get_datastream(CC:CerebralCortex,
+                   identifier:str,
+                   day:str,
+                   user_id:str,
+                   localtime:bool)->List[DataPoint]:
+    stream_ids = CC.get_stream_id(user_id,identifier)
+    data = []
+    for stream_id in stream_ids:
+        temp_data = CC.get_stream(stream_id=stream_id['identifier'],user_id=user_id,day=day,localtime=localtime)
+        if len(temp_data.data)>0:
+            data.extend(temp_data.data)
+    return data
 
 def get_model():
     """

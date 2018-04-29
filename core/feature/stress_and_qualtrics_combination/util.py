@@ -1,6 +1,6 @@
 # Copyright (c) 2018, MD2K Center of Excellence
 # All rights reserved.
-# author: Md Azim Ullah
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 #
@@ -21,12 +21,17 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-# TODO: What is this?
-from cerebralcortex.cerebralcortex import CerebralCortex
-from cerebralcortex.core.datatypes.datapoint import DataPoint
 from typing import List
-rr_interval_identifier = "org.md2k.data_analysis.feature.rr_interval.v1"
+from cerebralcortex.core.datatypes.datapoint import DataPoint
+from cerebralcortex.cerebralcortex import CerebralCortex
+
+qualtrics_identifier = \
+    "org.md2k.data_qualtrics.feature.v12.stress.d"
+
+stress_identifier = \
+    "org.md2k.data_analysis.feature.stress.wrist.likelihood.60seconds.v1"
+
+minutes = [10,15,20,30]
 
 def get_datastream(CC:CerebralCortex,
                    identifier:str,
