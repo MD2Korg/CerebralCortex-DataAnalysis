@@ -272,7 +272,7 @@ class TypingMarker(ComputeFeatureBase):
 
             # print(data)
 
-            self.store_stream(filepath='typing_episode_800_milisec_window.json',
+            self.store_stream(filepath='typing_episode_1000_milisec_window.json',
                               input_streams=[
                                   streams[motionsense_hrv_accel_right],
                                   streams[motionsense_hrv_gyro_right],
