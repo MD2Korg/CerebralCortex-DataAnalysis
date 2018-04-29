@@ -165,6 +165,37 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
                                       sample=var))
         return new_data
 
+    def get_screen_touch_rate(self, data: List[DataPoint], typing_episodes: List) -> List[DataPoint]:
+        """
+        Average screen touch rate for a whole day during typing episodes (only productivity and communication apps are
+        considered during calculation)
+
+        :param List(DataPoint) data: screen touch stream data points
+        :param List(Tuple) typing_episodes: (start_time, end_time) for each item in the list, the starting and end time
+                                            of a typing episode
+        :return: A list with single data point containing the average screen touch rate.
+        :rtype: List(DataPoint)
+        """
+        if not data:
+            return None
+        total_touch_count = 0
+        total_typing_time = 0
+        for ep in typing_episodes:
+            total_typing_time += (ep[1] - ep[0]).total_seconds()
+            for d in data:
+                if ep[0] <= d.start_time <= ep[1]:
+                    total_touch_count += 1
+
+        if total_typing_time == 0 or total_touch_count == 0:
+            return None
+
+        start_time = copy.deepcopy(data[0].start_time)
+        start_time = start_time.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_time = datetime.datetime.combine(start_time.date(), datetime.time.max)
+        end_time = end_time.replace(tzinfo=data[0].start_time.tzinfo)
+        return [DataPoint(start_time=start_time, end_time=end_time, offset=data[0].offset,
+                          sample=total_touch_count/total_typing_time)]
+
     def process_screentouch_type_day_data(self, user_id, touchtypedata, touchscreendata, input_touchtype_stream,
                                           input_touchscreen_stream):
         """
@@ -203,6 +234,15 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
         try:
             data = self.get_screen_touch_variance_hourly(touchscreendata, typing_episodes)
             self.store_stream(filepath="phone_touch_response_time_variance.json",
+                              input_streams=[input_touchtype_stream, input_touchscreen_stream], user_id=user_id,
+                              data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_screen_touch_rate(touchscreendata, typing_episodes)
+            self.store_stream(filepath="phone_screen_touch_rate.json",
                               input_streams=[input_touchtype_stream, input_touchscreen_stream], user_id=user_id,
                               data=data, localtime=False)
         except Exception as e:

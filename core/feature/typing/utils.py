@@ -50,6 +50,7 @@ from core.computefeature import get_resource_contents
 TYPING_MODEL_FILENAME = 'core/resources/models/typing/CNN_all.h5'
 
 WINDOW_SIZE = 25  # for a 1000ms window (at 25Hz we get a value every 40ms.)
+
 STRIDE = 5  # we make a prediction every 200ms
 
 

@@ -42,6 +42,11 @@ import uuid
 import json
 
 feature_class_name = 'GPSFeatures'
+stream_name_gps_cluster = "org.md2k.data_analysis.v1.gps_clustering_episode_generation_daily"
+stream_name_semantic_location = "org.md2k.data_analysis.v1.gps_episodes_and_semantic_location_daily"
+stream_name_semantic_location_places = \
+"org.md2k.data_analysis.v1.gps_episodes_and_semantic_location_from_places_daily"
+stream_name_semantic_location_user_marked = "org.md2k.data_analysis.v1.gps_episodes_and_semantic_location_user_marked_daily"
 
 
 class GPSFeatures(ComputeFeatureBase):
@@ -242,7 +247,7 @@ class GPSFeatures(ComputeFeatureBase):
 
         return [stan_dev_datapoint]
 
-    def cumulative_staying_time(self, semanticdata: object) -> object:
+    def cumulative_staying_time(self, semanticdata: object, user_id: str):
         """
         Cumulative staying time of one type of place.
 
@@ -270,8 +275,210 @@ class GPSFeatures(ComputeFeatureBase):
         end_time = data[-1].end_time
         offset = data[0].offset
 
-        output_datapoint = DataPoint(start_time, end_time, offset, time_dictionary)
-        return [output_datapoint]
+        if 'home' in time_dictionary:
+            home_datapoint = DataPoint(start_time, end_time, offset,
+                                   time_dictionary['home'])
+
+            try:
+                streams = self.CC.get_user_streams(user_id)
+                for stream_name, stream_metadata in streams.items():
+                    if stream_name == stream_name_semantic_location:
+                        self.store_stream(filepath="cumulative_staying_time_home.json",
+                                          input_streams=[stream_metadata],
+                                          user_id=user_id,
+                                          data=[home_datapoint])
+                        break
+            except Exception as e:
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
+
+        if 'work' in time_dictionary:
+            work_datapoint = DataPoint(start_time, end_time, offset,
+                                   time_dictionary['work'])
+
+            try:
+                streams = self.CC.get_user_streams(user_id)
+                for stream_name, stream_metadata in streams.items():
+                    if stream_name == stream_name_semantic_location:
+                        self.store_stream(filepath="cumulative_staying_time_work.json",
+                                          input_streams=[stream_metadata],
+                                          user_id=user_id,
+                                          data=[work_datapoint])
+                        break
+            except Exception as e:
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
+
+
+    def cumulative_staying_time_poi(self, semanticdata: object, user_id: str):
+        """
+        Cumulative staying time of one type of place at different places of
+        interest.
+
+        :param semanticdata: DataPoint array of semantic stream
+        :return: cumulative staying time at different types of locations
+        :rtype: List[DataPoint] with a single element (dictionary).
+        """
+
+        data = semanticdata
+        time_dictionary = {}
+        '''
+        Datapoin sample is a list as follows
+        0 rest and bar
+        1 school
+        2 place of worship
+        3 entertainment
+        4 store
+        5 sport
+
+        order of preference to use
+        worship 
+        school
+        sport
+        entertainment
+        store
+        restaurant and bar
+    
+        '''
+
+        i = 0
+        while i < len(data):
+            get_time_datetime = data[i].end_time - data[i].start_time
+            get_time = get_time_datetime.total_seconds()
+
+            nearby_places = data[i].sample
+            poi_touse = -1
+
+            if nearby_places[2] == 'yes' or nearby_places[2] == 1: #worship
+                poi_touse = 2
+            elif nearby_places[1] == 'yes' or nearby_places[1] == 1: #school
+                poi_touse = 1
+            elif nearby_places[5] == 'yes' or nearby_places[5] == 1: #sport
+                poi_touse = 5
+            elif nearby_places[3] == 'yes' or nearby_places[3] == 1:#entertainment
+                poi_touse = 3
+            elif nearby_places[4] == 'yes' or nearby_places[4] == 1: #store
+                poi_touse = 4
+            elif nearby_places[0] == 'yes' or nearby_places[0] == 1: #rest&bar
+                poi_touse = 0
+
+
+
+            get_pre_time = 0
+            if poi_touse in time_dictionary.keys():
+                get_pre_time = time_dictionary[poi_touse]
+            new_time = get_pre_time + get_time
+            time_dictionary[poi_touse] = new_time
+            i = i + 1
+
+        start_time = data[0].start_time
+        end_time = data[-1].end_time
+        offset = data[0].offset
+
+        if 0 in time_dictionary:
+            restbar_datapoint = DataPoint(start_time, end_time, offset,
+                                   time_dictionary[0])
+            #print('restbar',restbar_datapoint)
+
+            try:
+                streams = self.CC.get_user_streams(user_id)
+                for stream_name, stream_metadata in streams.items():
+                    if stream_name == stream_name_semantic_location_places:
+                        self.store_stream(filepath="cumulative_staying_time_restbar.json",
+                                          input_streams=[stream_metadata],
+                                          user_id=user_id,
+                                          data=[restbar_datapoint])
+                        break
+            except Exception as e:
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
+        if 1 in time_dictionary:
+            school_datapoint = DataPoint(start_time, end_time, offset,
+                                   time_dictionary[1])
+            #print('school',school_datapoint)
+
+            try:
+                streams = self.CC.get_user_streams(user_id)
+                for stream_name, stream_metadata in streams.items():
+                    if stream_name == stream_name_semantic_location_places:
+                        self.store_stream(filepath="cumulative_staying_time_school.json",
+                                          input_streams=[stream_metadata],
+                                          user_id=user_id,
+                                          data=[school_datapoint])
+                        break
+            except Exception as e:
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
+        if 2 in time_dictionary:
+            worship_datapoint = DataPoint(start_time, end_time, offset,
+                                   time_dictionary[2])
+            #print('worship',worship_datapoint)
+
+            try:
+                streams = self.CC.get_user_streams(user_id)
+                for stream_name, stream_metadata in streams.items():
+                    if stream_name == stream_name_semantic_location_places:
+                        self.store_stream(filepath="cumulative_staying_time_worship.json",
+                                          input_streams=[stream_metadata],
+                                          user_id=user_id,
+                                          data=[worship_datapoint])
+                        break
+            except Exception as e:
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
+        if 3 in time_dictionary:
+            entertainment_datapoint = DataPoint(start_time, end_time, offset,
+                                   time_dictionary[3])
+            #print('entertainment',entertainment_datapoint)
+
+            try:
+                streams = self.CC.get_user_streams(user_id)
+                for stream_name, stream_metadata in streams.items():
+                    if stream_name == stream_name_semantic_location_places:
+                        self.store_stream(filepath="cumulative_staying_time_entertainment.json",
+                                          input_streams=[stream_metadata],
+                                          user_id=user_id,
+                                          data=[entertainment_datapoint])
+                        break
+            except Exception as e:
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
+        if 4 in time_dictionary:
+            store_datapoint = DataPoint(start_time, end_time, offset,
+                                   time_dictionary[4])
+            #print('store',store_datapoint)
+
+            try:
+                streams = self.CC.get_user_streams(user_id)
+                for stream_name, stream_metadata in streams.items():
+                    if stream_name == stream_name_semantic_location_places:
+                        self.store_stream(filepath="cumulative_staying_time_store.json",
+                                          input_streams=[stream_metadata],
+                                          user_id=user_id,
+                                          data=[store_datapoint])
+                        break
+            except Exception as e:
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
+        if 5 in time_dictionary:
+            sport_datapoint = DataPoint(start_time, end_time, offset,
+                                   time_dictionary[5])
+            #print('sport',sport_datapoint)
+
+            try:
+                streams = self.CC.get_user_streams(user_id)
+                for stream_name, stream_metadata in streams.items():
+                    if stream_name == stream_name_semantic_location_places:
+                        self.store_stream(filepath="cumulative_staying_time_sport.json",
+                                          input_streams=[stream_metadata],
+                                          user_id=user_id,
+                                          data=[sport_datapoint])
+                        break
+            except Exception as e:
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
+
+
 
     def transition_counter(self, semanticdata: object) -> object:
         """
@@ -324,8 +531,6 @@ class GPSFeatures(ComputeFeatureBase):
                                                  to_work_transitions)
         to_home_transitions_datapoint = DataPoint(start_time, end_time, offset,
                                                  to_home_transitions)
-        print(to_home_transitions_datapoint )
-        print(to_work_transitions_datapoint )
         toreturn = []
         toreturn.append(output_datapoint)
         toreturn.append(to_work_transitions_datapoint)
@@ -558,9 +763,6 @@ class GPSFeatures(ComputeFeatureBase):
         :param user_id:
         :param all_days:
         """
-        stream_name_gps_cluster = "org.md2k.data_analysis.gps_clustering_episode_generation_daily"
-        stream_name_semantic_location = "org.md2k.data_analysis.gps_episodes_and_semantic_location_daily"
-        stream_name_semantic_location_user_marked = "org.md2k.data_analysis.gps_episodes_and_semantic_location_user_marked_daily"
 
         streams = self.CC.get_user_streams(user_id)
 
@@ -602,7 +804,7 @@ class GPSFeatures(ComputeFeatureBase):
             if home_present == False and stream_name_semantic_location in streams:
                 i = 0
                 while i < len(semantic_data):
-                    if (semantic_data[i].sample.lower() == "home"):
+                    if  isinstance(semantic_data[i].sample, str) and semantic_data[i].sample.lower() == "home":
                         home_lattitude = cluster_data[i].sample[1]
                         home_longitude = cluster_data[i].sample[2]
                         home_present = True
@@ -643,8 +845,8 @@ class GPSFeatures(ComputeFeatureBase):
                                           data=rout_ind)
                         break
         except Exception as e:
-            print("Exception:", str(e))
-            print(traceback.format_exc())
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(traceback.format_exc())
         self.CC.logging.log('%s finished processing for user_id %s saved %d '
                             'data points' %
                             (self.__class__.__name__, str(user_id),
@@ -666,6 +868,13 @@ class GPSFeatures(ComputeFeatureBase):
                 for semantic_stream_id in semantic_stream_ids:
                     semantic_data += self.CC.get_stream(semantic_stream_id['identifier'], user_id, day).data
 
+            if stream_name_semantic_location_places in streams:
+                semantic_stream_ids = self.CC.get_stream_id(user_id,
+                                                            stream_name_semantic_location_places)
+                semantic_data_places = []
+                for semantic_stream_id in semantic_stream_ids:
+                    semantic_data_places += self.CC.get_stream(semantic_stream_id['identifier'], user_id, day).data
+
             if len(cluster_data) == 0:
                 continue
 
@@ -682,8 +891,8 @@ class GPSFeatures(ComputeFeatureBase):
                                               data=available_data)
                             break
             except Exception as e:
-                print("Exception:", str(e))
-                print(traceback.format_exc())
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
             self.CC.logging.log('%s finished processing for user_id %s saved %d '
                                 'data points' %
                                 (self.__class__.__name__, str(user_id),
@@ -704,8 +913,8 @@ class GPSFeatures(ComputeFeatureBase):
                                               data=rad_gyr)
                             break
             except Exception as e:
-                print("Exception:", str(e))
-                print(traceback.format_exc())
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
             self.CC.logging.log('%s finished processing for user_id %s saved %d '
                                 'data points' %
                                 (self.__class__.__name__, str(user_id),
@@ -724,8 +933,8 @@ class GPSFeatures(ComputeFeatureBase):
                                               data=tot_dist)
                             break
             except Exception as e:
-                print("Exception:", str(e))
-                print(traceback.format_exc())
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
             self.CC.logging.log('%s finished processing for user_id %s saved %d '
                                 'data points' %
                                 (self.__class__.__name__, str(user_id),
@@ -746,8 +955,8 @@ class GPSFeatures(ComputeFeatureBase):
                                               data=max_dist)
                             break
             except Exception as e:
-                print("Exception:", str(e))
-                print(traceback.format_exc())
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
             self.CC.logging.log('%s finished processing for user_id %s saved %d '
                                 'data points' %
                                 (self.__class__.__name__, str(user_id),
@@ -766,8 +975,8 @@ class GPSFeatures(ComputeFeatureBase):
                                               data=num_of_diff_pls)
                             break
             except Exception as e:
-                print("Exception:", str(e))
-                print(traceback.format_exc())
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
             self.CC.logging.log('%s finished processing for user_id %s saved %d '
                                 'data points' %
                                 (self.__class__.__name__, str(user_id),
@@ -786,32 +995,17 @@ class GPSFeatures(ComputeFeatureBase):
                                               data=standard_dev)
                             break
             except Exception as e:
-                print("Exception:", str(e))
-                print(traceback.format_exc())
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
             self.CC.logging.log('%s finished processing for user_id %s saved %d '
                                 'data points' %
                                 (self.__class__.__name__, str(user_id),
                                  len(standard_dev)))
 
-            cumul_stay_data = self.cumulative_staying_time(semantic_data)
+            self.cumulative_staying_time(semantic_data,user_id)
 
-            try:
-                if len(cumul_stay_data):
-                    streams = self.CC.get_user_streams(user_id)
-                    for stream_name, stream_metadata in streams.items():
-                        if stream_name == stream_name_semantic_location:
-                            self.store_stream(filepath="cumulative_staying_time.json",
-                                              input_streams=[stream_metadata],
-                                              user_id=user_id,
-                                              data=cumul_stay_data)
-                            break
-            except Exception as e:
-                print("Exception:", str(e))
-                print(traceback.format_exc())
-            self.CC.logging.log('%s finished processing for user_id %s saved %d '
-                                'data points' %
-                                (self.__class__.__name__, str(user_id),
-                                 len(cumul_stay_data)))
+            self.cumulative_staying_time_poi(semantic_data_places,user_id)
+
 
             trans_fre = self.transition_counter(semantic_data)
             try:
@@ -833,8 +1027,8 @@ class GPSFeatures(ComputeFeatureBase):
                                               data=[trans_fre[2]])
                             break
             except Exception as e:
-                print("Exception:", str(e))
-                print(traceback.format_exc())
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
             self.CC.logging.log('%s finished processing for user_id %s saved %d '
                                 'data points' %
                                 (self.__class__.__name__, str(user_id),
@@ -859,8 +1053,8 @@ class GPSFeatures(ComputeFeatureBase):
                                           user_id=user_id,
                                           data=max_dis_home)
                 except Exception as e:
-                    print("Exception:", str(e))
-                    print(traceback.format_exc())
+                    self.CC.logging.log("Exception:", str(e))
+                    self.CC.logging.log(traceback.format_exc())
                 self.CC.logging.log('%s finished processing for user_id %s saved %d '
                                     'data points' %
                                     (self.__class__.__name__, str(user_id),
