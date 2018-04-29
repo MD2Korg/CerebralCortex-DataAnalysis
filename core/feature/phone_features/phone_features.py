@@ -47,6 +47,9 @@ feature_class_name = 'PhoneFeatures'
 
 # Constants
 IN_VEHICLE = 6.0
+OUTGOING_TYPE = 2.0
+MESSAGE_TYPE_SENT = 2.0
+
 
 class PhoneFeatures(ComputeFeatureBase):
     """
@@ -2743,6 +2746,116 @@ class PhoneFeatures(ComputeFeatureBase):
             self.CC.logging.log("Exception:", str(e))
             self.CC.logging.log(str(traceback.format_exc()))
 
+    def get_percent_initiated_call(self, data: List[DataPoint]) -> List[DataPoint]:
+        """
+        Percent of time the user initiated a call for a day.
+
+        :param List(DataPoint) data: Call type stream data points
+        :return: List of single data point with percent of call initiated for the day
+        :rtype: List(DataPoint)
+        """
+        if not data:
+            return None
+        i = 0
+        count = 0
+
+        for d in data:
+            if d.sample == OUTGOING_TYPE:
+                count += 1
+
+        start_time = copy.deepcopy(data[0].start_time)
+        start_time = start_time.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_time = datetime.datetime.combine(start_time.date(), datetime.time.max)
+        end_time = end_time.replace(tzinfo=data[0].start_time.tzinfo)
+        return [DataPoint(start_time, end_time, data[0].offset, 100.0*count/len(data))]
+
+    def get_percent_initiated_sms(self, data: List[DataPoint]) -> List[DataPoint]:
+        """
+        Percent of time the user initiated a SMS for a day.
+
+        :param List(DataPoint) data: SMS type stream data points
+        :return: List of single data point with percent of SMS initiated for the day
+        :rtype: List(DataPoint)
+        """
+        if not data:
+            return None
+        i = 0
+        count = 0
+
+        for d in data:
+            if d.sample == MESSAGE_TYPE_SENT:
+                count += 1
+
+        start_time = copy.deepcopy(data[0].start_time)
+        start_time = start_time.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_time = datetime.datetime.combine(start_time.date(), datetime.time.max)
+        end_time = end_time.replace(tzinfo=data[0].start_time.tzinfo)
+        return [DataPoint(start_time, end_time, data[0].offset, 100.0*count/len(data))]
+
+    def get_percent_initiated_callsms(self, calldata: List[DataPoint], smsdata: List[DataPoint]) -> List[DataPoint]:
+        """
+        Percent of time the user initiated a Call or SMS for a day.
+
+        :param List(DataPoint) calldata: Call type stream data points
+        :param List(DataPoint) smsdata: SMS type stream data points
+        :return: List of single data point with percent of Call and SMS initiated for the day
+        :rtype: List(DataPoint)
+        """
+        data = calldata + smsdata
+        if not data:
+            return None
+        i = 0
+        count = 0
+
+        for d in data:
+            if d.sample == OUTGOING_TYPE:
+                count += 1
+
+        start_time = copy.deepcopy(data[0].start_time)
+        start_time = start_time.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_time = datetime.datetime.combine(start_time.date(), datetime.time.max)
+        end_time = end_time.replace(tzinfo=data[0].start_time.tzinfo)
+        return [DataPoint(start_time, end_time, data[0].offset, 100.0*count/len(data))]
+
+    def process_callsms_type_day_data(self, user_id: str, calltype_data: List[DataPoint], smstype_data: List[DataPoint],
+                                      input_call_type_stream: DataStream, input_sms_type_stream: DataStream):
+        """
+        Processing all streams related to call type and sms type streams.
+
+        :param str user_id: UUID of the stream owner
+        :param List(DataPoint) calltype_data: Call type stream data points
+        :param List(DataPoint) smstype_data: SMS type stream data points
+        :param DataStream input_call_type_stream: DataStream object of call type stream
+        :param DataStream input_sms_type_stream: DataStream object of sms type stream
+        :return:
+        """
+        try:
+            data = self.get_percent_initiated_call(calltype_data)
+            self.store_stream(filepath="call_initiated_percent_daily.json",
+                              input_streams=[input_call_type_stream], user_id=user_id,
+                              data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_percent_initiated_sms(smstype_data)
+            self.store_stream(filepath="sms_initiated_percent_daily.json",
+                              input_streams=[input_sms_type_stream], user_id=user_id,
+                              data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_percent_initiated_callsms(calltype_data, smstype_data)
+            self.store_stream(filepath="callsms_initiated_percent_daily.json",
+                              input_streams=[input_call_type_stream, input_sms_type_stream], user_id=user_id,
+                              data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
     def process_data(self, user_id: str, all_user_streams: dict, all_days: List[str]):
         """
         Getting all the necessary input datastreams for a user
@@ -2766,6 +2879,8 @@ class PhoneFeatures(ComputeFeatureBase):
         input_callnumberstream = None
         input_smsnumberstream = None
         input_activity_stream = None
+        input_call_type_stream = None
+        input_sms_type_stream = None
 
         call_stream_name = 'CU_CALL_DURATION--edu.dartmouth.eureka'
         sms_stream_name = 'CU_SMS_LENGTH--edu.dartmouth.eureka'
@@ -2778,6 +2893,8 @@ class PhoneFeatures(ComputeFeatureBase):
         call_number_stream_name = "CU_CALL_NUMBER--edu.dartmouth.eureka"
         sms_number_stream_name = "CU_SMS_NUMBER--edu.dartmouth.eureka"
         activity_stream_name = "ACTIVITY_TYPE--org.md2k.phonesensor--PHONE"
+        call_type_stream_name = "CU_CALL_TYPE--edu.dartmouth.eureka"
+        sms_type_stream_name = "CU_SMS_TYPE--edu.dartmouth.eureka"
 
         streams = all_user_streams
         days = None
@@ -2804,6 +2921,10 @@ class PhoneFeatures(ComputeFeatureBase):
                 input_smsnumberstream = stream_metadata
             elif stream_name == activity_stream_name:
                 input_activity_stream = stream_metadata
+            elif stream_name == call_type_stream_name:
+                input_call_type_stream = stream_metadata
+            elif stream_name == sms_type_stream_name:
+                input_sms_type_stream = stream_metadata
 
         # Processing Call and SMS related features
         if not input_callstream:
@@ -2824,6 +2945,25 @@ class PhoneFeatures(ComputeFeatureBase):
                 smsstream = self.get_data_by_stream_name(sms_stream_name, user_id, day, localtime=False)
                 smsstream = self.get_filtered_data(smsstream, lambda x: (type(x) is float and x >= 0))
                 self.process_callsmsstream_day_data(user_id, callstream, smsstream, input_callstream, input_smsstream)
+
+        if not input_call_type_stream:
+            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
+                                "USERID %s" %
+                                (self.__class__.__name__, call_type_stream_name,
+                                 str(user_id)))
+        elif not input_sms_type_stream:
+            self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
+                                "USERID %s" %
+                                (self.__class__.__name__, sms_type_stream_name,
+                                 str(user_id)))
+        else:
+            for day in all_days:
+                calltype_data = self.get_data_by_stream_name(call_type_stream_name, user_id, day, localtime=False)
+                calltype_data = self.get_filtered_data(calltype_data, lambda x: (type(x) is float))
+                smstype_data = self.get_data_by_stream_name(sms_type_stream_name, user_id, day, localtime=False)
+                smstype_data = self.get_filtered_data(smstype_data, lambda x: (type(x) is float))
+                self.process_callsms_type_day_data(user_id, calltype_data, smstype_data, input_call_type_stream,
+                                                   input_sms_type_stream)
 
         # processing proximity sensor related features
         if not input_proximitystream:
