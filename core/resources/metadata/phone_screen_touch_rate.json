@@ -36,7 +36,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"test.org.md2k.data_analysis.feature.phone.touch_rate.day",
+  "name":"org.md2k.data_analysis.feature.phone.touch_rate.day",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }
