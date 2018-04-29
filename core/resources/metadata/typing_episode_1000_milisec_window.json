@@ -1,0 +1,53 @@
+{
+  "annotations":[],
+  "data_descriptor":[
+    {
+      "name":"typing_value",
+      "type":"int",
+      "descriptor":"Detects typing episodes in a 1000 miliseconds window"
+    },
+    {
+      "name": "typing_time",
+      "type": "float",
+      "unit": "minute",	  
+      "description": "The participant's time duration of each typing episode."
+    }	
+  ],
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.typing",
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters":{
+        "window_size": "1000 milisec"
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.typing",
+      "authors":[
+        {
+          "name":"Mithun Saha",
+          "email":"amimithun@gmail.com"
+
+        },
+        {
+          "name":"JEYA VIKRANTH JEYAKUMAR",
+          "email":"vikranth94@ucla.edu"
+
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+      },
+      "description":"Detects typing episodes and their duration in a day."
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.feature.v5.typing.episodes.day",
+  "owner":"",
+  "type":"1"
+}

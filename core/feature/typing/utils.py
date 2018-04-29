@@ -46,9 +46,11 @@ import os
 from core.computefeature import get_resource_contents
 
 # TYPING_MODEL_FILENAME = 'core/resources/models/typing/Convbn_LSTM_100.h5'
-TYPING_MODEL_FILENAME = 'core/resources/models/typing/CNN.h5'
+# TYPING_MODEL_FILENAME = 'core/resources/models/typing/CNN.h5'
+TYPING_MODEL_FILENAME = 'core/resources/models/typing/CNN_all.h5'
 
-WINDOW_SIZE = 20  # for a 800ms window (at 25Hz we get a value every 40ms.)
+WINDOW_SIZE = 25  # for a 1000ms window (at 25Hz we get a value every 40ms.)
+
 STRIDE = 5  # we make a prediction every 200ms
 
 
@@ -56,8 +58,8 @@ def typing_episodes(dataset: pd.DataFrame, offset: int) -> List[DataPoint]:
     """
     This function detects typing episodes.
 
-    Makes a prediction every 200ms using values from a window of 800ms.
-    This means there will be a overlap of 600ms between each sample window.
+    Makes a prediction every 200ms using values from a window of 1000ms.
+    This means there will be a overlap of 800ms between each sample window.
 
     :param pd.DataFrame dataset: the synced dataframe of left and right accl and gyro data
     :param int offset: offset for local time
@@ -74,7 +76,7 @@ def typing_episodes(dataset: pd.DataFrame, offset: int) -> List[DataPoint]:
 
     # Data Reshaping
     # the following lines convert the data stream into a sliding window
-    # with window size 800ms and stride 200 ms
+    # with window size 1000ms and stride 200 ms
 
     data_slide = np.zeros((int((n_samples - WINDOW_SIZE) / STRIDE) + 1,
                            WINDOW_SIZE, d))
