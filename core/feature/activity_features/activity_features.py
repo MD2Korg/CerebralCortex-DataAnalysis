@@ -399,11 +399,11 @@ class ActivityFeature(ComputeFeatureBase):
 
             total_imputed_time_of_day_walk = sum(walkH_tofd)
             total_imputed_time_of_day_mod = sum(modH_tofd)
-            total_imputed_time_of_day_high = sum(highH_tofd)
+            total_imputed_time_of_day_high = min(30, sum(highH_tofd))
 
             total_imputed_day_of_week_walk = sum(walkH_dofw)
             total_imputed_day_of_week_mod = sum(modH_dofw)
-            total_imputed_day_of_week_high = sum(highH_dofw)
+            total_imputed_day_of_week_high = min(30, sum(highH_dofw))
 
             y = int(day[:4])
             m = int(day[4:6])
