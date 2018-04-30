@@ -70,6 +70,7 @@ class WorkingDaysFromBeacon(ComputeFeatureBase):
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
         work_data = []
+        work_data_ems = []
         beacon_location_data = []
         stream_ids = self.CC.get_stream_id(user_id,
                                            BEACON_WORK_BEACON_CONTEXT_STREAM)
@@ -102,6 +103,7 @@ class WorkingDaysFromBeacon(ComputeFeatureBase):
                     temp.end_time = work_end_time
                     temp.sample = 'work'
                     work_data.append(temp)
+                    work_data_ems.append(DataPoint(temp.start_time,temp.end_time,temp.offset,1))
                 work_start_time = d.start_time
 
                 # save the new day as current day
@@ -114,6 +116,7 @@ class WorkingDaysFromBeacon(ComputeFeatureBase):
             temp.end_time = work_end_time
             temp.sample = 'work'
             work_data.append(temp)
+            work_data_ems.append(DataPoint(temp.start_time,temp.end_time,temp.offset,1))
 
         try:
             if len(work_data):
@@ -126,6 +129,10 @@ class WorkingDaysFromBeacon(ComputeFeatureBase):
                                           input_streams=[stream_metadata],
                                           user_id=user_id,
                                           data=work_data)
+                        self.store_stream(filepath="working_days_from_beacon_ems.json",
+                                          input_streams=[stream_metadata],
+                                          user_id=user_id,
+                                          data=work_data_ems)
                         break
         except Exception as e:
             print("Exception:", str(e))

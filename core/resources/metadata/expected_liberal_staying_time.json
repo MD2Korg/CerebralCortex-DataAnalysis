@@ -17,6 +17,12 @@
       "type": "integer",
       "unit": "minute",
       "description": "How much deviated from the expected liberal time (in minutes)."
+    },
+    {
+      "name": "verdict_int",
+      "type": "integer",
+      "unit": "bool",
+      "description": "0 - less than usual, 1 - usual or more"
     }
   ],
   "execution_context": {

@@ -17,6 +17,12 @@
       "type": "integer",
       "unit": "minute",
       "description": "How much deviated from the usual time (in minutes)."
+    },
+    {
+      "name": "verdict_int",
+      "type": "integer",
+      "unit": "Boolean",
+      "description": "0 - less than usual, 1 - usual or more than usual"
     }
   ],
   "execution_context": {
