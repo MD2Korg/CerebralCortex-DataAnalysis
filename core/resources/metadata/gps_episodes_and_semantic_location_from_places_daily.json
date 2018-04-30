@@ -1,0 +1,45 @@
+{
+  "annotations": [],
+  "data_descriptor": [
+    {
+      "name": "semantic_name",
+      "type": "string",
+      "description": "Semantic name of the co-ordinate using model"
+    }
+  ],
+  "execution_context": {
+    "processing_module": {
+      "name": "GPS Episodes and Semantic Location",
+      "confidential": "False",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+        "geo_fence_dist": 2,
+        "min_points_in_cluster": 500,
+        "max_dist_assign_centroid": 1000
+      }
+    },
+    "algorithm": {
+      "method": "https://github.com/MD2Korg/CerebralCortex-DataAnalysis/tree/master/core/feature/gps_daily/gps_daily.py",
+      "authors": [
+        {
+          "name": "Anik Khan",
+          "email": "aniknagato@gmail.com"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+        "url": "http://geoffboeing.com/2014/08/clustering-to-reduce-spatial-data-set-size/"
+      },
+      "description": "Cluster GPS data points and create time epochs of dwell time in each cluster for facilitating feature computations in a day."
+    }
+  },
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_places_daily",
+  "owner": "CC_OWNER_CC",
+  "type": "1"
+}
