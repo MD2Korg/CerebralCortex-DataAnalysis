@@ -1,0 +1,41 @@
+{
+  "annotations":[],
+  "data_descriptor":[
+    {
+      "name": "duration",
+      "type":"float",
+      "unit": "second",
+       "description": "Duration of typing episode" 
+    }
+  ],
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.phone_feature",
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters":{
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.phone_features.phone",
+      "authors":[
+        {
+          "name":"Md Shiplu Hawlader",
+          "email":"shiplu.cse.du@gmail.com"
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+      },
+      "description":"Start, end time and duration of a phone typing episode"
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.feature.phone.typing_episodes",
+  "owner":"CC_OWNER_CC",
+  "type":"datastream"
+}

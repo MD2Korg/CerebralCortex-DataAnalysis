@@ -196,6 +196,12 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
         return [DataPoint(start_time=start_time, end_time=end_time, offset=data[0].offset,
                           sample=total_touch_count/total_typing_time)]
 
+    def get_typing_episodes(self, typing_episodes: List) -> List[DataPoint]:
+        new_data = []
+        for d in typing_episodes:
+            new_data.append(DataPoint(d[0], d[1], 0, (d[1] - d[0]).total_seconds()))
+        return new_data
+
     def process_screentouch_type_day_data(self, user_id, touchtypedata, touchscreendata, input_touchtype_stream,
                                           input_touchscreen_stream):
         """
@@ -230,6 +236,15 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
                     break
                 pos += 1
             typing_episodes.append((touchtypedata[start].start_time, touchtypedata[pos-1].start_time))
+
+        try:
+            data = self.get_typing_episodes(typing_episodes)
+            self.store_stream(filepath="phone_typing_episode.json",
+                              input_streams=[input_touchtype_stream, input_touchscreen_stream], user_id=user_id,
+                              data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
 
         try:
             data = self.get_screen_touch_variance_hourly(touchscreendata, typing_episodes)
@@ -352,7 +367,8 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
         return ret
 
     def process_phonescreen_all_day_data(self, user_id: str, all_days: List[str],
-                                        touchescreen_stream_name: str, appcategory_stream_name: str) -> GaussianMixture:
+                                         touchescreen_stream_name: str, appcategory_stream_name: str,
+                                         input_touchstream: DataStream, input_categorystream: DataStream) -> GaussianMixture:
         """
         This method create a unsupervised model using screen touch gap during productivity and communication app usage.
 
@@ -387,6 +403,63 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
         gm = GaussianMixture(n_components = 4, max_iter = 500)#, covariance_type = 'spherical')
         X = (np.array(tapping_gap)/1000).reshape(-1, 1)
         gm.fit(X)
+        P = gm.predict(X)
+        values = [[], [], [], []]
+        for idx in range(len(X)):
+            values[P[idx]].append(X[idx][0])
+        parameters = []
+        for i in range(4):
+            print(np.mean(values[i]), np.std(values[i]))
+            parameters.append((np.mean(values[i]), np.std(values[i])))
+        parameters.sort()
+        try:
+            data = []
+            for day in all_days:
+                start_time = datetime.datetime.strptime(day,"%Y%m%d")
+                start_time = start_time.replace(tzinfo=datetime.timezone.utc)
+                end_time = datetime.datetime.combine(start_time.date(), datetime.time.max)
+                end_time = end_time.replace(tzinfo=datetime.timezone.utc)
+                data.append(DataPoint(start_time, end_time, 0, [parameters[0][0], parameters[0][1]]))
+            if data:
+                self.store_stream(filepath="phone_active_typing_parameters.json",
+                                  input_streams=[input_touchstream, input_categorystream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = []
+            for day in all_days:
+                start_time = datetime.datetime.strptime(day,"%Y%m%d")
+                start_time = start_time.replace(tzinfo=datetime.timezone.utc)
+                end_time = datetime.datetime.combine(start_time.date(), datetime.time.max)
+                end_time = end_time.replace(tzinfo=datetime.timezone.utc)
+                data.append(DataPoint(start_time, end_time, 0, [parameters[1][0], parameters[1][1]]))
+            if data:
+                self.store_stream(filepath="phone_typing_pause_parameters.json",
+                                  input_streams=[input_touchstream, input_categorystream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = []
+            for day in all_days:
+                start_time = datetime.datetime.strptime(day,"%Y%m%d")
+                start_time = start_time.replace(tzinfo=datetime.timezone.utc)
+                end_time = datetime.datetime.combine(start_time.date(), datetime.time.max)
+                end_time = end_time.replace(tzinfo=datetime.timezone.utc)
+                data.append(DataPoint(start_time, end_time, 0, [parameters[2][0], parameters[2][1]]))
+            if data:
+                self.store_stream(filepath="phone_reading_in_typing_parameters.json",
+                                  input_streams=[input_touchstream, input_categorystream],
+                                  user_id=user_id, data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
         return gm
 
     def process_phonescreen_day_data(self, user_id: str, touchstream: List[DataPoint], categorystream: List[DataPoint],
@@ -491,7 +564,8 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
                                  str(user_id)))
         else:
             gm = self.process_phonescreen_all_day_data(user_id, all_days, touchescreen_stream_name,
-                                                       appcategory_stream_name)
+                                                       appcategory_stream_name, input_touchscreenstream,
+                                                       input_appcategorystream)
             if gm:
                 for day in all_days:
                     touchstream = self.get_data_by_stream_name(touchescreen_stream_name, user_id, day)
