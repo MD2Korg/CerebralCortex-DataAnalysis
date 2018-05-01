@@ -262,12 +262,17 @@ class TypingMarker(ComputeFeatureBase):
             # data = typing_episodes(dataset, offset, self.CC)
             data = typing_episodes(dataset, offset)
             if len(data) == 0:
+                # data.append(DataPoint(start_time=get_all_data[0].start_time,
+                #                       end_time=get_all_data[-1].start_time, offset=offset,
+                #                       sample=0))
+                # data.append(DataPoint(get_all_data[0].start_time,get_all_data[-1].start_time,offset,[0,0.0]))
                 data.append(DataPoint(start_time=get_all_data[0].start_time,
                                       end_time=get_all_data[-1].start_time, offset=offset,
-                                      sample=0))
+                                      sample=[0,0.0]))
+
             # print(data)
 
-            self.store_stream(filepath='typing_episode_800_milisec_window.json',
+            self.store_stream(filepath='typing_episode_1000_milisec_window.json',
                               input_streams=[
                                   streams[motionsense_hrv_accel_right],
                                   streams[motionsense_hrv_gyro_right],

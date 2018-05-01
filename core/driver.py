@@ -46,7 +46,7 @@ def process_features(feature_list, all_users, all_days, num_cores=1):
     '''
     for module in feature_list:
         if num_cores > 1:
-            num_cores *= 4
+            #num_cores *= 4
 
             print('Driver: Spark job',module)
             spark_context = get_or_create_sc(type="sparkContext")

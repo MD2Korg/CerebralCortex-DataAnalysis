@@ -103,28 +103,39 @@ class GPSDaily(ComputeFeatureBase):
 
         stream_name_gps_cluster = "org.md2k.data_analysis.gps_clustering_episode_generation"
         stream_name_semantic_location = "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model"
+        stream_name_semantic_location_places =\
+        "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_places"
         stream_name_semantic_location_user_marked = "org.md2k.data_analysis.gps_episodes_and_semantic_location_user_marked"
         streams = self.CC.get_user_streams(user_id)
 
         for day in all_days:
 
+            cluster_data_duplication = []
+            semantic_data_duplication = []
+            semantic_places_data_duplication = []
+            semantic_user_data_duplication = []
+
             if stream_name_gps_cluster in streams:
                 cluster_stream_ids = self.CC.get_stream_id(user_id, stream_name_gps_cluster)
-                cluster_data_duplication = []
                 for cluster_stream_id in cluster_stream_ids:
                     cluster_data_duplication += self.CC.get_stream(cluster_stream_id['identifier'], user_id, day,
                                                                    localtime=True).data
 
             if stream_name_semantic_location in streams:
                 semantic_stream_ids = self.CC.get_stream_id(user_id, stream_name_semantic_location)
-                semantic_data_duplication = []
                 for semantic_stream_id in semantic_stream_ids:
                     semantic_data_duplication += self.CC.get_stream(semantic_stream_id['identifier'], user_id, day,
                                                                     localtime=True).data
 
+            if stream_name_semantic_location_places in streams:
+                semantic_stream_ids = self.CC.get_stream_id(user_id,
+                                                            stream_name_semantic_location_places)
+                for semantic_stream_id in semantic_stream_ids:
+                    semantic_places_data_duplication += self.CC.get_stream(semantic_stream_id['identifier'], user_id, day,
+                                                                    localtime=True).data
+
             if stream_name_semantic_location_user_marked in streams:
                 user_marked_stream_ids = self.CC.get_stream_id(user_id, stream_name_semantic_location_user_marked)
-                semantic_user_data_duplication = []
                 for user_marked_stream_id in user_marked_stream_ids:
                     semantic_user_data_duplication += self.CC.get_stream(user_marked_stream_id['identifier'], user_id,
                                                                          day, localtime=True).data
@@ -180,6 +191,38 @@ class GPSDaily(ComputeFeatureBase):
                                               input_streams=[streams[stream_name]],
                                               user_id=user_id,
                                               data=semantic_data_by_day, localtime=True)
+                            break
+            except Exception as e:
+                self.CC.logging.log("Exception:", str(e))
+                self.CC.logging.log(traceback.format_exc())
+            self.CC.logging.log('%s finished processing for user_id %s saved %d '
+                                'data points' %
+                                (self.__class__.__name__, str(user_id),
+                                 len(semantic_data_by_day)))
+
+
+            semantic_places_data_unique = []
+            semantic_places_data_start_time = []
+
+            for dd in semantic_places_data_duplication:
+                if dd.start_time in semantic_places_data_start_time:
+                    continue
+                else:
+                    semantic_places_data_start_time.append(dd.start_time)
+                    semantic_places_data_unique.append(dd)
+
+            semantic_places_data_by_day =\
+            self.split_datapoint_array_by_day(semantic_places_data_unique)
+
+            try:
+                if len(semantic_places_data_by_day):
+                    streams = self.CC.get_user_streams(user_id)
+                    for stream_name, stream_metadata in streams.items():
+                        if stream_name == stream_name_semantic_location_places:
+                            self.store_stream(filepath="gps_episodes_and_semantic_location_from_places_daily.json",
+                                              input_streams=[streams[stream_name]],
+                                              user_id=user_id,
+                                              data=semantic_places_data_by_day, localtime=True)
                             break
             except Exception as e:
                 self.CC.logging.log("Exception:", str(e))

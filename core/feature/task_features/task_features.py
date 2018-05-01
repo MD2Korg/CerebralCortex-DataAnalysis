@@ -122,6 +122,18 @@ class TaskFeatures(ComputeFeatureBase):
             unique_data_set = set()
             offset = 0
 
+            sitting_office_interval = []
+            standing_office_interval = []
+
+            sitting_officebeacon_interval = []
+            standing_officebeacon_interval = []
+
+            sitting_office_time = []
+            standing_office_time = []
+
+            sitting_officebeacon_time = []
+            standing_officebeacon_time = []
+
             # gets all posture datapoints
             get_all_data = self.get_day_data(posture_stream_name, user, day)
             if len(get_all_data) != 0: #creates a dictionary of start,end times
@@ -157,24 +169,55 @@ class TaskFeatures(ComputeFeatureBase):
                                                               offset)
             if len(posture_office)> 0:
                 posture_office.sort(key = lambda x: x.start_time)
-                self.store_stream(filepath='posture_office_context_daily.json',
+
+                # newly added block
+                for v in posture_office:
+                    if v.sample[0] == 'sitting':
+                        sitting_office_interval.append(v)
+                    elif v.sample[0] == 'standing':
+                        standing_office_interval.append(v)
+
+                self.store_stream(filepath='sitting_interval_office_context_daily.json',
                                   input_streams=[
                                       streams[posture_stream_name],
                                       streams[office_stream_name]],
                                   user_id=user,
-                                  data=posture_office,localtime=True)
+                                  data=sitting_office_interval,localtime=True)
+
+                self.store_stream(filepath='standing_interval_office_context_daily.json',
+                                  input_streams=[
+                                      streams[posture_stream_name],
+                                      streams[office_stream_name]],
+                                  user_id=user,
+                                  data=standing_office_interval,localtime=True)
+
 
                 posture_office_fraction = target_in_fraction_of_context(
                     target_total_time,
                     office_with_time, offset, 'work')
 
+                for v in posture_office_fraction:
+                    if v.sample[0] == 'sitting':
+                        sitting_office_time.append(v)
+                    elif v.sample[0] == 'standing':
+                        standing_office_time.append(v)
+
                 self.store_stream(
-                    filepath='posture_office_context_fraction_per_hour.json',
+                    filepath='sitting_office_context_totaltime_and_fraction_per_hour.json',
                     input_streams=[
                         streams[posture_stream_name],
                         streams[office_stream_name]],
                     user_id=user,
-                    data=posture_office_fraction,localtime=True)
+                    data=sitting_office_time,localtime=True)
+
+                self.store_stream(
+                    filepath='standing_office_context_totaltime_and_fraction_per_hour.json',
+                    input_streams=[
+                        streams[posture_stream_name],
+                        streams[office_stream_name]],
+                    user_id=user,
+                    data=standing_office_time,localtime=True)
+
 
             target_total_time, activity_office = output_stream(
                 activity_with_time,
@@ -182,7 +225,8 @@ class TaskFeatures(ComputeFeatureBase):
 
             if len(activity_office)> 0:
                 activity_office.sort(key = lambda x: x.start_time)
-                self.store_stream(filepath='activity_office_context_daily.json',
+
+                self.store_stream(filepath='walking_interval_office_context_daily.json',
                                   input_streams=[
                                       streams[activity_stream_name],
                                       streams[office_stream_name]],
@@ -194,37 +238,67 @@ class TaskFeatures(ComputeFeatureBase):
                     offset, 'work')
 
                 self.store_stream(
-                    filepath='activity_office_context_fraction_per_hour.json',
+                    filepath='walking_office_context_totaltime_and_fraction_per_hour.json',
                     input_streams=[
                         streams[activity_stream_name],
                         streams[office_stream_name]],
                     user_id=user,
                     data=activity_office_fraction,localtime=True)
 
+
             target_total_time, posture_beacon = output_stream(posture_with_time,
                                                               beacon_with_time,
                                                               offset)
-
             if len(posture_beacon)> 0:
                 posture_beacon.sort(key = lambda x: x.start_time)
-                self.store_stream(filepath='posture_beacon_context_daily.json',
+
+                for v in posture_beacon:
+                    if v.sample[0] == 'sitting':
+                        sitting_officebeacon_interval.append(v)
+                    elif v.sample[0] == 'standing':
+                        standing_officebeacon_interval.append(v)
+
+                self.store_stream(filepath='sitting_interval_officebeacon_context_daily.json',
                                   input_streams=[
                                       streams[posture_stream_name],
                                       streams[beacon_stream_name]],
                                   user_id=user,
-                                  data=posture_beacon,localtime=True)
+                                  data=sitting_officebeacon_interval,localtime=True)
+
+                self.store_stream(filepath='standing_interval_officebeacon_context_daily.json',
+                                  input_streams=[
+                                      streams[posture_stream_name],
+                                      streams[beacon_stream_name]],
+                                  user_id=user,
+                                  data=standing_officebeacon_interval,localtime=True)
+
 
                 posture_beacon_fraction = target_in_fraction_of_context(
                     target_total_time, beacon_with_time,
                     offset, '1')
 
+                for v in posture_beacon_fraction:
+                    if v.sample[0] == 'sitting':
+                        sitting_officebeacon_time.append(v)
+                    elif v.sample[0] == 'standing':
+                        standing_officebeacon_time.append(v)
+
                 self.store_stream(
-                    filepath='posture_beacon_context_fraction_per_hour.json',
+                    filepath='sitting_officebeacon_context_totaltime_and_fraction_per_hour.json',
                     input_streams=[
                         streams[posture_stream_name],
                         streams[beacon_stream_name]],
                     user_id=user,
-                    data=posture_beacon_fraction,localtime=True)
+                    data=sitting_officebeacon_time,localtime=True)
+
+                self.store_stream(
+                    filepath='standing_officebeacon_context_totaltime_and_fraction_per_hour.json',
+                    input_streams=[
+                        streams[posture_stream_name],
+                        streams[beacon_stream_name]],
+                    user_id=user,
+                    data=standing_officebeacon_time,localtime=True)
+
 
             target_total_time, activity_beacon = output_stream(
                 activity_with_time,
@@ -232,7 +306,8 @@ class TaskFeatures(ComputeFeatureBase):
 
             if len(activity_beacon)> 0:
                 activity_beacon.sort(key = lambda x: x.start_time)
-                self.store_stream(filepath='activity_beacon_context_daily.json',
+
+                self.store_stream(filepath='walking_interval_officebeacon_context_daily.json',
                                   input_streams=[
                                       streams[activity_stream_name],
                                       streams[beacon_stream_name]],
@@ -242,9 +317,10 @@ class TaskFeatures(ComputeFeatureBase):
                 activity_beacon_fraction = target_in_fraction_of_context(
                     target_total_time, beacon_with_time,
                     offset, '1')
+                print(activity_beacon_fraction)
 
                 self.store_stream(
-                    filepath='activity_beacon_context_fraction_per_hour.json',
+                    filepath='walking_officebeacon_context_totaltime_and_fraction_per_hour.json',
                     input_streams=[
                         streams[activity_stream_name],
                         streams[beacon_stream_name]],

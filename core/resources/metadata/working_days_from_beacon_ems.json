@@ -1,0 +1,38 @@
+{
+  "annotations": [],
+  "data_descriptor": {
+    "name": "value",
+    "type": "int",
+    "description": "1 if work"
+  },
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.office_time",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.office_time.WorkingDaysFromBeacon.listing_all_work_days_from_beacon",
+      "authors": [
+        {
+          "name": "Alina Zaman",
+          "email": "alina.cse@gmail.com"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+      },
+      "description": "Working days. The output is a list containing the date of only when a participant was near beacon. The start time of entering in beacon zone and the last time she leave the beacon zone are stored. All of these results are parsed from beacon data."
+    }
+  },
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.working_days_from_beacon_ems",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
+}

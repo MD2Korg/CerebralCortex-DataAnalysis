@@ -1,0 +1,53 @@
+{
+  "annotations": [],
+  "data_descriptor": [
+    {
+      "name": "posture_type",
+      "type": "string",
+      "description": "The participant's posture time - total and per hour, posture = sitting"
+    },
+    {
+      "name": "posture_time_total",
+      "type": "float",
+      "unit": "minute",
+      "description": "The participant's total posture time in minutes in office beacon context"
+    },	
+    {
+      "name": "posture_time_fraction",
+      "type": "float",
+      "unit": "minute",
+      "description": "The participant's posture time per hour in minutes in office beacon context"
+    }
+  ],
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.task_features",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+        "window_size": "1 Hour"
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.task_features",
+      "authors": [
+        {
+          "name": "Mithun Saha",
+          "email": "amimithun@gmail.com"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+      },
+      "description": "The participants'total sitting time and sitting time per hour, in office beacon context"
+    }
+  },
+  "identifier": "",
+  "name": "org.md2k.data_analysis.feature.task_features.sitting_office_beacon_context_totaltime_and_fraction_per_hour.daily",
+  "owner": "",
+  "type": "1"
+}

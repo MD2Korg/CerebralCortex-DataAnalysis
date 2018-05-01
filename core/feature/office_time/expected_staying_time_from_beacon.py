@@ -133,22 +133,28 @@ class ExpectedStayingTimesFromBeacon(ComputeFeatureBase):
             if staying_time > conservative_time:
                 data.sample.append("more_than_expected_conservative_time")
                 data.sample.append(math.ceil(staying_time - conservative_time))
+                data.sample.append(1)
             elif staying_time < conservative_time:
                 data.sample.append("less_than_expected_conservative_time")
                 data.sample.append(math.ceil(conservative_time - staying_time))
+                temp.sample.append(0)
             elif staying_time == conservative_time:
                 data.sample.append("in_expected_conservative_time")
                 data.sample.append(0)
+                data.sample.append(1)
             temp.sample.append(staying_time)
             if staying_time > liberal_time:
                 temp.sample.append("more_than_expected_liberal_time")
                 temp.sample.append(math.ceil(staying_time - liberal_time))
+                data.sample.append(1)
             elif staying_time < liberal_time:
                 temp.sample.append("less_than_expected_liberal_time")
                 temp.sample.append(math.ceil(liberal_time - staying_time))
+                temp.sample.append(0)
             elif staying_time == liberal_time:
                 temp.sample.append("in_expected_liberal_time")
                 temp.sample.append(0)
+                data.sample.append(1)
             expected_liberal_staying_data.append(temp)
         try:
             if len(expected_conservative_staying_data):

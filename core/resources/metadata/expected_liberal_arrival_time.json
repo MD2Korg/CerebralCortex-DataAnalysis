@@ -16,6 +16,12 @@
       "type": "integer",
       "unit": "minute",
       "description": "How much deviated from the expected liberal time (in minutes)."
+    },
+    {
+      "name": "verdict_int",
+      "type": "integer",
+      "unit": "bool",
+      "description": "0 - late, 1 - ontime or early"
     }
   ],
   "execution_context": {

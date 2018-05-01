@@ -112,12 +112,15 @@ class StayingTimesFromBeacon(ComputeFeatureBase):
             if staying_time > mean + standard_deviation:
                 data.sample.append("more_than_usual")
                 data.sample.append(math.ceil(staying_time - (mean + standard_deviation)))
+                data.sample.append(1)
             elif staying_time < mean - standard_deviation:
                 data.sample.append("less_than_usual")
                 data.sample.append(math.ceil(mean - standard_deviation - staying_time))
+                data.sample.append(0)
             else:
                 data.sample.append("usual_staying_time")
                 data.sample.append(0)
+                data.sample.append(1)
         try:
             if len(staying_time_data):
                 streams = self.CC.get_user_streams(user_id)

@@ -1,0 +1,53 @@
+{
+  "annotations": [],
+  "data_descriptor": [
+    {
+      "name": "activity_type",
+      "type": "string",
+      "description": "The participant's activity time - total and per hour, activity = walking"
+    },
+    {
+      "name": "activity_time_total",
+      "type": "float",
+      "unit": "minute",
+      "description": "The participant's total activity time in minutes in office context"
+    },		
+    {
+      "name": "activity_time_fraction",
+      "type": "float",
+      "unit": "minute",
+      "description": "The participant's activity time per hour in minutes in office context"
+    }
+  ],
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.task_features",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+        "window_size": "1 Hour"
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.task_features",
+      "authors": [
+        {
+          "name": "Mithun Saha",
+          "email": "amimithun@gmail.com"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+      },
+      "description": "The participants'total walking time and walking time per hour, in office context"
+    }
+  },
+  "identifier": "",
+  "name": "org.md2k.data_analysis.feature.task_features.walking_office_context_totaltime_and_fraction_per_hour.daily",
+  "owner": "",
+  "type": "1"
+}
