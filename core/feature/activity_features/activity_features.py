@@ -57,7 +57,8 @@ class ActivityFeature(ComputeFeatureBase):
             data_stream = self.CC.get_stream(stream_id["identifier"],
                                              day=day,
                                              user_id=user_id,
-                                             data_type=DataSet.COMPLETE)
+                                             data_type=DataSet.COMPLETE,
+                                             localtime=True)
             if data_stream is not None and len(data_stream.data) > 0:
                 day_data.extend(data_stream.data)
 
@@ -159,32 +160,32 @@ class ActivityFeature(ComputeFeatureBase):
             self.store_stream(filepath=WALKING_HOURLY,
                               input_streams=[streams[ACTIVITY_STREAMNAME]],
                               user_id=user,
-                              data=walk_data)
+                              data=walk_data, localtime=True)
             self.store_stream(filepath=MODERATE_ACTIVITY_HOURLY,
                               input_streams=[streams[ACTIVITY_STREAMNAME]],
                               user_id=user,
-                              data=mod_data)
+                              data=mod_data, localtime=True)
             self.store_stream(filepath=HIGH_ACTIVITY_HOURLY,
                               input_streams=[streams[ACTIVITY_STREAMNAME]],
                               user_id=user,
-                              data=high_data)
+                              data=high_data, localtime=True)
 
         if STREAMNAME == ACCEL_ONLY_ACTIVITY_STREAMNAME:
             self.store_stream(filepath=WALKING_HOURLY_ACCEL_ONLY,
                               input_streams=[
                                   streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
                               user_id=user,
-                              data=walk_data)
+                              data=walk_data, localtime=True)
             self.store_stream(filepath=MODERATE_ACTIVITY_HOURLY_ACCEL_ONLY,
                               input_streams=[
                                   streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
                               user_id=user,
-                              data=mod_data)
+                              data=mod_data, localtime=True)
             self.store_stream(filepath=HIGH_ACTIVITY_HOURLY_ACCEL_ONLY,
                               input_streams=[
                                   streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
                               user_id=user,
-                              data=high_data)
+                              data=high_data, localtime=True)
 
         return walking_min_hourly, mod_min_hourly, high_min_hourly, total_min_per_hour
 
@@ -234,30 +235,30 @@ class ActivityFeature(ComputeFeatureBase):
                 DataPoint(start_time=start_time, end_time=end_time,
                           offset=offset,
                           sample=[lying_min_hourly[hour],
-                                  total_posture_min_hourly[hour]]))
+                                  total_posture_min_hourly[hour]]), localtime=True)
             sitting_data.append(
                 DataPoint(start_time=start_time, end_time=end_time,
                           offset=offset,
                           sample=[sitting_min_hourly[hour],
-                                  total_posture_min_hourly[hour]]))
+                                  total_posture_min_hourly[hour]]), localtime=True)
             standing_data.append(
                 DataPoint(start_time=start_time, end_time=end_time,
                           offset=offset,
                           sample=[standing_min_hourly[hour],
-                                  total_posture_min_hourly[hour]]))
+                                  total_posture_min_hourly[hour]]), localtime=True)
 
         self.store_stream(filepath=LYING_HOURLY,
                           input_streams=[streams[POSTURE_STREAMNAME]],
                           user_id=user,
-                          data=lying_data)
+                          data=lying_data, localtime=True)
         self.store_stream(filepath=SITTING_HOURLY,
                           input_streams=[streams[POSTURE_STREAMNAME]],
                           user_id=user,
-                          data=sitting_data)
+                          data=sitting_data, localtime=True)
         self.store_stream(filepath=STANDING_HOURLY,
                           input_streams=[streams[POSTURE_STREAMNAME]],
                           user_id=user,
-                          data=standing_data)
+                          data=standing_data, localtime=True)
 
     def compute_hourly_mean_for_time_of_day(self, D: dict,
                                             days: object) -> object:
@@ -419,21 +420,21 @@ class ActivityFeature(ComputeFeatureBase):
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time,
                                                   offset=offset,
-                                                  sample=total_walking)])
+                                                  sample=total_walking)], localtime=True)
                 self.store_stream(filepath=WALKING_IMPUTED_TIME_OF_DAY_DAILY,
                                   input_streams=[streams[ACTIVITY_STREAMNAME]],
                                   user_id=user_id,
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time,
                                                   offset=offset,
-                                                  sample=total_imputed_time_of_day_walk)])
+                                                  sample=total_imputed_time_of_day_walk)], localtime=True)
                 self.store_stream(filepath=WALKING_IMPUTED_DAY_OF_WEEK_DAILY,
                                   input_streams=[streams[ACTIVITY_STREAMNAME]],
                                   user_id=user_id,
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time,
                                                   offset=offset,
-                                                  sample=total_imputed_day_of_week_walk)])
+                                                  sample=total_imputed_day_of_week_walk)], localtime=True)
 
                 self.store_stream(filepath=MODERATE_ACTIVITY_DAILY,
                                   input_streams=[streams[ACTIVITY_STREAMNAME]],
@@ -441,21 +442,21 @@ class ActivityFeature(ComputeFeatureBase):
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time,
                                                   offset=offset,
-                                                  sample=total_mod)])
+                                                  sample=total_mod)], localtime=True)
                 self.store_stream(
                     filepath=MODERATE_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
                     input_streams=[streams[ACTIVITY_STREAMNAME]],
                     user_id=user_id,
                     data=[DataPoint(start_time=start_time,
                                     end_time=end_time, offset=offset,
-                                    sample=total_imputed_time_of_day_mod)])
+                                    sample=total_imputed_time_of_day_mod)], localtime=True)
                 self.store_stream(
                     filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
                     input_streams=[streams[ACTIVITY_STREAMNAME]],
                     user_id=user_id,
                     data=[DataPoint(start_time=start_time,
                                     end_time=end_time, offset=offset,
-                                    sample=total_imputed_day_of_week_mod)])
+                                    sample=total_imputed_day_of_week_mod)], localtime=True)
 
                 self.store_stream(filepath=HIGH_ACTIVITY_DAILY,
                                   input_streams=[streams[ACTIVITY_STREAMNAME]],
@@ -463,21 +464,21 @@ class ActivityFeature(ComputeFeatureBase):
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time,
                                                   offset=offset,
-                                                  sample=total_high)])
+                                                  sample=total_high)], localtime=True)
                 self.store_stream(
                     filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
                     input_streams=[streams[ACTIVITY_STREAMNAME]],
                     user_id=user_id,
                     data=[DataPoint(start_time=start_time,
                                     end_time=end_time, offset=offset,
-                                    sample=total_imputed_time_of_day_high)])
+                                    sample=total_imputed_time_of_day_high)], localtime=True)
                 self.store_stream(
                     filepath=HIGH_ACTIVITY_IMPUTED_DAY_OF_WEEK_DAILY,
                     input_streams=[streams[ACTIVITY_STREAMNAME]],
                     user_id=user_id,
                     data=[DataPoint(start_time=start_time,
                                     end_time=end_time, offset=offset,
-                                    sample=total_imputed_day_of_week_high)])
+                                    sample=total_imputed_day_of_week_high)], localtime=True)
 
             if STREAMNAME == ACCEL_ONLY_ACTIVITY_STREAMNAME:
                 self.store_stream(filepath=WALKING_DAILY,
@@ -487,7 +488,7 @@ class ActivityFeature(ComputeFeatureBase):
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time,
                                                   offset=offset,
-                                                  sample=total_walking)])
+                                                  sample=total_walking)], localtime=True)
                 self.store_stream(filepath=WALKING_IMPUTED_TIME_OF_DAY_DAILY,
                                   input_streams=[
                                       streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
@@ -495,7 +496,7 @@ class ActivityFeature(ComputeFeatureBase):
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time,
                                                   offset=offset,
-                                                  sample=total_imputed_time_of_day_walk)])
+                                                  sample=total_imputed_time_of_day_walk)], localtime=True)
                 self.store_stream(filepath=WALKING_IMPUTED_DAY_OF_WEEK_DAILY,
                                   input_streams=[
                                       streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
@@ -503,7 +504,7 @@ class ActivityFeature(ComputeFeatureBase):
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time,
                                                   offset=offset,
-                                                  sample=total_imputed_day_of_week_walk)])
+                                                  sample=total_imputed_day_of_week_walk)], localtime=True)
 
                 self.store_stream(filepath=MODERATE_ACTIVITY_DAILY,
                                   input_streams=[
@@ -512,14 +513,14 @@ class ActivityFeature(ComputeFeatureBase):
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time,
                                                   offset=offset,
-                                                  sample=total_mod)])
+                                                  sample=total_mod)], localtime=True)
                 self.store_stream(
                     filepath=MODERATE_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
                     input_streams=[streams[ACCEL_ONLY_ACTIVITY_STREAMNAME]],
                     user_id=user_id,
                     data=[DataPoint(start_time=start_time,
                                     end_time=end_time, offset=offset,
-                                    sample=total_imputed_time_of_day_mod)])
+                                    sample=total_imputed_time_of_day_mod)], localtime=True)
                 self.store_stream(
                     filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
                     input_streams=[
@@ -527,7 +528,7 @@ class ActivityFeature(ComputeFeatureBase):
                     user_id=user_id,
                     data=[DataPoint(start_time=start_time,
                                     end_time=end_time, offset=offset,
-                                    sample=total_imputed_day_of_week_mod)])
+                                    sample=total_imputed_day_of_week_mod)], localtime=True)
 
                 self.store_stream(filepath=HIGH_ACTIVITY_DAILY,
                                   input_streams=[
@@ -536,7 +537,7 @@ class ActivityFeature(ComputeFeatureBase):
                                   data=[DataPoint(start_time=start_time,
                                                   end_time=end_time,
                                                   offset=offset,
-                                                  sample=total_high)])
+                                                  sample=total_high)], localtime=True)
                 self.store_stream(
                     filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
                     input_streams=[
@@ -544,7 +545,7 @@ class ActivityFeature(ComputeFeatureBase):
                     user_id=user_id,
                     data=[DataPoint(start_time=start_time,
                                     end_time=end_time, offset=offset,
-                                    sample=total_imputed_time_of_day_high)])
+                                    sample=total_imputed_time_of_day_high)], localtime=True)
                 self.store_stream(
                     filepath=HIGH_ACTIVITY_IMPUTED_DAY_OF_WEEK_DAILY,
                     input_streams=[
@@ -552,7 +553,7 @@ class ActivityFeature(ComputeFeatureBase):
                     user_id=user_id,
                     data=[DataPoint(start_time=start_time,
                                     end_time=end_time, offset=offset,
-                                    sample=total_imputed_day_of_week_high)])
+                                    sample=total_imputed_day_of_week_high)], localtime=True)
 
     def process(self, user: str, all_days: list):
         """
