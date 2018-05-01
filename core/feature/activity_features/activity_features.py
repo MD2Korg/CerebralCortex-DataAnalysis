@@ -397,11 +397,11 @@ class ActivityFeature(ComputeFeatureBase):
                     modH_dofw[i] = (modH_prev[i] * 60) / hourCount[i]
                     highH_dofw[i] = (highH_prev[i] * 60) / hourCount[i]
 
-            total_imputed_time_of_day_walk = sum(walkH_tofd)
+            total_imputed_time_of_day_walk = min(120, sum(walkH_tofd))
             total_imputed_time_of_day_mod = sum(modH_tofd)
             total_imputed_time_of_day_high = min(30, sum(highH_tofd))
 
-            total_imputed_day_of_week_walk = sum(walkH_dofw)
+            total_imputed_day_of_week_walk = min(120, sum(walkH_dofw))
             total_imputed_day_of_week_mod = sum(modH_dofw)
             total_imputed_day_of_week_high = min(30, sum(highH_dofw))
 
