@@ -1,0 +1,47 @@
+{
+  "annotations":[],
+  "data_descriptor":[
+    {
+      "name": "mean",
+      "type":"float",
+      "unit": "second",
+       "description": "Mean value of typing pause gaps" 
+    },
+    {
+      "name": "standard_deviation",
+      "type":"float",
+      "unit": "second",
+       "description": "Standard deviation value of typing pause gaps" 
+    }
+  ],
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.phone_feature",
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters":{
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.phone_features.phone",
+      "authors":[
+        {
+          "name":"Md Shiplu Hawlader",
+          "email":"shiplu.cse.du@gmail.com"
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+      },
+      "description":"Overall calculated parameters (mean and standard deviation) for typing pause duration gap in phone."
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.feature.phone.all_days.typing_pause.parameters",
+  "owner":"CC_OWNER_CC",
+  "type":"datastream"
+}
