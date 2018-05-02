@@ -443,20 +443,18 @@ class ActivityFeature(ComputeFeatureBase):
                                                   end_time=end_time,
                                                   offset=offset,
                                                   sample=total_mod)], localtime=True)
-                self.store_stream(
-                    filepath=MODERATE_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
-                    input_streams=[streams[ACTIVITY_STREAMNAME]],
-                    user_id=user_id,
-                    data=[DataPoint(start_time=start_time,
-                                    end_time=end_time, offset=offset,
-                                    sample=total_imputed_time_of_day_mod)], localtime=True)
-                self.store_stream(
-                    filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
-                    input_streams=[streams[ACTIVITY_STREAMNAME]],
-                    user_id=user_id,
-                    data=[DataPoint(start_time=start_time,
-                                    end_time=end_time, offset=offset,
-                                    sample=total_imputed_day_of_week_mod)], localtime=True)
+                self.store_stream(filepath=MODERATE_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
+                                  input_streams=[streams[ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_imputed_time_of_day_mod)], localtime=True)
+                self.store_stream(filepath=MODERATE_ACTIVITY_IMPUTED_DAY_OF_WEEK_DAILY,
+                                  input_streams=[streams[ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                end_time=end_time, offset=offset,
+                                                sample=total_imputed_day_of_week_mod)], localtime=True)
 
                 self.store_stream(filepath=HIGH_ACTIVITY_DAILY,
                                   input_streams=[streams[ACTIVITY_STREAMNAME]],
@@ -465,20 +463,18 @@ class ActivityFeature(ComputeFeatureBase):
                                                   end_time=end_time,
                                                   offset=offset,
                                                   sample=total_high)], localtime=True)
-                self.store_stream(
-                    filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
-                    input_streams=[streams[ACTIVITY_STREAMNAME]],
-                    user_id=user_id,
-                    data=[DataPoint(start_time=start_time,
-                                    end_time=end_time, offset=offset,
-                                    sample=total_imputed_time_of_day_high)], localtime=True)
-                self.store_stream(
-                    filepath=HIGH_ACTIVITY_IMPUTED_DAY_OF_WEEK_DAILY,
-                    input_streams=[streams[ACTIVITY_STREAMNAME]],
-                    user_id=user_id,
-                    data=[DataPoint(start_time=start_time,
-                                    end_time=end_time, offset=offset,
-                                    sample=total_imputed_day_of_week_high)], localtime=True)
+                self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY,
+                                  input_streams=[streams[ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_imputed_time_of_day_high)], localtime=True)
+                self.store_stream(filepath=HIGH_ACTIVITY_IMPUTED_DAY_OF_WEEK_DAILY,
+                                  input_streams=[streams[ACTIVITY_STREAMNAME]],
+                                  user_id=user_id,
+                                  data=[DataPoint(start_time=start_time,
+                                                  end_time=end_time, offset=offset,
+                                                  sample=total_imputed_day_of_week_high)], localtime=True)
 
             if STREAMNAME == ACCEL_ONLY_ACTIVITY_STREAMNAME:
                 self.store_stream(filepath=WALKING_DAILY,
