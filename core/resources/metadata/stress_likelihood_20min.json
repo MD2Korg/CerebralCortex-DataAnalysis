@@ -5,7 +5,10 @@
       "name": "value",
       "type": "float",
       "unit": "1 minute window",
-      "description": "probability of stress"
+      "description": "probability of stress",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 20,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {

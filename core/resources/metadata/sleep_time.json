@@ -5,17 +5,26 @@
       "name": "duration",
       "type": "float",
       "unit": "hour",
-      "description": "Approximate Sleep duration in number of hours"
+      "description": "Approximate Sleep duration in number of hours",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     },
     {
       "name": "onset",
       "type": "datetime",
-      "description": "Approximate sleep onset or start time in local time"
+      "description": "Approximate sleep onset or start time in local time",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     },
     {
       "name": "offset",
       "type": "datetime",
-      "description": "Approximate sleep offset or end time in local time"
+      "description": "Approximate sleep offset or end time in local time",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {

@@ -4,7 +4,10 @@
     "name": "amount_of_walking",
     "type": "float",
     "unit": "minute",
-    "description": "Imputed (by time of day of week) and scaled up amount of walking daily"
+    "description": "Imputed (by time of day of week) and scaled up amount of walking daily",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {

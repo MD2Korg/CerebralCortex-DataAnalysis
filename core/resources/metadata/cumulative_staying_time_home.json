@@ -6,7 +6,7 @@
     "description": "Value indicating the cumulative time spent at home.",
     "stream_type": "periodic",
     "expected_samples_per_day": 1,
-    "missing_data_handling": "zero_fill"
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {

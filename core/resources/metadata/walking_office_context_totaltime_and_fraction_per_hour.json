@@ -4,19 +4,29 @@
     {
       "name": "activity_type",
       "type": "string",
-      "description": "The participant's activity time - total and per hour, activity = walking"
+      "description": "The participant's activity time - total and per hour, activity = walking",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "default_fill",
+      "default_value": "walking"
     },
     {
       "name": "activity_time_total",
       "type": "float",
       "unit": "minute",
-      "description": "The participant's total activity time in minutes in office context"
+      "description": "The participant's total activity time in minutes in office context",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "impute"
     },		
     {
       "name": "activity_time_fraction",
       "type": "float",
       "unit": "minute",
-      "description": "The participant's activity time per hour in minutes in office context"
+      "description": "The participant's activity time per hour in minutes in office context",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {

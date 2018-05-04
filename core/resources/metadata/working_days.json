@@ -3,7 +3,11 @@
   "data_descriptor": {
     "name": "value",
     "type": "string",
-    "description": "Office"
+    "description": "Office",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "default_fill",
+    "default_fill":"unknown"
   },
   "execution_context": {
     "processing_module": {

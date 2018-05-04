@@ -3,7 +3,11 @@
   "data_descriptor": {
     "name": "type",
     "type": "string",
-    "description": "The value is one of the four verdicts [typing, pause, reading, unknown]."
+    "description": "The value is one of the four verdicts [typing, pause, reading, unknown].",
+    "stream_type": "sparse",
+    "expected_samples_per_day": 0,
+    "missing_data_handling": "default_fill",
+    "default_value": "unknown"
   },
   "execution_context": {
     "processing_module": {

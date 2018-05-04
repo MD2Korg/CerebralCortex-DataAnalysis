@@ -16,7 +16,7 @@
       "stream_type": "periodic",
       "expected_samples_per_day": 1,
       "missing_data_handling": "default_fill",
-      "default_value": "in_expected_liberal_time"
+      "default_value": "unknown"
     },
     {
       "name": "deviation",
