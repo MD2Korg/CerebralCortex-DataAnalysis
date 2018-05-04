@@ -5,7 +5,10 @@
       "name": "amount_of_moderate_activity",
       "type": "float",
       "unit": "minute",
-      "description": "Amount of moderate activity of that hour"
+      "description": "Amount of moderate activity of that hour",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "impute"
     },
     {
       "name": "amount_of_data",

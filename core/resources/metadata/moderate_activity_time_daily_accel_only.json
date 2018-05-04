@@ -4,7 +4,10 @@
     "name": "amount_of_moderate_activity_accel_only",
     "type": "float",
     "unit": "minute",
-    "description": "Amount of moderate activity daily from accel only model"
+    "description": "Amount of moderate activity daily from accel only model",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {

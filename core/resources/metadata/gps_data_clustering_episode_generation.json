@@ -4,17 +4,26 @@
     {
       "name": "index",
       "type": "integer",
-      "description": "Index of gps centroid"
+      "description": "Index of gps centroid",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "zero_fill"
     },
     {
       "name": "centroid_latitude",
       "type": "float",
-      "description": "Latitude of Centroid"
+      "description": "Latitude of Centroid",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "impute"
     },
     {
       "name": "centroid_longitude",
       "type": "float",
-      "description": "Longitude of Centroid"
+      "description": "Longitude of Centroid",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {

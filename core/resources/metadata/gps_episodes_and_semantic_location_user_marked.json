@@ -3,7 +3,11 @@
   "data_descriptor": {
     "name": "semantic_name",
     "type": "string",
-    "description": "Semantic name of the co-ordinate using user markings"
+    "description": "Semantic name of the co-ordinate using user markings",
+    "stream_type": "sparse",
+    "expected_samples_per_day": 0,
+    "missing_data_handling": "default_fill",
+    "default_value": ""
   },
   "execution_context": {
     "processing_module": {

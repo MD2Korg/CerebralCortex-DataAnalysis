@@ -3,7 +3,10 @@
   "data_descriptor": {
     "name": "index",
     "type": "integer",
-    "description": "Index of gps centroid"
+    "description": "Index of gps centroid",
+    "stream_type": "sparse",
+    "expected_samples_per_day": 0,
+    "missing_data_handling": "zero_fill"
   },
   "execution_context": {
     "processing_module": {
