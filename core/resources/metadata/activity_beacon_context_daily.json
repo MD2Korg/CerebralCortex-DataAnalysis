@@ -4,12 +4,19 @@
     {
       "name": "found_activity",
       "type": "string",
-      "description": "The participant's time intervals of activity, activity = walking"
+      "description": "The participant's time intervals of activity, activity = walking",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "default_fill",
+      "default_value": "none"
     },
     {
       "name": "context_type",
       "type": "string",
-      "description": "The participant's time intervals of activity in context, context = office beacon"
+      "description": "The participant's time intervals of activity in context, context = office beacon",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {

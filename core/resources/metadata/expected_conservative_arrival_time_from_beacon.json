@@ -4,24 +4,37 @@
     {
       "name": "arrival_time_around_beacon",
       "type": "datetime",
-      "description": "Office arrival time (entering time into around office beacon) according to Beacon model"
+      "description": "Office arrival time (entering time into around office beacon) according to Beacon model",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     },
     {
       "name": "verdict",
       "type": "string",
-      "description": "Analysis of the arrival time which is one of the three verdict: 1. before_expected_conservative_time 2. after_expected_conservative_time 3. in_expected_conservative_time. Expected conservative time is the before_hour time of average arrival time. For example if average arrival time is 8:15 then expected conservative time is 8:00 on the other hand if average arrival time is 8:37 then expected conservative time is 8:30. The arrival time which are earlier than expected conservative time are labeled before_expected_conservative_time and the arrival time which are later than expected conservative time are labeled as after_expected_conservative_time, the arrival time which are exactly same as the expected conservative time are labeled as in_expected_conservative_time."
+      "description": "Analysis of the arrival time which is one of the three verdict: 1. before_expected_conservative_time 2. after_expected_conservative_time 3. in_expected_conservative_time. Expected conservative time is the before_hour time of average arrival time. For example if average arrival time is 8:15 then expected conservative time is 8:00 on the other hand if average arrival time is 8:37 then expected conservative time is 8:30. The arrival time which are earlier than expected conservative time are labeled before_expected_conservative_time and the arrival time which are later than expected conservative time are labeled as after_expected_conservative_time, the arrival time which are exactly same as the expected conservative time are labeled as in_expected_conservative_time.",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "default_fill",
+      "default_value": "in_expected_conservative_time"
     },
     {
       "name": "deviation",
       "type": "integer",
       "unit": "minute",
-      "description": "How much deviated from the expected conservative time (in minutes)."
+      "description": "How much deviated from the expected conservative time (in minutes).",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     },
     {
       "name": "verdict_int",
       "type": "integer",
       "unit": "bool",
-      "description": "0 - after usual, 1 - usual or before"
+      "description": "0 - after usual, 1 - usual or before",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {

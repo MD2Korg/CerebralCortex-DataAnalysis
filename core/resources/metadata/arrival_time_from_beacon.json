@@ -4,24 +4,37 @@
     {
       "name": "arrival_time_around_beacon",
       "type": "datetime",
-      "description": "Office arrival time (entering time into the office location) according to beacon model"
+      "description": "Office arrival time (entering time into the office location) according to beacon model",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     },
     {
       "name": "verdict",
       "type": "string",
-      "description": "Analysis of the arrival time which is one of the three verdict: 1. before_usual_time 2. after_usual_time 3. usual_time. Usual time is a range from (mean - standard_deviation) to (mean + standard_deviation). The arrival time which are earlier than usual range are before_usual_time and the arrival time which are later than the usual range are after_usual_time ."
+      "description": "Analysis of the arrival time which is one of the three verdict: 1. before_usual_time 2. after_usual_time 3. usual_time. Usual time is a range from (mean - standard_deviation) to (mean + standard_deviation). The arrival time which are earlier than usual range are before_usual_time and the arrival time which are later than the usual range are after_usual_time .",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "default_fill",
+      "default_value": "usual_time"
     },
     {
       "name": "deviation",
       "type": "integer",
       "unit": "minute",
-      "description": "How much deviated from the usual time (in minutes)."
+      "description": "How much deviated from the usual time (in minutes).",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     },
     {
       "name": "verdict_int",
       "type": "integer",
       "unit": "bool",
-      "description": "0 - after usual, 1 - usual or before"
+      "description": "0 - after usual, 1 - usual or before",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {

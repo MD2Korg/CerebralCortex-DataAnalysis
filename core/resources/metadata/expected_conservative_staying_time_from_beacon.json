@@ -5,18 +5,37 @@
       "name": "staying_time_around_beacon",
       "type": "integer",
       "unit": "minute",
-      "description": "Office staying time (total time between first entering time around the office beacon and last departure time from office beacon) according to Beacon model"
+      "description": "Office staying time (total time between first entering time around the office beacon and last departure time from office beacon) according to Beacon model",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     },
     {
       "name": "verdict",
       "type": "string",
-      "description": "Analysis of the staying time which is one of the three verdict: 1. less_than_expected_conservative_time 2. more_than_expected_conservative_time 3. in_expected_conservative_time. Expected conservative time is the half_hourly time of average staying time. For example if average staying time is 8 hour 20 minute then expected conservative time is 8 hour 30 minute on the other hand if average staying time is 8 hour 37 minute then expected conservative time is 9 hour. The staying time which are less than expected conservative time are labeled less_than_expected_conservative_time and the staying time which are more than expected conservative time are labeled as more_than_expected_conservative_time, the staying time which are exactly same as the expected conservative time are labeled as in_expected_conservative_time."
+      "description": "Analysis of the staying time which is one of the three verdict: 1. less_than_expected_conservative_time 2. more_than_expected_conservative_time 3. in_expected_conservative_time. Expected conservative time is the half_hourly time of average staying time. For example if average staying time is 8 hour 20 minute then expected conservative time is 8 hour 30 minute on the other hand if average staying time is 8 hour 37 minute then expected conservative time is 9 hour. The staying time which are less than expected conservative time are labeled less_than_expected_conservative_time and the staying time which are more than expected conservative time are labeled as more_than_expected_conservative_time, the staying time which are exactly same as the expected conservative time are labeled as in_expected_conservative_time.",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "default_fill",
+      "default_value": "in_expected_conservative_time"
     },
     {
       "name": "deviation",
       "type": "integer",
       "unit": "minute",
-      "description": "How much deviated from the expected conservative time (in minutes)."
+      "description": "How much deviated from the expected conservative time (in minutes).",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
+    },
+    {
+      "name": "verdict_int",
+      "type": "integer",
+      "unit": "bool",
+      "description": "0 - after usual, 1 - usual or before",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {

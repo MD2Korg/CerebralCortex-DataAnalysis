@@ -5,24 +5,37 @@
       "name": "office_staying_time",
       "type": "integer",
       "unit": "minute",
-      "description": "Office staying time (total time between first entering time into the office location and last departure time from office location) according to GPS location model"
+      "description": "Office staying time (total time between first entering time into the office location and last departure time from office location) according to GPS location model",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     },
     {
       "name": "verdict",
       "type": "string",
-      "description": "Analysis of the staying time which is one of the three verdict: 1. less_than_expected_liberal_time 2. more_than_expected_liberal_time 3. in_expected_liberal_time. Expected liberal time is the half_hourly time of average staying time. For example if average staying time is 8 hour 20 minute then expected liberal time is 8 hour on the other hand if average staying time is 8 hour 37 minute then expected liberal time is 8 hour 30 minutes.  The staying time which are less than expected liberal time are labeled less_than_expected_liberal_time and the staying time which are more than expected liberal time are labeled as more_than_expected_liberal_time, the staying time which are exactly same as the expected liberal time are labeled as in_expected_liberal_time."
+      "description": "Analysis of the staying time which is one of the three verdict: 1. less_than_expected_liberal_time 2. more_than_expected_liberal_time 3. in_expected_liberal_time. Expected liberal time is the half_hourly time of average staying time. For example if average staying time is 8 hour 20 minute then expected liberal time is 8 hour on the other hand if average staying time is 8 hour 37 minute then expected liberal time is 8 hour 30 minutes.  The staying time which are less than expected liberal time are labeled less_than_expected_liberal_time and the staying time which are more than expected liberal time are labeled as more_than_expected_liberal_time, the staying time which are exactly same as the expected liberal time are labeled as in_expected_liberal_time.",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "default_fill",
+      "default_value": "in_expected_liberal_time"
     },
     {
       "name": "deviation",
       "type": "integer",
       "unit": "minute",
-      "description": "How much deviated from the expected liberal time (in minutes)."
+      "description": "How much deviated from the expected liberal time (in minutes).",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     },
     {
       "name": "verdict_int",
       "type": "integer",
       "unit": "bool",
-      "description": "0 - less than usual, 1 - usual or more"
+      "description": "0 - less than usual, 1 - usual or more",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {

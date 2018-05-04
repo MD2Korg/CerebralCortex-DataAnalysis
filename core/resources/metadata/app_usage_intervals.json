@@ -3,7 +3,10 @@
   "data_descriptor": {
     "name": "app_name",
     "type": "string",
-    "description": "Sample contains the category of the app that used during the interval of this DataPoint"
+    "description": "Sample contains the category of the app that used during the interval of this DataPoint",
+    "stream_type": "sparse",
+    "expected_samples_per_day": 0,
+    "missing_data_handling": "zero_fill"
   },
   "execution_context": {
     "processing_module": {

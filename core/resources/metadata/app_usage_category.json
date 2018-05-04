@@ -4,22 +4,34 @@
     {
       "name": "package",
       "type": "string",
-      "description": "package name of the app"
+      "description": "package name of the app",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "zero_fill"
     },
     {
       "name": "category",
       "type": "string",
-      "description": "category of the app"
+      "description": "category of the app",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "zero_fill"
     },
     {
       "name": "app_name",
       "type": "string",
-      "description": "name of the app in the play store"
+      "description": "name of the app in the play store",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "zero_fill"
     },
     {
       "name": "sub_category",
       "type": "string",
-      "description": "sub-category name of the app"
+      "description": "sub-category name of the app",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "zero_fill"
     }
   ],
   "execution_context": {

@@ -3,7 +3,10 @@
   "data_descriptor": {
     "name": "activity_type",
     "type": "string",
-    "description": "Detects activity types (NO, LOW, WALKING, MOD, HIGH) in 10 seconds window using wrist accelerometer"
+    "description": "Detects activity types (NO, LOW, WALKING, MOD, HIGH) in 10 seconds window using wrist accelerometer",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 8640,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {
