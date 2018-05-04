@@ -109,12 +109,15 @@ class SleepDurationAnalysis(ComputeFeatureBase):
             if sleep_duration > mean + standard_deviation:
                 data.sample.append("more_than_usual")
                 data.sample.append(sleep_duration - (mean + standard_deviation))
+                data.sample.append(1)
             elif sleep_duration < mean-standard_deviation:
                 data.sample.append("less_than_usual")
                 data.sample.append(mean-standard_deviation - sleep_duration)
+                data.sample.append(0)
             else:
                 data.sample.append("usual_sleep_duration")
                 data.sample.append(0)
+                data.sample.append(1)
 
         try:
             if len(sleep_duration_data)>0:

@@ -84,8 +84,8 @@ class WorkingDays(ComputeFeatureBase):
         location_data = []
         stream_ids = self.CC.get_stream_id(user_id,
                                            GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM)
+        current_day = None  # in beginning current day is null
         for stream_id in stream_ids:
-            current_day = None  # in beginning current day is null
             for day in all_days:
                 location_data_stream = \
                     self.CC.get_stream(stream_id["identifier"], user_id, day, localtime=True)
