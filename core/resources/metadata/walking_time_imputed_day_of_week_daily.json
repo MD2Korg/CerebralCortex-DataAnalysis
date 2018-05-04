@@ -34,7 +34,7 @@
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.activity_features.walking.imputed_day_of_week.daily",
+  "name": "org.md2k.data_analysis.feature.activity_features.walking.imputed_day_of_week.updated.daily",
   "owner": "",
   "type": "1"
 }
