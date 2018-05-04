@@ -34,7 +34,7 @@
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.activity_features.high_activity.imputed_day_of_week.daily",
+  "name": "org.md2k.data_analysis.feature.activity_features.high_activity.imputed_by_time_day_of_week.daily",
   "owner": "",
   "type": "1"
 }
