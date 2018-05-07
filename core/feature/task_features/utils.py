@@ -77,9 +77,12 @@ def target_in_fraction_of_context(target_total_time: dict,
         context_with_time[context][len(context_with_time[context]) - 1][1]
 
     for target in target_total_time:
+        # datapoint = DataPoint(context_start_time, context_end_time, offset,
+        #                       [str(target),
+        #                        float(format(target_total_time[target] / total_context_time * 60, '.3f'))])
         datapoint = DataPoint(context_start_time, context_end_time, offset,
-                              [str(target),
-                               float(format(target_total_time[target] / total_context_time * 60, '.3f'))])
+                              [str(target),float(format(target_total_time[target].seconds/60,'.3f')),
+                               float(format((target_total_time[target].seconds/60)/(total_context_time.seconds/60)*60,'.3f'))])
 
         outputstream.append(datapoint)
 

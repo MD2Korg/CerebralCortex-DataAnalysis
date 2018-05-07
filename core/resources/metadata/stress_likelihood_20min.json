@@ -1,0 +1,45 @@
+{
+  "annotations": [],
+  "data_descriptor": [
+    {
+      "name": "value",
+      "type": "float",
+      "unit": "1 minute window",
+      "description": "probability of stress",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 20,
+      "missing_data_handling": "impute"
+    }
+  ],
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.stress_and_qualtrics_combination",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+        "window_size": "60 seconds"
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.stress_and_qualtrics_combination.stress_and_qualtrics_combination",
+      "authors": [
+        {
+          "name": "Md Azim Ullah",
+          "email": "mullah@memphis.edu"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+      },
+      "description": "only has those wrist likelihood values which are 20 minutes before a valid daily stress survey"
+    }
+  },
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.stress.wrist.likelihood.survey.diff.20min",
+  "owner": "",
+  "type": "datastream"
+}

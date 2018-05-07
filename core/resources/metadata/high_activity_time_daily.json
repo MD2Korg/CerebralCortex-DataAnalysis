@@ -1,13 +1,14 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "amount_of_high_activity",
-      "type": "float",
-      "unit": "minute",
-      "description": "Amount of high activity daily"
-    }
-  ],
+  "data_descriptor": {
+    "name": "amount_of_high_activity",
+    "type": "float",
+    "unit": "minute",
+    "description": "Amount of high activity daily",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.activity_features",
@@ -38,5 +39,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.feature.activity_features.high_activity.daily",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }

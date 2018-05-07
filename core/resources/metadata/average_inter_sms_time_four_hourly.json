@@ -1,13 +1,14 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "value",
-      "type": "float",
-      "unit": "minute",
-      "description": "The average time between two consecutive sms"
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "float",
+    "unit": "minute",
+    "description": "The average time between two consecutive sms",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 6,
+    "missing_data_handling": "impute"
+  },
   "execution_context": {
     "processing_module": {
       "name": "average_inter_sms_time_four_hourly",

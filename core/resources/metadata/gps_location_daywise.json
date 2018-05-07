@@ -1,12 +1,14 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "location",
-      "type": "string",
-      "description": "Time interval at a specific location, if the interval spans into multiple days, it is divided into multiple data points. The split was done according to UTC time. location value can be 'work', 'home' or 'UNDEFINED'"
-    }
-  ],
+  "data_descriptor": {
+    "name": "location",
+    "type": "string",
+    "description": "Time interval at a specific location, if the interval spans into multiple days, it is divided into multiple data points. The split was done according to UTC time. location value can be 'work', 'home' or 'UNDEFINED'",
+    "stream_type": "sparse",
+    "expected_samples_per_day": 0,
+    "missing_data_handling": "default_value",
+    "default_value": "UNDEFINED"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.gps_location_daywise",

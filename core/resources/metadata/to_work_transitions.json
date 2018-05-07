@@ -1,0 +1,41 @@
+{
+  "annotations": [],
+  "data_descriptor": {
+    "name": "value",
+    "type": "int",
+    "description": "The value indicates the number of transitions to Work that happened between the start_time and end_time of the DataPoint.",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
+  },
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.gpsfeature",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.gpsfeature.gpsfeature.transition_counter",
+      "authors": [
+        {
+          "name": "Anik Khan",
+          "email": "aniknagato@gmail.com"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+      },
+      "description": "The value indicates the number of transitions to Work that happened between the start_time and end_time of the DataPoint."
+    }
+  },
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.to_work_transitions",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
+}

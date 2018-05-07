@@ -1,12 +1,10 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "index",
-      "type": "integer",
-      "description": "Index of gps centroid"
-    }
-  ],
+  "data_descriptor": {
+    "name": "index",
+    "type": "int",
+    "description": "Index of gps centroid"
+  },
   "execution_context": {
     "processing_module": {
       "name": "Gps Data Centroid Index",
@@ -41,5 +39,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.gps_data_centroid_index",
   "owner": "CC_OWNER_CC",
-  "type": "1"
+  "type": "datastream"
 }

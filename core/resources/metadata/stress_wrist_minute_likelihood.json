@@ -1,13 +1,14 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "hourly_stress_percentage_value",
-      "type": "float",
-      "unit": "1 hour window",
-      "description": "ratio of stress windows per hour of day to the total number of windows"
-    }
-  ],
+  "data_descriptor": {
+    "name": "hourly_stress_percentage_value",
+    "type": "float",
+    "unit": "1 hour window",
+    "description": "ratio of stress windows per hour of day to the total number of windows",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 2,
+    "missing_data_handling": "impute"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.stress_from_wrist",
@@ -38,5 +39,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.feature.stress.wrist.likelihood.60minutes.v1",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }

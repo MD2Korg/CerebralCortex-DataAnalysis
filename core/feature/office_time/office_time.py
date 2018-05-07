@@ -80,11 +80,12 @@ class WorkingDays(ComputeFeatureBase):
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
         work_data = []
+        work_data_ems = []
         location_data = []
         stream_ids = self.CC.get_stream_id(user_id,
                                            GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM)
+        current_day = None  # in beginning current day is null
         for stream_id in stream_ids:
-            current_day = None  # in beginning current day is null
             for day in all_days:
                 location_data_stream = \
                     self.CC.get_stream(stream_id["identifier"], user_id, day, localtime=True)
@@ -111,6 +112,7 @@ class WorkingDays(ComputeFeatureBase):
                     temp.end_time = work_end_time
                     temp.sample = 'Office'
                     work_data.append(temp)
+                    work_data_ems.append(DataPoint(temp.start_time,temp.end_time,temp.offset,1))
                 work_start_time = d.start_time
 
                 # save the new day as current day
@@ -123,6 +125,7 @@ class WorkingDays(ComputeFeatureBase):
             temp.end_time = work_end_time
             temp.sample = 'Office'
             work_data.append(temp)
+            work_data_ems.append(DataPoint(temp.start_time,temp.end_time,temp.offset,1))
 
         try:
             if len(work_data):
@@ -133,6 +136,10 @@ class WorkingDays(ComputeFeatureBase):
                                           input_streams=[stream_metadata],
                                           user_id=user_id,
                                           data=work_data, localtime=True)
+                        self.store_stream(filepath="working_days_ems.json",
+                                          input_streams=[stream_metadata],
+                                          user_id=user_id,
+                                          data=work_data_ems, localtime=True)
                         break
         except Exception as e:
             print("Exception:", str(e))

@@ -1,12 +1,13 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "value",
-      "type": "float",
-      "description": "Routine Index is defined as how different the places visited by the user during a day with respect to the places visited by the user during the same time interval in other days."
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "float",
+    "description": "Routine Index is defined as how different the places visited by the user during a day with respect to the places visited by the user during the same time interval in other days.",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.gpsfeature",

@@ -5,18 +5,37 @@
       "name": "duration",
       "type": "float",
       "unit": "hour",
-      "description": "Approximate Sleep duration in number of hours"
+      "description": "Approximate Sleep duration in number of hours",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     },
     {
       "name": "verdict",
       "type": "string",
-      "description": "Analysis of the sleep_duration which is one of the three verdict: 1. less_than_usual 2. more_than_usual 3. usual_sleep_duration. Usual time is a range from (mean - standard_deviation) to (mean + standard_deviation).The sleep_duration which are less than usual time are labeled less_than_usual and the sleep_duration which are more than usual time are labeled as more_than_usual, rest are usual_sleep_duration."
+      "description": "Analysis of the sleep_duration which is one of the three verdict: 1. less_than_usual 2. more_than_usual 3. usual_sleep_duration. Usual time is a range from (mean - standard_deviation) to (mean + standard_deviation).The sleep_duration which are less than usual time are labeled less_than_usual and the sleep_duration which are more than usual time are labeled as more_than_usual, rest are usual_sleep_duration.",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "default_fill",
+      "default_value": "usual_sleep_duration"
     },
     {
       "name": "deviation",
-      "type": "integer",
+      "type": "int",
       "unit": "minute",
-      "description": "How much deviated from the usual time (in minutes)."
+      "description": "How much deviated from the usual time (in minutes).",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
+    },
+    {
+      "name": "verdict_int",
+      "type": "int",
+      "unit": "Boolean",
+      "description": "0 - less than usual, 1 - usual or more than usual",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {

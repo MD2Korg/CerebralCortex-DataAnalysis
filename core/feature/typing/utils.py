@@ -45,8 +45,12 @@ import os
 
 from core.computefeature import get_resource_contents
 
-TYPING_MODEL_FILENAME = 'core/resources/models/typing/Convbn_LSTM_100.h5'
-WINDOW_SIZE = 20  # for a 800ms window (at 25Hz we get a value every 40ms.)
+# TYPING_MODEL_FILENAME = 'core/resources/models/typing/Convbn_LSTM_100.h5'
+# TYPING_MODEL_FILENAME = 'core/resources/models/typing/CNN.h5'
+TYPING_MODEL_FILENAME = 'core/resources/models/typing/CNN_all.h5'
+
+WINDOW_SIZE = 25  # for a 1000ms window (at 25Hz we get a value every 40ms.)
+
 STRIDE = 5  # we make a prediction every 200ms
 
 
@@ -54,8 +58,8 @@ def typing_episodes(dataset: pd.DataFrame, offset: int) -> List[DataPoint]:
     """
     This function detects typing episodes.
 
-    Makes a prediction every 200ms using values from a window of 800ms.
-    This means there will be a overlap of 600ms between each sample window.
+    Makes a prediction every 200ms using values from a window of 1000ms.
+    This means there will be a overlap of 800ms between each sample window.
 
     :param pd.DataFrame dataset: the synced dataframe of left and right accl and gyro data
     :param int offset: offset for local time
@@ -72,7 +76,7 @@ def typing_episodes(dataset: pd.DataFrame, offset: int) -> List[DataPoint]:
 
     # Data Reshaping
     # the following lines convert the data stream into a sliding window
-    # with window size 800ms and stride 200 ms
+    # with window size 1000ms and stride 200 ms
 
     data_slide = np.zeros((int((n_samples - WINDOW_SIZE) / STRIDE) + 1,
                            WINDOW_SIZE, d))
@@ -95,7 +99,8 @@ def typing_episodes(dataset: pd.DataFrame, offset: int) -> List[DataPoint]:
     model = load_model(os.path.realpath(tmpfile.name))
     tmpfile.close()
 
-    network_type = 'ConvLSTM'
+    # network_type = 'ConvLSTM'
+    network_type = 'CNN'
     _, win_len, dim = X_test0.shape
 
     # data has to be reshaped before being fed into the model
@@ -109,6 +114,7 @@ def typing_episodes(dataset: pd.DataFrame, offset: int) -> List[DataPoint]:
     indices_type = np.where(y_pred == 1)[0]
     time_type = time_t[indices_type]  # contains timestamps of when user is typing
     data = []
+    typing_time = timedelta(0)
 
     # smooth_labels_3: final output prediction
     # start_time: start time of the typing seesion
@@ -139,8 +145,14 @@ def typing_episodes(dataset: pd.DataFrame, offset: int) -> List[DataPoint]:
             et = datetime.fromtimestamp(int(float(end_time[i])))
             if st.day != et.day:
                 et = datetime(st.year, st.month, st.day) + timedelta(hours=23, minutes=59, seconds=59)
+            typing_time = et - st
 
-            data.append(DataPoint(start_time=st, end_time=et, offset=offset,sample=1))
+            # data.append(DataPoint(start_time=st, end_time=et, offset=offset,sample=1))
+            # data.append(DataPoint(st,et,offset,[1,float(format(typing_time.seconds/60,'.3f'))]))
+            data.append(DataPoint(start_time=st, end_time=et, offset=offset,
+                                  sample=[1, float(
+                                      format(typing_time.seconds / 60,
+                                             '.3f'))]))
 
     return data
 

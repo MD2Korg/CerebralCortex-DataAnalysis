@@ -1,12 +1,13 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "yield_value",
-      "type": "boolean",
-      "description": "True indicating sensor was worn, False indicating sensor not worn"
-    }
-  ],
+  "data_descriptor": {
+    "name": "yield_value",
+    "type": "boolean",
+    "description": "True indicating sensor was worn, False indicating sensor not worn",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1440,
+    "missing_data_handling": "impute"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.data_yield",
@@ -37,5 +38,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.data_yield.60sec.v1",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }

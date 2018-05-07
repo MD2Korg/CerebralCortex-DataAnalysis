@@ -1,13 +1,14 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "stress_likelihood_value",
-      "type": "float",
-      "unit": "1 minute window",
-      "description": "probability of stress"
-    }
-  ],
+  "data_descriptor": {
+    "name": "stress_likelihood_value",
+    "type": "float",
+    "unit": "1 minute window",
+    "description": "probability of stress",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 120,
+    "missing_data_handling": "impute"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.stress_from_wrist",
@@ -38,5 +39,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.feature.stress.wrist.likelihood.60seconds.v1",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }

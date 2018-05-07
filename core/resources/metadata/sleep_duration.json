@@ -1,12 +1,15 @@
 {
   "annotations": [],
   "data_descriptor": [
-    {
-      "name": "duration",
-      "type": "float",
-      "unit": "hour",
-      "description": "Approximate Sleep duration in number of hours"
-    }
+  {
+    "name": "duration",
+    "type": "float",
+    "unit": "hour",
+    "description": "Approximate Sleep duration in number of hours",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
+  }
   ],
   "execution_context": {
     "processing_module": {

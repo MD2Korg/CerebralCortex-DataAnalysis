@@ -5,13 +5,19 @@
       "name": "amount_of_moderate_activity_accel_only",
       "type": "float",
       "unit": "minute",
-      "description": "Amount of moderate activity of that hour from accel only model"
+      "description": "Amount of moderate activity of that hour from accel only model",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "impute"
     },
     {
       "name": "amount_of_data_accel_only",
       "type": "float",
       "unit": "minute",
-      "description": "Amount of data of that hour from accel only model"
+      "description": "Amount of data of that hour from accel only model",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {
@@ -42,7 +48,7 @@
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.activity_features.moderate_activity.hourly",
+  "name": "org.md2k.data_analysis.feature.activity_features.moderate_activity.accel_only.hourly",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }

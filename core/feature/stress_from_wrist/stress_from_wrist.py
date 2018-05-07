@@ -167,21 +167,19 @@ class stress_from_wrist(ComputeFeatureBase):
         
         """
 
-        rr_interval_data = self.CC.get_stream(streams[stream_identifier]["identifier"],
-                                              day=day,user_id=user_id,localtime=False)
-        print('-'*20," Got rr interval data ", len(rr_interval_data.data) ,'-'*20)
+        rr_interval_data = get_datastream(self.CC,rr_interval_identifier,day,user_id,False)
+        print('-'*20," Got rr interval data ", len(rr_interval_data) ,'-'*20)
 
-        activity_data = self.CC.get_stream(streams[activity_identifier]["identifier"],
-                                           day=day,user_id=user_id,localtime=False)
-        if not rr_interval_data.data:
+        activity_data = get_datastream(self.CC,activity_identifier,day,user_id,False)
+        if not rr_interval_data:
             return
 
-        ts_arr = [i.start_time for i in activity_data.data]
-        sample_arr = [i.sample for i in activity_data.data]
+        ts_arr = [i.start_time for i in activity_data]
+        sample_arr = [i.sample for i in activity_data]
 
         feature_matrix = []
         st_et_offset_array = []
-        for dp in rr_interval_data.data:
+        for dp in rr_interval_data:
             ind = np.array([sample_arr[i] for i,item in enumerate(ts_arr) if ts_arr[i]>=dp.start_time and ts_arr[i]<= dp.end_time])
 
             if list(ind).count('WALKING')+list(ind).count('MOD')+list(ind).count('HIGH')  >= len(ind)*.33:

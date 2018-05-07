@@ -1,12 +1,13 @@
 {
   "annotations": [],
-  "data_descriptor": [
-    {
-      "name": "value",
-      "type": "integer",
-      "description": "Number of event sms"
-    }
-  ],
+  "data_descriptor": {
+    "name": "value",
+    "type": "int",
+    "description": "Number of sms events",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
+  },
   "execution_context": {
     "processing_module": {
       "name": "core.feature.phone_feature",
