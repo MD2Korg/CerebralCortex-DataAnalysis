@@ -196,10 +196,6 @@ def open_data_file(filename):
     else:
         print('File not found %s' % fp)   
 
-def import_file(filename):
-    f = open_data_file(filename)
-    csv_reader = csv.reader(f)
-         
     
 def process_feature(file_path, metadata_path):
     f = open_data_file(file_path)
@@ -222,7 +218,8 @@ def process_feature(file_path, metadata_path):
         if row[0] not in user_id_mappings:continue
         
         user_id = user_id_mappings[row[0]]
-        start_time = datetime.strptime(row[1], '%m/%d/%Y %H:%M')
+        start_time_str = row[1] + ' ' + row[2]
+        start_time = datetime.strptime(start_time_str, '%Y%m%d %H:%M:%S')
         if len(user_id) == 4 and int(user_id[0]) == 5: # all 5xxx users are incentral
             start_time = centraltz.localize(start_time)
         elif len(user_id) == 4 and int(user_id[0]) == 1: # all 1xxx users are east
@@ -234,7 +231,7 @@ def process_feature(file_path, metadata_path):
         
         # handling the different format of the IGTB file
         if 'IGTB' not in file_path:
-            end_time = datetime.strptime(row[2], '%m/%d/%Y %H:%M')
+            end_time = datetime.strptime(row[4], '%m/%d/%Y %H:%M')
         else:
             end_time = datetime(year=start_time.year, month=start_time.month,
                                 day=start_time.day, hour=start_time.hour,
@@ -249,7 +246,7 @@ def process_feature(file_path, metadata_path):
         # to account for being west of UTC
         
 
-        sample = row[5:]
+        sample = row[6:]
         values = []
         for val in sample:
             if 'yes' in val or 'no' in val:# Check for Daily.tob.d.mitre.csv
