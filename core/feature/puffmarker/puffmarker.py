@@ -147,7 +147,8 @@ class PuffMarker(ComputeFeatureBase):
                                                            gyro_data_left,
                                                            FAST_MOVING_AVG_SIZE,
                                                            SLOW_MOVING_AVG_SIZE)
-                puff_labels_left = classify_puffs(all_features_left)
+                if len(all_features_left) > 0:
+                    puff_labels_left = classify_puffs(all_features_left)
 
             if (len(accel_data_right) > 0) & (
                     len(gyro_data_right) > 0):
@@ -155,7 +156,8 @@ class PuffMarker(ComputeFeatureBase):
                                                             gyro_data_right,
                                                             FAST_MOVING_AVG_SIZE,
                                                             SLOW_MOVING_AVG_SIZE)
-                puff_labels_right = classify_puffs(all_features_right)
+                if len(all_features_right) > 0:
+                    puff_labels_right = classify_puffs(all_features_right)
 
             for index in range(len(puff_labels_right)):
                 if puff_labels_right[index].sample != NON_PUFF_LABEL:

@@ -17,7 +17,7 @@ def classify_puffs(features):
     labels = [DataPoint(start_time=dp.start_time,
                         offset=dp.offset,
                         end_time=dp.end_time,
-                        sample=int(str(predicted_labels[0])))
+                        sample=int(str(predicted_labels[i][0])))
               for i, dp in enumerate(features)]
 
     return labels
