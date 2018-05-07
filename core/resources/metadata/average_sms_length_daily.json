@@ -3,7 +3,10 @@
   "data_descriptor": {
     "name": "value",
     "type": "float",
-    "description": "The average length of a SMS"
+    "description": "The average length of a SMS",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {

@@ -5,7 +5,10 @@
       "name": "amount_of_moderate_activity",
       "type": "float",
       "unit": "minute",
-      "description": "Amount of moderate activity of that hour"
+      "description": "Amount of moderate activity of that hour",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "impute"
     },
     {
       "name": "amount_of_data",
@@ -44,5 +47,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.feature.activity_features.moderate_activity.hourly",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }

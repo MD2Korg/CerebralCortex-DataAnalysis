@@ -3,7 +3,10 @@
   "data_descriptor": {
     "name": "value",
     "type": "json",
-    "description": "A set of key-value pairs indicating the cumulative time spent at defined locations."
+    "description": "A set of key-value pairs indicating the cumulative time spent at defined locations.",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {

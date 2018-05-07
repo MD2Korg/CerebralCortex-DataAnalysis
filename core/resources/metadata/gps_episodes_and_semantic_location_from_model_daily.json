@@ -4,7 +4,11 @@
     {
       "name": "semantic_name",
       "type": "string",
-      "description": "Semantic name of the co-ordinate using model"
+      "description": "Semantic name of the co-ordinate using model",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "default_fill",
+      "default_value": ""
     }
   ],
   "execution_context": {
@@ -41,5 +45,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.gps_episodes_and_semantic_location_daily",
   "owner": "CC_OWNER_CC",
-  "type": "1"
+  "type": "datastream"
 }

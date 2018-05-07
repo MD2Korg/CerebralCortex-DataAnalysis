@@ -4,7 +4,10 @@
     "name": "value",
     "type": "float",
     "unit": "minute",
-    "description": "Average duration of voiced segments within a day"
+    "description": "Average duration of voiced segments within a day",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {

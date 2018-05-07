@@ -2,8 +2,11 @@
   "annotations": [],
   "data_descriptor": {
     "name": "stress_value",
-    "type": "integer",
-    "description": "1 for stress and 0 for not-stress"
+    "type": "int",
+    "description": "1 for stress and 0 for not-stress",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1440,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {
@@ -35,5 +38,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.feature.stress.respiration.60seconds.v3",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }

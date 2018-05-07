@@ -5,13 +5,19 @@
       "name": "mean",
       "type":"float",
       "unit": "second",
-       "description": "Mean value of active typing gaps" 
+       "description": "Mean value of active typing gaps" ,
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     },
     {
       "name": "standard_deviation",
       "type":"float",
       "unit": "second",
-       "description": "Standard deviation value of active typing gaps" 
+       "description": "Standard deviation value of active typing gaps" ,
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context":{

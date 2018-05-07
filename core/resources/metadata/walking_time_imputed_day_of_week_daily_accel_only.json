@@ -4,7 +4,10 @@
     "name": "amount_of_walking_accel_only",
     "type": "float",
     "unit": "minute",
-    "description": "Imputed (by time of day of week) and scaled up amount of walking daily from accel only model"
+    "description": "Imputed (by time of day of week) and scaled up amount of walking daily from accel only model",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {
@@ -36,5 +39,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.feature.activity_features.walking.imputed_day_of_week.accel_only.daily",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }

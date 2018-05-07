@@ -1,0 +1,39 @@
+{
+  "annotations":[],
+  "data_descriptor": {
+    "name": "smoking_episode",
+    "type": "int",
+    "description": "Smoking episode, use start time and end time"
+  },
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.puffmarker",
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters":{
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.puffmarker.puffmarker",
+      "authors":[
+        {
+          "name":"Nazir Saleheen",
+          "email":"nazir.saleheen@gmail.com"
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+        "url":"https://dl.acm.org/citation.cfm?id=2806897"
+      },
+      "description":"Detects smoking episodes from wrist worn inertial sensors (Accelerometer and Gyroscope)"
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.feature.puffmarker.smoking_episode",
+  "owner":"",
+  "type":"datastream"
+}

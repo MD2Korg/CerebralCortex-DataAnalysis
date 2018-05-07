@@ -4,12 +4,20 @@
     {
       "name": "found_posture",
       "type": "string",
-      "description": "The participant's time intervals of posture, posture = sitting"
+      "description": "The participant's time intervals of posture, posture = sitting",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "default_fill",
+      "default_value": "sitting"
     },
     {
       "name": "context_type",
       "type": "string",
-      "description": "The participant's time intervals of posture in context, context = office"
+      "description": "The participant's time intervals of posture in context, context = office",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "default_fill",
+      "default_value": "office"
     }
   ],
   "execution_context": {
@@ -42,5 +50,5 @@
   "identifier": "",
   "name": "org.md2k.data_analysis.feature.task_features.sitting_interval_office_context.daily",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }
