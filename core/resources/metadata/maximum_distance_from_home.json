@@ -4,7 +4,10 @@
     "name": "distance",
     "type": "float",
     "unit": "km",
-    "description": "Maximum distance from home in kilometers in a day."
+    "description": "Maximum distance from home in kilometers in a day.",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {

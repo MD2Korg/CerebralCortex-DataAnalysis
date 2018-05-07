@@ -3,7 +3,10 @@
   "data_descriptor": {
     "name": "duration",
     "type": "float",
-    "description": "Sample contains a float, indicating the number of minutes per hour this google play store app category was used."
+    "description": "Sample contains a float, indicating the number of minutes per hour this google play store app category was used.",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "zero_fill"
   },
   "execution_context": {
     "processing_module": {

@@ -4,7 +4,10 @@
     "name": "value",
     "type": "float",
     "unit": "minute",
-    "description": "Hours of time spent lying"
+    "description": "Hours of time spent lying",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 24,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {
@@ -36,5 +39,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.feature.activity_features.lying.hourly",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }

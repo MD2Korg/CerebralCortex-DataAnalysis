@@ -9,7 +9,10 @@
     {
       "name": "standard_deviation_heart_rate",
       "type": "float",
-      "description": "Standard deviation of heart rate within a minute"
+      "description": "Standard deviation of heart rate within a minute",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 120,
+      "missing_data_handling": "impute"
     },
     {
       "name": "heart_rate_list",
@@ -47,5 +50,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.feature.rr_interval.v1",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }
