@@ -120,24 +120,30 @@ class Cyberslacking(ComputeFeatureBase):
       data_stream_wake = None
       for stream_id in stream_id_sleep:
         data_stream = self.CC.get_stream(user_id=user_id, stream_id=stream_id['identifier'], day=(query_day+datetime.timedelta(days=-1)).strftime("%Y%m%d"), localtime=True)
+        if data_stream is None:
+          continue
         if data_stream_wake is None:
            data_stream_wake = data_stream
         else:
           if len(data_stream.data) > 0 and len(data_stream_wake.data) > 0 and data_stream.data[0]._sample[0] > data_stream_wake.data[0]._sample[0]:
             wake_data_stream = data_stream
-      if len(data_stream_wake.data) > 0:
+
+      if data_stream_wake is not None and len(data_stream_wake.data) > 0:
         wake_time = data_stream_wake.data[0]._sample[2]
 
       # Check all the data streams for sleep
       data_stream_sleep = None
       for stream_id in stream_id_sleep:
         data_stream = self.CC.get_stream(user_id=user_id, stream_id=stream_id['identifier'], day=query_day.strftime("%Y%m%d"), localtime=True)
+        if data_stream is None:
+          continue
         if data_stream_sleep is None:
            data_stream_sleep = data_stream
         else:
           if len(data_stream.data) > 0 and len(data_stream_sleep.data) > 0 and data_stream.data[0]._sample[0] > data_stream_sleep.data[0]._sample[0]:
             data_stream_sleep = data_stream
-      if len(data_stream_sleep.data) > 0:
+  
+      if data_stream_sleep is not None and len(data_stream_sleep.data) > 0:
         sleep_time = data_stream_sleep.data[0].sample[1]
         offset = data_stream_sleep.data[0].offset
 
@@ -220,24 +226,30 @@ class Cyberslacking(ComputeFeatureBase):
       data_stream_wake = None
       for stream_id in stream_id_sleep:
         data_stream = self.CC.get_stream(user_id=user_id, stream_id=stream_id['identifier'], day=(query_time+datetime.timedelta(days=-1)).strftime("%Y%m%d"), localtime=True)
+        if data_stream is None:
+          continue
         if data_stream_wake is None:
            data_stream_wake = data_stream
         else:
           if len(data_stream.data) > 0 and len(data_stream_wake.data) > 0 and data_stream.data[0]._sample[0] > data_stream_wake.data[0]._sample[0]:
             wake_data_stream = data_stream
-      if len(data_stream_wake.data) > 0:
+
+      if data_stream_wake is not None and len(data_stream_wake.data) > 0:
         wake_time = data_stream_wake.data[0]._sample[2]
 
       # Check all the data streams for sleep
       data_stream_sleep = None
       for stream_id in stream_id_sleep:
         data_stream = self.CC.get_stream(user_id=user_id, stream_id=stream_id['identifier'], day=query_time.strftime("%Y%m%d"), localtime=True)
+        if data_stream is None:
+          continue
         if data_stream_sleep is None:
            data_stream_sleep = data_stream
         else:
           if len(data_stream.data) > 0 and len(data_stream_sleep.data) > 0 and data_stream.data[0]._sample[0] > data_stream_sleep.data[0]._sample[0]:
             data_stream_sleep = data_stream
-      if len(data_stream_sleep.data) > 0:
+
+      if data_stream_sleep is not None and len(data_stream_sleep.data) > 0:
         sleep_time = data_stream_sleep.data[0].sample[1]
         offset = data_stream_sleep.data[0].offset
 
@@ -334,24 +346,30 @@ class Cyberslacking(ComputeFeatureBase):
       data_stream_wake = None
       for stream_id in stream_id_sleep:
         data_stream = self.CC.get_stream(user_id=user_id, stream_id=stream_id['identifier'], day=(query_time+datetime.timedelta(days=-1)).strftime("%Y%m%d"), localtime=True)
+        if data_stream is None:
+          continue
         if data_stream_wake is None:
            data_stream_wake = data_stream
         else:
           if len(data_stream.data) > 0 and len(data_stream_wake.data) > 0 and data_stream.data[0]._sample[0] > data_stream_wake.data[0]._sample[0]:
             wake_data_stream = data_stream
-      if len(data_stream_wake.data) > 0:
+
+      if data_stream_wake is not None and len(data_stream_wake.data) > 0:
         wake_time = data_stream_wake.data[0]._sample[2]
 
       # Check all the data streams for sleep
       data_stream_sleep = None
       for stream_id in stream_id_sleep:
         data_stream = self.CC.get_stream(user_id=user_id, stream_id=stream_id['identifier'], day=query_time.strftime("%Y%m%d"), localtime=True)
+        if data_stream is None:
+          continue
         if data_stream_sleep is None:
            data_stream_sleep = data_stream
         else:
           if len(data_stream.data) > 0 and len(data_stream_sleep.data) > 0 and data_stream.data[0]._sample[0] > data_stream_sleep.data[0]._sample[0]:
             data_stream_sleep = data_stream
-      if len(data_stream_sleep.data) > 0:
+
+      if data_stream_sleep is not None and len(data_stream_sleep.data) > 0:
         sleep_time = data_stream_sleep.data[0].sample[1]
         offset = data_stream_sleep.data[0].offset
 
