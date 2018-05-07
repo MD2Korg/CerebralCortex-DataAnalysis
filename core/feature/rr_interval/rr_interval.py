@@ -172,6 +172,7 @@ class rr_interval(ComputeFeatureBase):
                 print('-'*20," No window data available ",'-'*20)
                 continue
             print('-'*20,len(window_data),'-'*20,' window length')
+
             final_data_pres = [deepcopy(window_data[0])]
             final_data_pres[0].sample = True
 
