@@ -3,7 +3,7 @@
   "data_descriptor": [
     {
       "name": "restaurant_bar_nearby",
-      "type": "integer",
+      "type": "int",
       "description": "1 if there is a restaurant/bar within 500m, else 0",
       "stream_type": "sparse",
       "expected_samples_per_day": 0,
@@ -11,7 +11,7 @@
     },
     {
       "name": "school",
-      "type": "integer",
+      "type": "int",
       "description": "1 if there is a school within 500m, else 0",
       "stream_type": "sparse",
       "expected_samples_per_day": 0,
@@ -19,7 +19,7 @@
     },
     {
       "name": "place_of_worship_nearby",
-      "type": "integer",
+      "type": "int",
       "description": "1 if there is a place of worship within 500m, else 0",
       "stream_type": "sparse",
       "expected_samples_per_day": 0,
@@ -27,7 +27,7 @@
     },
     {
       "name": "entertainment_nearby",
-      "type": "integer",
+      "type": "int",
       "description": "1 if there is an entertainment within 500m, else 0",
       "stream_type": "sparse",
       "expected_samples_per_day": 0,
@@ -35,7 +35,7 @@
     },
     {
       "name": "store_nearby",
-      "type": "integer",
+      "type": "int",
       "description": "1 if there is a store within 500m, else 0",
       "stream_type": "sparse",
       "expected_samples_per_day": 0,
@@ -43,7 +43,7 @@
     },
     {
       "name": "sports_arena_nearby",
-      "type": "integer",
+      "type": "int",
       "description": "1 if there is a sports arena within 500m, else 0",
       "stream_type": "sparse",
       "expected_samples_per_day": 0,
@@ -82,5 +82,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_places",
   "owner": "CC_OWNER_CC",
-  "type": "1"
+  "type": "datastream"
 }

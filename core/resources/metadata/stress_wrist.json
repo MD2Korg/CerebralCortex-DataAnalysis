@@ -2,7 +2,7 @@
   "annotations": [],
   "data_descriptor": {
     "name": "stress_value",
-    "type": "integer",
+    "type": "int",
     "description": "1 for stress and 0 for not-stress",
     "stream_type": "periodic",
     "expected_samples_per_day": 120,
@@ -38,5 +38,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.feature.stress.wrist.60seconds.v1",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }

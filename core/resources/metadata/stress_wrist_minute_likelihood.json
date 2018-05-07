@@ -39,5 +39,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.feature.stress.wrist.likelihood.60minutes.v1",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }

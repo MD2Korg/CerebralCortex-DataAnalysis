@@ -59,5 +59,5 @@
   "identifier": "",
   "name": "org.md2k.data_analysis.feature.task_features.walking_office_context_totaltime_and_fraction_per_hour.daily",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }

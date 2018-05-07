@@ -2,7 +2,7 @@
   "annotations": [],
   "data_descriptor": {
     "name": "beacon_received",
-    "type": "integer",
+    "type": "int",
     "description": "The participants context based on proximity to work beacon,Values = Not_work_beacon(0),Around_work1_beacon(1),Around_work2_beacon(2)",
     "stream_type": "periodic",
     "expected_samples_per_day": 1,
@@ -38,6 +38,6 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.feature.v6.beacon.work_beacon_context",
   "owner": "CC_OWNER_CC",
-  "type": "1"
+  "type": "datastream"
 }
 

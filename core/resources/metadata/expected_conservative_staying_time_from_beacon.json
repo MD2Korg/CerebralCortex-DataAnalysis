@@ -3,7 +3,7 @@
   "data_descriptor": [
     {
       "name": "staying_time_around_beacon",
-      "type": "integer",
+      "type": "int",
       "unit": "minute",
       "description": "Office staying time (total time between first entering time around the office beacon and last departure time from office beacon) according to Beacon model",
       "stream_type": "periodic",
@@ -21,7 +21,7 @@
     },
     {
       "name": "deviation",
-      "type": "integer",
+      "type": "int",
       "unit": "minute",
       "description": "How much deviated from the expected conservative time (in minutes).",
       "stream_type": "periodic",
@@ -30,7 +30,7 @@
     },
     {
       "name": "verdict_int",
-      "type": "integer",
+      "type": "int",
       "unit": "bool",
       "description": "0 - after usual, 1 - usual or before",
       "stream_type": "periodic",

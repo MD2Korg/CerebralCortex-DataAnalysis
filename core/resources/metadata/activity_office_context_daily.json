@@ -49,5 +49,5 @@
   "identifier": "",
   "name": "org.md2k.data_analysis.feature.task_features.activity_office_context.daily",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }

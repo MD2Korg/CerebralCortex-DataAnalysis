@@ -20,7 +20,7 @@
     },
     {
       "name": "deviation",
-      "type": "integer",
+      "type": "int",
       "unit": "minute",
       "description": "How much deviated from the expected conservative time (in minutes).",
       "stream_type": "periodic",
@@ -29,7 +29,7 @@
     },
     {
       "name": "verdict_int",
-      "type": "integer",
+      "type": "int",
       "unit": "bool",
       "description": "0 - after usual, 1 - usual or before",
       "stream_type": "periodic",

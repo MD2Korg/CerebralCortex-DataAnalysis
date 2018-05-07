@@ -2,7 +2,7 @@
   "annotations": [],
   "data_descriptor": {
     "name": "count",
-    "type": "integer",
+    "type": "int",
     "description": "Number of different places visited by participant in one day.",
     "stream_type": "periodic",
     "expected_samples_per_day": 1,

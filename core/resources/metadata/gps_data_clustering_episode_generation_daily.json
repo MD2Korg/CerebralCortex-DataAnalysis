@@ -3,7 +3,7 @@
   "data_descriptor": [
     {
       "name": "index",
-      "type": "integer",
+      "type": "int",
       "description": "Index of gps centroid",
       "stream_type": "sparse",
       "expected_samples_per_day": 0,
@@ -56,5 +56,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.gps_clustering_episode_generation_daily",
   "owner": "CC_OWNER_CC",
-  "type": "1"
+  "type": "datastream"
 }

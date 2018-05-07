@@ -21,7 +21,7 @@
     },
     {
       "name": "deviation",
-      "type": "integer",
+      "type": "int",
       "unit": "minute",
       "description": "How much deviated from the usual time (in minutes).",
       "stream_type": "periodic",
@@ -30,7 +30,7 @@
     },
     {
       "name": "verdict_int",
-      "type": "integer",
+      "type": "int",
       "unit": "Boolean",
       "description": "0 - less than usual, 1 - usual or more than usual",
       "stream_type": "periodic",

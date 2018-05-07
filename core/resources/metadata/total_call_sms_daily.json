@@ -2,7 +2,7 @@
   "annotations": [],
   "data_descriptor": {
     "name": "value",
-    "type": "integer",
+    "type": "int",
     "description": "Number of events (call and sms)",
     "stream_type": "periodic",
     "expected_samples_per_day": 1,
