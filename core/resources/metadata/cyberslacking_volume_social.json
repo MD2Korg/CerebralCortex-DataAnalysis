@@ -1,0 +1,40 @@
+{
+  "annotations": [],
+  "data_descriptor": {
+    "name": "volume of cyberslacking on social apps",
+    "type": "float",
+    "description": "The volume (total number) of interactions with social apps between wake and sleep."
+  },
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.cyberslacking",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+        "query_app_type": "social" 
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.cyberslacking.Cyberslacking.volume",
+      "authors": [
+        {
+          "name": "Vincent Tseng",
+          "email": "wt262@cornell.edu"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+        "paper": "https://dl.acm.org/citation.cfm?id=2807522"
+      },
+      "description": "The total number of technology-mediated social interactions a participant performs in a given day between initially waking and eventually going to sleep."
+    }
+  },
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.cyberslacking.volume.social",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
+}

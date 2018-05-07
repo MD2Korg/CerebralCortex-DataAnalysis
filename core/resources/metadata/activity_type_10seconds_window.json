@@ -3,7 +3,11 @@
   "data_descriptor": {
     "name": "activity_type",
     "type": "string",
-    "description": "Detects activity types (NO, LOW, WALKING, MOD, HIGH) in 10 seconds window using wrist accelerometer and gyroscope"
+    "description": "Detects activity types (NO, LOW, WALKING, MOD, HIGH) in 10 seconds window using wrist accelerometer and gyroscope",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 8640,
+    "missing_data_handling": "default_fill",
+    "default_fill": "UNKNOWN"
   },
   "execution_context": {
     "processing_module": {
@@ -35,5 +39,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.feature.activity.wrist.10_seconds",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }

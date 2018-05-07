@@ -4,13 +4,19 @@
     {
       "name":"typing_value",
       "type":"int",
-      "descriptor":"Detects typing episodes in a 1000 miliseconds window"
+      "descriptor":"Detects typing episodes in a 1000 milliseconds window",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 86400,
+      "missing_data_handling": "impute"
     },
     {
       "name": "typing_time",
       "type": "float",
       "unit": "minute",	  
-      "description": "The participant's time duration of each typing episode."
+      "description": "The participant's time duration of each typing episode.",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 86400,
+      "missing_data_handling": "impute"
     }	
   ],
   "execution_context":{
@@ -49,5 +55,5 @@
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name":"org.md2k.data_analysis.feature.v5.typing.episodes.day",
   "owner":"",
-  "type":"1"
+  "type":"datastream"
 }

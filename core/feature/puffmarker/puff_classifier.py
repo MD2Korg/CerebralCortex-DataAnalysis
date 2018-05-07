@@ -18,6 +18,6 @@ def classify_puffs(features):
                         offset=dp.offset,
                         end_time=dp.end_time,
                         sample=int(str(predicted_labels[0])))
-              for i, dp in features]
+              for i, dp in enumerate(features)]
 
     return labels

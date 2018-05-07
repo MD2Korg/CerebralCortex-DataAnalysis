@@ -3,18 +3,27 @@
   "data_descriptor": [
     {
       "name": "index",
-      "type": "integer",
-      "description": "Index of gps centroid"
+      "type": "int",
+      "description": "Index of gps centroid",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "zero_fill"
     },
     {
       "name": "centroid_latitude",
       "type": "float",
-      "description": "Latitude of Centroid"
+      "description": "Latitude of Centroid",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "impute"
     },
     {
       "name": "centroid_longitude",
       "type": "float",
-      "description": "Longitude of Centroid"
+      "description": "Longitude of Centroid",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {
@@ -47,5 +56,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.gps_clustering_episode_generation_daily",
   "owner": "CC_OWNER_CC",
-  "type": "1"
+  "type": "datastream"
 }

@@ -3,7 +3,10 @@
   "data_descriptor": {
     "name": "duration",
     "type": "float",
-    "description": "Sample contains the number of minutes per hour the person used these categorical apps while she was in her workplace"
+    "description": "Sample contains the number of minutes per hour the person used these categorical apps while she was in her workplace",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "zero_fill"
   },
   "execution_context": {
     "processing_module": {

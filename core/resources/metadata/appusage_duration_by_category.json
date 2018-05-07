@@ -3,7 +3,10 @@
   "data_descriptor": {
     "name": "duration",
     "type": "json",
-    "description": "Sample contains a dictionary, where the key are the google play store app categories and value is a list of dictionaries, where each internal dictionary contains the start and end time of the app usage of the given category"
+    "description": "Sample contains a dictionary, where the key are the google play store app categories and value is a list of dictionaries, where each internal dictionary contains the start and end time of the app usage of the given category",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "zero_fill"
   },
   "execution_context": {
     "processing_module": {
