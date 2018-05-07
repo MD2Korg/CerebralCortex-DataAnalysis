@@ -3,7 +3,10 @@
   "data_descriptor": {
     "name": "beacon_received",
     "type": "integer",
-    "description": "The participants context based on proximity to home beacon,Values = Around_home_beacon(0),Not_around_home_beacon(1)"
+    "description": "The participants context based on proximity to home beacon,Values = Around_home_beacon(0),Not_around_home_beacon(1)",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {

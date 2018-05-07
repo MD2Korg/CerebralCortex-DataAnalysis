@@ -3,7 +3,10 @@
   "data_descriptor": {
     "name": "yield_value",
     "type": "boolean",
-    "description": "True indicating sensor was worn, False indicating sensor not worn"
+    "description": "True indicating sensor was worn, False indicating sensor not worn",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1440,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {

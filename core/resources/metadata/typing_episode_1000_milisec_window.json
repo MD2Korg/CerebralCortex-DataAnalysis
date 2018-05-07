@@ -3,14 +3,20 @@
   "data_descriptor":[
     {
       "name":"typing_value",
-      "type":"int",
-      "descriptor":"Detects typing episodes in a 1000 miliseconds window"
+      "type":"integer",
+      "descriptor":"Detects typing episodes in a 1000 milliseconds window",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 86400,
+      "missing_data_handling": "impute"
     },
     {
       "name": "typing_time",
       "type": "float",
       "unit": "minute",	  
-      "description": "The participant's time duration of each typing episode."
+      "description": "The participant's time duration of each typing episode.",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 86400,
+      "missing_data_handling": "impute"
     }	
   ],
   "execution_context":{

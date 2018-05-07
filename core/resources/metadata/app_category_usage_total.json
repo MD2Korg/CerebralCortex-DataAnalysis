@@ -3,7 +3,10 @@
   "data_descriptor": {
     "name": "duration",
     "type": "float",
-    "description": "Sample contains a float value that indicates the total number of minutes apps in this category were used."
+    "description": "Sample contains a float value that indicates the total number of minutes apps in this category were used.",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {

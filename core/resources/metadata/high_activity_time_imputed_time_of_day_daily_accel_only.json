@@ -4,7 +4,10 @@
     "name": "amount_of_high_activity_accel_only",
     "type": "float",
     "unit": "minute",
-    "description": "amount of high activity daily from accel only model. If missing data of any hour is more than 50% then imputed with mean moderate activity of that time of day."
+    "description": "amount of high activity daily from accel only model. If missing data of any hour is more than 50% then imputed with mean moderate activity of that time of day.",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {

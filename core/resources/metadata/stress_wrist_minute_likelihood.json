@@ -4,7 +4,10 @@
     "name": "hourly_stress_percentage_value",
     "type": "float",
     "unit": "1 hour window",
-    "description": "ratio of stress windows per hour of day to the total number of windows"
+    "description": "ratio of stress windows per hour of day to the total number of windows",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 2,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {

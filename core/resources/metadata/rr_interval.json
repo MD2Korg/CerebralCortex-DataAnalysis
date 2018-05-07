@@ -9,7 +9,10 @@
     {
       "name": "standard_deviation_heart_rate",
       "type": "float",
-      "description": "Standard deviation of heart rate within a minute"
+      "description": "Standard deviation of heart rate within a minute",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 120,
+      "missing_data_handling": "impute"
     },
     {
       "name": "heart_rate_list",

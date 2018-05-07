@@ -3,7 +3,10 @@
   "data_descriptor": {
     "name": "value",
     "type": "integer",
-    "description": "Number of call events"
+    "description": "Number of call events",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 6,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {

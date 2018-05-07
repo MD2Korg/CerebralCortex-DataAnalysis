@@ -4,19 +4,29 @@
     {
       "name": "posture_type",
       "type": "string",
-      "description": "The participant's posture time - total and per hour, posture = standing"
+      "description": "The participant's posture time - total and per hour, posture = standing",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "default_fill",
+      "default_value": "standing"
     },
     {
       "name": "posture_time_total",
       "type": "float",
       "unit": "minute",
-      "description": "The participant's total posture time in minutes in office beacon context"
+      "description": "The participant's total posture time in minutes in office beacon context",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "impute"
     },	
     {
       "name": "posture_time_fraction",
       "type": "float",
       "unit": "minute",
-      "description": "The participant's posture time per hour in minutes in office beacon context"
+      "description": "The participant's posture time per hour in minutes in office beacon context",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {

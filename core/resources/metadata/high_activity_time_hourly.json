@@ -5,13 +5,19 @@
       "name": "amount_of_high_activity",
       "type": "float",
       "unit": "minute",
-      "description": "Amount of high activity of that hour"
+      "description": "Amount of high activity of that hour",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "impute"
     },
     {
       "name": "amount_of_data",
       "type": "float",
       "unit": "minute",
-      "description": "Amount of data of that hour"
+      "description": "Amount of data of that hour",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {

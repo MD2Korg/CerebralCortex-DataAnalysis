@@ -4,13 +4,20 @@
     {
       "name": "activity_type",
       "type": "string",
-      "description": "The participant's activity time per hour, activity = walking"
+      "description": "The participant's activity time per hour, activity = walking",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "default_fill",
+      "default_value": "none"
     },
     {
       "name": "activity_time",
       "type": "float",
       "unit": "minute",
-      "description": "The participant's activity time per hour in minutes in office context"
+      "description": "The participant's activity time per hour in minutes in office context",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {

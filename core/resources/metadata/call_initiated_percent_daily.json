@@ -4,7 +4,10 @@
     {
       "name": "percent",
       "type":"float",
-      "description": "Amount of call initiated by the user in percentage"
+      "description": "Amount of call initiated by the user in percentage",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 1,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context":{

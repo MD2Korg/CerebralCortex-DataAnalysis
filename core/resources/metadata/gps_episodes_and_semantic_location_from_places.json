@@ -4,32 +4,50 @@
     {
       "name": "restaurant_bar_nearby",
       "type": "integer",
-      "description": "1 if there is a restaurant/bar within 500m, else 0"
+      "description": "1 if there is a restaurant/bar within 500m, else 0",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "zero_fill"
     },
     {
       "name": "school",
       "type": "integer",
-      "description": "1 if there is a school within 500m, else 0"
+      "description": "1 if there is a school within 500m, else 0",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "zero_fill"
     },
     {
       "name": "place_of_worship_nearby",
       "type": "integer",
-      "description": "1 if there is a place of worship within 500m, else 0"
+      "description": "1 if there is a place of worship within 500m, else 0",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "zero_fill"
     },
     {
       "name": "entertainment_nearby",
       "type": "integer",
-      "description": "1 if there is an entertainment within 500m, else 0"
+      "description": "1 if there is an entertainment within 500m, else 0",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "zero_fill"
     },
     {
       "name": "store_nearby",
       "type": "integer",
-      "description": "1 if there is a store within 500m, else 0"
+      "description": "1 if there is a store within 500m, else 0",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "zero_fill"
     },
     {
       "name": "sports_arena_nearby",
       "type": "integer",
-      "description": "1 if there is a sports arena within 500m, else 0"
+      "description": "1 if there is a sports arena within 500m, else 0",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "zero_fill"
     }
   ],
   "execution_context": {
