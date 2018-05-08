@@ -45,7 +45,7 @@ class ContextWhere():
         outdoor = 0
         indoor = 0
         location_data = get_home_work_location(location_from_model.get("data", []), start_data_time)
-        places_data = get_places(places.get("data", []), start_data_time, end_data_time)
+        places_data = get_places(places.get("data", []), start_data_time)
         phone_physical_activity_val = get_phone_physical_activity_data(phone_physical_activity.get("data", []), start_data_time, end_data_time)
 
         if len(places_data)>0:
