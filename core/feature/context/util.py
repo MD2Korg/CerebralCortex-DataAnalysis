@@ -1,5 +1,5 @@
 from datetime import timedelta
-
+from cerebralcortex.core.datatypes.datapoint import DataPoint
 
 def filter_data(data, start_time, end_time):
     subset_data = []
@@ -45,14 +45,12 @@ def get_phone_physical_activity_data(data, start_time, end_time):
 
 
 def is_on_sms(data, start_time, end_time):
-    try:
-        if len(data) > 0:
-            for dp in data:
-                if dp.start_time and dp.start_time >= start_time and dp.start_time <= end_time:
-                    return True
-        return False
-    except:
-        print(data)
+    if len(data) > 0:
+        for dp in data:
+            if isinstance(dp, DataPoint) and dp.start_time and dp.start_time >= start_time and dp.start_time <= end_time:
+                return True
+    return False
+
 
 def is_on_phone(data, start_time, end_time):
     if len(data) > 0:

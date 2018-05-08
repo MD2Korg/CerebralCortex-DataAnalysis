@@ -98,7 +98,7 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
                 # For interaction - Q1
                 phone_app_cat_usage = self.get_day_data(user, "org.md2k.data_analysis.feature.phone.app_category_interval", day) # 1
                 call_duration_cu = self.get_day_data(user, "CU_CALL_DURATION--edu.dartmouth.eureka", day) # 1
-                voice_feature = self.get_day_data(user, "TODO", day)  # TODO: wait for Robin # 2
+                voice_feature = self.get_day_data(user, "org.md2k.data_analysis.feature.v2.audio.voice_segments_context_per_minute", day)  # TODO: not computed yet
                 sms = self.get_day_data(user, "CU_SMS_TYPE--edu.dartmouth.eureka", day)
 
                 # compute interaction context activity engaged - Q2

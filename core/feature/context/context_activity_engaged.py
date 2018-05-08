@@ -59,7 +59,7 @@ class ContextActivityEngaged():
         restaurant_place = 0
 
         on_sms = is_on_sms(sms, start_data_time, end_data_time)
-        activity_wrist_sensor = get_physical_activity_wrist_sensor(physical_activity_wrist_sensor)
+        activity_wrist_sensor = get_physical_activity_wrist_sensor(physical_activity_wrist_sensor, start_data_time, end_data_time)
         if len(places_data) > 0:
             for plc in places_data:
                 if plc[2] == "yes":
