@@ -115,7 +115,7 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
 
                 #self.get_context_interaction(before_survey_time,user,phone_app_cat_usage, call_duration_cu, voice_feature)
                 self.get_activity_engaged(before_survey_time,user,location_from_model,call_duration_cu,sms,phone_app_cat_usage,places,phone_physical_activity,physical_activity_wrist_sensor)
-                self.get_context_where(before_survey_time,user,location_from_model, places, phone_physical_activity)
+                #self.get_context_where(before_survey_time,user,location_from_model, places, phone_physical_activity)
 
 
 # ------------------------------ QUESTIONS MAPPING TO STREAM NAMES --------------- #
