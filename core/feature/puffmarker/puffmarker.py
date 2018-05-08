@@ -62,7 +62,8 @@ class PuffMarker(ComputeFeatureBase):
             data_stream = self.CC.get_stream(stream_id["identifier"],
                                              day=day,
                                              user_id=user_id,
-                                             data_type=DataSet.COMPLETE)
+                                             data_type=DataSet.COMPLETE,
+                                             localtime=True)
             if data_stream is not None and len(data_stream.data) > 0:
                 day_data.extend(data_stream.data)
 
@@ -166,18 +167,16 @@ class PuffMarker(ComputeFeatureBase):
                     input_streams=[
                         streams[MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME],
                         streams[MOTIONSENSE_HRV_GYRO_RIGHT_STREAMNAME]],
-                    user_id=user,
-                    data=puff_labels)
+                    user_id=user, data=puff_labels, localtime=True)
 
                 smoking_episodes = generate_smoking_episode(puff_labels)
 
                 self.CC.logging.log(
                     "Total smoking episodes: " + str(len(smoking_episodes)))
-
-                self.store_stream(
-                    filepath='smoking_episode_puffmarker_wrist.json',
-                    input_streams=[
-                        streams[MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME],
-                        streams[MOTIONSENSE_HRV_GYRO_RIGHT_STREAMNAME]],
-                    user_id=user,
-                    data=smoking_episodes)
+                if len(smoking_episodes) > 0:
+                    self.store_stream(
+                        filepath='smoking_episode_puffmarker_wrist.json',
+                        input_streams=[
+                            streams[MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME],
+                            streams[MOTIONSENSE_HRV_GYRO_RIGHT_STREAMNAME]],
+                        user_id=user, data=smoking_episodes, localtime=True)
