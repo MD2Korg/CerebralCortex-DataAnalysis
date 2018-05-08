@@ -31,4 +31,3 @@ App category
 
 Others
 - Metadata is not concise. A user won't be able to know what values he can expect in a sample. Example stream, org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model
-- Call durations are averages

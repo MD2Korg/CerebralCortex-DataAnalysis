@@ -30,7 +30,7 @@ from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from core.computefeature import ComputeFeatureBase
 from core.feature.context.context_interaction import ContextInteraction
 from core.feature.context.context_where import ContextWhere
-from core.feature.context.context_activity_engagement import ContextActivityEngaged
+from core.feature.context.context_activity_engaged import ContextActivityEngaged
 feature_class_name = 'Context'
 
 
@@ -72,13 +72,14 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
         :param day:
         :return:
         """
-        qualtrics_stream_name = ""
+        qualtrics_stream_name = "org.md2k.data_qualtrics.context.v15.d"
         data = self.get_day_data(user_id, qualtrics_stream_name, day)
         if len(data) > 0:
             survey_start_time = data[0].start_time
+            offset = data[0].offset
             time_window_before_survey = survey_start_time - timedelta(
                 minutes=5)  # 5 minutes window before starting the survey
-            return {"start_time": time_window_before_survey, "end_time": survey_start_time}
+            return {"start_time": time_window_before_survey, "end_time": survey_start_time, "offset":offset}
 
     def process(self, user, all_days):
         '''
@@ -107,8 +108,8 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
             # location_from_model, places, phone_physical_activity
 
 
-            self.get_context_interaction(before_survey_time,user,phone_app_cat_usage, call_duration_cu, voice_feature)
-            self.get_activity_engaged(before_survey_time,user,location_from_model,call_duration_cu,phone_app_cat_usage,places,phone_physical_activity,physical_activity_wrist_sensor)
+            #self.get_context_interaction(before_survey_time,user,phone_app_cat_usage, call_duration_cu, voice_feature)
+            #self.get_activity_engaged(before_survey_time,user,location_from_model,call_duration_cu,phone_app_cat_usage,places,phone_physical_activity,physical_activity_wrist_sensor)
             self.get_context_where(before_survey_time,user,location_from_model, places, phone_physical_activity)
 
 

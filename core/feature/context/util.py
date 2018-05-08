@@ -18,6 +18,14 @@ def get_home_work_location(data, start_time):
         val = max(set(subset_data), key=subset_data.count)
     return val
 
+def get_places(data, start_time):
+    subset_data = []
+    if len(data)>0:
+        for dp in data:
+            if (dp.start_time and dp.end_time) and (dp.start_time<=start_time or dp.end_time>=start_time):
+                subset_data.append(dp.sample)
+    return subset_data
+
 def get_phone_physical_activity_data(data, start_time, end_time):
     sample_val = []
     val = 0
