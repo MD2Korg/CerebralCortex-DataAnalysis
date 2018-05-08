@@ -39,9 +39,6 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
     """
     Detect whether a person was interacting with other people immediately before filling qualtrics survey.
     """
-    def __init__(self):
-        pass
-
 
     def get_day_data(self, user_id, stream_name, day, start_time, end_time):
         """
