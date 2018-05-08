@@ -1,0 +1,34 @@
+App category
+- There is no other category. Derived streams will have missing data in case app doesn't match any app category on Goog play store
+- CU_APPUSAGE--edu.dartmouth.eureka and org.md2k.data_analysis.feature.phone.app_usage_category has 217 participants data but derived streams have only 70+ participants data
+- Metadata says int but sample contains strings - org.md2k.data_analysis.gps_episodes_and_semantic_location_from_places
+- Phone activity stream's data descriptor is not descriptive (value-confidence)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Others
+- Metadata is not concise. A user won't be able to know what values he can expect in a sample. Example stream, org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model
+- Call durations are averages

@@ -35,6 +35,9 @@ class ContextInteraction():
     Detect whether a person was interacting with other people immediately before filling qualtrics survey.
     """
 
-    def get_context_interaction(self, app_category, call_duration, voice_feature):
+    def get_context_interaction(self, before_survey_time,phone_app_cat_usage, call_duration, voice_feature):
+        # category sample - [DataPoint(2018-01-15 22:45:24.203000+00:00, 2018-01-15 22:50:25.303000+00:00, 0, Communication)]
+        # call duration - [DataPoint(2017-11-05 14:30:55.689000+00:00, None, -21600000, 53.0)]
+
         pass
 

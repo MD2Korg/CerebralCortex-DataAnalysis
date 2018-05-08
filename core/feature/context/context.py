@@ -34,7 +34,7 @@ from core.feature.context.context_activity_engagement import ContextActivityEnga
 feature_class_name = 'Context'
 
 
-class Context(ComputeFeatureBase, ContextInteraction, ContextWhere):
+class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActivityEngaged):
     """
     Detect whether a person was interacting with other people immediately before filling qualtrics survey.
     """
@@ -60,7 +60,10 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere):
                 day_data.extend(data_stream.data)
 
         day_data.sort(key=lambda x: x.start_time)
-        return day_data
+        return {"data":day_data, "stream_name":stream_name,"stream_ids": stream_ids}
+
+
+
 
     def get_time_window_before_survey(self, user_id: uuid, day: str) -> dict:
         """
@@ -89,14 +92,14 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere):
             before_survey_time = self.get_time_window_before_survey(user, day)
 
             # For interaction - Q1
-            app_category = self.get_day_data(user, "org.md2k.data_analysis.feature.phone.app_category_interval", day) # 1
+            phone_app_cat_usage = self.get_day_data(user, "org.md2k.data_analysis.feature.phone.app_category_interval", day) # 1
             call_duration_cu = self.get_day_data(user, "CU_CALL_DURATION--edu.dartmouth.eureka", day) # 1
             voice_feature = self.get_day_data(user, "TODO", day)  # TODO: wait for Robin # 2
 
             # compute interaction context activity engaged - Q2
             location_from_model = self.get_day_data(user, "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model", day)
-            call_duration_phone = self.get_day_data(user, "org.md2k.data_analysis.feature.phone.call_duration.hour.average", day)
-            phone_app_cat_usage = self.get_day_data(user, "org.md2k.data_analysis.feature.phone.app_category_interval", day)
+            physical_activity_wrist_sensor = self.get_day_data(user, "org.md2k.data_analysis.feature.body_posture.wrist.accel_only.10_second", day)
+            #phone_app_cat_usage = self.get_day_data(user, "org.md2k.data_analysis.feature.phone.app_category_interval", day)
             places = self.get_day_data(user, "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_places", day)
             phone_physical_activity = self.get_day_data(user, "ACTIVITY_TYPE--org.md2k.phonesensor--PHONE", day)
 
@@ -104,9 +107,9 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere):
             # location_from_model, places, phone_physical_activity
 
 
-            interaction_context = self.get_context_interaction(app_category, call_duration_cu, voice_feature)
-            activity_engaged = self.get_activity_engaged(location_from_model,call_duration_phone,phone_app_cat_usage,places,phone_physical_activity)
-            activity_where = self.get_context_where(location_from_model, places, phone_physical_activity)
+            self.get_context_interaction(before_survey_time,user,phone_app_cat_usage, call_duration_cu, voice_feature)
+            self.get_activity_engaged(before_survey_time,user,location_from_model,call_duration_cu,phone_app_cat_usage,places,phone_physical_activity,physical_activity_wrist_sensor)
+            self.get_context_where(before_survey_time,user,location_from_model, places, phone_physical_activity)
 
 
 # ------------------------------ QUESTIONS MAPPING TO STREAM NAMES --------------- #
