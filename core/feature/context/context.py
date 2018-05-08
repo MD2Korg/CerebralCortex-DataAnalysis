@@ -25,7 +25,8 @@
 
 import uuid
 from datetime import timedelta
-
+import argparse
+from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from core.computefeature import ComputeFeatureBase
 from core.feature.context.context_interaction import ContextInteraction
@@ -38,6 +39,9 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
     """
     Detect whether a person was interacting with other people immediately before filling qualtrics survey.
     """
+    def __init__(self):
+        pass
+
 
     def get_day_data(self, user_id, stream_name, day, start_time, end_time):
         """
@@ -112,7 +116,18 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
             #self.get_activity_engaged(before_survey_time,user,location_from_model,call_duration_cu,phone_app_cat_usage,places,phone_physical_activity,physical_activity_wrist_sensor)
             self.get_context_where(before_survey_time,user,location_from_model, places, phone_physical_activity)
 
-
+# if __name__ == '__main__':
+#     parser = argparse.ArgumentParser(description='CerebralCortex '
+#                                                  'Feature Processing Driver')
+#     parser.add_argument("-c", "--cc-config", help="Path to file containing the "
+#                                                   "CerebralCortex configuration", required=False)
+#     args = vars(parser.parse_args())
+#     if args['cc_config']:
+#         cc_config_path = args['cc_config']
+#     else:
+#         cc_config_path = "cc_configuration.yml"
+#
+#     CC = CerebralCortex(cc_config_path)
 # ------------------------------ QUESTIONS MAPPING TO STREAM NAMES --------------- #
 # Question - 1
 # In person (8)
