@@ -74,13 +74,10 @@ def is_on_social_app(data, start_time, end_time):
 def get_physical_activity_wrist_sensor(data, start_time, end_time):
     subset_data = []
     val = 0
-    try:
-        if len(data) > 0:
-            for dp in data:
-                if dp.start_time and dp.start_time >= start_time and dp.start_time <= end_time:
-                    subset_data.append((str(dp.sample).lower()))
-            if len(subset_data) > 0:
-                val = max(set(subset_data), key=subset_data.count)
-        return val
-    except:
-        print("---"*50,data)
+    if len(data) > 0:
+        for dp in data:
+            if dp.start_time and dp.start_time >= start_time and dp.start_time <= end_time:
+                subset_data.append((str(dp.sample).lower()))
+        if len(subset_data) > 0:
+            val = max(set(subset_data), key=subset_data.count)
+    return val

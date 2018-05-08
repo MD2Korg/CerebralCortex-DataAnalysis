@@ -58,7 +58,9 @@ class ContextActivityEngaged():
         shops_place = 0
         restaurant_place = 0
 
-        on_sms = is_on_sms(sms, start_data_time, end_data_time)
+        on_sms = is_on_sms(sms.get("data",[]), start_data_time, end_data_time)
+        on_phone = is_on_phone(call_duration_cu.get("data",[]), start_data_time, end_data_time)
+        on_social_app = is_on_social_app(phone_app_cat_usage.get("data",[]), start_data_time,end_data_time)
         activity_wrist_sensor = get_physical_activity_wrist_sensor(physical_activity_wrist_sensor, start_data_time, end_data_time)
         if len(places_data) > 0:
             for plc in places_data:
@@ -84,7 +86,7 @@ class ContextActivityEngaged():
         elif restaurant_place > 0:
             sample = [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
         elif location_data != "work" and (
-                on_sms or is_on_phone(call_duration_cu) or is_on_social_app(phone_app_cat_usage)):
+                on_sms or on_phone or on_social_app):
             sample = [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         elif phone_physical_activity_val == 6:  # in vehicle
             sample = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0]
