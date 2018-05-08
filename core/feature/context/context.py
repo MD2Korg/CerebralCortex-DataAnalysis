@@ -74,7 +74,8 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
         :return:
         """
         qualtrics_stream_name = "org.md2k.data_qualtrics.context.v15.d"
-        data = self.get_day_data(user_id, qualtrics_stream_name, day)
+        data = self.get_day_data(user_id, qualtrics_stream_name, day)["data"]
+
         if len(data) > 0:
             survey_start_time = data[0].start_time
             offset = data[0].offset
