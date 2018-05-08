@@ -76,6 +76,7 @@ class ContextActivityEngaged():
                     restaurant_place += 1
 
         if religious_place > 0:
+            print(places_data)
             sample = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
         elif educational_place > 0:
             sample = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
@@ -89,7 +90,7 @@ class ContextActivityEngaged():
                 on_sms or on_phone or on_social_app):
             sample = [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         elif phone_physical_activity_val == 6:  # in vehicle
-            sample = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0]
+            sample = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
         elif location_data == "work":
             sample = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         elif location_data == "home" and (
