@@ -4,7 +4,8 @@
     {
       "name":"value",
       "type":"float",
-      "description":"qualtrics recorded value"
+      "description":"Qualtrics recorded value",
+      "stream_type": "sparse"
     }
   ],
   "execution_context":{
