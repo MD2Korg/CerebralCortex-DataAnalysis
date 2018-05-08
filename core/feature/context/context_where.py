@@ -23,10 +23,8 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from core.computefeature import ComputeFeatureBase
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from core.feature.context.util import get_home_work_location, get_phone_physical_activity_data,get_places
-feature_class_name = 'ContextWhere'
 
 
 class ContextWhere():
@@ -55,15 +53,15 @@ class ContextWhere():
                 else:
                     indoor +=1
         if phone_physical_activity_val==6: # in vehicle
-            sample = [1,0,0,0,0,0]
+            sample = [0,0,0,0,1,0]
         elif location_data=="home":
+            sample = [1,0,0,0,0,0]
+        elif location_data=="work":
             sample = [0,1,0,0,0,0]
-        elif location_data=="office":
-            sample = [0,0,1,0,0,0]
         elif outdoor>0 or phone_physical_activity_val==1 or phone_physical_activity_val==3 or phone_physical_activity_val==4:
             sample = [0,0,0,1,0,0]
         elif indoor>0:
-            sample = [0,0,0,0,1,0]
+            sample = [0,0,1,0,0,0]
         else:
             sample = [0,0,0,0,0,1]
 
