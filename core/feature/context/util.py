@@ -45,12 +45,14 @@ def get_phone_physical_activity_data(data, start_time, end_time):
 
 
 def is_on_sms(data, start_time, end_time):
-    if len(data) > 0:
-        for dp in data:
-            if dp.start_time and dp.start_time >= start_time and dp.start_time <= end_time:
-                return True
-    return False
-
+    try:
+        if len(data) > 0:
+            for dp in data:
+                if dp.start_time and dp.start_time >= start_time and dp.start_time <= end_time:
+                    return True
+        return False
+    except:
+        print(data)
 
 def is_on_phone(data, start_time, end_time):
     if len(data) > 0:
