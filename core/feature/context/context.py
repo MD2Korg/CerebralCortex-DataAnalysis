@@ -94,25 +94,26 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
         for day in all_days:
             before_survey_time = self.get_time_window_before_survey(user, day)
 
-            # For interaction - Q1
-            phone_app_cat_usage = self.get_day_data(user, "org.md2k.data_analysis.feature.phone.app_category_interval", day) # 1
-            call_duration_cu = self.get_day_data(user, "CU_CALL_DURATION--edu.dartmouth.eureka", day) # 1
-            voice_feature = self.get_day_data(user, "TODO", day)  # TODO: wait for Robin # 2
+            if before_survey_time is not None:
+                # For interaction - Q1
+                phone_app_cat_usage = self.get_day_data(user, "org.md2k.data_analysis.feature.phone.app_category_interval", day) # 1
+                call_duration_cu = self.get_day_data(user, "CU_CALL_DURATION--edu.dartmouth.eureka", day) # 1
+                voice_feature = self.get_day_data(user, "TODO", day)  # TODO: wait for Robin # 2
 
-            # compute interaction context activity engaged - Q2
-            location_from_model = self.get_day_data(user, "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model", day)
-            physical_activity_wrist_sensor = self.get_day_data(user, "org.md2k.data_analysis.feature.body_posture.wrist.accel_only.10_second", day)
-            #phone_app_cat_usage = self.get_day_data(user, "org.md2k.data_analysis.feature.phone.app_category_interval", day)
-            places = self.get_day_data(user, "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_places", day)
-            phone_physical_activity = self.get_day_data(user, "ACTIVITY_TYPE--org.md2k.phonesensor--PHONE", day)
+                # compute interaction context activity engaged - Q2
+                location_from_model = self.get_day_data(user, "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model", day)
+                physical_activity_wrist_sensor = self.get_day_data(user, "org.md2k.data_analysis.feature.body_posture.wrist.accel_only.10_second", day)
+                #phone_app_cat_usage = self.get_day_data(user, "org.md2k.data_analysis.feature.phone.app_category_interval", day)
+                places = self.get_day_data(user, "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_places", day)
+                phone_physical_activity = self.get_day_data(user, "ACTIVITY_TYPE--org.md2k.phonesensor--PHONE", day)
 
-            # Context where - Q3
-            # location_from_model, places, phone_physical_activity
+                # Context where - Q3
+                # location_from_model, places, phone_physical_activity
 
 
-            #self.get_context_interaction(before_survey_time,user,phone_app_cat_usage, call_duration_cu, voice_feature)
-            #self.get_activity_engaged(before_survey_time,user,location_from_model,call_duration_cu,phone_app_cat_usage,places,phone_physical_activity,physical_activity_wrist_sensor)
-            self.get_context_where(before_survey_time,user,location_from_model, places, phone_physical_activity)
+                #self.get_context_interaction(before_survey_time,user,phone_app_cat_usage, call_duration_cu, voice_feature)
+                #self.get_activity_engaged(before_survey_time,user,location_from_model,call_duration_cu,phone_app_cat_usage,places,phone_physical_activity,physical_activity_wrist_sensor)
+                self.get_context_where(before_survey_time,user,location_from_model, places, phone_physical_activity)
 
 # if __name__ == '__main__':
 #     parser = argparse.ArgumentParser(description='CerebralCortex '
