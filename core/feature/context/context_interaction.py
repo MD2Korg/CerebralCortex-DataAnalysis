@@ -27,7 +27,7 @@ from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from core.computefeature import ComputeFeatureBase
 from datetime import timedelta
 
-feature_class_name = 'ContextInteraction'
+#feature_class_name = 'ContextInteraction'
 
 
 class ContextInteraction():

@@ -25,10 +25,10 @@
 
 from core.computefeature import ComputeFeatureBase
 
-feature_class_name = 'ContextActivityEngaged'
+#feature_class_name = 'ContextActivityEngaged'
 
 
-class ContextActivityEngaged(ComputeFeatureBase):
+class ContextActivityEngaged():
     """
     Detect what activity a person was engaged in immediately before filling qualtrics survey
     """

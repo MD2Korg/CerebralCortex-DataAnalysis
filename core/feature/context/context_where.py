@@ -29,7 +29,7 @@ from core.feature.context.util import get_home_work_location, get_phone_physical
 feature_class_name = 'ContextWhere'
 
 
-class ContextWhere(ComputeFeatureBase):
+class ContextWhere():
     """
     Detect where a person was before filling qualtrics survey
     """

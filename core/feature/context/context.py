@@ -29,13 +29,13 @@ import argparse
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from core.computefeature import ComputeFeatureBase
-#from core.feature.context.context_interaction import ContextInteraction
+from core.feature.context.context_interaction import ContextInteraction
 from core.feature.context.context_where import ContextWhere
-#from core.feature.context.context_activity_engaged import ContextActivityEngaged
+from core.feature.context.context_activity_engaged import ContextActivityEngaged
 feature_class_name = 'Context'
 
 
-class Context(ComputeFeatureBase, ContextWhere):
+class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActivityEngaged):
     """
     Detect whether a person was interacting with other people immediately before filling qualtrics survey.
     """
