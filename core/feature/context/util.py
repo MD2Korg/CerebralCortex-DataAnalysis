@@ -32,7 +32,7 @@ def get_phone_physical_activity_data(data, start_time, end_time):
     if len(data)>0:
         for dp in data:
             if dp.start_time and dp.start_time>=start_time and dp.start_time<=end_time:
-                sample_val.append(dp.sample)
+                sample_val.append(dp.sample[0])
         if len(sample_val)>0:
             val = round(sum(sample_val) / float(len(sample_val)))
 
