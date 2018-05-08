@@ -1,19 +1,19 @@
 {
   "annotations":[],
-  "data_descriptor":[
+  "data_descriptor":
     {
       "name":"value",
       "type":"float",
       "description":"Qualtrics recorded value",
       "stream_type": "sparse"
     }
-  ],
+  ,
   "execution_context":{
     "processing_module":{
-      "name":"core.modules.data_importer.qualtrix_data_importer",
+      "name":"core.modules.data_importer.context_data_importer",
       "input_source":[
         {
-          "file_name":"Daily.openness.d.csv",
+          "file_name":"context[1-4].csv",
           "file_source" : "qualtrics"
         }
       ]
@@ -30,8 +30,5 @@
       "description":"Importer of qualtrics data"
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_qualtrics.feature.v15.openness.d",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "name":"org.md2k.data_qualtrics.context.v15.d"
 }

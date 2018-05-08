@@ -65,101 +65,26 @@ if args['user_mappings']:
 files_to_process=[]
 
 # Below are the list of filenames 
-FILE_NAME = 'Daily.tob.quantity.d.mitre.csv'
-FILE_METADATA='metadata/daily.tob.d.json'
+FILE_NAME = 'context1.csv'
+FILE_METADATA='metadata/context.json'
 files_to_process.append((FILE_NAME,FILE_METADATA))
 FILE_NAME = None
 FILE_METADATA = None
 
-FILE_NAME = 'Daily.stress.d.csv'
-FILE_METADATA='metadata/daily.stress.d.json'
+FILE_NAME = 'context2.csv'
+FILE_METADATA='metadata/context.json'
 files_to_process.append((FILE_NAME,FILE_METADATA))
 FILE_NAME = None
 FILE_METADATA = None
 
-FILE_NAME = 'Daily.anxiety.d.csv'
-FILE_METADATA='metadata/daily.anxiety.d.json'
+FILE_NAME = 'context3.csv'
+FILE_METADATA='metadata/context.json'
 files_to_process.append((FILE_NAME,FILE_METADATA))
 FILE_NAME = None
 FILE_METADATA = None
 
-FILE_NAME = 'Daily.alc.quantity.d.mitre.csv'
-FILE_METADATA='metadata/daily.alc.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-IRB_D = 'Daily.irb.d.csv'
-IRB_D_METADATA='metadata/daily.irb.d.json'
-files_to_process.append((IRB_D,IRB_D_METADATA))
-
-ITP_D = 'Daily.itp.d.csv'
-ITP_D_METADATA='metadata/daily.itp.d.json'
-files_to_process.append((ITP_D,ITP_D_METADATA))
-
-FILE_NAME = 'Daily.pos.affect.d.csv'
-FILE_METADATA='metadata/daily.pos.affect.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.neg.affect.d.csv'
-FILE_METADATA='metadata/daily.neg.affect.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.ocb.d.csv'
-FILE_METADATA='metadata/daily.ocb.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.cwb.d.csv'
-FILE_METADATA='metadata/daily.cwb.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.sleep.d.mitre.csv'
-FILE_METADATA='metadata/daily.sleep.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-
-FILE_NAME = 'Daily.total.pa.d.mitre.csv'
-FILE_METADATA='metadata/daily.total.pa.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.neuroticism.d.csv'
-FILE_METADATA='metadata/daily.neuroticism.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.conscientiousness.d.csv'
-FILE_METADATA='metadata/daily.conscientiousness.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.extraversion.d.csv'
-FILE_METADATA='metadata/daily.extraversion.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.agreeableness.d.csv'
-FILE_METADATA='metadata/daily.agreeableness.d.json'
-files_to_process.append((FILE_NAME,FILE_METADATA))
-FILE_NAME = None
-FILE_METADATA = None
-
-FILE_NAME = 'Daily.openness.d.csv'
-FILE_METADATA='metadata/daily.openness.d.json'
+FILE_NAME = 'context4.csv'
+FILE_METADATA='metadata/context.json'
 files_to_process.append((FILE_NAME,FILE_METADATA))
 FILE_NAME = None
 FILE_METADATA = None
@@ -219,59 +144,48 @@ def process_feature(file_path, metadata_path):
         
         user_id = user_id_mappings[row[0]]
         
-        ems_start_time_str = row[1] + ' 12:00:00'
-        ems_start_time = datetime.strptime(ems_start_time_str, '%Y%m%d %H:%M:%S')
         qualtrics_start_time = datetime.strptime(row[3], '%m/%d/%Y %H:%M')
+        qualtrics_end_time = datetime.strptime(row[4], '%m/%d/%Y %H:%M')
 
         if len(user_id) == 4 and int(user_id[0]) == 5: # all 5xxx users are incentral
-            ems_start_time = centraltz.localize(ems_start_time)
             qualtrics_start_time = centraltz.localize(qualtrics_start_time)
+            qualtrics_end_time = centraltz.localize(qualtrics_end_time)
         elif len(user_id) == 4 and int(user_id[0]) == 1: # all 1xxx users are east
-            ems_start_time = easterntz.localize(ems_start_time)
             qualtrics_start_time = easterntz.localize(qualtrics_start_time)
+            qualtrics_end_time = easterntz.localize(qualtrics_end_time)
         elif len(user_id) == 4 and int(user_id[0]) == 9: # all 9xxx users are west
-            ems_start_time = pacifictz.localize(ems_start_time)
             qualtrics_start_time = pacifictz.localize(qualtrics_start_time)
+            qualtrics_end_time = pacifictz.localize(qualtrics_end_time)
         else:
-            ems_start_time = centraltz.localize(ems_start_time)
             qualtrics_start_time = centraltz.localize(qualtrics_start_time)
+            qualtrics_end_time = centraltz.localize(qualtrics_end_time)
         
-        # handling the different format of the IGTB file
-        if 'IGTB' not in file_path:
-            end_time = datetime.strptime(row[4], '%m/%d/%Y %H:%M')
-        else:
-            end_time = datetime(year=start_time.year, month=start_time.month,
-                                day=start_time.day, hour=start_time.hour,
-                                minute=start_time.minute)
-            start_column_number = 2    
-        
-        if 'IGTB' not in file_path:
-            end_time = centraltz.localize(end_time)
 
-        utc_offset = ems_start_time.utcoffset().total_seconds() * 1000
+        utc_offset = qualtrics_start_time.utcoffset().total_seconds() * 1000
         # -1000 - DataPoint expects offset to be in milliseconds and negative is
         # to account for being west of UTC
         
 
         sample = row[6:]
-        values = []
-        for val in sample:
-            if 'yes' in val or 'no' in val:# Check for Daily.tob.d.mitre.csv
-                continue
-            if 'NA' in val:
-                values.append(float('Nan'))
-            else:
-                values.append(float(val))
+        values = None
+        val = sample[0]
+        #print('X'*20,val, len(val.strip()))
+        if 'yes' in val or 'no' in val:# Check for Daily.tob.d.mitre.csv
+            value = float('Nan')
+        elif 'NA' in val:
+            value = float('Nan')
+        elif not len(val.strip()):
+            value = float('Nan')
+        else:
+            value = float(val)
         
-        ems_dp = DataPoint(start_time=ems_start_time, end_time=end_time,
-                       offset=utc_offset, sample=values) 
-        q_dp = DataPoint(start_time=qualtrics_start_time, end_time=end_time,
+        q_dp = DataPoint(start_time=qualtrics_start_time, end_time=qualtrics_end_time,
                        offset=utc_offset, sample=values) 
 
         if user_id not in feature_data:
             feature_data[user_id] = []
         
-        feature_data[user_id].append((q_dp, ems_dp))
+        feature_data[user_id].append(q_dp)
 
     metadata = mf.read()
     metadata = json.loads(metadata)
@@ -280,7 +194,7 @@ def process_feature(file_path, metadata_path):
     for user in feature_data:
         output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(
             metadata_name + user + file_path)))
-        q_dps = [dp[0] for dp in feature_data[user]]
+        q_dps = feature_data[user]
         
         q_ds = DataStream(identifier=output_stream_id, owner=user, 
                         name=metadata_name, 
@@ -290,26 +204,11 @@ def process_feature(file_path, metadata_path):
                         stream_type=1,
                         data=q_dps) 
         
-        ems_stream_name = \
-        metadata_name.replace('data_qualtrics','data_qualtrics_ems')
-        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(
-            ems_stream_name + user + file_path)))
-        ems_dps = [dp[1] for dp in feature_data[user]]
-        ems_ds = DataStream(identifier=output_stream_id, owner=user, 
-                        name=ems_stream_name, 
-                        data_descriptor= metadata['data_descriptor'], 
-                        execution_context=metadata['execution_context'], 
-                        annotations= metadata['annotations'], 
-                        stream_type=1,
-                        data=ems_dps) 
         try:
             CC.save_stream(q_ds, localtime=True)
         except Exception as e:
             print(e)
-        try:
-            CC.save_stream(ems_ds, localtime=True)
-        except Exception as e:
-            print(e)
+
     f.close()
     mf.close()
 

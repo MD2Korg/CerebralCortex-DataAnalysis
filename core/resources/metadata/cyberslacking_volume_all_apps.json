@@ -1,9 +1,12 @@
 {
   "annotations": [],
   "data_descriptor": {
-    "name": "volume of cyberslacking on both social and communication apps",
-    "type": "float",
+    "name": "volume",
+    "type": "int",
     "description": "The volume (total number) of interactions with social and communication apps between wake and sleep."
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {
