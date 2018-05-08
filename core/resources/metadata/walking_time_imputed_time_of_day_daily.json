@@ -4,7 +4,10 @@
     "name": "amount_of_walking",
     "type": "float",
     "unit": "minute",
-    "description": "amount of walking daily. If missing data of any hour is more than 50% then imputed with mean walking of that time of day."
+    "description": "amount of walking daily. If missing data of any hour is more than 50% then imputed with mean walking of that time of day.",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {
@@ -36,5 +39,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.feature.activity_features.walking.imputed_time_of_day.daily",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }

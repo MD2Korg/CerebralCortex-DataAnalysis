@@ -3,7 +3,10 @@
   "data_descriptor": {
     "name": "value",
     "type": "float",
-    "description": "Entropy of event (sms and call)"
+    "description": "Entropy of event (sms and call)",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 6,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {

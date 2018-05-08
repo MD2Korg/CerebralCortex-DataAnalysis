@@ -4,7 +4,8 @@
     {
       "name":"value",
       "type":"float",
-      "description":"qualtrics recorded value"
+      "description":"Qualtrics recorded value",
+      "stream_type": "sparse"
     }
   ],
   "execution_context":{
@@ -30,7 +31,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_qualtrics.feature.v12.openness.d",
+  "name":"org.md2k.data_qualtrics.feature.v15.openness.d",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }

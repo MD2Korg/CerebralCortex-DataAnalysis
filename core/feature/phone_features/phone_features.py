@@ -47,6 +47,14 @@ feature_class_name = 'PhoneFeatures'
 
 # Constants
 IN_VEHICLE = 6.0
+ON_BICYCLE = 5.0
+STILL = 0.0
+ON_FOOT = 1.0
+TILTING = 2.0
+WALKING = 3.0
+RUNNING = 4.0
+UNKNOWN = 7.0
+
 OUTGOING_TYPE = 2.0
 MESSAGE_TYPE_SENT = 2.0
 
@@ -2694,12 +2702,14 @@ class PhoneFeatures(ComputeFeatureBase):
             self.CC.logging.log("Exception:", str(e))
             self.CC.logging.log(str(traceback.format_exc()))
 
-    def get_total_driving_time(self, data: List[DataPoint]) -> List[DataPoint]:
+
+    def get_total_phone_activity_time_by_type(self, data: List[DataPoint], activity_type: float) -> List[DataPoint]:
         """
-        Total driving time (In vehicle) in a day.
+        Total time in a day of type 'activity_type'.
 
         :param List(DataPoint) data: Phone activity API stream data points
-        :return: List with single data point including the total driving time
+        :param float activity_type: The activity summary to be calculated ranging from 0 to 7
+        :return: List with single data point including the total time phone found the 'activity_type' in minutes
         :rtype: List(DataPoint)
         """
 
@@ -2709,10 +2719,10 @@ class PhoneFeatures(ComputeFeatureBase):
         total = 0
 
         while i < len(data):
-            if data[i].sample[0] == IN_VEHICLE:
+            if data[i].sample[0] == activity_type:
                 start = data[i].start_time
                 i += 1
-                while i < len(data) and data[i].sample[0] == IN_VEHICLE:
+                while i < len(data) and data[i].sample[0] == activity_type:
                     i += 1
                 if i == len(data):
                     last = data[-1].start_time
@@ -2727,6 +2737,7 @@ class PhoneFeatures(ComputeFeatureBase):
         end_time = end_time.replace(tzinfo=data[0].start_time.tzinfo)
         return [DataPoint(start_time, end_time, data[0].offset, total/60)]
 
+
     def process_phone_activity_day_data(self, user_id: str, activity_data: List[DataPoint],
                                         input_activity_stream: DataStream):
         """
@@ -2737,9 +2748,73 @@ class PhoneFeatures(ComputeFeatureBase):
         :param DataStream input_activity_stream: DataStream object of phone activity data
         :return:
         """
+
         try:
-            data = self.get_total_driving_time(activity_data)
+            data = self.get_total_phone_activity_time_by_type(activity_data, IN_VEHICLE)
             self.store_stream(filepath="driving_time_from_phone_activity.json",
+                              input_streams=[input_activity_stream], user_id=user_id,
+                              data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_total_phone_activity_time_by_type(activity_data, ON_BICYCLE)
+            self.store_stream(filepath="bicycle_time_from_phone_activity.json",
+                              input_streams=[input_activity_stream], user_id=user_id,
+                              data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_total_phone_activity_time_by_type(activity_data, STILL)
+            self.store_stream(filepath="still_time_from_phone_activity.json",
+                              input_streams=[input_activity_stream], user_id=user_id,
+                              data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_total_phone_activity_time_by_type(activity_data, ON_FOOT)
+            self.store_stream(filepath="on_foot_time_from_phone_activity.json",
+                              input_streams=[input_activity_stream], user_id=user_id,
+                              data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_total_phone_activity_time_by_type(activity_data, TILTING)
+            self.store_stream(filepath="tilting_time_from_phone_activity.json",
+                              input_streams=[input_activity_stream], user_id=user_id,
+                              data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_total_phone_activity_time_by_type(activity_data, WALKING)
+            self.store_stream(filepath="walking_time_from_phone_activity.json",
+                              input_streams=[input_activity_stream], user_id=user_id,
+                              data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_total_phone_activity_time_by_type(activity_data, RUNNING)
+            self.store_stream(filepath="running_time_from_phone_activity.json",
+                              input_streams=[input_activity_stream], user_id=user_id,
+                              data=data, localtime=False)
+        except Exception as e:
+            self.CC.logging.log("Exception:", str(e))
+            self.CC.logging.log(str(traceback.format_exc()))
+
+        try:
+            data = self.get_total_phone_activity_time_by_type(activity_data, UNKNOWN)
+            self.store_stream(filepath="unknown_time_from_phone_activity.json",
                               input_streams=[input_activity_stream], user_id=user_id,
                               data=data, localtime=False)
         except Exception as e:

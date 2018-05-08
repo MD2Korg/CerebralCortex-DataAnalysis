@@ -5,13 +5,19 @@
       "name": "amount_of_walking",
       "type": "float",
       "unit": "minute",
-      "description": "Amount of walking of that hour"
+      "description": "Amount of walking of that hour",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "impute"
     },
     {
       "name": "amount_of_data",
       "type": "float",
       "unit": "minute",
-      "description": "Amount of data of that hour"
+      "description": "Amount of data of that hour",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {
@@ -44,5 +50,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.feature.activity_features.walking.hourly",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }

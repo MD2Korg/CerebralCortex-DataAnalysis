@@ -4,7 +4,10 @@
     "name": "value",
     "type": "float",
     "unit": "minute",
-    "description": "The average time between two consecutive events (call and sms)"
+    "description": "The average time between two consecutive events (call and sms)",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 6,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {

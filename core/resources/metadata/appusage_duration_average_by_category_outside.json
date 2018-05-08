@@ -3,7 +3,10 @@
   "data_descriptor": {
     "name": "duration",
     "type": "json",
-    "description": "Sample contains a dictionary, where the key are the google play store app categories and value is the number of minutes per hour the person used these categorical apps during he/she was in outside (not in home or workplace)"
+    "description": "Sample contains a dictionary, where the key are the google play store app categories and value is the number of minutes per hour the person used these categorical apps during he/she was in outside (not in home or workplace)",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "zero_fill"
   },
   "execution_context": {
     "processing_module": {

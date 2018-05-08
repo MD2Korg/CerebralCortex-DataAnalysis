@@ -110,12 +110,15 @@ class ArrivalTimes(ComputeFeatureBase):
             if arrival_time > mean + standard_deviation:
                 data.sample.append("after_usual_time")
                 data.sample.append(math.ceil(arrival_time - (mean + standard_deviation)))
+                data.sample.append(0)
             elif arrival_time < mean - standard_deviation:
                 data.sample.append("before_usual_time")
                 data.sample.append(math.ceil(mean - standard_deviation - arrival_time))
+                data.sample.append(1)
             else:
                 data.sample.append("usual_time")
                 data.sample.append(0)
+                data.sample.append(1)
         try:
             if len(arrival_data):
                 streams = self.CC.get_user_streams(user_id)

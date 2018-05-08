@@ -5,7 +5,10 @@
       "name": "value",
       "type": "float",
       "unit": "1 minute window",
-      "description": "probability of stress"
+      "description": "probability of stress",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 10,
+      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {
@@ -38,5 +41,5 @@
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
   "name": "org.md2k.data_analysis.feature.stress.wrist.likelihood.survey.diff.10min",
   "owner": "",
-  "type": "1"
+  "type": "datastream"
 }
