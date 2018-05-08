@@ -30,6 +30,7 @@ import json
 import uuid
 import traceback
 from cerebralcortex.core.util.data_types import DataPoint
+from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from core.computefeature import ComputeFeatureBase
 from core.signalprocessing.window import window
 from core.signalprocessing.window import merge_consective_windows
