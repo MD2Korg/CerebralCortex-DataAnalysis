@@ -1,0 +1,41 @@
+{
+  "annotations":[],
+  "data_descriptor":[
+    {
+      "name": "value",
+      "type":"float",
+      "unit": "minute",
+      "description": "Total driving time in a day"
+    }
+  ],
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.phone_feature",
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters":{
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.phone_features.phone",
+      "authors":[
+        {
+          "name":"Md Shiplu Hawlader",
+          "email":"shiplu.cse.du@gmail.com"
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+      },
+      "description":"Total driving (IN_VEHICLE) time in a day calculated from android activity recognition api"
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.feature.phone.driving_total.day",
+  "owner":"CC_OWNER_CC",
+  "type":"datastream"
+}
