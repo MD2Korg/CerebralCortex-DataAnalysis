@@ -314,6 +314,7 @@ class AudioFeatures(ComputeFeatureBase):
         """
 
         total_time = len(audio_data)
+        voiced_segments_daily=[]
         if total_time > 0:
             daily_average = no_voiced_segments/total_time
 
