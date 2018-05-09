@@ -104,7 +104,7 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
 
                 # compute interaction context activity engaged - Q2
                 location_from_model = self.get_day_data(user,
-                                                        "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model",
+                                                        "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model.v1",
                                                         day)
                 physical_activity_wrist_sensor = self.get_day_data(user,
                                                                    "org.md2k.data_analysis.feature.body_posture.wrist.accel_only.10_second",
