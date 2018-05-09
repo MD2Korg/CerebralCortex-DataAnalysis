@@ -25,13 +25,13 @@
 
 import uuid
 from datetime import timedelta
-import argparse
-from cerebralcortex.cerebralcortex import CerebralCortex
+
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from core.computefeature import ComputeFeatureBase
+from core.feature.context.context_activity_engaged import ContextActivityEngaged
 from core.feature.context.context_interaction import ContextInteraction
 from core.feature.context.context_where import ContextWhere
-from core.feature.context.context_activity_engaged import ContextActivityEngaged
+
 feature_class_name = 'Context'
 
 
@@ -61,10 +61,7 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
                 day_data.extend(data_stream.data)
 
         day_data.sort(key=lambda x: x.start_time)
-        return {"data":day_data, "stream_name":stream_name,"stream_ids": stream_ids}
-
-
-
+        return {"data": day_data, "stream_name": stream_name, "stream_ids": stream_ids}
 
     def get_time_window_before_survey(self, user_id: uuid, day: str) -> dict:
         """
@@ -81,7 +78,7 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
             offset = data[0].offset
             time_window_before_survey = survey_start_time - timedelta(
                 minutes=5)  # 5 minutes window before starting the survey
-            return {"start_time": time_window_before_survey, "end_time": survey_start_time, "offset":offset}
+            return {"start_time": time_window_before_survey, "end_time": survey_start_time, "offset": offset}
 
     def process(self, user, all_days):
         '''
@@ -96,26 +93,36 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
 
             if before_survey_time is not None:
                 # For interaction - Q1
-                phone_app_cat_usage = self.get_day_data(user, "org.md2k.data_analysis.feature.phone.app_category_interval", day) # 1
-                call_duration_cu = self.get_day_data(user, "CU_CALL_DURATION--edu.dartmouth.eureka", day) # 1
-                voice_feature = self.get_day_data(user, "org.md2k.data_analysis.feature.v2.audio.voice_segments_context_per_minute", day)  # TODO: not computed yet
+                phone_app_cat_usage = self.get_day_data(user,
+                                                        "org.md2k.data_analysis.feature.phone.app_category_interval",
+                                                        day)  # 1
+                call_duration_cu = self.get_day_data(user, "CU_CALL_DURATION--edu.dartmouth.eureka", day)  # 1
+                voice_feature = self.get_day_data(user,
+                                                  "org.md2k.data_analysis.feature.v2.audio.voice_segments_context_per_minute",
+                                                  day)  # TODO: not computed yet
                 sms = self.get_day_data(user, "CU_SMS_TYPE--edu.dartmouth.eureka", day)
 
                 # compute interaction context activity engaged - Q2
-                location_from_model = self.get_day_data(user, "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model", day)
-                physical_activity_wrist_sensor = self.get_day_data(user, "org.md2k.data_analysis.feature.body_posture.wrist.accel_only.10_second", day)
-                #phone_app_cat_usage = self.get_day_data(user, "org.md2k.data_analysis.feature.phone.app_category_interval", day)
+                location_from_model = self.get_day_data(user,
+                                                        "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model",
+                                                        day)
+                physical_activity_wrist_sensor = self.get_day_data(user,
+                                                                   "org.md2k.data_analysis.feature.body_posture.wrist.accel_only.10_second",
+                                                                   day)
+                # phone_app_cat_usage = self.get_day_data(user, "org.md2k.data_analysis.feature.phone.app_category_interval", day)
 
-                places = self.get_day_data(user, "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_places", day)
+                places = self.get_day_data(user,
+                                           "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_places", day)
                 phone_physical_activity = self.get_day_data(user, "ACTIVITY_TYPE--org.md2k.phonesensor--PHONE", day)
 
                 # Context where - Q3
                 # location_from_model, places, phone_physical_activity
 
-
-                #self.get_context_interaction(before_survey_time,user,phone_app_cat_usage, call_duration_cu, voice_feature)
-                self.get_activity_engaged(before_survey_time,user,location_from_model,call_duration_cu,sms,phone_app_cat_usage,places,phone_physical_activity,physical_activity_wrist_sensor)
-                #self.get_context_where(before_survey_time,user,location_from_model, places, phone_physical_activity)
+                # self.get_context_interaction(before_survey_time,user,phone_app_cat_usage, call_duration_cu, voice_feature)
+                self.get_activity_engaged(before_survey_time, user, location_from_model, call_duration_cu, sms,
+                                          phone_app_cat_usage, places, phone_physical_activity,
+                                          physical_activity_wrist_sensor)
+                # self.get_context_where(before_survey_time,user,location_from_model, places, phone_physical_activity)
 
 
 # ------------------------------ QUESTIONS MAPPING TO STREAM NAMES --------------- #

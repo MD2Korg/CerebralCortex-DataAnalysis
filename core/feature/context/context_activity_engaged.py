@@ -25,7 +25,7 @@
 
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from core.feature.context.util import get_home_work_location, get_phone_physical_activity_data, get_places, is_on_sms, \
-    is_on_phone, is_on_social_app,get_physical_activity_wrist_sensor
+    is_on_phone, is_on_social_app, get_physical_activity_wrist_sensor
 
 
 class ContextActivityEngaged():
@@ -46,7 +46,6 @@ class ContextActivityEngaged():
         end_data_time = before_survey_time.get("end_time", None)
         offset = before_survey_time.get("offset", None)
 
-
         location_data = get_home_work_location(location_from_model.get("data", []), start_data_time, end_data_time)
         places_data = get_places(places.get("data", []), start_data_time, end_data_time)
         phone_physical_activity_val = get_phone_physical_activity_data(phone_physical_activity.get("data", []),
@@ -58,10 +57,11 @@ class ContextActivityEngaged():
         shops_place = 0
         restaurant_place = 0
 
-        on_sms = is_on_sms(sms.get("data",[]), start_data_time, end_data_time)
-        on_phone = is_on_phone(call_duration_cu.get("data",[]), start_data_time, end_data_time)
-        on_social_app = is_on_social_app(phone_app_cat_usage.get("data",[]), start_data_time,end_data_time)
-        activity_wrist_sensor = get_physical_activity_wrist_sensor(physical_activity_wrist_sensor.get("data",[]), start_data_time, end_data_time)
+        on_sms = is_on_sms(sms.get("data", []), start_data_time, end_data_time)
+        on_phone = is_on_phone(call_duration_cu.get("data", []), start_data_time, end_data_time)
+        on_social_app = is_on_social_app(phone_app_cat_usage.get("data", []), start_data_time, end_data_time)
+        activity_wrist_sensor = get_physical_activity_wrist_sensor(physical_activity_wrist_sensor.get("data", []),
+                                                                   start_data_time, end_data_time)
         if len(places_data) > 0:
             for plc in places_data:
                 if plc[2] == "yes":
@@ -95,7 +95,7 @@ class ContextActivityEngaged():
         elif location_data == "home" and (
                 phone_physical_activity_val == 1 or phone_physical_activity_val == 3 or phone_physical_activity_val == 4):
             sample = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
-        elif location_data == "home" and (activity_wrist_sensor=="lying" or activity_wrist_sensor=="sitting"):
+        elif location_data == "home" and (activity_wrist_sensor == "lying" or activity_wrist_sensor == "sitting"):
             sample = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
         else:
             sample = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
