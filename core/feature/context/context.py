@@ -56,7 +56,7 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
             data_stream = self.CC.get_stream(stream_id["identifier"],
                                              day=day,
                                              user_id=user_id,
-                                             data_type=DataSet.COMPLETE)
+                                             data_type=DataSet.COMPLETE,localtime=False)
             if data_stream is not None and len(data_stream.data) > 0:
                 day_data.extend(data_stream.data)
 

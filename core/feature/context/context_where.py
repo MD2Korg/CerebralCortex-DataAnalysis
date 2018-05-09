@@ -24,7 +24,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-from core.feature.context.util import get_home_work_location, get_phone_physical_activity_data, get_places
+from core.feature.context.util import get_home_work_location, get_phone_physical_activity_data, get_places, get_input_streams
 
 
 class ContextWhere():
@@ -70,4 +70,15 @@ class ContextWhere():
 
         dp = DataPoint(start_time=start_data_time, end_time=end_data_time, offset=offset, sample=sample)
 
-        print(dp)
+        input_streams = []
+        input_streams.extend(get_input_streams(location_from_model))
+        input_streams.extend(get_input_streams(places))
+        input_streams.extend(get_input_streams(phone_physical_activity))
+
+
+        # self.store_stream(filepath="context_where.json",
+        #                   input_streams=input_streams,
+        #                   user_id=user,
+        #                   data=dp, localtime=False)
+
+        print(input_streams)

@@ -24,7 +24,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-from core.feature.context.util import is_talking, is_on_phone, is_on_social_app
+from core.feature.context.util import is_talking, is_on_phone, is_on_social_app,get_input_streams
 
 
 class ContextInteraction():
@@ -33,6 +33,15 @@ class ContextInteraction():
     """
 
     def get_context_interaction(self, before_survey_time, user, phone_app_cat_usage, call_duration_cu, voice_feature):
+        """
+
+        :param before_survey_time:
+        :param user:
+        :param phone_app_cat_usage:
+        :param call_duration_cu:
+        :param voice_feature:
+        """
+
         # category sample - [DataPoint(2018-01-15 22:45:24.203000+00:00, 2018-01-15 22:50:25.303000+00:00, 0, Communication)]
         # call duration - [DataPoint(2017-11-05 14:30:55.689000+00:00, None, -21600000, 53.0)]
         # voice feature - 1 for voice and 0 for no voice - per minute
@@ -53,7 +62,16 @@ class ContextInteraction():
         else:
             sample[2] = 1
 
-        print(user,call_duration_cu)
         dp = DataPoint(start_time=start_data_time, end_time=end_data_time, offset=offset, sample=sample)
 
-        print(dp)
+        input_streams = []
+        input_streams.extend(get_input_streams(phone_app_cat_usage))
+        input_streams.extend(get_input_streams(call_duration_cu))
+        input_streams.extend(get_input_streams(voice_feature))
+
+
+        # self.store_stream(filepath="context_interaction.json",
+        #                   input_streams=input_streams,
+        #                   user_id=user,
+        #                   data=dp, localtime=False)
+        print(input_streams)

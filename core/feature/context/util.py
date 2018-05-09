@@ -108,3 +108,12 @@ def in_time_range(dp_start_time, dp_end_time, start_time, end_time):
         return True
     else:
         False
+
+def get_input_streams(stream):
+    input_stream_ids = stream.get("stream_ids",[])
+    stream_name = stream.get("stream_name","")
+    input_streams = []
+    for id in input_stream_ids:
+        input_streams.append({"name":stream_name, "identifier":id})
+
+    return input_streams
