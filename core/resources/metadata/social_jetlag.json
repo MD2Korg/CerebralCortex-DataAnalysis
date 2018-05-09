@@ -1,0 +1,40 @@
+{
+  "annotations": [],
+  "data_descriptor": {
+    "name": "social_jetlag",
+    "type": "float",
+    "unit": "hour",
+    "description": "difference between midsleep on workdays and midsleep on weekdays in number of hours"
+  },
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.socialjetlag",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.socialjetlag.SocialJetlag.get_socialjetlag",
+      "authors": [
+        {
+          "name": "Akane Sano",
+          "email": "akanes@media.mit.edu"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+        "paper": "https://dl.acm.org/citation.cfm?id=2807522"
+      },
+      "description": "difference between midsleep on workdays and midsleep on weekdays in number of hours"
+    }
+  },
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.socialjetlag",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
+}
