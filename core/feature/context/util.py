@@ -121,6 +121,6 @@ def get_input_streams(stream):
     stream_name = stream.get("stream_name","")
     input_streams = []
     for id in input_stream_ids:
-        input_streams.append({"name":stream_name, "identifier":id})
+        input_streams.append({"name":stream_name, "identifier":id["identifier"]})
 
     return input_streams
