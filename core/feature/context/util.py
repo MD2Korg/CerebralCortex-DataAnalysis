@@ -74,11 +74,15 @@ def is_on_phone(data, start_time, end_time):
             for dp in data:
                 dp_start_time = dp.start_time
                 if dp.sample is not None:
-                    dp_end_time = dp_start_time + timedelta(minutes=dp.sample)
+                    if isinstance(dp.sample, list):
+                        sample = dp.sample[0]
+                    else:
+                        sample = dp.sample
+                    dp_end_time = dp_start_time + timedelta(minutes=sample)
                 if in_time_range(dp_start_time, dp_end_time, start_time, end_time):
                     return True
     except:
-        print(data)
+        pass
     return False
 
 
