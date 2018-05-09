@@ -50,7 +50,7 @@ def is_talking(data, start_time, end_time):
     if len(data) > 0:
         for dp in data:
             if in_time_range(dp.start_time, dp.end_time, start_time, end_time):
-                sample_val.append(dp.sample[0])
+                sample_val.append(dp.sample)
         if len(sample_val) > 0:
             val = round(sum(sample_val) / float(len(sample_val)))
         if val > 0:
