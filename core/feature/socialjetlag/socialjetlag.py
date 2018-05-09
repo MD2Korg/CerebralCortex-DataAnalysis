@@ -45,7 +45,7 @@ import math
 import datetime as dt
 import sys
 import os
-import utils.config
+#import utils.config
 import traceback
 import importlib
 import syslog
