@@ -83,7 +83,9 @@ def get_physical_activity_wrist_sensor(data, start_time, end_time):
     return val
 
 def in_time_range(dp_start_time, dp_end_time, start_time, end_time):
-    if (dp_start_time <= start_time and start_time<=dp_end_time) or (dp_start_time <= end_time and end_time<=dp_end_time):
+    if dp_start_time is None or dp_end_time is None or start_time is None or end_time is None:
+        return False
+    elif (dp_start_time <= start_time and start_time<=dp_end_time) or (dp_start_time <= end_time and end_time<=dp_end_time):
         return True
     else:
         False
