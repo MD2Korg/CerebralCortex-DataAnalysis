@@ -1,0 +1,44 @@
+{
+  "annotations": [],
+  "data_descriptor": 
+    {
+      "name": "context_type",
+      "type": "string",
+      "description": "The participant's time intervals of typing in context, context = officebeacon",
+      "stream_type": "sparse",
+      "expected_samples_per_day": 0,
+      "missing_data_handling": "default_fill",
+      "default_value": "office"
+    },
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.typing_context",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+        "window_size": "24 Hours"
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.typing_context",
+      "authors": [
+        {
+          "name": "Mithun Saha",
+          "email": "amimithun@gmail.com"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+      },
+      "description": "The participants' typing time intervals in officebeacon context"
+    }
+  },
+  "identifier": "",
+  "name": "org.md2k.data_analysis.feature.typing_context.typing_intervals_officebeacon_context.daily",
+  "owner": "",
+  "type": "datastream"
+}
