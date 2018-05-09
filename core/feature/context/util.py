@@ -43,6 +43,21 @@ def get_phone_physical_activity_data(data, start_time, end_time):
 
     return val
 
+def is_talking(data, start_time, end_time):
+    sample_val = []
+    val = 0
+    if len(data) > 0:
+        for dp in data:
+            if in_time_range(dp.start_time, dp.end_time, start_time, end_time):
+                sample_val.append(dp.sample[0])
+        if len(sample_val) > 0:
+            val = round(sum(sample_val) / float(len(sample_val)))
+        if val>0:
+            return True
+        else:
+            return False
+    return False
+
 
 def is_on_sms(data, start_time, end_time):
     if len(data) > 0:
