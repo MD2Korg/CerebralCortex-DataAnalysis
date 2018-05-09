@@ -26,7 +26,7 @@ def get_places(data, start_time, end_time):
     subset_data = []
     if len(data) > 0:
         for dp in data:
-            if (dp.start_time and dp.end_time) and (dp.start_time >= start_time or dp.start_time <= end_time):
+            if (dp.start_time and dp.end_time) and ((dp.start_time <= start_time or dp.end_time >= start_time) or (dp.start_time <= end_time or dp.end_time >= end_time)):
                 subset_data.append(dp.sample)
     return subset_data
 
