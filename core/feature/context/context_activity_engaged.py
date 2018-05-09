@@ -77,7 +77,7 @@ class ContextActivityEngaged():
 
         if religious_place > 0:
             print(start_data_time,end_data_time)
-            print(user, places)
+            print(user, places_data)
             sample = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
         elif educational_place > 0:
             sample = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
