@@ -76,8 +76,6 @@ class ContextActivityEngaged():
                     restaurant_place += 1
 
         if religious_place > 0:
-            print(start_data_time,end_data_time)
-            print(user, places_data)
             sample = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
         elif educational_place > 0:
             sample = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
