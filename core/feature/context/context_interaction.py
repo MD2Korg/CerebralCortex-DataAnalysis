@@ -53,7 +53,7 @@ class ContextInteraction():
         else:
             sample[2] = 1
 
-        print(user,voice_feature)
+        print(user,call_duration_cu)
         dp = DataPoint(start_time=start_data_time, end_time=end_data_time, offset=offset, sample=sample)
 
         print(dp)
