@@ -10,7 +10,7 @@ def filter_data(data, start_time, end_time):
     return subset_data
 
 
-def get_home_work_location(data, start_time):
+def get_home_work_location(data, start_time, end_time):
     subset_data = []
     val = "undefined"
     if len(data) > 0:
