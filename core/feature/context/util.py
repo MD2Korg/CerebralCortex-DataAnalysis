@@ -69,13 +69,16 @@ def is_on_sms(data, start_time, end_time):
 
 
 def is_on_phone(data, start_time, end_time):
-    if len(data) > 0:
-        for dp in data:
-            dp_start_time = dp.start_time
-            if dp.sample is not None:
-                dp_end_time = dp_start_time + timedelta(minutes=dp.sample)
-            if in_time_range(dp_start_time, dp_end_time, start_time, end_time):
-                return True
+    try:
+        if len(data) > 0:
+            for dp in data:
+                dp_start_time = dp.start_time
+                if dp.sample is not None:
+                    dp_end_time = dp_start_time + timedelta(minutes=dp.sample)
+                if in_time_range(dp_start_time, dp_end_time, start_time, end_time):
+                    return True
+    except:
+        print(data)
     return False
 
 
