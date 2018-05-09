@@ -44,13 +44,14 @@ class ContextInteraction():
         talking = is_talking(voice_feature.get("data", []), start_data_time, end_data_time)
         on_phone = is_on_phone(call_duration_cu.get("data", []), start_data_time, end_data_time)
         on_social_app = is_on_social_app(phone_app_cat_usage.get("data", []), start_data_time, end_data_time)
+        sample = [0, 0, 0]
 
         if on_social_app:
-            sample = [0, 1, 0]
+            sample[1] = 1
         elif talking or on_phone:
-            sample = [1, 0, 0]
+            sample[0] = 1
         else:
-            sample = [0, 0, 1]
+            sample[2] = 1
 
         dp = DataPoint(start_time=start_data_time, end_time=end_data_time, offset=offset, sample=sample)
 

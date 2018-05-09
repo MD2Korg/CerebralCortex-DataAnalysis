@@ -56,6 +56,7 @@ class ContextActivityEngaged():
         leisure_sport_place = 0
         shops_place = 0
         restaurant_place = 0
+        sample = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
         on_sms = is_on_sms(sms.get("data", []), start_data_time, end_data_time)
         on_phone = is_on_phone(call_duration_cu.get("data", []), start_data_time, end_data_time)
@@ -75,30 +76,30 @@ class ContextActivityEngaged():
                 elif plc[0] == "yes":
                     restaurant_place += 1
 
-        if religious_place > 0:
-            sample = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
-        elif educational_place > 0:
-            sample = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
-        elif shops_place > 0:
-            sample = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
-        elif leisure_sport_place > 0:
-            sample = [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        elif restaurant_place > 0:
-            sample = [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
-        elif location_data != "work" and (
-                on_sms or on_phone or on_social_app):
-            sample = [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        elif phone_physical_activity_val == 6:  # in vehicle
-            sample = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
-        elif location_data == "work":
-            sample = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        if location_data == "work":
+            sample[0] = 1
         elif location_data == "home" and (
                 phone_physical_activity_val == 1 or phone_physical_activity_val == 3 or phone_physical_activity_val == 4):
-            sample = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+            sample[5] = 1
         elif location_data == "home" and (activity_wrist_sensor == "lying" or activity_wrist_sensor == "sitting"):
-            sample = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+            sample[7] = 1
+        elif educational_place > 0:
+            sample[8] = 1
+        elif shops_place > 0:
+            sample[3] = 1
+        elif religious_place > 0:
+            sample[9] = 1
+        elif leisure_sport_place > 0:
+            sample[2] = 1
+        elif restaurant_place > 0:
+            sample[4] = 1
+        elif location_data != "work" and (
+                on_sms or on_phone or on_social_app):
+            sample[1] = 1
+        elif phone_physical_activity_val == 6:  # in vehicle
+            sample[10] = 1
         else:
-            sample = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+            sample[11] = 1
 
         dp = DataPoint(start_time=start_data_time, end_time=end_data_time, offset=offset, sample=sample)
 

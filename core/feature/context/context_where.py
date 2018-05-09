@@ -47,6 +47,8 @@ class ContextWhere():
         phone_physical_activity_val = get_phone_physical_activity_data(phone_physical_activity.get("data", []),
                                                                        start_data_time, end_data_time)
 
+        sample = [0, 0, 0, 0, 0, 0]
+
         if len(places_data) > 0:
             for plc in places_data:
                 if plc[5] == "yes":
@@ -54,17 +56,17 @@ class ContextWhere():
                 else:
                     indoor += 1
         if phone_physical_activity_val == 6:  # in vehicle
-            sample = [0, 0, 0, 0, 1, 0]
+            sample[4] = 1
         elif location_data == "home":
-            sample = [1, 0, 0, 0, 0, 0]
+            sample[0] = 1
         elif location_data == "work":
-            sample = [0, 1, 0, 0, 0, 0]
+            sample[1] = 1
         elif outdoor > 0 or phone_physical_activity_val == 1 or phone_physical_activity_val == 3 or phone_physical_activity_val == 4:
-            sample = [0, 0, 0, 1, 0, 0]
+            sample[3] = 1
         elif indoor > 0:
-            sample = [0, 0, 1, 0, 0, 0]
+            sample[2] = 1
         else:
-            sample = [0, 0, 0, 0, 0, 1]
+            sample[5] = 1
 
         dp = DataPoint(start_time=start_data_time, end_time=end_data_time, offset=offset, sample=sample)
 
