@@ -23,6 +23,8 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import uuid
+
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from core.feature.context.util import get_home_work_location, get_phone_physical_activity_data, get_places, is_on_sms, \
     is_on_phone, is_on_social_app, get_physical_activity_wrist_sensor, get_input_streams
@@ -33,8 +35,24 @@ class ContextActivityEngaged():
     Detect what activity a person was engaged in immediately before filling qualtrics survey
     """
 
-    def get_activity_engaged(self, before_survey_time, user, location_from_model, call_duration_cu, sms,
-                             phone_app_cat_usage, places, phone_physical_activity, physical_activity_wrist_sensor):
+    def get_activity_engaged(self, before_survey_time: dict, user: uuid, location_from_model: dict,
+                             call_duration_cu: dict, sms: dict,
+                             phone_app_cat_usage: dict, places: dict, phone_physical_activity: dict,
+                             physical_activity_wrist_sensor: dict):
+        """
+        Compute a user activity right before (10 minutes) (s)he started qualtrics context survey
+        :param before_survey_time:
+        :param user:
+        :param location_from_model:
+        :param call_duration_cu:
+        :param sms:
+        :param phone_app_cat_usage:
+        :param places:
+        :param phone_physical_activity:
+        :param physical_activity_wrist_sensor:
+        """
+
+        # Metadata is not accurate, that's why I put sample output of all input streams here
         # location_from_model - [DataPoint(2017-11-05 15:36:14.527000+00:00, 2017-11-06 12:32:54.605000+00:00, -21600000, home)] (sample=home, work, undefined)
         # call duration - [DataPoint(2017-11-05 14:30:55.689000+00:00, None, -21600000, 53.0)]
         # phone category sample - [DataPoint(2018-01-15 22:45:24.203000+00:00, 2018-01-15 22:50:25.303000+00:00, 0, Communication)]
@@ -112,10 +130,7 @@ class ContextActivityEngaged():
         input_streams.extend(get_input_streams(phone_physical_activity))
         input_streams.extend(get_input_streams(physical_activity_wrist_sensor))
 
-
-        # self.store_stream(filepath="context_activity_engaged.json",
-        #                   input_streams=input_streams,
-        #                   user_id=user,
-        #                   data=dp, localtime=False)
-
-        print(input_streams)
+        self.store_stream(filepath="context_activity_engaged.json",
+                          input_streams=input_streams,
+                          user_id=user,
+                          data=dp, localtime=False)

@@ -23,8 +23,11 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import uuid
+
 from cerebralcortex.core.datatypes.datapoint import DataPoint
-from core.feature.context.util import get_home_work_location, get_phone_physical_activity_data, get_places, get_input_streams
+from core.feature.context.util import get_home_work_location, get_phone_physical_activity_data, get_places, \
+    get_input_streams
 
 
 class ContextWhere():
@@ -32,7 +35,18 @@ class ContextWhere():
     Detect where a person was before filling qualtrics survey
     """
 
-    def get_context_where(self, before_survey_time, user, location_from_model, places, phone_physical_activity):
+    def get_context_where(self, before_survey_time: dict, user: uuid, location_from_model: dict, places: dict,
+                          phone_physical_activity: dict):
+        """
+        Compute where a user was right before (10 minutes) (s)he started qualtrics context survey
+        :param before_survey_time:
+        :param user:
+        :param location_from_model:
+        :param places:
+        :param phone_physical_activity:
+        """
+
+        # Metadata is not accurate, that's why I put sample output of all input streams here
         # location_from_model - [DataPoint(2017-11-05 15:36:14.527000+00:00, 2017-11-06 12:32:54.605000+00:00, -21600000, home)] (sample=home, work, undefined)
         # places - [DataPoint(2017-11-20 00:43:49.698000+00:00, 2017-11-20 12:11:13.932000+00:00, -21600000, ['yes', 'no', 'no', 'no', 'no', 'no'])] - restaurant,school,worshi,entertainment,store,sports_arena
         # phone physical activity - [DataPoint(2017-12-14 23:06:22.729000+00:00, None, -18000000, [0.0, 100.0])] - [type -confidence]
@@ -75,10 +89,7 @@ class ContextWhere():
         input_streams.extend(get_input_streams(places))
         input_streams.extend(get_input_streams(phone_physical_activity))
 
-
-        # self.store_stream(filepath="context_where.json",
-        #                   input_streams=input_streams,
-        #                   user_id=user,
-        #                   data=dp, localtime=False)
-
-        print(input_streams)
+        self.store_stream(filepath="context_where.json",
+                          input_streams=input_streams,
+                          user_id=user,
+                          data=dp, localtime=False)
