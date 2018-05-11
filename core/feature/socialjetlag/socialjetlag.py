@@ -45,7 +45,7 @@ import math
 import datetime as dt
 import sys
 import os
-import utils.config
+#import utils.config
 import traceback
 import importlib
 import syslog
@@ -95,6 +95,7 @@ class SocialJetlag(ComputeFeatureBase):
 		workday_save=[]
 		duration_save=[]
 		offset=[]
+		mid_hr=[]
 		socialjetlag_data=[]
 #		start_date=start_time.strftime("%Y%m%d")
 #		end_date=end_time.strftime("%Y%m%d")
