@@ -111,7 +111,7 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
                                                                    day)
 
                 places = self.get_day_data(user,
-                                           "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_places", day)
+                                           "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_places.v1", day)
                 phone_physical_activity = self.get_day_data(user, "ACTIVITY_TYPE--org.md2k.phonesensor--PHONE", day)
 
                 # Context where - Q3
