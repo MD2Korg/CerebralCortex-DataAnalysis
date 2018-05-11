@@ -64,6 +64,32 @@ if args['user_mappings']:
 
 files_to_process=[]
 
+FILE_NAME = 'Daily.tob.quantity.d.csv'
+FILE_METADATA='metadata/daily.tob.d.non_mitre.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
+
+FILE_NAME = 'Daily.alc.quantity.d.csv'
+FILE_METADATA='metadata/daily.alc.d.non_mitre.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
+
+FILE_NAME = 'Daily.sleep.d.csv'
+FILE_METADATA='metadata/daily.sleep.d.non_mitre.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
+
+
+FILE_NAME = 'Daily.total.pa.d.csv'
+FILE_METADATA='metadata/daily.total.pa.d.non_mitre.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
+
+'''
 # Below are the list of filenames 
 FILE_NAME = 'Daily.tob.quantity.d.mitre.csv'
 FILE_METADATA='metadata/daily.tob.d.json'
@@ -164,6 +190,7 @@ files_to_process.append((FILE_NAME,FILE_METADATA))
 FILE_NAME = None
 FILE_METADATA = None
 # End list of file names
+'''
 
 # Map that contains the user 
 user_id_mappings={}
