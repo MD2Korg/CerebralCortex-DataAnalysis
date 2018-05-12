@@ -54,6 +54,7 @@ def process_features(feature_list, all_users, all_days, num_cores=1):
                 or 'sleep_duration_analysis' in str(module) \
                 or 'office_time' in str(module) \
                 or 'phone_screen_touch_features' in str(module) \
+                or 'socialjetlag' in str(module) \
                 or 'gps_location_daywise' in str(module):
                 '''
                 # FIXME # TODO Currently only GPS feature computes features on a

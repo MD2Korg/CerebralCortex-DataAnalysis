@@ -64,6 +64,32 @@ if args['user_mappings']:
 
 files_to_process=[]
 
+FILE_NAME = 'Daily.tob.quantity.d.csv'
+FILE_METADATA='metadata/daily.tob.d.non_mitre.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
+
+FILE_NAME = 'Daily.alc.quantity.d.csv'
+FILE_METADATA='metadata/daily.alc.d.non_mitre.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
+
+FILE_NAME = 'Daily.sleep.d.csv'
+FILE_METADATA='metadata/daily.sleep.d.non_mitre.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
+
+
+FILE_NAME = 'Daily.total.pa.d.csv'
+FILE_METADATA='metadata/daily.total.pa.d.non_mitre.json'
+files_to_process.append((FILE_NAME,FILE_METADATA))
+FILE_NAME = None
+FILE_METADATA = None
+
+'''
 # Below are the list of filenames 
 FILE_NAME = 'Daily.tob.quantity.d.mitre.csv'
 FILE_METADATA='metadata/daily.tob.d.json'
@@ -164,6 +190,7 @@ files_to_process.append((FILE_NAME,FILE_METADATA))
 FILE_NAME = None
 FILE_METADATA = None
 # End list of file names
+'''
 
 # Map that contains the user 
 user_id_mappings={}
@@ -196,10 +223,6 @@ def open_data_file(filename):
     else:
         print('File not found %s' % fp)   
 
-def import_file(filename):
-    f = open_data_file(filename)
-    csv_reader = csv.reader(f)
-         
     
 def process_feature(file_path, metadata_path):
     f = open_data_file(file_path)
@@ -222,19 +245,27 @@ def process_feature(file_path, metadata_path):
         if row[0] not in user_id_mappings:continue
         
         user_id = user_id_mappings[row[0]]
-        start_time = datetime.strptime(row[1], '%m/%d/%Y %H:%M')
+        
+        ems_start_time_str = row[1] + ' 12:00:00'
+        ems_start_time = datetime.strptime(ems_start_time_str, '%Y%m%d %H:%M:%S')
+        qualtrics_start_time = datetime.strptime(row[3], '%m/%d/%Y %H:%M')
+
         if len(user_id) == 4 and int(user_id[0]) == 5: # all 5xxx users are incentral
-            start_time = centraltz.localize(start_time)
+            ems_start_time = centraltz.localize(ems_start_time)
+            qualtrics_start_time = centraltz.localize(qualtrics_start_time)
         elif len(user_id) == 4 and int(user_id[0]) == 1: # all 1xxx users are east
-            start_time = easterntz.localize(start_time)
+            ems_start_time = easterntz.localize(ems_start_time)
+            qualtrics_start_time = easterntz.localize(qualtrics_start_time)
         elif len(user_id) == 4 and int(user_id[0]) == 9: # all 9xxx users are west
-            start_time = pacifictz.localize(start_time)
+            ems_start_time = pacifictz.localize(ems_start_time)
+            qualtrics_start_time = pacifictz.localize(qualtrics_start_time)
         else:
-            start_time = centraltz.localize(start_time)
+            ems_start_time = centraltz.localize(ems_start_time)
+            qualtrics_start_time = centraltz.localize(qualtrics_start_time)
         
         # handling the different format of the IGTB file
         if 'IGTB' not in file_path:
-            end_time = datetime.strptime(row[2], '%m/%d/%Y %H:%M')
+            end_time = datetime.strptime(row[4], '%m/%d/%Y %H:%M')
         else:
             end_time = datetime(year=start_time.year, month=start_time.month,
                                 day=start_time.day, hour=start_time.hour,
@@ -244,12 +275,12 @@ def process_feature(file_path, metadata_path):
         if 'IGTB' not in file_path:
             end_time = centraltz.localize(end_time)
 
-        utc_offset = start_time.utcoffset().total_seconds() * 1000
+        utc_offset = ems_start_time.utcoffset().total_seconds() * 1000
         # -1000 - DataPoint expects offset to be in milliseconds and negative is
         # to account for being west of UTC
         
 
-        sample = row[5:]
+        sample = row[6:]
         values = []
         for val in sample:
             if 'yes' in val or 'no' in val:# Check for Daily.tob.d.mitre.csv
@@ -259,13 +290,15 @@ def process_feature(file_path, metadata_path):
             else:
                 values.append(float(val))
         
-        dp = DataPoint(start_time=start_time, end_time=end_time,
+        ems_dp = DataPoint(start_time=ems_start_time, end_time=end_time,
+                       offset=utc_offset, sample=values) 
+        q_dp = DataPoint(start_time=qualtrics_start_time, end_time=end_time,
                        offset=utc_offset, sample=values) 
 
         if user_id not in feature_data:
             feature_data[user_id] = []
         
-        feature_data[user_id].append(dp)
+        feature_data[user_id].append((q_dp, ems_dp))
 
     metadata = mf.read()
     metadata = json.loads(metadata)
@@ -274,16 +307,34 @@ def process_feature(file_path, metadata_path):
     for user in feature_data:
         output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(
             metadata_name + user + file_path)))
-        ds = DataStream(identifier=output_stream_id, owner=user, 
+        q_dps = [dp[0] for dp in feature_data[user]]
+        
+        q_ds = DataStream(identifier=output_stream_id, owner=user, 
                         name=metadata_name, 
                         data_descriptor= metadata['data_descriptor'], 
                         execution_context=metadata['execution_context'], 
                         annotations= metadata['annotations'], 
                         stream_type=1,
-                        data=feature_data[user]) 
-        #print(str(user),str(output_stream_id),len(feature_data[user]))   	 
+                        data=q_dps) 
+        
+        ems_stream_name = \
+        metadata_name.replace('data_qualtrics','data_qualtrics_ems')
+        output_stream_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, str(
+            ems_stream_name + user + file_path)))
+        ems_dps = [dp[1] for dp in feature_data[user]]
+        ems_ds = DataStream(identifier=output_stream_id, owner=user, 
+                        name=ems_stream_name, 
+                        data_descriptor= metadata['data_descriptor'], 
+                        execution_context=metadata['execution_context'], 
+                        annotations= metadata['annotations'], 
+                        stream_type=1,
+                        data=ems_dps) 
         try:
-            CC.save_stream(ds, localtime=True)
+            CC.save_stream(q_ds, localtime=True)
+        except Exception as e:
+            print(e)
+        try:
+            CC.save_stream(ems_ds, localtime=True)
         except Exception as e:
             print(e)
     f.close()
