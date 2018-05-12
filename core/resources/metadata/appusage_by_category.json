@@ -34,7 +34,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.phone.app_category",
+  "name":"org.md2k.data_analysis.feature.phone.app_category.name",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }
