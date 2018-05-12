@@ -1489,6 +1489,7 @@ class PhoneFeatures(ComputeFeatureBase):
         :return:
         """
         data = {}
+        category_datapoints = []
         try:
             categories = list(set([y.sample[1] for y in appcategorydata if y.sample[1]]))
             for c in categories:
@@ -1497,6 +1498,8 @@ class PhoneFeatures(ComputeFeatureBase):
                 if d:
                     newd = [{"start_time": x[0], "end_time": x[1]} for x in d]
                     data[c] = newd
+                    for interval in d:
+                        category_datapoints.append(DataPoint(interval[0], interval[1], appcategorydata[0].offset, c))
 
             if data:
                 st = appcategorydata[0].start_time.date()
@@ -1509,6 +1512,10 @@ class PhoneFeatures(ComputeFeatureBase):
                 self.store_stream(filepath="appusage_duration_by_category.json",
                                   input_streams=[input_appcategorystream], user_id=user_id,
                                   data=[dp], localtime=False)
+            if category_datapoints:
+                self.store_stream(filepath="appusage_by_category.json",
+                                  input_streams=[input_appcategorystream], user_id=user_id,
+                                  data=category_datapoints, localtime=False)
         except Exception as e:
             self.CC.logging.log("Exception:", str(e))
             self.CC.logging.log(str(traceback.format_exc()))
