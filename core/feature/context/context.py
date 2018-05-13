@@ -94,7 +94,7 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
             if before_survey_time is not None:
                 # For interaction - Q1
                 phone_app_cat_usage = self.get_day_data(user,
-                                                        "org.md2k.data_analysis.feature.phone.app_category_interval",
+                                                        "org.md2k.data_analysis.feature.phone.app_category.name",
                                                         day)  # 1
                 call_duration_cu = self.get_day_data(user, "CU_CALL_DURATION--edu.dartmouth.eureka", day)  # 1
                 voice_feature = self.get_day_data(user,
