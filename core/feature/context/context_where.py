@@ -82,7 +82,7 @@ class ContextWhere():
         else:
             sample[5] = 1
 
-        dp = DataPoint(start_time=start_data_time, end_time=end_data_time, offset=offset, sample=sample)
+        dp = [DataPoint(start_time=start_data_time, end_time=end_data_time, offset=offset, sample=sample)]
 
         input_streams = []
         input_streams.extend(get_input_streams(location_from_model))

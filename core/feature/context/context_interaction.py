@@ -67,7 +67,7 @@ class ContextInteraction():
         else:
             sample[2] = 1
 
-        dp = DataPoint(start_time=start_data_time, end_time=end_data_time, offset=offset, sample=sample)
+        dp = [DataPoint(start_time=start_data_time, end_time=end_data_time, offset=offset, sample=sample)]
 
         input_streams = []
         input_streams.extend(get_input_streams(phone_app_cat_usage))
