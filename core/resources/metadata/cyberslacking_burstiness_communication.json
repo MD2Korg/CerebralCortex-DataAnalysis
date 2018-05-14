@@ -3,7 +3,7 @@
   "data_descriptor": {
     "name": "burstiness",
     "type": "int",
-    "description": "The maximum number of interactions with social apps in any single hour between wake and sleep."
+    "description": "The maximum number of interactions with social apps in any single hour between wake and sleep.",
     "stream_type": "periodic",
     "expected_samples_per_day": 1,
     "missing_data_handling": "impute"
