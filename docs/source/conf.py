@@ -124,8 +124,6 @@ latex_elements = {
     #
     'pointsize': '10pt',
 
-    'maxlistdepth': '6',
-
     # Additional stuff for the LaTeX preamble.
     #
     # 'preamble': '',
