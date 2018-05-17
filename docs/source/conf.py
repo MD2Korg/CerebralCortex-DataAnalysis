@@ -118,11 +118,13 @@ htmlhelp_basename = 'CC_Doc'
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
-    # 'papersize': 'letterpaper',
+    'papersize': 'letterpaper',
 
     # The font size ('10pt', '11pt' or '12pt').
     #
-    # 'pointsize': '10pt',
+    'pointsize': '10pt',
+
+    'maxlistdepth': '6',
 
     # Additional stuff for the LaTeX preamble.
     #
@@ -159,7 +161,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'CerebralCortexDataAnalysis', 'Cerebral Cortex Feature and Marker Processor Documentation',
-     author, 'CerebralCortexDataAnalysis', 'One line description of project.',
+     author, 'CerebralCortexDataAnalysis', 'mPerf Data Analysis Driver',
      'Miscellaneous'),
 ]
 
