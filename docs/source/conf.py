@@ -22,8 +22,8 @@ sys.path.insert(0, os.path.abspath('../../../CerebralCortex'))
 # -- Project information -----------------------------------------------------
 
 project = 'Cerebral Cortex Feature and Marker Processor'
-copyright = '2018, MD2K.org'
-author = 'MD2K.org'
+copyright = '2018, MD2K Center of Excellence'
+author = 'Timothy Hnat, Anand Tirtha, Nasir Ali, Santosh Kumar'
 
 # The short X.Y version
 version = '2.2.2'
@@ -118,11 +118,11 @@ htmlhelp_basename = 'CC_Doc'
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
-    # 'papersize': 'letterpaper',
+    'papersize': 'letterpaper',
 
     # The font size ('10pt', '11pt' or '12pt').
     #
-    # 'pointsize': '10pt',
+    'pointsize': '10pt',
 
     # Additional stuff for the LaTeX preamble.
     #
@@ -138,7 +138,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'CerebralCortexDataAnalysis.tex', 'Cerebral Cortex Feature and Marker Processor Documentation',
-     'MD2K.org', 'manual'),
+     'Timothy Hnat, Anand Tirtha, Nasir Ali, Santosh Kumar', 'manual'),
 ]
 
 
@@ -159,7 +159,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'CerebralCortexDataAnalysis', 'Cerebral Cortex Feature and Marker Processor Documentation',
-     author, 'CerebralCortexDataAnalysis', 'One line description of project.',
+     author, 'CerebralCortexDataAnalysis', 'mPerf Data Analysis Driver',
      'Miscellaneous'),
 ]
 

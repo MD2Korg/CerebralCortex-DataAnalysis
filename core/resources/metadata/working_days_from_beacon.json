@@ -32,7 +32,7 @@
       "version": "0.0.1",
       "reference": {
       },
-      "description": "Working days. The output is a list containing the date of only when a participant was near beacon. The start time of entering in beacon zone and the last time she leave the beacon zone are stored. All of these results are parsed from beacon data."
+      "description": "The sample of each data point is a string, 'office'. I have saved the same string in the sample for every data point of the stream. In the data point, the start time is the office entering time of a participant and the end time is the office leaving time of the participant according to Office Beacon."
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
