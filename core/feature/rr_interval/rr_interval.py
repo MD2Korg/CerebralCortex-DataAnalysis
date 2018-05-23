@@ -114,8 +114,8 @@ class rr_interval(ComputeFeatureBase):
         for day in all_days:
             if day_presence in all_streams:
                 presence = get_datastream(self.CC,day_presence,day,user_id,False)
-                if len(presence.data)>0:
-                    if presence.data[0].sample:
+                if len(presence)>0:
+                    if presence[0].sample:
                         continue
 
             left_data = []
