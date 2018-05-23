@@ -26,15 +26,6 @@
       "stream_type": "periodic",
       "expected_samples_per_day": 1,
       "missing_data_handling": "impute"
-    },
-    {
-      "name": "verdict_int",
-      "type": "int",
-      "unit": "bool",
-      "description": "0 - after usual, 1 - usual or before",
-      "stream_type": "periodic",
-      "expected_samples_per_day": 1,
-      "missing_data_handling": "impute"
     }
   ],
   "execution_context": {

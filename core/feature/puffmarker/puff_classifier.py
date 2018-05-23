@@ -2,10 +2,11 @@ import pickle
 
 from sklearn.ensemble import RandomForestClassifier
 from core.feature.puffmarker.utils import *
+from core.computefeature import get_resource_contents
 
 
 def get_posture_model() -> RandomForestClassifier:
-    clf = pickle.load(open(PUFFMARKER_MODEL_FILENAME, 'rb'))
+    clf = pickle.loads(get_resource_contents(PUFFMARKER_MODEL_FILENAME))
     return clf
 
 
@@ -16,7 +17,7 @@ def classify_puffs(features):
     labels = [DataPoint(start_time=dp.start_time,
                         offset=dp.offset,
                         end_time=dp.end_time,
-                        sample=int(str(predicted_labels[0])))
-              for i, dp in features]
+                        sample=int(str(predicted_labels[i])))
+              for i, dp in enumerate(features)]
 
     return labels

@@ -6,9 +6,10 @@
 Welcome to Cerebral Cortex Feature and Marker Processor's documentation!
 ========================================================================
 
-.. autosummary::
-   :toctree: _autosummary
+.. toctree::
+   :glob:
 
+   *
 
 Indices and tables
 ==================

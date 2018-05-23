@@ -1,0 +1,54 @@
+{
+  "annotations": [],
+  "data_descriptor": [
+    {
+      "name": "typing_time_total",
+      "type": "float",
+      "unit": "minute",
+      "description": "The participant's total typing time in minutes in officebeacon context",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "impute"
+    },		
+    {
+      "name": "typing_time_fraction",
+      "type": "float",
+      "unit": "minute",
+      "description": "The participant's typing time per hour in minutes in officebeacon context",
+      "stream_type": "periodic",
+      "expected_samples_per_day": 24,
+      "missing_data_handling": "impute"
+    }
+  ],
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.typing_context",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+        "window_size": "24 Hours"
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.typing_context",
+      "authors": [
+        {
+          "name": "Mithun Saha",
+          "email": "amimithun@gmail.com"
+        }
+      ],
+      "version": "0.0.1",
+      "reference": {
+      },
+      "description": "The participants'total typing time and typing time per hour, in officebeacon context"
+    }
+  },
+  "identifier": "",
+  "name": "org.md2k.data_analysis.feature.typing_context.typing_officebeacon_context_totaltime_and_per_hour.daily",
+  "owner": "",
+  "type": "datastream"
+}

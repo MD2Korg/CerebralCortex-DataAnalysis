@@ -1,9 +1,13 @@
 {
   "annotations": [],
   "data_descriptor": {
-    "name": "interval of cyberslacking on both social and communication apps",
+    "name": "interval",
     "type": "float",
-    "description": "The descriptive statistics of time (mean/S.D./min/max) that passes between successive interactions with social and communication apps between wake and sleep."
+    "unit": "second",
+    "description": "The descriptive statistics of time (mean/S.D./min/max) that passes between successive interactions with social and communication apps between wake and sleep.",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {
@@ -30,7 +34,7 @@
       "reference": {
         "paper": "https://dl.acm.org/citation.cfm?id=2807522"
       },
-      "description": "The time that passes between each successive interactions between wake and sleep."
+      "description": "The sample is a list that contains four elements as follows: 0 - the average interval between successive interactions, 1 - the standard deviation of the interval between successive interactions, 2 - the minimum interval between successive interactions, 3 - the maximum interval between successive interactions."
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",

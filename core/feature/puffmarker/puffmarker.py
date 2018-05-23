@@ -62,7 +62,8 @@ class PuffMarker(ComputeFeatureBase):
             data_stream = self.CC.get_stream(stream_id["identifier"],
                                              day=day,
                                              user_id=user_id,
-                                             data_type=DataSet.COMPLETE)
+                                             data_type=DataSet.COMPLETE,
+                                             localtime=True)
             if data_stream is not None and len(data_stream.data) > 0:
                 day_data.extend(data_stream.data)
 
@@ -101,65 +102,59 @@ class PuffMarker(ComputeFeatureBase):
             gyro_data_right = self.get_day_data(
                 MOTIONSENSE_HRV_GYRO_RIGHT_STREAMNAME, user, day)
 
-            accel_data_left = filter_motionsense_hrv_accelerometer(
-                accel_data_left)
-            accel_data_right = filter_motionsense_hrv_accelerometer(
-                accel_data_right)
-            gyro_data_left = filter_motionsense_hrv_gyroscope(
-                gyro_data_left)
-            gyro_data_right = filter_motionsense_hrv_gyroscope(
-                gyro_data_right)
-
-            if len(accel_data_left) != len(gyro_data_left):
-                gyro_data_left = merge_two_datastream(accel_data_left,
-                                                      gyro_data_left)
-            if len(accel_data_right) != len(gyro_data_right):
-                gyro_data_right = merge_two_datastream(accel_data_right,
-                                                       gyro_data_right)
-
-            accel_data_left = [
-                DataPoint(start_time=dp.start_time, end_time=dp.end_time,
-                          offset=dp.offset,
-                          sample=list(np.dot(CONV_L, dp.sample)))
-                for dp in accel_data_left]
-            accel_data_right = [
-                DataPoint(start_time=dp.start_time, end_time=dp.end_time,
-                          offset=dp.offset,
-                          sample=list(np.dot(CONV_R, dp.sample)))
-                for dp in accel_data_right]
-            gyro_data_left = [
-                DataPoint(start_time=dp.start_time, end_time=dp.end_time,
-                          offset=dp.offset,
-                          sample=list(np.dot(CONV_L, dp.sample)))
-                for dp in gyro_data_left]
-            gyro_data_right = [
-                DataPoint(start_time=dp.start_time, end_time=dp.end_time,
-                          offset=dp.offset,
-                          sample=list(np.dot(CONV_R, dp.sample)))
-                for dp in gyro_data_right]
+            accel_data_left = filter_motionsense_hrv_accelerometer(accel_data_left)
+            accel_data_right = filter_motionsense_hrv_accelerometer(accel_data_right)
+            gyro_data_left = filter_motionsense_hrv_gyroscope(gyro_data_left)
+            gyro_data_right = filter_motionsense_hrv_gyroscope(gyro_data_right)
 
             puff_labels_left = []
             puff_labels_right = []
 
-            if (len(accel_data_left) > 0) & (
-                    len(gyro_data_left) > 0):
+            if (len(accel_data_left) > 0) and (len(gyro_data_left) > 0):
+                if len(accel_data_left) != len(gyro_data_left):
+                    gyro_data_left = merge_two_datastream(accel_data_left,
+                                                          gyro_data_left)
+                accel_data_left = [
+                    DataPoint(start_time=dp.start_time, end_time=dp.end_time,
+                              offset=dp.offset,
+                              sample=list(np.dot(CONV_L, dp.sample)))
+                    for dp in accel_data_left]
+                gyro_data_left = [
+                    DataPoint(start_time=dp.start_time, end_time=dp.end_time,
+                              offset=dp.offset,
+                              sample=list(np.dot(CONV_L, dp.sample)))
+                    for dp in gyro_data_left]
                 all_features_left = compute_wrist_features(accel_data_left,
                                                            gyro_data_left,
                                                            FAST_MOVING_AVG_SIZE,
                                                            SLOW_MOVING_AVG_SIZE)
-                puff_labels_left = classify_puffs(all_features_left)
+                if len(all_features_left) > 0:
+                    puff_labels_left = classify_puffs(all_features_left)
 
-            if (len(accel_data_right) > 0) & (
-                    len(gyro_data_right) > 0):
+            if (len(accel_data_right) > 0) and (len(gyro_data_right) > 0):
+                if len(accel_data_right) != len(gyro_data_right):
+                    gyro_data_right = merge_two_datastream(accel_data_right,
+                                                           gyro_data_right)
+
+                accel_data_right = [
+                    DataPoint(start_time=dp.start_time, end_time=dp.end_time,
+                              offset=dp.offset,
+                              sample=list(np.dot(CONV_R, dp.sample)))
+                    for dp in accel_data_right]
+                gyro_data_right = [
+                    DataPoint(start_time=dp.start_time, end_time=dp.end_time,
+                              offset=dp.offset,
+                              sample=list(np.dot(CONV_R, dp.sample)))
+                    for dp in gyro_data_right]
                 all_features_right = compute_wrist_features(accel_data_right,
                                                             gyro_data_right,
                                                             FAST_MOVING_AVG_SIZE,
                                                             SLOW_MOVING_AVG_SIZE)
-                puff_labels_right = classify_puffs(all_features_right)
-
-            for index in range(len(puff_labels_right)):
-                if puff_labels_right[index].sample != NON_PUFF_LABEL:
-                    puff_labels_right[index].sample = PUFF_LABEL_RIGHT
+                if len(all_features_right) > 0:
+                    puff_labels_right = classify_puffs(all_features_right)
+                    for index in range(len(puff_labels_right)):
+                        if puff_labels_right[index].sample != NON_PUFF_LABEL:
+                            puff_labels_right[index].sample = PUFF_LABEL_RIGHT
 
             puff_labels = puff_labels_right + puff_labels_left
 
@@ -172,18 +167,16 @@ class PuffMarker(ComputeFeatureBase):
                     input_streams=[
                         streams[MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME],
                         streams[MOTIONSENSE_HRV_GYRO_RIGHT_STREAMNAME]],
-                    user_id=user,
-                    data=puff_labels)
+                    user_id=user, data=puff_labels, localtime=True)
 
                 smoking_episodes = generate_smoking_episode(puff_labels)
 
                 self.CC.logging.log(
                     "Total smoking episodes: " + str(len(smoking_episodes)))
-
-                self.store_stream(
-                    filepath='smoking_episode_puffmarker_wrist.json',
-                    input_streams=[
-                        streams[MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME],
-                        streams[MOTIONSENSE_HRV_GYRO_RIGHT_STREAMNAME]],
-                    user_id=user,
-                    data=smoking_episodes)
+                if len(smoking_episodes) > 0:
+                    self.store_stream(
+                        filepath='smoking_episode_puffmarker_wrist.json',
+                        input_streams=[
+                            streams[MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME],
+                            streams[MOTIONSENSE_HRV_GYRO_RIGHT_STREAMNAME]],
+                        user_id=user, data=smoking_episodes, localtime=True)

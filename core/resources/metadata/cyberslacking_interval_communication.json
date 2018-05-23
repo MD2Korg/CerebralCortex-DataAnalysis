@@ -1,9 +1,13 @@
 {
   "annotations": [],
   "data_descriptor": {
-    "name": "interval of cyberslacking on communication apps",
+    "name": "interval",
     "type": "float",
-    "description": "The descriptive statistics of time (mean/S.D./min/max) that passes between successive interactions with communication apps between wake and sleep."
+    "unit": "second",
+    "description": "The descriptive statistics of time (mean/S.D./min/max) that passes between successive interactions with communication apps between wake and sleep.",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {
@@ -15,7 +19,7 @@
         }
       ],
       "input_parameters": {
-        "query_app_type": "communication" 
+        "query_app_type": "communication"
       }
     },
     "algorithm": {

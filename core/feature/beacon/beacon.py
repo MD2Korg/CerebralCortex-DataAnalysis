@@ -30,6 +30,7 @@ import json
 import uuid
 import traceback
 from cerebralcortex.core.util.data_types import DataPoint
+from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from core.computefeature import ComputeFeatureBase
 from core.signalprocessing.window import window
 from core.signalprocessing.window import merge_consective_windows
@@ -42,13 +43,42 @@ class BeaconFeatures(ComputeFeatureBase):
     Categorizes beacon context as 0 or 1. 0: not around home beacon or around
     work beacon,1: around home beacon or work beacon
     """
+    
+   
+
+    
+    def get_day_data(self, stream_name: str, user_id, day):
+
+        """
+        :param stream_name: name fo the stream
+        :param string user_id: UID of the user
+        :param str day: retrieve the data for this day with format 'YYYYMMDD'
+        :return: list of datapoints
+        """
+
+        day_data = []
+        stream_ids = self.CC.get_stream_id(user_id, stream_name)
+        for stream_id in stream_ids:
+            data_stream = self.CC.get_stream(stream_id["identifier"],
+                                             day=day,
+                                             user_id=user_id,
+                                             data_type=DataSet.COMPLETE,localtime = True)
+
+            if data_stream is not None and len(data_stream.data) > 0:
+                day_data.extend(data_stream.data)
+
+        day_data.sort(key=lambda x: x.start_time)
 
 
+        return day_data
 
-    def mark_beacons(self, streams: dict, stream_name: str, user_id: str, day: str):
+    
+    
+    
+
+    def mark_beacons(self, streams:dict, stream_name:str, user_id:str, day:str): 
         """
         fetches datastream for home beacons and calls home_beacon context
-
         :param dict streams : Input list
         :param str stream_name: name of stream
         :param str user_id: id of user
@@ -60,21 +90,23 @@ class BeaconFeatures(ComputeFeatureBase):
             beacon_stream_name = streams[stream_name]["name"]
 
             stream = self.CC.get_stream(
-                beacon_stream_id, user_id=user_id, day=day, localtime=True)
-
-            if (len(stream.data) > 0):
+                beacon_stream_id, user_id=user_id, day=day,localtime = True)
+            
+            data =self.get_day_data(stream_name,user_id,day)
+            if (len(data) > 0):
                 if (stream_name ==
                         'BEACON--org.md2k.beacon--BEACON--HOME'):
                     self.home_beacon_context(
-                        stream.data, beacon_stream_id, beacon_stream_name,
+                        data, beacon_stream_id, beacon_stream_name,
                         user_id)
 
-    def merge_work_beacons(self, streams: dict, stream1_name: str, stream2_name: str,
-                           user_id: str, day: str):
-        """
-        merges DataPoints of work1 and work2 beacons for a particular day
-        if streams are from 1 and 2 both than 1 is taken as primary beacon
 
+
+    def merge_work_beacons(self, streams:dict, stream1_name:str, stream2_name:str,
+                           user_id:str,  day:str):
+        """
+        merges datapoints of work1 and work2 beacons for a particular day
+        if streams are from 1 and 2 both than 1 is taken as primary beacon
         :param dict streams : Input list
         :param str stream1_name: stream name representing workbeacon1
         :param str stream2_name: stream name representing workbeacon2
@@ -91,11 +123,12 @@ class BeaconFeatures(ComputeFeatureBase):
             beacon_stream_name1 = streams[stream1_name]["name"]
             input_streams.append(
                 {"identifier": beacon_stream_id1, "name": beacon_stream_name1})
-
+            
             work1_stream = self.CC.get_stream(
-                beacon_stream_id1, user_id=user_id, day=day, localtime=True)
-            if (len(work1_stream.data) > 0):
-                for items in work1_stream.data:
+                beacon_stream_id1, user_id=user_id, day=day,localtime = True)
+            work1_data = self.get_day_data(stream1_name,user_id,day)
+            if (len(work1_data) > 0):
+                for items in work1_data:
                     new_data.append(DataPoint(start_time=items.start_time,
                                               end_time=items.end_time,
                                               offset=items.offset, sample="1"))
@@ -106,8 +139,10 @@ class BeaconFeatures(ComputeFeatureBase):
             input_streams.append(
                 {"identifier": beacon_stream_id2, "name": beacon_stream_name2})
             work2_stream = self.CC.get_stream(
-                beacon_stream_id2, user_id=user_id, day=day, localtime=True)
-            if (len(work2_stream.data) > 0):
+                beacon_stream_id2, user_id=user_id, day=day,localtime = True)
+            work2_data = self.get_day_data(stream2_name,user_id,day)
+            
+            if (len(work2_data) > 0):
                 for items in work2_stream.data:
                     new_data.append(DataPoint(start_time=items.start_time,
                                               end_time=items.end_time,
@@ -117,10 +152,12 @@ class BeaconFeatures(ComputeFeatureBase):
         sorted_data = sorted(new_data, key=lambda x: x.start_time)
         self.work_beacon_context(sorted_data, input_streams, user_id)
 
-    def home_beacon_context(self, beaconhomestream: list, beacon_stream_id: str,
-                            beacon_stream_name: str, user_id: str):
+
+
+    def home_beacon_context(self, beaconhomestream:list, beacon_stream_id:str,
+                            beacon_stream_name:str, user_id:str):
         """
-        produces DataPoint sample as 1 if around home beacon else 0
+        produces datapoint sample as 1 if around home beacon else 0
         
         Algorithm::
             data = window beaconstream 
@@ -135,10 +172,12 @@ class BeaconFeatures(ComputeFeatureBase):
         :param str user_id: id of user
        
         """
+        
         input_streams = []
+    
         input_streams.append(
             {"identifier": beacon_stream_id, "name": beacon_stream_name})
-
+        
         if (len(beaconhomestream) > 0):
             beaconstream = beaconhomestream
             windowed_data = window(beaconstream, self.window_size, True)
@@ -152,21 +191,22 @@ class BeaconFeatures(ComputeFeatureBase):
                     windowed_data[i, j] = 0
 
             data = merge_consective_windows(windowed_data)
+            print(data)
             for items in data:
-                if items.sample is not None and items.sample != "":
+                if items.sample is not None and items.sample!="":
                     new_data.append(DataPoint(start_time=items.start_time,
                                               end_time=items.end_time,
                                               offset=beaconhomestream[0].offset,
                                               sample=items.sample))
 
             try:
-
+                
                 self.store_stream(filepath="home_beacon_context.json",
-                                  input_streams=input_streams,
+                                  input_streams= input_streams,
                                   user_id=user_id,
-                                  data=new_data, localtime=True)
-                self.CC.logging.log('%s %s home_beacon_context stored %d '
-                                    'DataPoints for user %s '
+                                  data=new_data, localtime= True)
+                self.CC.logging.log('%s %s home_beacon_context stored %d ' 
+                                    'DataPoints for user %s ' 
                                     % (str(datetime.datetime.now()),
                                        self.__class__.__name__,
                                        len(new_data), str(new_data)))
@@ -175,12 +215,15 @@ class BeaconFeatures(ComputeFeatureBase):
                 self.CC.logging.log("Exception:", str(e))
                 self.CC.logging.log(str(traceback.format_exc()))
         else:
-            self.CC.logging.log("No home beacon streams found for user %s" %
+            self.CC.logging.log("No home beacon streams found for user %s"%
                                 str(user_id))
 
-    def work_beacon_context(self, beaconworkstream: list, input_streams: dict, user_id: str):
+
+
+
+    def work_beacon_context(self, beaconworkstream:list, input_streams:dict, user_id:str):
         """
-        produces DataPoint sample as 1 if around work beacon 1, 2 if around workbeacon2
+        produces datapoint sample as 1 if around work beacon 1, 2 if around workbeacon2
         and 0 if not around work beacon
         
          Algorithm::
@@ -219,21 +262,23 @@ class BeaconFeatures(ComputeFeatureBase):
                     windowed_data[i, j] = 0
 
             data = merge_consective_windows(windowed_data)
+            print(data)
             for items in data:
-                if items.sample is not None and items.sample != "":
+                if items.sample is not None and items.sample!="":
                     new_data.append(DataPoint(start_time=items.start_time,
                                               end_time=items.end_time,
                                               offset=beaconworkstream[0].offset,
                                               sample=items.sample))
 
             try:
-
+                
+                
                 self.store_stream(filepath="work_beacon_context.json",
-                                  input_streams=input_streams,
+                                  input_streams= input_streams,
                                   user_id=user_id,
                                   data=new_data, localtime=True)
                 self.CC.logging.log('%s %s work_beacon_context stored %d '
-                                    'DataPoints for user %s '
+                                    'DataPoints for user %s ' 
                                     % (str(datetime.datetime.now()),
                                        self.__class__.__name__,
                                        len(new_data), str(new_data)))
@@ -242,10 +287,14 @@ class BeaconFeatures(ComputeFeatureBase):
                 self.CC.logging.log("Exception:", str(e))
                 self.CC.logging.log(str(traceback.format_exc()))
         else:
-            self.CC.logging.log("No work beacon streams found for user %s" %
-                                str(user_id))
+            self.CC.logging.log("No work beacon streams found for user %s"%
+                                 str(user_id))
 
-    def process(self, user: str, all_days: list):
+
+
+
+    def process(self, user:str, all_days:list):
+
         """
         lists requried streams needed for computation.
         :param str user_id: id of user
@@ -269,12 +318,15 @@ class BeaconFeatures(ComputeFeatureBase):
             return
 
         for day in all_days:
-            self.CC.logging.log('%s %s started processing for user %s day %s'
-                                % (str(datetime.datetime.now()),
-                                   self.__class__.__name__,
-                                   str(user),
-                                   str(day)))
+            self.CC.logging.log('%s %s started processing for user %s day %s' 
+                                 % (str(datetime.datetime.now()),
+                                    self.__class__.__name__,
+                                    str(user), 
+                                    str(day)))
 
             self.mark_beacons(streams, self.beacon_homestream, user, day)
             self.merge_work_beacons(streams, self.beacon_workstream1,
                                     self.beacon_workstream2, user, day)
+
+
+    
