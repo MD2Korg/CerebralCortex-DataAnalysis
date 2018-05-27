@@ -36,7 +36,7 @@
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.day_based_data_presence",
+  "name": "org.md2k.data_analysis.day_based_data_presence.v1",
   "owner": "",
   "type": "datastream"
 }
