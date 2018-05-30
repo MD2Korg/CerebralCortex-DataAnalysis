@@ -92,6 +92,10 @@ class PuffMarker(ComputeFeatureBase):
 
         for day in all_days:
 
+            computer_smoking_puffs = self.get_day_data(
+                PUFFMARKER_WRIST_SMOKING_PUFF, user, day)
+            if len(computer_smoking_puffs) > 0:
+                continue
             accel_data_left = self.get_day_data(
                 MOTIONSENSE_HRV_ACCEL_LEFT_STREAMNAME, user, day)
             gyro_data_left = self.get_day_data(
@@ -157,6 +161,28 @@ class PuffMarker(ComputeFeatureBase):
                             puff_labels_right[index].sample = PUFF_LABEL_RIGHT
 
             puff_labels = puff_labels_right + puff_labels_left
+
+            if len(puff_labels_left) > 0:
+                hand_to_mouth_left = [(v.end_time-v.start_time).total_seconds() for v in puff_labels_left]
+                self.CC.logging.log(
+                    "Total hand-to-mouth gestures from left wrist: " + str(len(puff_labels_left)))
+                self.store_stream(
+                    filepath='hand_to_mouth_leftwrist.json',
+                    input_streams=[
+                        streams[MOTIONSENSE_HRV_ACCEL_LEFT_STREAMNAME],
+                        streams[MOTIONSENSE_HRV_GYRO_LEFT_STREAMNAME]],
+                    user_id=user, data=hand_to_mouth_left, localtime=True)
+
+            if len(puff_labels_right) > 0:
+                hand_to_mouth_right = [(v.end_time-v.start_time).total_seconds() for v in puff_labels_right]
+                self.CC.logging.log(
+                    "Total hand-to-mouth gestures from right wrist: " + str(len(puff_labels_right)))
+                self.store_stream(
+                    filepath='hand_to_mouth_rightwrist.json',
+                    input_streams=[
+                        streams[MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME],
+                        streams[MOTIONSENSE_HRV_GYRO_RIGHT_STREAMNAME]],
+                    user_id=user, data=hand_to_mouth_right, localtime=True)
 
             if len(puff_labels) > 0:
                 puff_labels.sort(key=lambda x: x.start_time)
