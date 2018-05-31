@@ -110,7 +110,7 @@ class ComputeFeatureBase(object):
                         annotations=annotations,
                         stream_type=stream_type, data=data)
         try:
-            self.CC.save_stream(datastream=ds, localtime=localtime)
+            self.CC.save_stream(datastream=ds, localtime=localtime, ingestInfluxDB=True)
             self.CC.logging.log('Saved %d data points stream id %s user_id '
                                 '%s from %s' % 
                                  (len(data), str(identifier), str(owner), 
