@@ -10,7 +10,7 @@ export SPARK_HOME=/usr/local/spark/
 CC_CONFIG_FILEPATH="/home/vagrant/CerebralCortex-DockerCompose/cc_config_file/cc_vagrant_configuration.yml"
 
 # list of features to process, leave blank to process all features
-FEATURES="gps_location_daywise,gps_daily,gpsfeature,phone_features,office_time,phone_screen_touch_features,rr_interval,respiration_cycle_statistics,stress_from_respiration,heart_rate,stress_from_wrist"
+FEATURES="gps_location_daywise,gps_daily,gpsfeature,phone_features,office_time,phone_screen_touch_features,rr_interval,respiration_cycle_statistics,stress_from_respiration,heart_rate,stress_from_wrist,puffmarker"
 
 # study name
 STUDY_NAME="demo"
