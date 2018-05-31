@@ -243,6 +243,8 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         :return: List of 1 or 0. 1, if we find the corresponding interesting
         place otherwise 0.
         """
+        if not api_key:
+            return []
         # search the cache, if found return from cache
         GPSClusteringEpochComputation.TOTAL_QUERIES.append((latitude, longitude))
         for cached_search in GPSClusteringEpochComputation.PLACES_QUERY_CACHE:
