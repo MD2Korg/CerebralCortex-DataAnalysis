@@ -15,12 +15,11 @@ with open(path.join(here, 'README.md')) as f:
 datadir = os.path.join('core','resources')
 datafiles = [(d, [os.path.join(d,f) for f in files])
                  for d, folders, files in os.walk(datadir)]
-print('AAAAAAAAAA',datafiles)
 
 setup(
     name="MD2K: Cerebral Cortex: DataAnalysis compute features",
 
-    version='2.2.1',
+    version='2.2.3',
 
     description='',
     long_description=long_description,
