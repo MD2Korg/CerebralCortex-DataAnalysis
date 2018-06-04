@@ -234,8 +234,17 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                 query_res = None
                 # Search cache first
                 if qryresstr is not None:
-                    query_res = pickle.loads(base64.decodebytes(qryresstr.encode()))
-                else:
+                    try:
+                        query_res = pickle.loads(base64.decodebytes(qryresstr.encode()))
+                    except Exception as e:
+                        try:
+                            query_res = pickle.loads(base64.decodebytes(qryresstr[2:-1].encode()))
+                            objstr = base64.b64encode(pickle.dumps(query_res))
+                            self.CC.set_cache_value(cache_key, objstr.decode())
+                        except exception as e:
+                            self.CC.logging.log('Error unpickling cache value %s ' % (qryresstr))
+
+                if not query_res:
                     '''
                     self.CC.logging.log('No cache entry found for %s ' %
                                         (str((latitude, longitude,
@@ -275,7 +284,7 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                         else:
                             raise
                     objstr = base64.b64encode(pickle.dumps(query_res))
-                    self.CC.set_cache_value(cache_key, str(objstr))
+                    self.CC.set_cache_value(cache_key, objstr.decode())
                 for place in query_res.places:
                     place_list_length += 1
 
