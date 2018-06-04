@@ -1,6 +1,8 @@
 import uuid
 import pickle
 from typing import List
+import base64
+import ast
 
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
@@ -82,14 +84,8 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
     CENTROID_INDEX = 7
     FIVE_MINUTE_SECONDS = 600.0
     NOT_HOME_OR_WORK = 'other'
-    PLACES_QUERY_CACHE = []  # each item will be of the format ((lat,long), [])
-    QUERY_CACHE_PATH = '/cerebralcortex/code/anand/places_cache.txt'
-
-    TOTAL_QUERIES = []
-    QUERIES_AVOIDED = 0
 
     QUERY_LIMIT = 130000
-    QUERY_DONE = 0
 
     def process(self, user, all_days):
         """
@@ -99,19 +95,8 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         :param list all_days: List of all days
         :return: None
         """
-        self.CC.logging.log('Computing for user %s cache length '
-                            '%d' % (user, len(GPSClusteringEpochComputation.PLACES_QUERY_CACHE)))
         location_stream = 'LOCATION--org.md2k.phonesensor--PHONE'
         geofence_list_stream = 'GEOFENCE--LIST--org.md2k.phonesensor--PHONE'
-
-        # load cache
-        cache_file_path = self.CC.config['cachepaths']['googleplaces']
-        if os.path.exists(cache_file_path):
-            pkl_path = open(cache_file_path, 'rb')
-            self.query_cache = pickle.load(pkl_path)
-            pkl_path.close()
-        else:
-            self.query_cache = {}
 
         if self.CC is not None:
             streams = self.CC.get_user_streams(user)
@@ -218,16 +203,6 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                         user_id=user,
                         data=epoch_place_annotation, localtime=False)
 
-        pkl_path = open(cache_file_path, 'wb')
-        pickle.dump(self.query_cache, pkl_path)
-        pkl_path.close()
-
-        self.CC.logging.log('TOTAL Queries %d QUERIES Avoided %d '
-                            'Cache Length %d QUERIES_DONE %d' %
-                            (len(GPSClusteringEpochComputation.TOTAL_QUERIES),
-                             GPSClusteringEpochComputation.QUERIES_AVOIDED,
-                             len(GPSClusteringEpochComputation.PLACES_QUERY_CACHE),
-                             GPSClusteringEpochComputation.QUERY_DONE))
 
     def find_interesting_places(self, latitude: object, longitude: object, api_key: object,
                                 geofence_radius: object) -> object:
@@ -243,20 +218,6 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
         :return: List of 1 or 0. 1, if we find the corresponding interesting
         place otherwise 0.
         """
-        # search the cache, if found return from cache
-        GPSClusteringEpochComputation.TOTAL_QUERIES.append((latitude, longitude))
-        for cached_search in GPSClusteringEpochComputation.PLACES_QUERY_CACHE:
-            cached_long = cached_search[0][1]
-            cached_lat = cached_search[0][0]
-            distance = self.haversine(longitude, latitude, cached_long, cached_lat)
-            distance = distance * 1000  # convert km to m
-            if distance <= 10:  # 10m is a heuristic value
-                GPSClusteringEpochComputation.QUERIES_AVOIDED += 1
-                # self.CC.logging.log('For latitude %f longitude %f found cached '
-                #                    'value %s within %f meters' %
-                #                    (latitude, longitude, str(cached_search),
-                #                     distance))
-                return cached_search[1]
 
         return_list = []
 
@@ -264,15 +225,16 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                             self.ENTERTAINMENT, self.STORE,
                             self.SPORTS]
 
-        google_places = GooglePlaces(api_key)
+
         for places_list in places_type_list:
             place_list_length = 0
             for a_place in places_list:
+                cache_key = str(latitude) + ' ' + str(longitude) + ' ' + str(a_place)
+                qryresstr = self.CC.get_cache_value(cache_key)
+                query_res = None
                 # Search cache first
-                if (latitude, longitude, a_place) in self.query_cache:
-                    for x in self.query_cache[(latitude, longitude,
-                                               a_place)].places:
-                        place_list_length += 1
+                if qryresstr is not None:
+                    query_res = pickle.loads(base64.decodebytes(qryresstr.encode()))
                 else:
                     '''
                     self.CC.logging.log('No cache entry found for %s ' %
@@ -280,16 +242,12 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                                                            a_place))))
                     '''
                     try:
+                        google_places = GooglePlaces(api_key)
                         query_res = google_places.nearby_search(
                             lat_lng={'lat': latitude, 'lng': longitude},
                             keyword=a_place,
                             radius=geofence_radius)
-                        for place in query_res.places:
-                            place_list_length += 1
 
-                        # update cache
-                        self.query_cache[(latitude, longitude, a_place)] = \
-                            query_res
                     except Exception as e:
                         if 'OVER_QUERY_LIMIT' in str(e):
                             now = datetime.datetime.now()
@@ -305,12 +263,6 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                                 lat_lng={'lat': latitude, 'lng': longitude},
                                 keyword=a_place,
                                 radius=geofence_radius)
-                            for place in query_res.places:
-                                place_list_length += 1
-
-                            # update cache
-                            self.query_cache[(latitude, longitude, a_place)] = \
-                                query_res
                         elif 'HTTP Error 500: Internal Server Error' in str(e):
                             self.CC.logging.log('Caught HTTP 500 error, sleeping 30 '
                                                 'seconds')
@@ -320,25 +272,19 @@ class GPSClusteringEpochComputation(ComputeFeatureBase):
                                 lat_lng={'lat': latitude, 'lng': longitude},
                                 keyword=a_place,
                                 radius=geofence_radius)
-                            for place in query_res.places:
-                                place_list_length += 1
-
-                            # update cache
-                            self.query_cache[(latitude, longitude, a_place)] = \
-                                query_res
                         else:
                             raise
+                    objstr = base64.b64encode(pickle.dumps(query_res))
+                    self.CC.set_cache_value(cache_key, str(objstr))
+                for place in query_res.places:
+                    place_list_length += 1
 
-                    GPSClusteringEpochComputation.QUERY_DONE += 1
 
             if place_list_length:
                 return_list.append(1)
             else:
                 return_list.append(0)
 
-        GPSClusteringEpochComputation.PLACES_QUERY_CACHE.append(((latitude,
-                                                                  longitude),
-                                                                 return_list))
         return return_list
 
     def get_gps(self, gps_stream_id: object, user_id: object, all_days: object) -> object:
