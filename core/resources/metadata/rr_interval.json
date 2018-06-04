@@ -48,7 +48,7 @@
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.rr_interval.v1",
+  "name": "org.md2k.data_analysis.feature.rr_interval.v2",
   "owner": "",
   "type": "datastream"
 }
