@@ -106,18 +106,17 @@ class rr_interval(ComputeFeatureBase):
                         motionsense_hrv_left_raw_cat not in all_streams and  \
                         motionsense_hrv_right_raw_cat not in all_streams:
             return
-
-        if qualtrics_identifier not in all_streams:
-            return
+        # 
+        # if qualtrics_identifier not in all_streams:
+        #     return
 
         user_id = user
         for day in all_days:
-            # if rr_interval_identifier in all_streams:
-            #     rr_interval_data = self.CC.get_stream(all_streams[rr_interval_identifier]["identifier"],
-            #                                       day=day,user_id=user_id,localtime=False)
-            #     if len(rr_interval_data.data)>0:
-            #         print("This day was done before")
-            #         continue
+            if day_presence in all_streams:
+                presence = get_datastream(self.CC,day_presence,day,user_id,False)
+                if len(presence)>0:
+                    if presence[0].sample:
+                        continue
 
             left_data = []
             right_data = []
@@ -153,15 +152,15 @@ class rr_interval(ComputeFeatureBase):
                 continue
 
 
-            left_data = self.get_data_around_stress_survey(all_streams=all_streams,day=day,
-                                                           user_id=user_id,raw_byte_array=left_data)
-            right_data = self.get_data_around_stress_survey(all_streams=all_streams,day=day,
-                                                           user_id=user_id,raw_byte_array=right_data)
+            # left_data = self.get_data_around_stress_survey(all_streams=all_streams,day=day,
+            #                                                user_id=user_id,raw_byte_array=left_data)
+            # right_data = self.get_data_around_stress_survey(all_streams=all_streams,day=day,
+            #                                                user_id=user_id,raw_byte_array=right_data)
 
 
-            if not left_data and not right_data:
-                print('-'*20," No data before 120 minutes of stress survey ",'-'*20)
-                continue
+            # if not left_data and not right_data:
+            #     print('-'*20," No data before 120 minutes of stress survey ",'-'*20)
+            #     continue
 
             left_decoded_data = decode_only(left_data)
             right_decoded_data = decode_only(right_data)
@@ -174,18 +173,22 @@ class rr_interval(ComputeFeatureBase):
                 continue
             print('-'*20,len(window_data),'-'*20,' window length')
 
+            final_data_pres = [deepcopy(window_data[0])]
+            final_data_pres[0].sample = True
+
+
             int_RR_dist_obj,H,w_l,w_r,fil_type = get_constants()
             ecg_pks = []
             final_data = []
-            activity_data = self.CC.get_stream(all_streams[activity_identifier]["identifier"],
-                                               day=day,user_id=user_id,localtime=False)
-            ts_arr = [i.start_time for i in activity_data.data]
-            sample_arr = [i.sample for i in activity_data.data]
+            # activity_data = self.CC.get_stream(all_streams[activity_identifier]["identifier"],
+            #                                    day=day,user_id=user_id,localtime=False)
+            # ts_arr = [i.start_time for i in activity_data.data]
+            # sample_arr = [i.sample for i in activity_data.data]
 
             for dp in window_data:
-                ind = np.array([sample_arr[i] for i,item in enumerate(ts_arr) if ts_arr[i]>=dp.start_time and ts_arr[i]<= dp.end_time])
-                if list(ind).count('WALKING')+list(ind).count('MOD')+list(ind).count('HIGH')  >= len(ind)*.33:
-                    continue
+                # ind = np.array([sample_arr[i] for i,item in enumerate(ts_arr) if ts_arr[i]>=dp.start_time and ts_arr[i]<= dp.end_time])
+                # if list(ind).count('WALKING')+list(ind).count('MOD')+list(ind).count('HIGH')  >= len(ind)*.33:
+                #     continue
                 RR_interval_all_realization,score,HR = [],np.nan,[]
                 led_input = dp.sample
                 try:
@@ -200,14 +203,47 @@ class rr_interval(ComputeFeatureBase):
                 final_data.append(deepcopy(dp))
                 final_data[-1].sample = np.array([RR_interval_all_realization,score,HR])
 
+
+
+            if motionsense_hrv_left_raw in all_streams:
+                self.store_stream('rr_interval_data_presence.json',
+                                  [all_streams[motionsense_hrv_left_raw]],
+                                  user_id,
+                                  final_data_pres,
+                                  localtime=False)
+
+            elif motionsense_hrv_right_raw in all_streams:
+                self.store_stream('rr_interval_data_presence.json',
+                                  [all_streams[motionsense_hrv_right_raw]],
+                                  user_id,
+                                  final_data_pres,
+                                  localtime=False)
+            elif motionsense_hrv_left_raw_cat in all_streams:
+                self.store_stream('rr_interval_data_presence.json',
+                                  [all_streams[motionsense_hrv_left_raw_cat]],
+                                  user_id,
+                                  final_data_pres,
+                                  localtime=False)
+            else:
+                self.store_stream('rr_interval_data_presence.json',
+                                  [all_streams[motionsense_hrv_right_raw_cat]],
+                                  user_id,
+                                  final_data_pres,
+                                  localtime=False)
+
             if not list(final_data):
                 continue
+
+
+
+
             json_path = 'rr_interval.json'
             if motionsense_hrv_left_raw in all_streams:
                 self.store_stream(json_path,
                               [all_streams[motionsense_hrv_left_raw]],
                               user_id,
                               final_data,localtime=False)
+
             elif motionsense_hrv_right_raw in all_streams:
                 self.store_stream(json_path,
                                   [all_streams[motionsense_hrv_right_raw]],
@@ -223,7 +259,6 @@ class rr_interval(ComputeFeatureBase):
                                   [all_streams[motionsense_hrv_right_raw_cat]],
                                   user_id,
                                   final_data,localtime=False)
-
 
 
 

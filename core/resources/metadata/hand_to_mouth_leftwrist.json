@@ -1,0 +1,40 @@
+{
+  "annotations":[],
+  "data_descriptor": {
+    "name": "duration",
+    "type": "int",
+    "unit": "second",
+    "description": "duration in seconds of hand-to-mouth gesture from left wrist"
+  },
+  "execution_context":{
+    "processing_module":{
+      "name":"core.feature.puffmarker",
+      "input_streams":[
+        {
+          "id":"CC_INPUT_STREAM_ID_CC",
+          "name":"CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters":{
+      }
+    },
+    "algorithm":{
+      "method":"core.feature.puffmarker.puffmarker",
+      "authors":[
+        {
+          "name":"Nazir Saleheen",
+          "email":"nazir.saleheen@gmail.com"
+        }
+      ],
+      "version":"0.0.1",
+      "reference":{
+        "url":"https://dl.acm.org/citation.cfm?id=2806897"
+      },
+      "description":"Detects hand-to-mouth gestures which are used to detect smoking puffs from left wrist"
+    }
+  },
+  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name":"org.md2k.data_analysis.feature.puffmarker.hand_to_mouth.leftwrist",
+  "owner":"",
+  "type":"datastream"
+}

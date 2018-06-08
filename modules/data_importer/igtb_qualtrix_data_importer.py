@@ -265,7 +265,7 @@ def process_feature(file_path, metadata_path):
                    end_time=start_time,
                    offset=utc_offset, 
                    metadata=metadata,
-                   stream_name_suffix='neuorticism')
+                   stream_name_suffix='neuroticism')
 
         openness = parse_str(row[13])
         save_point(user = user_id,value = openness, 
@@ -289,7 +289,7 @@ def process_feature(file_path, metadata_path):
                    end_time=start_time,
                    offset=utc_offset, 
                    metadata=metadata,
-                   stream_name_suffix='neg_effect')
+                   stream_name_suffix='neg_affect')
 
         stai_trait = parse_str(row[16])
         save_point(user = user_id,value = stai_trait, 
