@@ -39,6 +39,7 @@ import copy
 import traceback
 from functools import lru_cache
 import math
+import base64
 
 from sklearn.mixture import GaussianMixture
 from typing import List, Callable, Any
@@ -1353,10 +1354,18 @@ class PhoneFeatures(ComputeFeatureBase):
             return [appid, "Communication", "Samsung Message", None]
 
         url = "https://play.google.com/store/apps/details?id=" + appid
-        try:
-            response = urlopen(url)
-        except Exception:
-            return [appid, None, None, None]
+        cached_response = self.CC.get_cache_value(appid)
+        response = None
+        
+        if cached_response is None:
+            try:
+                response = urlopen(url)
+                objstr = base64.b64encode(pickle.dumps(response))
+                self.CC.set_cache_value(appid, objstr.decode())
+            except Exception:
+                return [appid, None, None, None]
+        else:
+            response = pickle.loads(base64.decodebytes(cached_response.encode()))
 
         soup = BeautifulSoup(response, 'html.parser')
         text = soup.find('span', itemprop='genre')
@@ -2097,7 +2106,6 @@ class PhoneFeatures(ComputeFeatureBase):
         try:
             data = self.get_total_call_sms_hourly(call_number_data, sms_number_data)
             if data:
-                print(data)
                 self.store_stream(filepath="total_call_sms_hourly.json",
                                   input_streams=[input_callstream, input_smsstream],
                                   user_id=user_id, data=data, localtime=False)
@@ -2108,7 +2116,6 @@ class PhoneFeatures(ComputeFeatureBase):
         try:
             data = self.get_total_call_sms_four_hourly(call_number_data, sms_number_data)
             if data:
-                print(data)
                 self.store_stream(filepath="total_call_sms_four_hourly.json",
                                   input_streams=[input_callstream, input_smsstream],
                                   user_id=user_id, data=data, localtime=False)
@@ -2169,7 +2176,6 @@ class PhoneFeatures(ComputeFeatureBase):
         try:
             data = self.get_total_sms_four_hourly(sms_number_data)
             if data:
-                print(data)
                 self.store_stream(filepath="total_sms_four_hourly.json",
                                   input_streams=[input_callstream, input_smsstream],
                                   user_id=user_id, data=data, localtime=False)
