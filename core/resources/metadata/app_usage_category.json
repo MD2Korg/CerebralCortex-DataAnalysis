@@ -46,7 +46,7 @@
           "email": "shiplu.cse.du@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Category of the used app. The output is a list containing application package name or appid, application name, application category and subcategory (if there is any). the structure is like [0] - package name, [1] - category, [2] - app name, [3] - subcategory. All of these results are parsed from google play store webpage."

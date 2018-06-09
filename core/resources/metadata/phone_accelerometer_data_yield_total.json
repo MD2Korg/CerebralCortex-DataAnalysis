@@ -30,7 +30,7 @@
           "email": "shiplu.cse.du@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Each data points contains total number of hours the accelerometer data from phone is present for a day"

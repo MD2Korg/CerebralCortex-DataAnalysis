@@ -30,7 +30,7 @@
           "email":"shiplu.cse.du@gmail.com"
         }
       ],
-      "version":"0.0.1",
+      "version":"1",
       "reference":{
       },
       "description":"Amount of call initiated by the user in percentage"

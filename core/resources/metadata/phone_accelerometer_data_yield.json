@@ -29,7 +29,7 @@
           "email": "shiplu.cse.du@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Each data points contains the interval of accelerometer data (from phone) present or not. Sample: 1 - data present,  0 - data is absent."
