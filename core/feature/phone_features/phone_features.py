@@ -39,6 +39,8 @@ import copy
 import traceback
 from functools import lru_cache
 import math
+import base64
+import pickle
 
 from sklearn.mixture import GaussianMixture
 from typing import List, Callable, Any
@@ -1356,15 +1358,21 @@ class PhoneFeatures(ComputeFeatureBase):
         :rtype: List(str)
         """
         appid = appid.strip()
-        time.sleep(2.0)
         if appid == "com.samsung.android.messaging":
             return [appid, "Communication", "Samsung Message", None]
 
         url = "https://play.google.com/store/apps/details?id=" + appid
-        try:
-            response = urlopen(url)
-        except Exception:
-            return [appid, None, None, None]
+        cached_response = self.CC.get_cache_value(appid)
+        response = None
+        
+        if cached_response is None:
+            try:
+                time.sleep(2.0)
+                response = urlopen(url)
+            except Exception:
+                return [appid, None, None, None]
+        else:
+            return pickle.loads(base64.decodebytes(cached_response.encode()))
 
         soup = BeautifulSoup(response, 'html.parser')
         text = soup.find('span', itemprop='genre')
@@ -1377,12 +1385,17 @@ class PhoneFeatures(ComputeFeatureBase):
         else:
             category = None
 
+        toreturn = None
         if category and category.startswith('GAME_'):
-            return [appid, "Game", str(name.contents[0]) if name else None, str(text.contents[0])]
+            toreturn = [appid, "Game", str(name.contents[0]) if name else None, str(text.contents[0])]
         elif text:
-            return [appid, str(text.contents[0]), str(name.contents[0]) if name else None, None]
+            toreturn = [appid, str(text.contents[0]), str(name.contents[0]) if name else None, None]
         else:
-            return [appid, None, str(name.contents[0]) if name else None, None]
+            toreturn = [appid, None, str(name.contents[0]) if name else None, None]
+
+        objstr = base64.b64encode(pickle.dumps(toreturn))
+        self.CC.set_cache_value(appid, objstr.decode())
+        return toreturn
 
     def get_appusage_duration_by_category(self, appdata: List[DataPoint], categories: List[str],
                                           appusage_gap_threshold_seconds: float=120) -> List:
@@ -2105,7 +2118,6 @@ class PhoneFeatures(ComputeFeatureBase):
         try:
             data = self.get_total_call_sms_hourly(call_number_data, sms_number_data)
             if data:
-                print(data)
                 self.store_stream(filepath="total_call_sms_hourly.json",
                                   input_streams=[input_callstream, input_smsstream],
                                   user_id=user_id, data=data, localtime=False)
@@ -2116,7 +2128,6 @@ class PhoneFeatures(ComputeFeatureBase):
         try:
             data = self.get_total_call_sms_four_hourly(call_number_data, sms_number_data)
             if data:
-                print(data)
                 self.store_stream(filepath="total_call_sms_four_hourly.json",
                                   input_streams=[input_callstream, input_smsstream],
                                   user_id=user_id, data=data, localtime=False)
@@ -2177,7 +2188,6 @@ class PhoneFeatures(ComputeFeatureBase):
         try:
             data = self.get_total_sms_four_hourly(sms_number_data)
             if data:
-                print(data)
                 self.store_stream(filepath="total_sms_four_hourly.json",
                                   input_streams=[input_callstream, input_smsstream],
                                   user_id=user_id, data=data, localtime=False)
