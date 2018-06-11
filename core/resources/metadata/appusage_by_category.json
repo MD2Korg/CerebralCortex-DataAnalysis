@@ -27,7 +27,7 @@
           "email":"shiplu.cse.du@gmail.com"
         }
       ],
-      "version":"0.0.1",
+      "version":"1",
       "reference":{
       },
       "description":"Category of the used app for a time interval."

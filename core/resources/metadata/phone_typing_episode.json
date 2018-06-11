@@ -31,7 +31,7 @@
           "email": "shiplu.cse.du@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Start, end time and duration of a phone typing episode"
