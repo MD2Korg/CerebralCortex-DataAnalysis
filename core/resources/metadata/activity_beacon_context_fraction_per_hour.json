@@ -41,7 +41,7 @@
           "email": "amimithun@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "The participants'total activity time in fraction of office beacon context"

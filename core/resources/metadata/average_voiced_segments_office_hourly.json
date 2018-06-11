@@ -30,14 +30,14 @@
           "email": "rbnjade1@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Duration of voiced segments within an hour"
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.v2.audio.voice_segments_office.hour.average",
+  "name": "org.md2k.data_analysis.feature.audio.voice_segments_office.hour.average",
   "owner": "CC_OWNER_CC",
   "type": "datastream"
 }

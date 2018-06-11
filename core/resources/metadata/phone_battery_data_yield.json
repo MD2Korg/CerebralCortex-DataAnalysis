@@ -36,7 +36,7 @@
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.v2.phone.battery_data_yield",
+  "name": "org.md2k.data_analysis.feature.phone.battery_data_yield",
   "owner": "CC_OWNER_CC",
   "type": "datastream"
 }

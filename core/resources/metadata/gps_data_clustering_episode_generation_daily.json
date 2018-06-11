@@ -47,7 +47,7 @@
           "email": "aniknagato@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Cluster GPS data points and create time epochs of dwell time in each cluster for facilitating feature computations in a day."

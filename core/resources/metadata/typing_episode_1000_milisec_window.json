@@ -53,7 +53,7 @@
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.v5.typing.episodes.day",
+  "name":"org.md2k.data_analysis.feature.typing.episodes.day",
   "owner":"",
   "type":"datastream"
 }

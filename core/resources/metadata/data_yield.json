@@ -29,14 +29,14 @@
           "email": "mullah@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Calculates the PPG yield for each minute of Raw motionsenseHRV data and tells whether the sensor was worn or not"
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.data_yield.60sec.v1",
+  "name": "org.md2k.data_analysis.data_yield.60sec",
   "owner": "",
   "type": "datastream"
 }

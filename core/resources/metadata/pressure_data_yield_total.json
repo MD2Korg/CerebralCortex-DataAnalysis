@@ -37,7 +37,7 @@
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.v2.phone.pressure_data_yield_total",
+  "name": "org.md2k.data_analysis.feature.phone.pressure_data_yield_total",
   "owner": "CC_OWNER_CC",
   "type": "datastream"
 }

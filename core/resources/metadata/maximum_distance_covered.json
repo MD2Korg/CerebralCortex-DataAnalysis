@@ -29,7 +29,7 @@
           "email": "aniknagato@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Maximum distance covered by participant in one day in kilometer."

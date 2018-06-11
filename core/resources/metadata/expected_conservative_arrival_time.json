@@ -57,7 +57,7 @@
           "email": "alina.cse@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Expected conservative office arrival time with verdict of before, after or in expected conservative arrival time. Ff 9:15 is the actual arrival time then 9:00 is the expected conservative arrival time. Sample is a list with three elements as follows: 0 - Office arrival time, 1 - verdict (after_expected_conservative_time, before_expected_conservative_time, in_expected_conservative_time), 2 - deviation from the expected conservative time in minutes."
