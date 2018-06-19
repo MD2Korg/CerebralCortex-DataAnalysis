@@ -1368,9 +1368,13 @@ class PhoneFeatures(ComputeFeatureBase):
         if cached_response is None:
             try:
                 time.sleep(2.0)
+                self.CC.logging.log('%s not found in cache.' % (appid))
                 response = urlopen(url)
             except Exception:
-                return [appid, None, None, None]
+                toreturn = [appid, None, None, None]
+                objstr = base64.b64encode(pickle.dumps(toreturn))
+                self.CC.set_cache_value(appid, objstr.decode())
+                return toreturn
         else:
             return pickle.loads(base64.decodebytes(cached_response.encode()))
 
