@@ -35,6 +35,26 @@
       "stream_type": "periodic",
       "expected_samples_per_day": 1,
       "missing_data_handling": "impute"
+    },
+    {
+      "name": "is_corrupt_data",
+      "type": "int",
+      "description": "Set to 1 if input data is corrupt/did not pass the admission control check"
+    },
+    {
+      "name": "is_missing_data",
+      "type": "int",
+      "description": "Set to 1 if part or complete input data is missing"
+    },
+    {
+      "name": "is_phone_on",
+      "type": "int",
+      "description": "Set to 1 if the phone was on during this DataPoints interval"
+    },
+    {
+      "name": "phone_battery_status",
+      "type": "int",
+      "description": "phone battery level at the end time this DataPoints interval"
     }
   ],
   "execution_context": {
