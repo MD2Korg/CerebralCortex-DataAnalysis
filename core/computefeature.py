@@ -118,7 +118,7 @@ class ComputeFeatureBase(object):
                                   self.__class__.__name__))
         except Exception as exp:
             self.CC.logging.log(self.__class__.__name__ + str(exp) + "\n" + 
-                          str(traceback.format_exc()))
+                          str(traceback.format_exc()) + '\n' + str(ds))
 
 
     def get_latest_stream_id(self, user_id, stream_name):
