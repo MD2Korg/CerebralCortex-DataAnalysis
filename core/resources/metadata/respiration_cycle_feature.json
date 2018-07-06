@@ -129,14 +129,14 @@
           "email": "mullah@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1.0",
       "reference": {
       },
       "description": "Takes the Respiration raw and baseline datastream and combines them to get the recovered respiration.From the recovered respiration it generates an array of respiration features per respiration cycle"
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.feature.respirationcyclefeature.v3",
+  "name": "org.md2k.feature.respirationcyclefeature",
   "owner": "CC_OWNER_CC",
   "type": "datastream"
 }
