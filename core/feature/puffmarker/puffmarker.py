@@ -163,7 +163,11 @@ class PuffMarker(ComputeFeatureBase):
             puff_labels = puff_labels_right + puff_labels_left
 
             if len(puff_labels_left) > 0:
-                hand_to_mouth_left = [(v.end_time-v.start_time).total_seconds() for v in puff_labels_left]
+                hand_to_mouth_left = [
+                    DataPoint(start_time=v.start_time, end_time=v.end_time,
+                              offset=v.offset, sample=(
+                                v.end_time - v.start_time).total_seconds()) for
+                    v in puff_labels_left]
                 self.CC.logging.log(
                     "Total hand-to-mouth gestures from left wrist: " + str(len(puff_labels_left)))
                 self.store_stream(
@@ -174,7 +178,11 @@ class PuffMarker(ComputeFeatureBase):
                     user_id=user, data=hand_to_mouth_left, localtime=True)
 
             if len(puff_labels_right) > 0:
-                hand_to_mouth_right = [(v.end_time-v.start_time).total_seconds() for v in puff_labels_right]
+                hand_to_mouth_right = [
+                    DataPoint(start_time=v.start_time, end_time=v.end_time,
+                              offset=v.offset, sample=(
+                                v.end_time - v.start_time).total_seconds()) for
+                    v in puff_labels_right]
                 self.CC.logging.log(
                     "Total hand-to-mouth gestures from right wrist: " + str(len(puff_labels_right)))
                 self.store_stream(
