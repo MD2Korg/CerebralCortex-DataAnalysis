@@ -67,7 +67,7 @@
       "description": "Ratio of Expiration to Respiration Duration"
     },
     {
-      "name": "resspiration_area_inspiration_duration_ratio",
+      "name": "respiration_area_inspiration_duration_ratio",
       "type": "double",
       "description": "Ratio of Respiration Area to Inspiration Duration"
     },
