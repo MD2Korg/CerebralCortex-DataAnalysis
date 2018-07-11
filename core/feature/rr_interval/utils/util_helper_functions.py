@@ -58,12 +58,12 @@ day_presence = \
 
 path_to_stress_files = 'core/resources/stress_files/'
 
-def get_datastream(CC:CerebralCortex,
+def get_datastream(instance,
                    identifier:str,
                    day:str,
                    user_id:str,
                    localtime:bool)->List[DataPoint]:
-    stream_ids = self.get_latest_stream_id(user_id,identifier)
+    stream_ids = instance.get_latest_stream_id(user_id,identifier)
     data = []
     for stream_id in stream_ids:
         temp_data = CC.get_stream(stream_id=stream_id['identifier'],user_id=user_id,day=day,localtime=localtime)
