@@ -122,21 +122,21 @@ class rr_interval(ComputeFeatureBase):
             right_data = []
 
             if motionsense_hrv_left_raw in all_streams:
-                left_data = get_datastream(self.CC,motionsense_hrv_left_raw,day,user_id,False)
+                left_data = get_datastream(self,motionsense_hrv_left_raw,day,user_id,False)
 
 
             if not left_data:
                 if motionsense_hrv_left_raw_cat in all_streams:
-                    left_data = get_datastream(self.CC,motionsense_hrv_left_raw_cat,day,user_id,False)
+                    left_data = get_datastream(self,motionsense_hrv_left_raw_cat,day,user_id,False)
 
 
 
             if motionsense_hrv_right_raw in all_streams:
-                right_data = get_datastream(self.CC,motionsense_hrv_right_raw,day,user_id,False)
+                right_data = get_datastream(self,motionsense_hrv_right_raw,day,user_id,False)
 
             if not right_data:
                 if motionsense_hrv_right_raw_cat in all_streams:
-                    right_data = get_datastream(self.CC,motionsense_hrv_right_raw_cat,day,user_id,False)
+                    right_data = get_datastream(self,motionsense_hrv_right_raw_cat,day,user_id,False)
 
 
             if not left_data and not right_data:
