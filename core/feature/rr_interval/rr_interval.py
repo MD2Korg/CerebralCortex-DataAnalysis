@@ -113,7 +113,7 @@ class rr_interval(ComputeFeatureBase):
         user_id = user
         for day in all_days:
             if day_presence in all_streams:
-                presence = get_datastream(self,day_presence,day,user_id,False)
+                presence = get_latest_stream(self,day_presence,day,user_id,False)
                 if len(presence)>0:
                     if presence[0].sample:
                         continue
@@ -122,21 +122,21 @@ class rr_interval(ComputeFeatureBase):
             right_data = []
 
             if motionsense_hrv_left_raw in all_streams:
-                left_data = get_datastream(self,motionsense_hrv_left_raw,day,user_id,False)
+                left_data = get_datastream(self.CC,motionsense_hrv_left_raw,day,user_id,False)
 
 
             if not left_data:
                 if motionsense_hrv_left_raw_cat in all_streams:
-                    left_data = get_datastream(self,motionsense_hrv_left_raw_cat,day,user_id,False)
+                    left_data = get_datastream(self.CC,motionsense_hrv_left_raw_cat,day,user_id,False)
 
 
 
             if motionsense_hrv_right_raw in all_streams:
-                right_data = get_datastream(self,motionsense_hrv_right_raw,day,user_id,False)
+                right_data = get_datastream(self.CC,motionsense_hrv_right_raw,day,user_id,False)
 
             if not right_data:
                 if motionsense_hrv_right_raw_cat in all_streams:
-                    right_data = get_datastream(self,motionsense_hrv_right_raw_cat,day,user_id,False)
+                    right_data = get_datastream(self.CC,motionsense_hrv_right_raw_cat,day,user_id,False)
 
 
             if not left_data and not right_data:

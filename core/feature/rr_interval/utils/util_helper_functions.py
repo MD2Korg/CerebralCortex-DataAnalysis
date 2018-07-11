@@ -58,7 +58,7 @@ day_presence = \
 
 path_to_stress_files = 'core/resources/stress_files/'
 
-def get_datastream(instance,
+def get_latest_stream(instance,
                    identifier:str,
                    day:str,
                    user_id:str,
@@ -70,6 +70,20 @@ def get_datastream(instance,
         if len(temp_data.data)>0:
             data.extend(temp_data.data)
     return data
+
+def get_datastream(CC,
+                   identifier:str,
+                   day:str,
+                   user_id:str,
+                   localtime:bool)->List[DataPoint]:
+    stream_ids = CC.get_stream_id(user_id,identifier)
+    data = []
+    for stream_id in stream_ids:
+        temp_data = CC.get_stream(stream_id=stream_id['identifier'],user_id=user_id,day=day,localtime=localtime)
+        if len(temp_data.data)>0:
+            data.extend(temp_data.data)
+    return data
+
 
 
 
