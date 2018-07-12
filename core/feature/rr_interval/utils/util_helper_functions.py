@@ -66,7 +66,7 @@ def get_latest_stream(instance,
     stream_ids = instance.get_latest_stream_id(user_id,identifier)
     data = []
     for stream_id in stream_ids:
-        temp_data = CC.get_stream(stream_id=stream_id['identifier'],user_id=user_id,day=day,localtime=localtime)
+        temp_data = instance.CC.get_stream(stream_id=stream_id['identifier'],user_id=user_id,day=day,localtime=localtime)
         if len(temp_data.data)>0:
             data.extend(temp_data.data)
     return data
