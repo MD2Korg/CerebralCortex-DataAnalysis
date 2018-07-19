@@ -41,14 +41,14 @@
           "email": "mullah@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1.0",
       "reference": {
       },
       "description": "Produces many realizations of RR interval timeseries in one minute alongside the corresponding standard deviation and Heart Rate"
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.rr_interval.v2",
+  "name": "org.md2k.data_analysis.feature.rr_interval",
   "owner": "",
   "type": "datastream"
 }

@@ -50,7 +50,7 @@
           "email": "amimithun@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "The participants'total standing time and standing time per hour, in office beacon context"

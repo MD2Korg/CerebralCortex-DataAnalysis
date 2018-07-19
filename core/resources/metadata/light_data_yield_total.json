@@ -30,14 +30,14 @@
           "email": "shiplu.cse.du@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Each data points contains total number of hours the light data is present for a day"
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.v2.phone.light_data_yield_total",
+  "name": "org.md2k.data_analysis.feature.phone.light_data_yield_total",
   "owner": "CC_OWNER_CC",
   "type": "datastream"
 }

@@ -30,7 +30,7 @@
           "email": "sakther@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Amount of moderate activity daily from accel only model"

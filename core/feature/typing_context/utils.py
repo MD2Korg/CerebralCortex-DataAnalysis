@@ -38,9 +38,9 @@ import pandas as pd
 import pytz
 import numpy as np
 
-typing_stream_name = 'org.md2k.data_analysis.feature.v5.typing.episodes.day'
+typing_stream_name = 'org.md2k.data_analysis.feature.typing.episodes.day'
 office_stream_name = 'org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model'
-beacon_stream_name = 'org.md2k.data_analysis.feature.v6.beacon.work_beacon_context'
+beacon_stream_name = 'org.md2k.data_analysis.feature.beacon.work_beacon_context'
 
 
 def target_in_fraction_of_context(target_total_time: dict,

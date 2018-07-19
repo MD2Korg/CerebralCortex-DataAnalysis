@@ -51,14 +51,27 @@ activity_identifier = \
     "org.md2k.data_analysis.feature.activity.wrist.accel_only.10_seconds"
 
 rr_interval_identifier = \
-    "org.md2k.data_analysis.feature.rr_interval.v1"
+    "org.md2k.data_analysis.feature.rr_interval"
 
 day_presence = \
     "org.md2k.data_analysis.day_based_data_presence.v1"
 
 path_to_stress_files = 'core/resources/stress_files/'
 
-def get_datastream(CC:CerebralCortex,
+def get_latest_stream(instance,
+                   identifier:str,
+                   day:str,
+                   user_id:str,
+                   localtime:bool)->List[DataPoint]:
+    stream_ids = instance.get_latest_stream_id(user_id,identifier)
+    data = []
+    for stream_id in stream_ids:
+        temp_data = instance.CC.get_stream(stream_id=stream_id['identifier'],user_id=user_id,day=day,localtime=localtime)
+        if len(temp_data.data)>0:
+            data.extend(temp_data.data)
+    return data
+
+def get_datastream(CC,
                    identifier:str,
                    day:str,
                    user_id:str,
@@ -70,6 +83,7 @@ def get_datastream(CC:CerebralCortex,
         if len(temp_data.data)>0:
             data.extend(temp_data.data)
     return data
+
 
 
 

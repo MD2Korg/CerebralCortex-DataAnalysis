@@ -30,7 +30,7 @@
           "email": "sakther@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Compute amount of moderate activity daily. If missing data of any hour is more than 50% then imputed with mean moderate activity of that time of day."

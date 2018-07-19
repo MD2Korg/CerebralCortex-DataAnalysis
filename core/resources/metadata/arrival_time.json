@@ -56,7 +56,7 @@
           "email": "alina.cse@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Office arrival time with verdict of before, after or usual arriving. Sample is a list with three elements as follows: 0 - Office arrival time, 1 - verdict (after_usual_time, before_usual_time, usual_time), 2 - deviation from the usual range of time in minutes."

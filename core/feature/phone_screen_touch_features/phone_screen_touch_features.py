@@ -57,7 +57,15 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
         """
         if admission_control is None:
             return data
-        return [d for d in data if admission_control(d.sample)]
+        filtered_data = []
+        for d in data:
+            if admission_control(d.sample):
+                filtered_data.append(d)
+            elif type(d.sample) is list and len(d.sample) == 1 and admission_control(d.sample[0]):
+                d.sample = d.sample[0]
+                filtered_data.append(d)
+
+        return filtered_data
 
     def get_data_by_stream_name(self, stream_name: str, user_id: str, day: str,
                                 localtime: bool=True) -> List[DataPoint]:

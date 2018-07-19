@@ -29,7 +29,7 @@
           "email": "aniknagato@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Computes the total distance covered by participant in one day based on gps location information."

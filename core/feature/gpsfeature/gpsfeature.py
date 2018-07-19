@@ -42,11 +42,11 @@ import uuid
 import json
 
 feature_class_name = 'GPSFeatures'
-stream_name_gps_cluster = "org.md2k.data_analysis.v1.gps_clustering_episode_generation_daily"
-stream_name_semantic_location = "org.md2k.data_analysis.v1.gps_episodes_and_semantic_location_daily"
+stream_name_gps_cluster = "org.md2k.data_analysis.gps_clustering_episode_generation_daily"
+stream_name_semantic_location = "org.md2k.data_analysis.gps_episodes_and_semantic_location_daily"
 stream_name_semantic_location_places = \
-"org.md2k.data_analysis.v1.gps_episodes_and_semantic_location_from_places_daily"
-stream_name_semantic_location_user_marked = "org.md2k.data_analysis.v1.gps_episodes_and_semantic_location_user_marked_daily"
+"org.md2k.data_analysis.gps_episodes_and_semantic_location_from_places_daily"
+stream_name_semantic_location_user_marked = "org.md2k.data_analysis.gps_episodes_and_semantic_location_user_marked_daily"
 
 
 class GPSFeatures(ComputeFeatureBase):
@@ -775,19 +775,19 @@ class GPSFeatures(ComputeFeatureBase):
                 continue
 
             if stream_name_gps_cluster in streams:
-                cluster_stream_ids = self.CC.get_stream_id(user_id, stream_name_gps_cluster)
+                cluster_stream_ids = self.get_latest_stream_id(user_id, stream_name_gps_cluster)
                 cluster_data = []
                 for cluster_stream_id in cluster_stream_ids:
                     cluster_data += self.CC.get_stream(cluster_stream_id['identifier'], user_id, day).data
 
             if stream_name_semantic_location in streams:
-                semantic_stream_ids = self.CC.get_stream_id(user_id, stream_name_semantic_location)
+                semantic_stream_ids = self.get_latest_stream_id(user_id, stream_name_semantic_location)
                 semantic_data = []
                 for semantic_stream_id in semantic_stream_ids:
                     semantic_data += self.CC.get_stream(semantic_stream_id['identifier'], user_id, day).data
 
             if stream_name_semantic_location_user_marked in streams:
-                user_marked_stream_ids = self.CC.get_stream_id(user_id, stream_name_semantic_location_user_marked)
+                user_marked_stream_ids = self.get_latest_stream_id(user_id, stream_name_semantic_location_user_marked)
                 user_marked_data = []
                 for user_marked_stream_id in user_marked_stream_ids:
                     user_marked_data += self.CC.get_stream(user_marked_stream_id['identifier'], user_id, day).data
@@ -821,7 +821,7 @@ class GPSFeatures(ComputeFeatureBase):
                 continue
 
             if stream_name_gps_cluster in streams:
-                cluster_stream_ids = self.CC.get_stream_id(user_id, stream_name_gps_cluster)
+                cluster_stream_ids = self.get_latest_stream_id(user_id, stream_name_gps_cluster)
                 cluster_data = []
                 for cluster_stream_id in cluster_stream_ids:
                     cluster_data += self.CC.get_stream(cluster_stream_id['identifier'], user_id, day).data
@@ -857,19 +857,19 @@ class GPSFeatures(ComputeFeatureBase):
                 continue
 
             if stream_name_gps_cluster in streams:
-                cluster_stream_ids = self.CC.get_stream_id(user_id, stream_name_gps_cluster)
+                cluster_stream_ids = self.get_latest_stream_id(user_id, stream_name_gps_cluster)
                 cluster_data = []
                 for cluster_stream_id in cluster_stream_ids:
                     cluster_data += self.CC.get_stream(cluster_stream_id['identifier'], user_id, day).data
 
             if stream_name_semantic_location in streams:
-                semantic_stream_ids = self.CC.get_stream_id(user_id, stream_name_semantic_location)
+                semantic_stream_ids = self.get_latest_stream_id(user_id, stream_name_semantic_location)
                 semantic_data = []
                 for semantic_stream_id in semantic_stream_ids:
                     semantic_data += self.CC.get_stream(semantic_stream_id['identifier'], user_id, day).data
 
             if stream_name_semantic_location_places in streams:
-                semantic_stream_ids = self.CC.get_stream_id(user_id,
+                semantic_stream_ids = self.get_latest_stream_id(user_id,
                                                             stream_name_semantic_location_places)
                 semantic_data_places = []
                 for semantic_stream_id in semantic_stream_ids:

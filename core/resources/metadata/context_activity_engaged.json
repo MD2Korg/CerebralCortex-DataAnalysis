@@ -95,7 +95,7 @@
           "email": "nasir.ali08@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "This algorithm analyze 10 minutes (prior to participant starts filling context survey) to label various participant's activities."

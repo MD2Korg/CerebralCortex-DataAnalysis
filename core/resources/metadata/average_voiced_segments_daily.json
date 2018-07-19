@@ -30,14 +30,14 @@
           "email": "rbnjade1@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Average duration of voiced segments within a day"
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.v2.audio.voice_segments.day.average",
+  "name": "org.md2k.data_analysis.feature.audio.voice_segments.day.average",
   "owner": "CC_OWNER_CC",
   "type": "datastream"
 }
