@@ -18,6 +18,11 @@
       "name": "heart_rate_list",
       "type": "object",
       "description": "A list of heart rate values within the minute calculated on window size = 8 seconds,window offset = 2 seconds"
+    },
+    {
+      "name":"time_array_list",
+      "type":"object",
+      "description":"A list of timestamp arrays indicating at which time R peak was found in every rr interval realization"
     }
   ],
   "execution_context": {

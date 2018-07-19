@@ -54,7 +54,7 @@ rr_interval_identifier = \
     "org.md2k.data_analysis.feature.rr_interval"
 
 day_presence = \
-    "org.md2k.data_analysis.day_based_data_presence"
+    "org.md2k.data_analysis.day_based_data_presence.v1"
 
 path_to_stress_files = 'core/resources/stress_files/'
 
@@ -434,7 +434,7 @@ def get_candidatePeaks(G_static: object) -> object:
 
 
 def get_RRinter_cell(Peak_mat: object, Candidates_position: object, Z_output: object,
-                     int_RR_dist_obj: object) -> object:
+                     int_RR_dist_obj: object,Fs_ppg:object) -> object:
     """
 
     :rtype: object
@@ -444,16 +444,22 @@ def get_RRinter_cell(Peak_mat: object, Candidates_position: object, Z_output: ob
     :param int_RR_dist_obj:
     :return:
     """
-    RR_interval_perrealization = []
-    Delta_max = np.shape(int_RR_dist_obj[0, 0])[1]
+    RR_interval_perrealization,time_collection = [],[]
+    Delta_max = np.shape(int_RR_dist_obj[0,0])[1]
     for i in range(np.shape(Peak_mat)[0]):
-        windowed_peak = np.array(Candidates_position)[np.where(Peak_mat[i, :] == 1)[0]]
+        time_array = 10000 + (1000/Fs_ppg)*(np.int32(np.array(Candidates_position)))
+        windowed_peak = np.array(Candidates_position)[np.where(Peak_mat[i,:]==1)[0]]
+        time_array = time_array[np.where(Peak_mat[i,:]==1)[0]]
         RR_Row = np.diff(windowed_peak)
-        RR_Row = RR_Row[np.where(RR_Row <= Delta_max)[0]]
-        RR_row_prob = int_RR_dist_obj[Z_output[i, 0], 2][0, RR_Row]
-        RR_Row[np.where(RR_row_prob == 2)[0]] = 0.5 * RR_Row[np.where(RR_row_prob == 2)[0]]
-        RR_interval_perrealization.append(RR_Row[1:])
-    return RR_interval_perrealization
+        time_array = time_array[1:]
+        ind = np.where(RR_Row<=Delta_max)[0]
+        RR_Row = RR_Row[ind]
+        time_array = time_array[ind]
+        RR_row_prob = int_RR_dist_obj[Z_output[i,0],2][0,RR_Row]
+        RR_Row[np.where(RR_row_prob == 2)[0]] = 0.5*RR_Row[np.where(RR_row_prob == 2)[0]]
+        RR_interval_perrealization.append(RR_Row)
+        time_collection.append(time_array)
+    return RR_interval_perrealization,time_collection
 
 
 def GLRT_bayesianIP_HMM(X_ppg_input: object, H: object, w_r: object, w_l: object, pks_ecg: object,
@@ -477,7 +483,7 @@ def GLRT_bayesianIP_HMM(X_ppg_input: object, H: object, w_r: object, w_l: object
     window_length = end_position - start_position + 1
     Peak_mat, output_Z = Bayesian_IP_memphis(Candidates_position, Candidates_LR, int_RR_dist_obj, start_position,
                                              end_position)
-    RR_interval_all_realization = get_RRinter_cell(Peak_mat, Candidates_position, output_Z, int_RR_dist_obj)
+    RR_interval_all_realization,Time_collection = get_RRinter_cell(Peak_mat, Candidates_position, output_Z, int_RR_dist_obj,Fs)
     HR_perRealization = [[0]] * len(RR_interval_all_realization)
     for i in range(len(RR_interval_all_realization)):
         HR_perRealization[i] = Fs * 60 / np.mean(RR_interval_all_realization[i])
@@ -502,4 +508,4 @@ def GLRT_bayesianIP_HMM(X_ppg_input: object, H: object, w_r: object, w_l: object
         HR[0, HR_window_idx] = RR_col_mean
         score_8sec[0, HR_window_idx] = np.nanstd(Fs * 60 / np.array(RR_row_mean))
     score = np.nanmean(score_8sec)
-    return RR_interval_all_realization, score, HR
+    return RR_interval_all_realization, score, HR,Time_collection
