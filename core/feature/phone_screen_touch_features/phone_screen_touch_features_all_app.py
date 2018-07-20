@@ -35,7 +35,6 @@ import traceback
 import copy
 from sklearn.mixture import GaussianMixture
 from typing import List, Callable, Any
-
 feature_class_name = 'PhoneScreenTouchFeaturesAllApp'
 
 
@@ -633,3 +632,4 @@ class PhoneScreenTouchFeaturesAllApp(ComputeFeatureBase):
             self.CC.logging.log("Processing PhoneTouchScreenFeatures")
             streams = self.CC.get_user_streams(user_id)
             self.process_data(user_id, streams, all_days)
+

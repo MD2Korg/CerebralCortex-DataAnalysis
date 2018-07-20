@@ -36,6 +36,8 @@ import copy
 from sklearn.mixture import GaussianMixture
 from typing import List, Callable, Any
 
+from core.feature.phone_screen_touch_features.phone_screen_touch_features_all_app import PhoneScreenTouchFeaturesAllApp
+
 feature_class_name = 'PhoneScreenTouchFeatures'
 
 
@@ -631,3 +633,6 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
             self.CC.logging.log("Processing PhoneTouchScreenFeatures")
             streams = self.CC.get_user_streams(user_id)
             self.process_data(user_id, streams, all_days)
+
+            features_all_app = PhoneScreenTouchFeaturesAllApp(self.CC)
+            features_all_app.process(user_id, streams, all_days)
