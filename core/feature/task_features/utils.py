@@ -41,7 +41,7 @@ import numpy as np
 posture_stream_name = 'org.md2k.data_analysis.feature.body_posture.wrist.accel_only.10_second'
 activity_stream_name = 'org.md2k.data_analysis.feature.activity.wrist.accel_only.10_seconds'
 office_stream_name = 'org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model'
-beacon_stream_name = 'org.md2k.data_analysis.feature.v6.beacon.work_beacon_context'
+beacon_stream_name = 'org.md2k.data_analysis.feature.beacon.work_beacon_context'
 
 
 def target_in_fraction_of_context(target_total_time: dict,

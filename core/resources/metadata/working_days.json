@@ -29,7 +29,7 @@
           "email": "alina.cse@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "The sample of each data point is a string, 'office'. I have saved the same string in the sample for every data point of the stream. In the data point, the start time is the office entering time of a participant and the end time is the office leaving time of the participant according to GPS."

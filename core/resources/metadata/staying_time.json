@@ -58,7 +58,7 @@
           "email": "alina.cse@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Staying time in office with verdict of usual, more than usual or less than usual time. Sample is a list with three elements as follows: 0 - Total staying time in minutes, 1 - verdict (more_than_usual, less_than_usual, usual_staying_time), 2 - deviation from the usual staying time in minutes."

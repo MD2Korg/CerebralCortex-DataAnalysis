@@ -41,7 +41,7 @@ import traceback
 
 # TODO: Define constants
 feature_class_name = 'WorkingDaysFromBeacon'
-BEACON_WORK_BEACON_CONTEXT_STREAM = "org.md2k.data_analysis.feature.v6.beacon.work_beacon_context"
+BEACON_WORK_BEACON_CONTEXT_STREAM = "org.md2k.data_analysis.feature.beacon.work_beacon_context"
 
 
 class WorkingDaysFromBeacon(ComputeFeatureBase):
@@ -72,7 +72,7 @@ class WorkingDaysFromBeacon(ComputeFeatureBase):
         work_data = []
         work_data_ems = []
         beacon_location_data = []
-        stream_ids = self.CC.get_stream_id(user_id,
+        stream_ids = self.get_latest_stream_id(user_id,
                                            BEACON_WORK_BEACON_CONTEXT_STREAM)
 
         for stream_id in stream_ids:

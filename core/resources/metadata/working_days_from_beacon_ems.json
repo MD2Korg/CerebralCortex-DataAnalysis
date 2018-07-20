@@ -28,7 +28,7 @@
           "email": "alina.cse@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Working days. The output is a list containing the date of only when a participant was near beacon. The start time of entering in beacon zone and the last time she leave the beacon zone are stored. All of these results are parsed from beacon data."

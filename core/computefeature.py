@@ -31,6 +31,8 @@ import uuid
 import os
 import json
 import sys
+import ast
+from distutils.version import StrictVersion
 
 class ComputeFeatureBase(object):
     '''
@@ -56,7 +58,7 @@ class ComputeFeatureBase(object):
         for input_strm in input_streams:
             if type(input_strm) != dict:
                 self.CC.logging.log('Inconsistent type found in '
-                                    'input_streams, cannot store given stream',str(input_streams))
+                                    'input_streams, cannot store given stream %s' % (str(input_streams)))
                 return
 
             stream_info = {}
@@ -83,7 +85,6 @@ class ComputeFeatureBase(object):
         metadata["owner"] = str(user_id)
         self.CC.logging.log('%s called '
                             'store_stream.'%(sys._getframe(1).f_code.co_name))
-        print("-"*100)
         self.store(identifier=output_stream_id, owner=user_id, name=stream_name,
                    data_descriptor=metadata["data_descriptor"],
                    execution_context=metadata["execution_context"], annotations=metadata["annotations"],
@@ -117,7 +118,37 @@ class ComputeFeatureBase(object):
                                   self.__class__.__name__))
         except Exception as exp:
             self.CC.logging.log(self.__class__.__name__ + str(exp) + "\n" + 
-                          str(traceback.format_exc()))
+                          str(traceback.format_exc()) + '\n' + str(ds))
+
+
+    def get_latest_stream_id(self, user_id, stream_name):
+        streamids = self.CC.get_stream_id(user_id, stream_name)
+        latest_stream_id = []
+        latest_stream_version = None
+        for stream in streamids:
+            stream_metadata = self.CC.get_stream_metadata(stream['identifier'])
+            execution_context = stream_metadata[0]['execution_context']
+            execution_context = ast.literal_eval(execution_context)
+            stream_version = execution_context['algorithm']['version']
+            try:
+                stream_version = int(stream_version)
+                stream_version = str(stream_version) + '.0'
+            except:
+                pass
+            stream_version = StrictVersion(stream_version)
+            if not latest_stream_version:
+                latest_stream_id.append(stream)
+                latest_stream_version = stream_version
+            else:
+                if stream_version > latest_stream_version:
+                    latest_stream_id = [stream]
+                    latest_stream_version = stream_version
+                elif stream_version == latest_stream_version:
+                    latest_stream_id.append(stream)
+
+        return latest_stream_id
+
+
 
     
     def __init__(self, CC = None):

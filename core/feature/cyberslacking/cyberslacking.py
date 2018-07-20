@@ -65,13 +65,19 @@ class Cyberslacking(ComputeFeatureBase):
     Returns:
     """
   
-    user_streams = self.CC.get_user_streams(user_id)
+    sleep_stream_id = self.get_latest_stream_id(user_id=user_id,
+                                                stream_name=stream_names['sleep'])
+    if len(sleep_stream_id):
+        self.stream_metadata_sleep = self.CC.get_stream_metadata(sleep_stream_id[0]['identifier'])[0]
+        print('A'*100)
+        print(self.stream_metadata_sleep)
     
-    for stream_name, stream_metadata in user_streams.items():
-      if stream_name == stream_names['sleep']:
-        self.stream_metadata_sleep = stream_metadata
-      elif stream_name == stream_names['app_usage_category']:
-        self.stream_metadata_app_usage_category = stream_metadata
+    appusage_stream_id = self.get_latest_stream_id(user_id=user_id,
+                                                stream_name=stream_names['app_usage_category'])
+    if len(appusage_stream_id):
+        self.stream_metadata_app_usage_category = self.CC.get_stream_metadata(appusage_stream_id[0]['identifier'])[0]
+        print('B'*100)
+        print(self.stream_metadata_app_usage_category)
 
     for day in all_days:
       self.process_volume(user_id, day, query_app_type='all_apps')
@@ -103,7 +109,7 @@ class Cyberslacking(ComputeFeatureBase):
 
 
     stream_name_sleep = stream_names['sleep'] 
-    stream_id_sleep = self.CC.get_stream_id(user_id=user_id, stream_name=stream_name_sleep)
+    stream_id_sleep = self.get_latest_stream_id(user_id=user_id, stream_name=stream_name_sleep)
 
     volume_data_points = list()
 
@@ -150,7 +156,7 @@ class Cyberslacking(ComputeFeatureBase):
     
       if wake_time != None and sleep_time != None and sleep_time > wake_time:
         stream_name_app_usage_category = stream_names['app_usage_category']
-        stream_id_app_usage_category = self.CC.get_stream_id(user_id=user_id, stream_name=stream_name_app_usage_category)
+        stream_id_app_usage_category = self.get_latest_stream_id(user_id=user_id, stream_name=stream_name_app_usage_category)
 
         for key, value in interactions.items():
           interactions[key] = 0
@@ -209,7 +215,7 @@ class Cyberslacking(ComputeFeatureBase):
       end_time = datetime.datetime.strptime(end_time, '%Y%m%d')
 
     stream_name_sleep = stream_names['sleep'] 
-    stream_id_sleep = self.CC.get_stream_id(user_id=user_id, stream_name=stream_name_sleep)
+    stream_id_sleep = self.get_latest_stream_id(user_id=user_id, stream_name=stream_name_sleep)
 
     burstiness_data_points = list()
 
@@ -255,7 +261,7 @@ class Cyberslacking(ComputeFeatureBase):
 
       if wake_time != None and sleep_time != None and sleep_time > wake_time:
         stream_name_app_usage_category = stream_names['app_usage_category']
-        stream_id_app_usage_category = self.CC.get_stream_id(user_id=user_id, stream_name=stream_name_app_usage_category)
+        stream_id_app_usage_category = self.get_latest_stream_id(user_id=user_id, stream_name=stream_name_app_usage_category)
 
         data_stream_app_usage_category = self.CC.get_stream(user_id=user_id, stream_id=stream_id_app_usage_category[0]['identifier'], day=query_time.strftime("%Y%m%d"), localtime=True)
 
@@ -329,7 +335,7 @@ class Cyberslacking(ComputeFeatureBase):
       end_time = datetime.datetime.strptime(end_time, '%Y%m%d')
 
     stream_name_sleep = stream_names['sleep'] 
-    stream_id_sleep = self.CC.get_stream_id(user_id=user_id, stream_name=stream_name_sleep)
+    stream_id_sleep = self.get_latest_stream_id(user_id=user_id, stream_name=stream_name_sleep)
 
     interval_data_points = list()
 
@@ -375,7 +381,7 @@ class Cyberslacking(ComputeFeatureBase):
 
       if wake_time != None and sleep_time != None and sleep_time > wake_time:
         stream_name_app_usage_category = stream_names['app_usage_category']
-        stream_id_app_usage_category = self.CC.get_stream_id(user_id=user_id, stream_name=stream_name_app_usage_category)
+        stream_id_app_usage_category = self.get_latest_stream_id(user_id=user_id, stream_name=stream_name_app_usage_category)
 
         data_stream_app_usage_category = self.CC.get_stream(user_id=user_id, stream_id=stream_id_app_usage_category[0]['identifier'], day=query_time.strftime("%Y%m%d"), localtime=True)
 

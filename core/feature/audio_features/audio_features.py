@@ -105,16 +105,15 @@ class AudioFeatures(ComputeFeatureBase):
                                    input_streams_audio)
 
 
-        if (stream1_name and stream2_name in streams):
+        if (stream1_name in streams and stream2_name in streams):
             stream_id1 = streams[stream1_name]["identifier"]
             stream_name1 = streams[stream1_name]["name"]
             input_streams_audio_work.append({"identifier": stream_id1,
                                              "name": stream_name1})
 
-            stream_id2 = streams[stream2_name]["identifier"]
-            stream_name2 = streams[stream2_name]["name"]
+            stream_id2 = self.get_latest_stream_id(user_id, stream2_name)[0]["identifier"]
             input_streams_audio_work.append({"identifier": stream_id2,
-                                             "name": stream_name2})
+                                             "name": self.office_time})
 
             stream1 = self.CC.get_stream(stream_id1, user_id=user_id, day=day,
                                          localtime= True)

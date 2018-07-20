@@ -50,7 +50,7 @@
           "email": "amimithun@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "The participants'total walking time and walking time per hour, in office context"

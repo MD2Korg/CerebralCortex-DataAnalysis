@@ -98,20 +98,20 @@ class Context(ComputeFeatureBase, ContextInteraction, ContextWhere, ContextActiv
                                                         day)  # 1
                 call_duration_cu = self.get_day_data(user, "CU_CALL_DURATION--edu.dartmouth.eureka", day)  # 1
                 voice_feature = self.get_day_data(user,
-                                                  "org.md2k.data_analysis.feature.v2.audio.voice_segments_context_per_minute",
+                                                  "org.md2k.data_analysis.feature.audio.voice_segments_context_per_minute",
                                                   day)
                 sms = self.get_day_data(user, "CU_SMS_TYPE--edu.dartmouth.eureka", day)
 
                 # compute interaction context activity engaged - Q2
                 location_from_model = self.get_day_data(user,
-                                                        "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model.v1",
+                                                        "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model",
                                                         day)
                 physical_activity_wrist_sensor = self.get_day_data(user,
                                                                    "org.md2k.data_analysis.feature.body_posture.wrist.accel_only.10_second",
                                                                    day)
 
                 places = self.get_day_data(user,
-                                           "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_places.v1", day)
+                                           "org.md2k.data_analysis.gps_episodes_and_semantic_location_from_places", day)
                 phone_physical_activity = self.get_day_data(user, "ACTIVITY_TYPE--org.md2k.phonesensor--PHONE", day)
 
                 # Context where - Q3

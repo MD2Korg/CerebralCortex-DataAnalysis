@@ -32,7 +32,7 @@
           "email": "mullah@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1.0",
       "reference": {
       },
       "description": "only has those wrist likelihood values which are 20 minutes before a valid daily stress survey"

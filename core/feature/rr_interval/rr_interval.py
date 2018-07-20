@@ -112,11 +112,11 @@ class rr_interval(ComputeFeatureBase):
 
         user_id = user
         for day in all_days:
-            if day_presence in all_streams:
-                presence = get_datastream(self.CC,day_presence,day,user_id,False)
-                if len(presence)>0:
-                    if presence[0].sample:
-                        continue
+            # if day_presence in all_streams:
+            #     presence = get_latest_stream(self,day_presence,day,user_id,False)
+            #     if len(presence)>0:
+            #         if presence[0].sample:
+            #             continue
 
             left_data = []
             right_data = []
@@ -192,7 +192,7 @@ class rr_interval(ComputeFeatureBase):
                 RR_interval_all_realization,score,HR = [],np.nan,[]
                 led_input = dp.sample
                 try:
-                    [RR_interval_all_realization,score,HR] = GLRT_bayesianIP_HMM(led_input,
+                    [RR_interval_all_realization,score,HR,Time_collection] = GLRT_bayesianIP_HMM(led_input,
                                                                                  H,w_r,w_l,ecg_pks,
                                                                                  int_RR_dist_obj)
                 except Exception:
@@ -201,7 +201,7 @@ class rr_interval(ComputeFeatureBase):
                     continue
                 print("Finished one window successfully with score", score, np.nanmean(HR))
                 final_data.append(deepcopy(dp))
-                final_data[-1].sample = np.array([RR_interval_all_realization,score,HR])
+                final_data[-1].sample = np.array([RR_interval_all_realization,score,HR,Time_collection])
 
 
 

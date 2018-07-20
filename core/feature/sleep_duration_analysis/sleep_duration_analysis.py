@@ -42,14 +42,14 @@ import math
 
 # TODO: Comment and describe constants
 feature_class_name = 'SleepDurationAnalysis'
-Sleep_Durations_STREAM = 'org.md2k.data_analysis.feature.v2.sleep_durations'
+Sleep_Durations_STREAM = 'org.md2k.data_analysis.feature.sleep_durations'
 MEDIAN_ABSOLUTE_DEVIATION_MULTIPLIER = 1.4826
 OUTLIER_DETECTION_MULTIPLIER = 3
 
 
 class SleepDurationAnalysis(ComputeFeatureBase):
     """
-    Produce feature from these stream: 'org.md2k.data_analysis.feature.v2.sleep_durations. Sleep
+    Produce feature from these stream: 'org.md2k.data_analysis.feature.sleep_durations. Sleep
     duration time is taken from the stream's data sample. And here usual sleep duration is a range
     of time. each day's sleep_duration is marked as usual_sleep_duration or more_than_usual or
     less_than_usual
@@ -69,7 +69,7 @@ class SleepDurationAnalysis(ComputeFeatureBase):
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
 
-        stream_ids = self.CC.get_stream_id(user_id,
+        stream_ids = self.get_latest_stream_id(user_id,
                                            Sleep_Durations_STREAM)
         sleep_duration_data = []
         sleep_durations = list()

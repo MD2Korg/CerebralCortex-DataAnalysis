@@ -30,14 +30,14 @@
           "email": "mullah@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1.0",
       "reference": {
       },
       "description": "calculates the portion of stress windows per hour of day from aggregation of per minute stress outputs in that hour"
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.stress.wrist.likelihood.60minutes.v1",
+  "name": "org.md2k.data_analysis.feature.stress.wrist.likelihood.60minutes",
   "owner": "",
   "type": "datastream"
 }

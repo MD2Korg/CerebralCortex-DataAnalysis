@@ -62,7 +62,7 @@ class GpsLocationDaywise(ComputeFeatureBase):
         self.CC.logging.log('%s started processing for user_id %s' %
                             (self.__class__.__name__, str(user_id)))
         gps_data = []
-        stream_ids = self.CC.get_stream_id(user_id,
+        stream_ids = self.get_latest_stream_id(user_id,
                                            GPS_EPISODES_AND_SEMANTIC_lOCATION_STREAM)
         for stream_id in stream_ids:
 

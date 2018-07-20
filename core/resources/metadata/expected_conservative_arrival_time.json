@@ -35,6 +35,26 @@
       "stream_type": "periodic",
       "expected_samples_per_day": 1,
       "missing_data_handling": "impute"
+    },
+    {
+      "name": "is_corrupt_data",
+      "type": "int",
+      "description": "Set to 1 if input data is corrupt/did not pass the admission control check"
+    },
+    {
+      "name": "is_missing_data",
+      "type": "int",
+      "description": "Set to 1 if part or complete input data is missing"
+    },
+    {
+      "name": "is_phone_on",
+      "type": "int",
+      "description": "Set to 1 if the phone was on during this DataPoints interval"
+    },
+    {
+      "name": "phone_battery_status",
+      "type": "int",
+      "description": "phone battery level at the end time this DataPoints interval"
     }
   ],
   "execution_context": {
@@ -57,7 +77,7 @@
           "email": "alina.cse@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Expected conservative office arrival time with verdict of before, after or in expected conservative arrival time. Ff 9:15 is the actual arrival time then 9:00 is the expected conservative arrival time. Sample is a list with three elements as follows: 0 - Office arrival time, 1 - verdict (after_expected_conservative_time, before_expected_conservative_time, in_expected_conservative_time), 2 - deviation from the expected conservative time in minutes."
