@@ -635,4 +635,4 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
             self.process_data(user_id, streams, all_days)
 
             features_all_app = PhoneScreenTouchFeaturesAllApp(self.CC)
-            features_all_app.process(user_id, streams, all_days)
+            features_all_app.process(user_id, all_days)
