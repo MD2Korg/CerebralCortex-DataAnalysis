@@ -1384,13 +1384,11 @@ class PhoneFeatures(ComputeFeatureBase):
             return pickle.loads(base64.decodebytes(cached_response.encode()))
 
         soup = BeautifulSoup(response, 'html.parser')
-        text = soup.find('span', itemprop='genre')
+        text = soup.find('a', itemprop='genre')
 
-        name = soup.find('div', class_='id-app-title')
-
-        cat = soup.find('a', class_='document-subtitle category')
-        if cat:
-            category = cat.attrs['href'].split('/')[-1]
+        name = soup.find('h1', itemprop='name').find('span')
+        if text:
+            category = text.attrs['href'].split('/')[-1]
         else:
             category = None
 
