@@ -634,5 +634,6 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
             streams = self.CC.get_user_streams(user_id)
             self.process_data(user_id, streams, all_days)
 
+            # feature calculation without app categories
             features_all_app = PhoneScreenTouchFeaturesAllApp(self.CC)
             features_all_app.process(user_id, all_days)
