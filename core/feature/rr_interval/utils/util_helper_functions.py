@@ -54,7 +54,7 @@ rr_interval_identifier = \
     "org.md2k.data_analysis.feature.rr_interval"
 
 day_presence = \
-    "org.md2k.data_analysis.day_based_data_presence.v1"
+    "org.md2k.data_analysis.day_based_data_presence"
 
 path_to_stress_files = 'core/resources/stress_files/'
 

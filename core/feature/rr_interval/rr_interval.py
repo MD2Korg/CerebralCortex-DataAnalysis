@@ -112,11 +112,11 @@ class rr_interval(ComputeFeatureBase):
 
         user_id = user
         for day in all_days:
-            # if day_presence in all_streams:
-            #     presence = get_latest_stream(self,day_presence,day,user_id,False)
-            #     if len(presence)>0:
-            #         if presence[0].sample:
-            #             continue
+            if day_presence in all_streams:
+                presence = get_latest_stream(self,day_presence,day,user_id,False)
+                if len(presence)>0:
+                    if presence[0].sample:
+                        continue
 
             left_data = []
             right_data = []
