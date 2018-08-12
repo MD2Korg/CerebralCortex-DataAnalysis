@@ -2,24 +2,23 @@
   "annotations": [],
   "data_descriptor": {
     "name": "value",
-    "type": "float",
-    "unit": "minute",
-    "description": "Average duration of voiced segments within a day",
+    "type": "int",
+    "unit": "day",
+    "description": "Inference about presence of voicing segements.Consecutive voicing segments within 10 secs are merged, representing as a voicing segment.",
     "stream_type": "periodic",
-    "expected_samples_per_day": 1,
+    "expected_samples_per_day": 1440,
     "missing_data_handling": "impute"
   },
   "execution_context": {
     "processing_module": {
-      "name": "average_voiced_segments_daily",
+      "name": "voice_segments_context_daily",
       "input_streams": [
         {
           "id": "CC_INPUT_STREAM_ID_CC",
           "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters": {
-        "window_size": "1day"
+      
       }
     },
     "algorithm": {
@@ -30,14 +29,14 @@
           "email": "rbnjade1@memphis.edu"
         }
       ],
-      "version": "2",
+      "version": "1",
       "reference": {
       },
-      "description": "Average duration of voiced segments within a day"
+      "description": "Represents voiced instances within 10 secs as a voicing episode."
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.audio.voice_segments.day.average",
+  "name": "org.md2k.data_analysis.feature.audio.voice_segments_context_daily",
   "owner": "CC_OWNER_CC",
   "type": "datastream"
 }
