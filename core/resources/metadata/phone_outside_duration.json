@@ -29,7 +29,7 @@
           "email": "shiplu.cse.du@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Duration when the phone was outside of pocket or parse."

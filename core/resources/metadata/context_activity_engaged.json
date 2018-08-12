@@ -1,0 +1,108 @@
+{
+  "annotations": [],
+  "data_descriptor": [
+    {
+      "name": "work_or_work_related_activities",
+      "type": "int",
+      "description": "Participant was performing work related activities. 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    },
+    {
+      "name": "on_phone",
+      "type": "int",
+      "description": "Participant was on phone call, sending mail/email, on social media (not work related). 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    },
+    {
+      "name": "leisure_sports",
+      "type": "int",
+      "description": "Participant was performing leisure/sports related activities. 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    },
+    {
+      "name": "purchasing",
+      "type": "int",
+      "description": "Participant was purchasing goods or services. 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    },
+    {
+      "name": "eating_drinking",
+      "type": "int",
+      "description": "Participant was eating and/or drinking. 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    },
+    {
+      "name": "household_activities",
+      "type": "int",
+      "description": "Participant was performing household activities (housework, yardwork, food prep etc.). 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    },
+    {
+      "name": "helping",
+      "type": "int",
+      "description": "Participant cared for and helping household or nono-household members. 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    },
+    {
+      "name": "personal_care",
+      "type": "int",
+      "description": "Participant was performing personal care activities (including sleeping and grooming). 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    },
+    {
+      "name": "education",
+      "type": "int",
+      "description": "Participant was performing education related activities. 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    },
+    {
+      "name": "religious_civic_organizational",
+      "type": "int",
+      "description": "Participant was performing religious, civic, and/or organizational activities. 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    },
+    {
+      "name": "commuting",
+      "type": "int",
+      "description": "Participant was traveling/commuting. 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    },
+    {
+      "name": "Other",
+      "type": "int",
+      "description": "Participant was performing activities that are not listed. 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    }
+  ],
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.context",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+        "window_size": "10 minutes prior starting qualtrics context survey"
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.context.context_activity_engaged",
+      "authors": [
+        {
+          "name": "Nasir Ali",
+          "email": "nasir.ali08@gmail.com"
+        }
+      ],
+      "version": "1",
+      "reference": {
+      },
+      "description": "This algorithm analyze 10 minutes (prior to participant starts filling context survey) to label various participant's activities."
+    }
+  },
+  "identifier": "",
+  "name": "org.md2k.data_analysis.feature.context.context_activity_engaged",
+  "owner": "",
+  "type": "datastream"
+}

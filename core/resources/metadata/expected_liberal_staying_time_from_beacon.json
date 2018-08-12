@@ -58,7 +58,7 @@
           "email": "alina.cse@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Expected liberal staying time in office with verdict of more than or less than expected liberal staying time. Sample is a list with three elements as follows: 0 - Total staying time in minutes, 1 - verdict (more_than_expected_liberal_time, less_than_expected_liberal_time, in_expected_liberal_time), 2 - deviation from the expected liberal staying time in minutes. All staying times are taken according to beacon"

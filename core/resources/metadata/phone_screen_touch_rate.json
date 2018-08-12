@@ -1,45 +1,42 @@
 {
-  "annotations":[],
-  "data_descriptor":[
-    {
-      "name": "value",
-      "type":"float",
-      "unit":"Hz",
-      "description": "Average screen touch rate",
-      "stream_type": "periodic",
-      "expected_samples_per_day": 1,
-      "missing_data_handling": "impute"
-    }
-  ],
-  "execution_context":{
-    "processing_module":{
-      "name":"core.feature.phone_feature",
-      "input_streams":[
+  "annotations": [],
+  "data_descriptor": {
+    "name": "value",
+    "type": "float",
+    "unit": "Hz",
+    "description": "Average screen touch rate",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
+  },
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.phone_feature",
+      "input_streams": [
         {
-          "id":"CC_INPUT_STREAM_ID_CC",
-          "name":"CC_INPUT_STREAM_NAME_CC"
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
         }
       ],
-      "input_parameters":{
-        
+      "input_parameters": {
       }
     },
-    "algorithm":{
-      "method":"core.feature.phone_features.phone",
-      "authors":[
+    "algorithm": {
+      "method": "core.feature.phone_features.phone",
+      "authors": [
         {
-          "name":"Md Shiplu Hawlader",
-          "email":"shiplu.cse.du@gmail.com"
+          "name": "Md Shiplu Hawlader",
+          "email": "shiplu.cse.du@gmail.com"
         }
       ],
-      "version":"0.0.1",
-      "reference":{
+      "version": "1",
+      "reference": {
       },
-      "description":"Average screen touch rate for a day during a typing episode."
+      "description": "Average screen touch rate for a day during a typing episode."
     }
   },
-  "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_analysis.feature.phone.touch_rate.day",
-  "owner":"CC_OWNER_CC",
-  "type":"datastream"
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.phone.touch_rate.day",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
 }

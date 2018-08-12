@@ -45,7 +45,7 @@ import math
 import datetime as dt
 import sys
 import os
-import utils.config
+#import utils.config
 import traceback
 import importlib
 import syslog
@@ -83,8 +83,8 @@ class SocialJetlag(ComputeFeatureBase):
 #	'''
 #       Calculates the social jetlag for entire data between start_date and end_date for specific participant.
 #	'''
-		streamids_sleep = self.CC.get_stream_id(user_id=userid, stream_name=SLEEP_STREAM)
-		streamids_work = self.CC.get_stream_id(user_id=userid, stream_name=WORKDAY_STREAM)
+		streamids_sleep = self.get_latest_stream_id(user_id=userid, stream_name=SLEEP_STREAM)
+		streamids_work = self.get_latest_stream_id(user_id=userid, stream_name=WORKDAY_STREAM)
 
 		midsleep_work=[]
 		midsleep_nonwork=[]
@@ -95,6 +95,7 @@ class SocialJetlag(ComputeFeatureBase):
 		workday_save=[]
 		duration_save=[]
 		offset=[]
+		mid_hr=[]
 		socialjetlag_data=[]
 #		start_date=start_time.strftime("%Y%m%d")
 #		end_date=end_time.strftime("%Y%m%d")

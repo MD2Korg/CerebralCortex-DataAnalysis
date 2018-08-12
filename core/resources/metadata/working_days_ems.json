@@ -28,7 +28,7 @@
           "email": "alina.cse@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Working days. The output is a list containing the date of only when a participant is at office location. The start time of entering the office location and the last time she leave the office location are stored. All of these results are parsed from gps location and beacon."

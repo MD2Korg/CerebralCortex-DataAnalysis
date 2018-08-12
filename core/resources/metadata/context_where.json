@@ -1,0 +1,72 @@
+{
+  "annotations": [],
+  "data_descriptor": [
+    {
+      "name": "home",
+      "type": "int",
+      "description": "Participant was at home. 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    },
+    {
+      "name": "work",
+      "type": "int",
+      "description": "Participant was at work (including temporary and permanent work locations away from home). 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    },
+    {
+      "name": "indoor",
+      "type": "int",
+      "description": "Participant was in indoor space: non-home, non-work (store, resturant, gym, waiting room etc.). 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    },
+    {
+      "name": "outdoor",
+      "type": "int",
+      "description": "Participant was outdoor: non-home, non-work (park, playground, garden, sidewalk, etc.). 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    },
+    {
+      "name": "vehicle",
+      "type": "int",
+      "description": "Participant was in vehicle (car, bus, subway, train, bike, etc.). 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    },
+    {
+      "name": "other",
+      "type": "int",
+      "description": "Participant was somewhere else. 1=Yes, 0=No",
+      "expected_samples_per_day": 1
+    }
+  ],
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.context",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+        "window_size": "10 minutes prior starting qualtrics context survey"
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.context.context_where",
+      "authors": [
+        {
+          "name": "Nasir Ali",
+          "email": "nasir.ali08@gmail.com"
+        }
+      ],
+      "version": "1",
+      "reference": {
+      },
+      "description": "This algorithm analyze 10 minutes (prior to participant starts filling context survey) to label window whether participant was interacting or not."
+    }
+  },
+  "identifier": "",
+  "name": "org.md2k.data_analysis.feature.context.context_where",
+  "owner": "",
+  "type": "datastream"
+}

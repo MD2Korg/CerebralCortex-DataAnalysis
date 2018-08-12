@@ -33,6 +33,7 @@ import traceback
 from cerebralcortex.cerebralcortex import CerebralCortex
 from cerebralcortex.core.util.data_types import DataPoint
 from core.computefeature import ComputeFeatureBase
+from cerebralcortex.core.data_manager.raw.stream_handler import DataSet
 from core.signalprocessing.window import window
 from time import mktime
 from collections import defaultdict
@@ -49,6 +50,32 @@ class AudioFeatures(ComputeFeatureBase):
     sent)
     '''
 
+    def get_day_data(self, stream_name: str, user_id, day):
+
+        """
+        :param stream_name: name fo the stream
+        :param string user_id: UID of the user
+        :param str day: retrieve the data for this day with format 'YYYYMMDD'
+        :return: list of datapoints
+        """
+
+        day_data = []
+        stream_ids = self.CC.get_stream_id(user_id, stream_name)
+        for stream_id in stream_ids:
+            data_stream = self.CC.get_stream(stream_id["identifier"],
+                                             day=day,
+                                             user_id=user_id,
+                                             data_type=DataSet.COMPLETE,localtime = True)
+
+            if data_stream is not None and len(data_stream.data) > 0:
+                day_data.extend(data_stream.data)
+
+        day_data.sort(key=lambda x: x.start_time)
+
+
+        return day_data
+
+
 
     def mark_audio_stream(self, streams:dict, stream1_name:str,stream2_name:str,
                           user_id:str,day:str):
@@ -60,7 +87,6 @@ class AudioFeatures(ComputeFeatureBase):
         :param str stream2_name: name of stream
         :param str user_id: id of user
         :param str day: day for which calculation is done
-
         '''
         input_streams_audio = []
         input_streams_audio_work = []
@@ -72,32 +98,33 @@ class AudioFeatures(ComputeFeatureBase):
 
             stream1 = self.CC.get_stream(stream_id, user_id=user_id, day=day,
                                          localtime= True)
-
-            if len(stream1.data) >0:
-                self.audio_context(user_id,input_streams_audio,stream1.data,
+            stream1_data = self.get_day_data(stream1_name,user_id,day)
+            stream2_data = self.get_day_data(stream2_name,user_id,day)
+            if len(stream1_data) >0:
+                self.audio_context(user_id,input_streams_audio,stream1_data,
                                    input_streams_audio)
 
 
-        if (stream1_name and stream2_name in streams):
+        if (stream1_name in streams and stream2_name in streams):
             stream_id1 = streams[stream1_name]["identifier"]
             stream_name1 = streams[stream1_name]["name"]
             input_streams_audio_work.append({"identifier": stream_id1,
                                              "name": stream_name1})
 
-            stream_id2 = streams[stream2_name]["identifier"]
-            stream_name2 = streams[stream2_name]["name"]
+            stream_id2 = self.get_latest_stream_id(user_id, stream2_name)[0]["identifier"]
             input_streams_audio_work.append({"identifier": stream_id2,
-                                             "name": stream_name2})
+                                             "name": self.office_time})
 
             stream1 = self.CC.get_stream(stream_id1, user_id=user_id, day=day,
                                          localtime= True)
             stream2 = self.CC.get_stream(stream_id2, user_id=user_id, day=day,
                                          localtime= True)
 
-            if len(stream1.data)> 0 and len(stream2.data)>0:
-                self.audio_context(user_id,input_streams_audio,stream1.data,
+
+            if len(stream1_data)> 0 and len(stream2_data)>0:
+                self.audio_context(user_id,input_streams_audio,stream1_data,
                                    input_streams_audio_work,
-                                   stream2.data)
+                                   stream2_data)
 
 
 
@@ -114,7 +141,6 @@ class AudioFeatures(ComputeFeatureBase):
         redirects appropirate streams for appropriate calculations.
         takes raw input stream and labels every minute window as voiced or noise
         based on threshold of 20 secs.
-
         Algorithm:
         window(input_audio inference stream) on 1 minute
         if voiced segments >= 20 secs
@@ -127,7 +153,6 @@ class AudioFeatures(ComputeFeatureBase):
         :param dict input_streams_audio_work:input stream for audio for
         office only
         :param list stream2_data: list of DataPoints
-
         """
 
         if (len(stream1_data) > 0):
@@ -161,10 +186,18 @@ class AudioFeatures(ComputeFeatureBase):
 
             audio_data = []
             for keys in windowed_data.keys():
-                audio_data.append(DataPoint(start_time=keys[0],end_time=keys[1],
-                                            offset=audio_stream[0].offset,
-                                            sample=windowed_data[keys]))
+                if windowed_data[keys]=="voice":
+                    audio_data.append(DataPoint(start_time=keys[0],end_time=keys[1],
+                                                offset=audio_stream[0].offset,
+                                                sample=1))
+                else:
+                    audio_data.append(DataPoint(start_time=keys[0],end_time=keys[1],
+                                                offset=audio_stream[0].offset,
+                                                sample=0))
+        
 
+            file_path_voiced_minute = "voice_segments_context_per_minute.json"
+            self.store_data(file_path_voiced_minute,input_streams_audio,user_id,audio_data)
             voiced_hourly = self.calc_voiced_segments_hourly(audio_data)
             file_path_voiced_hourly = "average_voiced_segments_hourly.json"
             self.store_data(file_path_voiced_hourly,
@@ -237,13 +270,10 @@ class AudioFeatures(ComputeFeatureBase):
         calculates amout of voice_segments present every hour of a day.
         returns start_time, end_time and amount of voiced segments present
         every hour
-
         Algorithm:
             window(input audio_data) per hour
             Calculate voiced_segments_for_each_hour
             return voiced_segments_for_each hour
-
-
         :param audio_data:list of input data after thresholding
         :return:Datapoint with start_time,end_time and amount of voiced
         segments in minute
@@ -255,7 +285,7 @@ class AudioFeatures(ComputeFeatureBase):
         for key in windowed_per_hour:
             no_voiced_segments_hr= 0
             for values in windowed_per_hour[key]:
-                if (values.sample == 'voice'):
+                if (values.sample == 1):
                     no_voiced_segments_hr += 1
             voiced_per_hour.append((DataPoint(start_time=key[0],end_time=key[1],
                                               offset=audio_data[0].offset,
@@ -272,10 +302,8 @@ class AudioFeatures(ComputeFeatureBase):
         This function calculates daily average voiced segments. Out of total
         time for which data is present, calculates ratio of voiced segments
         to total audio segments.
-
         Algorithm:
             daily_average = no_of_voiced_segments/total_time
-
         :param audio_data: list of datapoints containing voiced or noise
         :param no_voiced_segments: out of total datapoint corresponding to
         one minute amount of voiced segments on a day in total.
@@ -285,22 +313,22 @@ class AudioFeatures(ComputeFeatureBase):
         """
 
         total_time = len(audio_data)
-        daily_average = no_voiced_segments/total_time
+        voiced_segments_daily=[]
+        if total_time > 0:
+            daily_average = no_voiced_segments/total_time
 
-        voiced_segments_daily =[DataPoint(audio_data[0].start_time,
-                                          audio_data[0].end_time,
-                                          audio_data[0].offset
-                                          ,daily_average)]
+            voiced_segments_daily =[DataPoint(audio_data[0].start_time,
+                                              audio_data[0].end_time,
+                                              audio_data[0].offset
+                                              ,daily_average)]
         return voiced_segments_daily
 
 
 
     def process(self, user:str, all_days:list):
         """
-
         :param user: id of user
         :param all_days: list of days for calculations
-
         """
 
 
@@ -329,6 +357,4 @@ class AudioFeatures(ComputeFeatureBase):
                                    user, day)
 
 
-
-
-
+    

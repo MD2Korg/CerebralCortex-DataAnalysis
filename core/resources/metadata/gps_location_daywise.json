@@ -29,7 +29,7 @@
           "email": "alina.cse@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Time interval at a specific location, if the interval spans into multiple days, it is divided into multiple data points. The split was done according to UTC time."

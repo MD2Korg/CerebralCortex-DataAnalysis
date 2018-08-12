@@ -1,0 +1,42 @@
+{
+  "annotations": [],
+  "data_descriptor": {
+    "name": "yield_value",
+    "type": "boolean",
+    "description": "Indicates the presence of rr interval data",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1,
+    "missing_data_handling": "impute"
+  },
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.rr_interval",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+        "window_size": "1 day"
+      }
+    },
+    "algorithm": {
+      "method": "core.feature.rr_interval.rr_interval",
+      "authors": [
+        {
+          "name": "Md Azim Ullah",
+          "email": "mullah@memphis.edu"
+        }
+      ],
+      "version": "2.0",
+      "reference": {
+      },
+      "description": "Indicates the presence of rr interval data"
+    }
+  },
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.day_based_data_presence",
+  "owner": "",
+  "type": "datastream"
+}

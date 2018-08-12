@@ -29,7 +29,7 @@
           "email": "mullah@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1.0",
       "reference": {
       },
       "description": "Calculates the instantaneous heart rate in beats per minute"

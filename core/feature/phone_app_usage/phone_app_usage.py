@@ -73,7 +73,7 @@ class PhoneAppusageFeatures(ComputeFeatureBase):
         :param str metadata_name: file name containing the template of the metadata
         :return: None
         """
-        stream_ids = self.CC.get_stream_id(user_id, stream_name)
+        stream_ids = self.get_latest_stream_id(user_id, stream_name)
         split_dps = {}
         for stream_id in stream_ids:
             ds = self.CC.get_stream(stream_id['identifier'], user_id, day)
@@ -152,7 +152,7 @@ class PhoneAppusageFeatures(ComputeFeatureBase):
                             "PhoneAppusageFeatures %s %s %s" %
                             (str(datetime.datetime.now), str(user_id),
                              str(all_days)))
-        stream_ids = self.CC.get_stream_id(user_id,
+        stream_ids = self.get_latest_stream_id(user_id,
                                           app_usage_interval)
         for day in all_days:
             print('-'*20,day,'-'*20)

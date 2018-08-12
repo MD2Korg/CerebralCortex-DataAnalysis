@@ -22,21 +22,21 @@
       }
     },
     "algorithm": {
-      "method": "core.feature.stress_from_wrist.stress_from_wrist.v1",
+      "method": "core.feature.stress_from_wrist.stress_from_wrist",
       "authors": [
         {
           "name": "Md Azim Ullah",
           "email": "mullah@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1.0",
       "reference": {
       },
       "description": "Assigns each one minute window as stress or not-stress through calculating RR interval statistics calculated from wrist ppg"
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.stress.wrist.60seconds.v1",
+  "name": "org.md2k.data_analysis.feature.stress.wrist.60seconds",
   "owner": "",
   "type": "datastream"
 }

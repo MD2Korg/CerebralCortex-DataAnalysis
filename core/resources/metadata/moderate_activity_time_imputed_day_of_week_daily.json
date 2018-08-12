@@ -30,7 +30,7 @@
           "email": "sakther@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Imputed (by time of day of week) and scaled up amount of moderate activity daily"

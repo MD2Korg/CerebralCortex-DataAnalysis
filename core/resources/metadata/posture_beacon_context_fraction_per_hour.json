@@ -6,7 +6,7 @@
       "type": "string",
       "description": "The participant's posture time per hour, posture = standing,sitting",
       "stream_type": "periodic",
-      "expected_samples_per_day": 1,
+      "expected_samples_per_day": 24,
       "missing_data_handling": "default_fill",
       "default_value": "unknown"
     },
@@ -41,7 +41,7 @@
           "email": "amimithun@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "The participants'total posture time in fraction of office beacon context"

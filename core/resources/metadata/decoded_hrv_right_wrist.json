@@ -92,7 +92,7 @@
           "email": "mullah@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Decodes the LED values from raw byte array and interpolates the timestamps based on sequence number"

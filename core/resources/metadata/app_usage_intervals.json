@@ -26,7 +26,7 @@
           "email": "shiplu.cse.du@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Sample contains the category of the app that used during the interval of this DataPoint"

@@ -3,7 +3,7 @@
   "data_descriptor": {
     "name": "volume",
     "type": "int",
-    "description": "The volume (total number) of interactions with social and communication apps between wake and sleep."
+    "description": "The volume (total number) of interactions with social and communication apps between wake and sleep.",
     "stream_type": "periodic",
     "expected_samples_per_day": 1,
     "missing_data_handling": "impute"
@@ -29,7 +29,7 @@
           "email": "wt262@cornell.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
         "paper": "https://dl.acm.org/citation.cfm?id=2807522"
       },
