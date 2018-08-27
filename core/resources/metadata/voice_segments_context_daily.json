@@ -17,9 +17,7 @@
           "id": "CC_INPUT_STREAM_ID_CC",
           "name": "CC_INPUT_STREAM_NAME_CC"
         }
-      ],
-      
-      }
+      ]
     },
     "algorithm": {
       "method": "core.feature.audio_features.audio",
@@ -29,7 +27,7 @@
           "email": "rbnjade1@memphis.edu"
         }
       ],
-      "version": "1",
+      "version": "2",
       "reference": {
       },
       "description": "Represents voiced instances within 10 secs as a voicing episode."
