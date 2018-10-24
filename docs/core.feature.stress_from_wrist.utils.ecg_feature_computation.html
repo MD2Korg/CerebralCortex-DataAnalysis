@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.stress_from_wrist.utils.ecg_feature_computation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.stress_from_wrist.html"><font color="#ffffff">stress_from_wrist</font></a>.<a href="core.feature.stress_from_wrist.utils.html"><font color="#ffffff">utils</font></a>.ecg_feature_computation</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/stress_from_wrist/utils/ecg_feature_computation.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/stress_from_wrist/utils/ecg_feature_computation.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2018,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="scipy.signal.html">scipy.signal</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-ecg_feature_computation"><strong>ecg_feature_computation</strong></a>(timestamp:list, value:list, low_frequency:float=0.01, high_frequency:float=0.7, low_rate_vlf:float=0.0009, high_rate_vlf:float=0.04, low_rate_hf:float=0.15, high_rate_hf:float=0.4, low_rate_lf:float=0.04, high_rate_lf:float=0.15)</dt><dd><tt>ECG&nbsp;Feature&nbsp;Implementation.&nbsp;The&nbsp;frequency&nbsp;ranges&nbsp;for&nbsp;High,&nbsp;Low&nbsp;and&nbsp;Very&nbsp;low&nbsp;heart&nbsp;rate&nbsp;variability&nbsp;values&nbsp;are<br>
+derived&nbsp;from&nbsp;the&nbsp;following&nbsp;paper:<br>
+'Heart&nbsp;rate&nbsp;variability:&nbsp;standards&nbsp;of&nbsp;measurement,&nbsp;physiological&nbsp;interpretation&nbsp;and&nbsp;clinical&nbsp;use'<br>
+:param&nbsp;list&nbsp;value:<br>
+:param&nbsp;list&nbsp;timestamp:<br>
+:param&nbsp;float&nbsp;high_rate_lf:<br>
+:param&nbsp;float&nbsp;low_rate_lf:<br>
+:param&nbsp;float&nbsp;high_rate_hf:<br>
+:param&nbsp;float&nbsp;low_rate_hf:<br>
+:param&nbsp;float&nbsp;high_rate_vlf:<br>
+:param&nbsp;float&nbsp;low_rate_vlf:<br>
+:param&nbsp;float&nbsp;high_frequency:<br>
+:param&nbsp;float&nbsp;low_frequency:<br>
+:return:&nbsp;ECG&nbsp;Feature&nbsp;DataStreams<br>
+:rtype:&nbsp;list</tt></dd></dl>
+ <dl><dt><a name="-heart_rate_power"><strong>heart_rate_power</strong></a>(power:numpy.ndarray, frequency:numpy.ndarray, low_rate:float, high_rate:float)</dt><dd><tt>Compute&nbsp;Heart&nbsp;Rate&nbsp;Power&nbsp;for&nbsp;specific&nbsp;frequency&nbsp;range<br>
+&nbsp;<br>
+:param&nbsp;np.ndarray&nbsp;power:<br>
+:param&nbsp;np.ndarray&nbsp;frequency:<br>
+:param&nbsp;float&nbsp;high_rate:<br>
+:param&nbsp;float&nbsp;low_rate:<br>
+:return:&nbsp;sum&nbsp;of&nbsp;power&nbsp;for&nbsp;the&nbsp;frequency&nbsp;range<br>
+:rtype:&nbsp;float</tt></dd></dl>
+ <dl><dt><a name="-lomb"><strong>lomb</strong></a>(time_stamps:List, samples:List, low_frequency:float, high_frequency:float)</dt><dd><tt>Lomb–Scargle&nbsp;periodogram&nbsp;implementation<br>
+&nbsp;<br>
+:param&nbsp;list&nbsp;samples:<br>
+:param&nbsp;list&nbsp;time_stamps:<br>
+:param&nbsp;float&nbsp;high_frequency:&nbsp;float<br>
+:param&nbsp;float&nbsp;low_frequency:&nbsp;float<br>
+:return&nbsp;lomb-scargle&nbsp;pgram&nbsp;and&nbsp;frequency&nbsp;values<br>
+:rtype:</tt></dd></dl>
+</td></tr></table>
+</body></html>

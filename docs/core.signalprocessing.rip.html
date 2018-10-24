@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.signalprocessing.rip</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.signalprocessing.html"><font color="#ffffff">signalprocessing</font></a>.rip</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/signalprocessing/rip.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/signalprocessing/rip.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2017,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-compute_peak_valley"><strong>compute_peak_valley</strong></a>(rip:cerebralcortex.core.datatypes.datastream.DataStream, rip_quality:cerebralcortex.core.datatypes.datastream.DataStream, fs:float=21.33, smoothing_factor:int=5, time_window:int=8, expiration_amplitude_threshold_perc:float=0.1, threshold_expiration_duration:float=0.312, inspiration_amplitude_threshold_perc:float=0.1, max_amplitude_change_peak_correction:float=30, min_neg_slope_count_peak_correction:int=4, minimum_peak_to_valley_time_diff=0.31) -&gt; [&lt;class 'cerebralcortex.core.datatypes.datastream.DataStream'&gt;, &lt;class 'cerebralcortex.core.datatypes.datastream.DataStream'&gt;]</dt><dd><tt>Compute&nbsp;peak&nbsp;and&nbsp;valley&nbsp;from&nbsp;rip&nbsp;data&nbsp;and&nbsp;filter&nbsp;peak&nbsp;and&nbsp;valley.<br>
+&nbsp;<br>
+:param&nbsp;minimum_peak_to_valley_time_diff:<br>
+:param&nbsp;inspiration_amplitude_threshold_perc:<br>
+:param&nbsp;smoothing_factor:<br>
+:return&nbsp;peak_datastream,&nbsp;valley_datastream:<br>
+:param&nbsp;rip:<br>
+:param&nbsp;rip_quality:<br>
+:param&nbsp;fs:<br>
+:param&nbsp;time_window:<br>
+:param&nbsp;expiration_amplitude_threshold_perc:<br>
+:param&nbsp;threshold_expiration_duration:<br>
+:param&nbsp;max_amplitude_change_peak_correction:<br>
+:param&nbsp;min_neg_slope_count_peak_correction:</tt></dd></dl>
+ <dl><dt><a name="-correct_peak_position"><strong>correct_peak_position</strong></a>(peaks:List[cerebralcortex.core.datatypes.datapoint.DataPoint], valleys:List[cerebralcortex.core.datatypes.datapoint.DataPoint], up_intercepts:List[cerebralcortex.core.datatypes.datapoint.DataPoint], data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], max_amplitude_change_peak_correction:float, min_neg_slope_count_peak_correction:int, data_start_time_to_index:dict) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Correct&nbsp;peak&nbsp;position&nbsp;by&nbsp;checking&nbsp;if&nbsp;there&nbsp;is&nbsp;a&nbsp;notch&nbsp;in&nbsp;the&nbsp;inspiration&nbsp;branch&nbsp;at&nbsp;left&nbsp;position.<br>
+If&nbsp;at&nbsp;least&nbsp;60%&nbsp;inspiration&nbsp;is&nbsp;done&nbsp;at&nbsp;a&nbsp;notch&nbsp;point,&nbsp;assume&nbsp;that&nbsp;notch&nbsp;as&nbsp;an&nbsp;original&nbsp;peak.<br>
+Our&nbsp;hypothesis&nbsp;is&nbsp;most&nbsp;of&nbsp;breathing&nbsp;in&nbsp;done&nbsp;for&nbsp;that&nbsp;cycle.&nbsp;We&nbsp;assume&nbsp;insignificant&nbsp;amount&nbsp;of<br>
+breath&nbsp;is&nbsp;taken&nbsp;or&nbsp;some&nbsp;new&nbsp;cycle&nbsp;started&nbsp;after&nbsp;the&nbsp;notch.<br>
+&nbsp;<br>
+:return&nbsp;peaks:<br>
+:param&nbsp;peaks:<br>
+:param&nbsp;valleys:<br>
+:param&nbsp;up_intercepts:<br>
+:param&nbsp;data:<br>
+:param&nbsp;max_amplitude_change_peak_correction:<br>
+:param&nbsp;min_neg_slope_count_peak_correction:<br>
+:param&nbsp;data_start_time_to_index:&nbsp;hash&nbsp;table&nbsp;for&nbsp;data&nbsp;where&nbsp;start_time&nbsp;is&nbsp;key,&nbsp;index&nbsp;is&nbsp;value</tt></dd></dl>
+ <dl><dt><a name="-correct_valley_position"><strong>correct_valley_position</strong></a>(peaks:List[cerebralcortex.core.datatypes.datapoint.DataPoint], valleys:List[cerebralcortex.core.datatypes.datapoint.DataPoint], up_intercepts:List[cerebralcortex.core.datatypes.datapoint.DataPoint], data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], data_start_time_to_index:dict) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Correct&nbsp;Valley&nbsp;position&nbsp;by&nbsp;locating&nbsp;actual&nbsp;valley&nbsp;using&nbsp;maximum&nbsp;slope&nbsp;algorithm&nbsp;which&nbsp;is<br>
+located&nbsp;between&nbsp;current&nbsp;valley&nbsp;and&nbsp;following&nbsp;peak.<br>
+&nbsp;<br>
+Algorithm&nbsp;-&nbsp;push&nbsp;valley&nbsp;towards&nbsp;right:<br>
+Search&nbsp;for&nbsp;points&nbsp;lies&nbsp;in&nbsp;between&nbsp;current&nbsp;valley&nbsp;and&nbsp;following&nbsp;Up&nbsp;intercept.<br>
+Calculate&nbsp;slopes&nbsp;at&nbsp;those&nbsp;points.<br>
+Ensure&nbsp;that&nbsp;valley&nbsp;resides&nbsp;at&nbsp;the&nbsp;begining&nbsp;of&nbsp;inhalation&nbsp;cycle&nbsp;where&nbsp;inhalation&nbsp;slope&nbsp;is&nbsp;maximum.<br>
+&nbsp;<br>
+:return&nbsp;valley_updated:<br>
+:param&nbsp;peaks:<br>
+:param&nbsp;valleys:<br>
+:param&nbsp;up_intercepts:<br>
+:param&nbsp;data:<br>
+:param&nbsp;data_start_time_to_index:&nbsp;hash&nbsp;table&nbsp;for&nbsp;data&nbsp;where&nbsp;start_time&nbsp;is&nbsp;key,&nbsp;index&nbsp;is&nbsp;value</tt></dd></dl>
+ <dl><dt><a name="-filter_bad_rip"><strong>filter_bad_rip</strong></a>(rip:cerebralcortex.core.datatypes.datastream.DataStream, rip_quality:cerebralcortex.core.datatypes.datastream.DataStream) -&gt; cerebralcortex.core.datatypes.datastream.DataStream</dt><dd><tt>This&nbsp;function&nbsp;combines&nbsp;the&nbsp;raw&nbsp;rip&nbsp;and&nbsp;rip&nbsp;data&nbsp;quality&nbsp;datastream&nbsp;and&nbsp;only&nbsp;keeps&nbsp;those&nbsp;DataPoints&nbsp;that&nbsp;are&nbsp;assigned&nbsp;acceptable&nbsp;in&nbsp;data&nbsp;quality<br>
+&nbsp;<br>
+:param&nbsp;rip:&nbsp;raw&nbsp;respiration&nbsp;datastream<br>
+:param&nbsp;rip_quality:&nbsp;respiration&nbsp;quality&nbsp;datastream<br>
+&nbsp;<br>
+:return:&nbsp;&nbsp;filtered&nbsp;respiration&nbsp;datastream</tt></dd></dl>
+ <dl><dt><a name="-filter_expiration_duration_outlier"><strong>filter_expiration_duration_outlier</strong></a>(peaks:List[cerebralcortex.core.datatypes.datapoint.DataPoint], valleys:List[cerebralcortex.core.datatypes.datapoint.DataPoint], threshold_expiration_duration:float) -&gt; [typing.List[cerebralcortex.core.datatypes.datapoint.DataPoint], typing.List[cerebralcortex.core.datatypes.datapoint.DataPoint]]</dt><dd><tt>Filter&nbsp;out&nbsp;peak&nbsp;valley&nbsp;pair&nbsp;for&nbsp;which&nbsp;expiration&nbsp;duration&nbsp;is&nbsp;too&nbsp;small.<br>
+&nbsp;<br>
+:return&nbsp;peaks_updated,&nbsp;valleys_updated:<br>
+:param&nbsp;peaks:<br>
+:param&nbsp;valleys:<br>
+:param&nbsp;threshold_expiration_duration:</tt></dd></dl>
+ <dl><dt><a name="-filter_intercept_outlier"><strong>filter_intercept_outlier</strong></a>(up_intercepts:List[cerebralcortex.core.datatypes.datapoint.DataPoint], down_intercepts:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; [typing.List[cerebralcortex.core.datatypes.datapoint.DataPoint], typing.List[cerebralcortex.core.datatypes.datapoint.DataPoint]]</dt><dd><tt>Remove&nbsp;two&nbsp;or&nbsp;more&nbsp;consecutive&nbsp;up&nbsp;or&nbsp;down&nbsp;intercepts.<br>
+&nbsp;<br>
+:return&nbsp;up_intercepts_updated,&nbsp;down_intercepts_updated:<br>
+:param&nbsp;up_intercepts:<br>
+:param&nbsp;down_intercepts:</tt></dd></dl>
+ <dl><dt><a name="-filter_small_amp_expiration_peak_valley"><strong>filter_small_amp_expiration_peak_valley</strong></a>(peaks:List[cerebralcortex.core.datatypes.datapoint.DataPoint], valleys:List[cerebralcortex.core.datatypes.datapoint.DataPoint], expiration_amplitude_threshold_perc:float) -&gt; [typing.List[cerebralcortex.core.datatypes.datapoint.DataPoint], typing.List[cerebralcortex.core.datatypes.datapoint.DataPoint]]</dt><dd><tt>Filter&nbsp;out&nbsp;peak&nbsp;valley&nbsp;pair&nbsp;if&nbsp;their&nbsp;expiration&nbsp;amplitude&nbsp;is&nbsp;less&nbsp;than&nbsp;or&nbsp;equal&nbsp;to&nbsp;10%&nbsp;of<br>
+average&nbsp;expiration&nbsp;amplitude.<br>
+&nbsp;<br>
+:return:&nbsp;peaks_updated,&nbsp;valleys_updated:<br>
+:param:&nbsp;peaks:<br>
+:param:&nbsp;valleys:<br>
+:param:&nbsp;expiration_amplitude_threshold_perc:</tt></dd></dl>
+ <dl><dt><a name="-filter_small_amp_inspiration_peak_valley"><strong>filter_small_amp_inspiration_peak_valley</strong></a>(peaks:List[cerebralcortex.core.datatypes.datapoint.DataPoint], valleys:List[cerebralcortex.core.datatypes.datapoint.DataPoint], inspiration_amplitude_threshold_perc:float) -&gt; [typing.List[cerebralcortex.core.datatypes.datapoint.DataPoint], typing.List[cerebralcortex.core.datatypes.datapoint.DataPoint]]</dt><dd><tt>Filter&nbsp;out&nbsp;peak&nbsp;valley&nbsp;pair&nbsp;if&nbsp;their&nbsp;inspiration&nbsp;amplitude&nbsp;is&nbsp;less&nbsp;than&nbsp;or&nbsp;to&nbsp;equal&nbsp;10%&nbsp;of<br>
+average&nbsp;inspiration&nbsp;amplitude.<br>
+&nbsp;<br>
+:return&nbsp;peaks_updated,&nbsp;valleys_updated:<br>
+:param&nbsp;peaks:<br>
+:param&nbsp;valleys:<br>
+:param&nbsp;inspiration_amplitude_threshold_perc:</tt></dd></dl>
+ <dl><dt><a name="-generate_peak_valley"><strong>generate_peak_valley</strong></a>(up_intercepts:List[cerebralcortex.core.datatypes.datapoint.DataPoint], down_intercepts:List[cerebralcortex.core.datatypes.datapoint.DataPoint], data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; [typing.List[cerebralcortex.core.datatypes.datapoint.DataPoint], typing.List[cerebralcortex.core.datatypes.datapoint.DataPoint]]</dt><dd><tt>Compute&nbsp;peak&nbsp;valley&nbsp;from&nbsp;up&nbsp;intercepts&nbsp;and&nbsp;down&nbsp;intercepts&nbsp;indices.<br>
+&nbsp;<br>
+:return&nbsp;peaks,&nbsp;valleys:<br>
+:param&nbsp;up_intercepts:<br>
+:param&nbsp;down_intercepts:<br>
+:param&nbsp;data:</tt></dd></dl>
+ <dl><dt><a name="-remove_close_valley_peak_pair"><strong>remove_close_valley_peak_pair</strong></a>(peaks:List[cerebralcortex.core.datatypes.datapoint.DataPoint], valleys:List[cerebralcortex.core.datatypes.datapoint.DataPoint], minimum_peak_to_valley_time_diff:float=0.31) -&gt; [typing.List[cerebralcortex.core.datatypes.datapoint.DataPoint], typing.List[cerebralcortex.core.datatypes.datapoint.DataPoint]]</dt><dd><tt>Filter&nbsp;out&nbsp;too&nbsp;close&nbsp;valley&nbsp;peak&nbsp;pair.<br>
+&nbsp;<br>
+:return&nbsp;peaks_updated,&nbsp;valleys_updated:<br>
+:param&nbsp;peaks:<br>
+:param&nbsp;valleys:<br>
+:param&nbsp;minimum_peak_to_valley_time_diff:</tt></dd></dl>
+ <dl><dt><a name="-up_down_intercepts"><strong>up_down_intercepts</strong></a>(data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], mac:List[cerebralcortex.core.datatypes.datapoint.DataPoint], data_start_time_to_index:dict) -&gt; [typing.List[cerebralcortex.core.datatypes.datapoint.DataPoint], typing.List[cerebralcortex.core.datatypes.datapoint.DataPoint]]</dt><dd><tt>Returns&nbsp;Up&nbsp;and&nbsp;Down&nbsp;Intercepts.<br>
+Moving&nbsp;Average&nbsp;Centerline&nbsp;curve&nbsp;intersects&nbsp;breath&nbsp;cycle&nbsp;twice.&nbsp;Once&nbsp;in&nbsp;the&nbsp;inhalation&nbsp;branch<br>
+(Up&nbsp;intercept)&nbsp;and&nbsp;in&nbsp;the&nbsp;exhalation&nbsp;branch&nbsp;(Down&nbsp;intercept).<br>
+&nbsp;<br>
+:return&nbsp;up_intercepts,&nbsp;down_intercepts:<br>
+:param&nbsp;data:<br>
+:param&nbsp;mac:</tt></dd></dl>
+</td></tr></table>
+</body></html>

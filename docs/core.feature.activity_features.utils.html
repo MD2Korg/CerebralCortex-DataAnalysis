@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.activity_features.utils</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.activity_features.html"><font color="#ffffff">activity_features</font></a>.utils</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/activity_features/utils.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/activity_features/utils.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2018,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-get_local_datetime"><strong>get_local_datetime</strong></a>(year, month, day, hour=0, minute=0, second=0, offset=0)</dt><dd><tt>:rtype:&nbsp;object<br>
+:param&nbsp;year:<br>
+:param&nbsp;month:<br>
+:param&nbsp;day:<br>
+:param&nbsp;hour:<br>
+:param&nbsp;minute:<br>
+:param&nbsp;second:<br>
+:param&nbsp;offset:<br>
+:return:</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>ACCEL_ONLY_ACTIVITY_STREAMNAME</strong> = 'org.md2k.data_analysis.feature.activity.wrist.accel_only.10_seconds'<br>
+<strong>ACTIVITY_LABELS</strong> = ['NO', 'LOW', 'WALKING', 'MOD', 'HIGH']<br>
+<strong>ACTIVITY_STREAMNAME</strong> = 'org.md2k.data_analysis.feature.activity.wrist.10_seconds'<br>
+<strong>ACTIVTY_LABEL_TO_NUMBER_MAPPING</strong> = {'HIGH': 4, 'LOW': 1, 'MOD': 3, 'NO': 0, 'WALKING': 2}<br>
+<strong>HIGH_ACT</strong> = 'HIGH'<br>
+<strong>HIGH_ACTIVITY_DAILY</strong> = 'high_activity_time_daily.json'<br>
+<strong>HIGH_ACTIVITY_DAILY_ACCEL_ONLY</strong> = 'high_activity_time_daily_accel_only.json'<br>
+<strong>HIGH_ACTIVITY_HOURLY</strong> = 'high_activity_time_hourly.json'<br>
+<strong>HIGH_ACTIVITY_HOURLY_ACCEL_ONLY</strong> = 'high_activity_time_hourly_accel_only.json'<br>
+<strong>HIGH_ACTIVITY_IMPUTED_DAY_OF_WEEK_DAILY</strong> = 'high_activity_time_imputed_day_of_week_daily.json'<br>
+<strong>HIGH_ACTIVITY_IMPUTED_DAY_OF_WEEK_DAILY_ACCEL_ONLY</strong> = 'high_activity_time_imputed_day_of_week_daily_accel_only.json'<br>
+<strong>HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY</strong> = 'high_activity_time_imputed_time_of_day_daily.json'<br>
+<strong>HIGH_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY_ACCEL_ONLY</strong> = 'high_activity_time_imputed_time_of_day_daily_accel_only.json'<br>
+<strong>LOW_ACT</strong> = 'LOW'<br>
+<strong>LYING</strong> = 'lying'<br>
+<strong>LYING_HOURLY</strong> = 'lying_time_hourly.json'<br>
+<strong>MODERATE_ACT</strong> = 'MOD'<br>
+<strong>MODERATE_ACTIVITY_DAILY</strong> = 'moderate_activity_time_daily.json'<br>
+<strong>MODERATE_ACTIVITY_DAILY_ACCEL_ONLY</strong> = 'moderate_activity_time_daily_accel_only.json'<br>
+<strong>MODERATE_ACTIVITY_HOURLY</strong> = 'moderate_activity_time_hourly.json'<br>
+<strong>MODERATE_ACTIVITY_HOURLY_ACCEL_ONLY</strong> = 'moderate_activity_time_hourly_accel_only.json'<br>
+<strong>MODERATE_ACTIVITY_IMPUTED_DAY_OF_WEEK_DAILY</strong> = 'moderate_activity_time_imputed_day_of_week_daily.json'<br>
+<strong>MODERATE_ACTIVITY_IMPUTED_DAY_OF_WEEK_DAILY_ACCEL_ONLY</strong> = 'moderate_activity_time_imputed_day_of_week_daily_accel_only.json'<br>
+<strong>MODERATE_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY</strong> = 'moderate_activity_time_imputed_time_of_day_daily.json'<br>
+<strong>MODERATE_ACTIVITY_IMPUTED_TIME_OF_DAY_DAILY_ACCEL_ONLY</strong> = 'moderate_activity_time_imputed_time_of_day_daily_accel_only.json'<br>
+<strong>NO_ACT</strong> = 'NO'<br>
+<strong>POSTURE_LABELS</strong> = ['lying', 'sitting', 'standing']<br>
+<strong>POSTURE_STREAMNAME</strong> = 'org.md2k.data_analysis.feature.posture.wrist.10_seconds'<br>
+<strong>SITTING</strong> = 'sitting'<br>
+<strong>SITTING_HOURLY</strong> = 'sitting_time_hourly.json'<br>
+<strong>STANDING</strong> = 'standing'<br>
+<strong>STANDING_HOURLY</strong> = 'standing_time_hourly.json'<br>
+<strong>WALKING</strong> = 'WALKING'<br>
+<strong>WALKING_DAILY</strong> = 'walking_time_daily.json'<br>
+<strong>WALKING_DAILY_ACCEL_ONLY</strong> = 'walking_time_daily_accel_only.json'<br>
+<strong>WALKING_HOURLY</strong> = 'walking_time_hourly.json'<br>
+<strong>WALKING_HOURLY_ACCEL_ONLY</strong> = 'walking_time_hourly_accel_only.json'<br>
+<strong>WALKING_IMPUTED_DAY_OF_WEEK_DAILY</strong> = 'walking_time_imputed_day_of_week_daily.json'<br>
+<strong>WALKING_IMPUTED_DAY_OF_WEEK_DAILY_ACCEL_ONLY</strong> = 'walking_time_imputed_day_of_week_daily_accel_only.json'<br>
+<strong>WALKING_IMPUTED_TIME_OF_DAY_DAILY</strong> = 'walking_time_imputed_time_of_day_daily.json'<br>
+<strong>WALKING_IMPUTED_TIME_OF_DAY_DAILY_ACCEL_ONLY</strong> = 'walking_time_imputed_time_of_day_daily_accel_only.json'</td></tr></table>
+</body></html>
