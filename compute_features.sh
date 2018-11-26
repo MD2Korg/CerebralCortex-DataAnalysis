@@ -29,24 +29,31 @@ MAX_CORES=4
 # set to True to make use of spark parallel execution
 SPARK_JOB="True"
 
-if [ $SPARK_JOB == 'True' ]
-    then
-        echo 'Executing Spark job'
-        spark-submit --master $SPARK_MASTER \
-                     --conf spark.ui.port=$SPARK_UI_PORT \
-                     --conf spark.cores.max=$MAX_CORES \
-                     --conf spark.app.name=$FEATURES \
-                     --py-files $PY_FILES \
-                     core/driver.py -c $CC_CONFIG_FILEPATH \
-                     -s $STUDY_NAME -sd $START_DATE \
-                     -ed $END_DATE -u $USERIDS -f $FEATURES \
-                     -p $MAX_CORES
-    else
-        echo 'Executing single threaded'
-        export PYTHONPATH=.:${CC_EGG}:$PYTHONPATH
-        echo $PYTHONPATH
-        python3.6 core/driver.py -c $CC_CONFIG_FILEPATH \
-                       -s $STUDY_NAME -sd $START_DATE \
-                       -ed $END_DATE -u $USERIDS -f $FEATURES
+while :
+do
+	echo `date` >> /tmp/loop_test
 
-fi
+
+	if [ $SPARK_JOB == 'True' ]
+	    then
+		echo 'Executing Spark job'
+		spark-submit --master $SPARK_MASTER \
+			     --conf spark.ui.port=$SPARK_UI_PORT \
+			     --conf spark.cores.max=$MAX_CORES \
+			     --conf spark.app.name=$FEATURES \
+			     --py-files $PY_FILES \
+			     core/driver.py -c $CC_CONFIG_FILEPATH \
+			     -s $STUDY_NAME -sd $START_DATE \
+			     -ed $END_DATE -u $USERIDS -f $FEATURES \
+			     -p $MAX_CORES
+	    else
+		echo 'Executing single threaded'
+		export PYTHONPATH=.:${CC_EGG}:$PYTHONPATH
+		echo $PYTHONPATH
+		python3.6 core/driver.py -c $CC_CONFIG_FILEPATH \
+			       -s $STUDY_NAME -sd $START_DATE \
+			       -ed $END_DATE -u $USERIDS -f $FEATURES
+
+	fi
+	sleep 3600
+done
