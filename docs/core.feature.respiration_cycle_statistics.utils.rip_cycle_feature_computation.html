@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.respiration_cycle_statistics.utils.rip_cycle_feature_computation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.respiration_cycle_statistics.html"><font color="#ffffff">respiration_cycle_statistics</font></a>.<a href="core.feature.respiration_cycle_statistics.utils.html"><font color="#ffffff">utils</font></a>.rip_cycle_feature_computation</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/respiration_cycle_statistics/utils/rip_cycle_feature_computation.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/respiration_cycle_statistics/utils/rip_cycle_feature_computation.py</a></font></td></tr></table>
+    <p><tt>Created&nbsp;on&nbsp;Sat&nbsp;Mar&nbsp;10&nbsp;23:19:15&nbsp;2018<br>
+&nbsp;<br>
+@author:&nbsp;Nazir&nbsp;Saleheen,&nbsp;Md&nbsp;Azim&nbsp;Ullah</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-rip_cycle_feature_computation"><strong>rip_cycle_feature_computation</strong></a>(peaks_datastream:List[cerebralcortex.core.datatypes.datapoint.DataPoint], valleys_datastream:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; object</dt><dd><tt>Respiration&nbsp;Feature&nbsp;Implementation.&nbsp;The&nbsp;respiration&nbsp;feature&nbsp;values&nbsp;are<br>
+derived&nbsp;from&nbsp;the&nbsp;following&nbsp;paper:<br>
+'puffMarker:&nbsp;a&nbsp;multi-sensor&nbsp;approach&nbsp;for&nbsp;pinpointing&nbsp;the&nbsp;timing&nbsp;of&nbsp;first&nbsp;lapse&nbsp;in&nbsp;smoking&nbsp;cessation'<br>
+Removed&nbsp;due&nbsp;to&nbsp;lack&nbsp;of&nbsp;current&nbsp;use&nbsp;in&nbsp;the&nbsp;implementation<br>
+roc_max&nbsp;=&nbsp;[]&nbsp;&nbsp;#&nbsp;8.&nbsp;ROC_MAX&nbsp;=&nbsp;max(sample[j]-sample[j-1])<br>
+roc_min&nbsp;=&nbsp;[]&nbsp;&nbsp;#&nbsp;9.&nbsp;ROC_MIN&nbsp;=&nbsp;min(sample[j]-sample[j-1])<br>
+&nbsp;<br>
+:param&nbsp;peaks_datastream:&nbsp;list&nbsp;of&nbsp;peak&nbsp;datapoints<br>
+:param&nbsp;valleys_datastream:&nbsp;list&nbsp;of&nbsp;valley&nbsp;datapoints<br>
+:return:&nbsp;lists&nbsp;of&nbsp;DataPoints&nbsp;each&nbsp;representing&nbsp;a&nbsp;specific&nbsp;feature&nbsp;calculated&nbsp;from&nbsp;the&nbsp;respiration&nbsp;cycle<br>
+found&nbsp;from&nbsp;the&nbsp;peak&nbsp;valley&nbsp;inputs</tt></dd></dl>
+</td></tr></table>
+</body></html>

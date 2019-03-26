@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.sleep_time.SleepDurationPrediction</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.sleep_time.html"><font color="#ffffff">sleep_time</font></a>.SleepDurationPrediction</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/sleep_time/SleepDurationPrediction.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/sleep_time/SleepDurationPrediction.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2018,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;-&nbsp;Md&nbsp;Shiplu&nbsp;Hawlader&nbsp;&lt;shiplu.cse.du@gmail.com;&nbsp;mhwlader@memphis.edu&gt;<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="argparse.html">argparse</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="core.feature.sleep_time.SleepDurationPrediction.html#SleepDurationPredictor">SleepDurationPredictor</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SleepDurationPredictor">class <strong>SleepDurationPredictor</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>TODO:&nbsp;Something&nbsp;here<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="SleepDurationPredictor-__init__"><strong>__init__</strong></a>(self, CC)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="SleepDurationPredictor-get_data"><strong>get_data</strong></a>(self, stream_name:str, user_id:str, start_time:datetime.datetime, end_time:datetime.datetime, admission_control:Callable=None) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Get&nbsp;data&nbsp;for&nbsp;sleep,&nbsp;as&nbsp;it&nbsp;is&nbsp;requires&nbsp;24&nbsp;hour&nbsp;window&nbsp;data&nbsp;from&nbsp;two&nbsp;days<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;stream_name:&nbsp;Stream&nbsp;name&nbsp;of&nbsp;which&nbsp;data&nbsp;to&nbsp;be&nbsp;fetched<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;stream&nbsp;owner<br>
+:param&nbsp;datetime&nbsp;start_time:&nbsp;Start&nbsp;time&nbsp;of&nbsp;the&nbsp;data&nbsp;collection&nbsp;duration<br>
+:param&nbsp;datetime&nbsp;end_time:&nbsp;End&nbsp;time&nbsp;of&nbsp;the&nbsp;data&nbsp;collection&nbsp;duration<br>
+:param&nbsp;Callable&nbsp;admission_control:&nbsp;Lambda&nbsp;function&nbsp;to&nbsp;filter&nbsp;corrupted&nbsp;data<br>
+:return:&nbsp;DataPoints&nbsp;of&nbsp;the&nbsp;given&nbsp;stream&nbsp;name&nbsp;from&nbsp;start&nbsp;time&nbsp;to&nbsp;end&nbsp;time<br>
+:rtype:&nbsp;List(DataPoint)</tt></dd></dl>
+
+<dl><dt><a name="SleepDurationPredictor-get_data_by_stream_name"><strong>get_data_by_stream_name</strong></a>(self, stream_name:str, user_id:str, day:str, localtime:bool=False) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Combines&nbsp;data&nbsp;from&nbsp;multiple&nbsp;streams&nbsp;data&nbsp;of&nbsp;same&nbsp;stream&nbsp;based&nbsp;on&nbsp;stream&nbsp;name.<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;stream_name:&nbsp;Name&nbsp;of&nbsp;the&nbsp;stream<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;stream&nbsp;owner<br>
+:param&nbsp;str&nbsp;day:&nbsp;The&nbsp;day&nbsp;(YYYYMMDD)&nbsp;on&nbsp;which&nbsp;to&nbsp;operate<br>
+:param&nbsp;bool&nbsp;localtime:&nbsp;The&nbsp;way&nbsp;to&nbsp;structure&nbsp;time,&nbsp;True&nbsp;for&nbsp;operating&nbsp;in&nbsp;participant's&nbsp;local&nbsp;time,&nbsp;False&nbsp;for&nbsp;UTC<br>
+:return:&nbsp;Combined&nbsp;stream&nbsp;data&nbsp;if&nbsp;there&nbsp;are&nbsp;multiple&nbsp;stream&nbsp;id<br>
+:rtype:&nbsp;List(DataPoint)</tt></dd></dl>
+
+<dl><dt><a name="SleepDurationPredictor-get_sleep_duration"><strong>get_sleep_duration</strong></a>(self, user_id:str, day:datetime.datetime) -&gt; cerebralcortex.core.datatypes.datapoint.DataPoint</dt><dd><tt>Calculates&nbsp;the&nbsp;sleep&nbsp;duration&nbsp;and&nbsp;returns&nbsp;a&nbsp;DataPoint&nbsp;with&nbsp;sample&nbsp;is&nbsp;list&nbsp;with&nbsp;index&nbsp;0&nbsp;as&nbsp;sleep&nbsp;duration<br>
+It&nbsp;gets&nbsp;four&nbsp;streams&nbsp;(light,&nbsp;activity&nbsp;from&nbsp;android,&nbsp;phone&nbsp;screen&nbsp;on/off&nbsp;and&nbsp;audio&nbsp;energy)&nbsp;and&nbsp;convert&nbsp;them<br>
+into&nbsp;a&nbsp;list&nbsp;of&nbsp;size&nbsp;24*60*60&nbsp;(total&nbsp;seconds&nbsp;in&nbsp;24&nbsp;hours).&nbsp;Then&nbsp;a&nbsp;unsupervised&nbsp;method&nbsp;written&nbsp;in<br>
+SleepUnsupervisedPredictor&nbsp;class&nbsp;is&nbsp;used&nbsp;to&nbsp;get&nbsp;the&nbsp;sleep&nbsp;duration&nbsp;in&nbsp;hours.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data,<br>
+then&nbsp;it&nbsp;returns&nbsp;None.<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;stream&nbsp;owner<br>
+:param&nbsp;datetime&nbsp;day:&nbsp;Sleep&nbsp;calculation&nbsp;day<br>
+:return:&nbsp;DataPoint&nbsp;containing&nbsp;the&nbsp;total&nbsp;sleep&nbsp;time&nbsp;for&nbsp;last&nbsp;night&nbsp;in&nbsp;hour<br>
+:rtype:&nbsp;DataPoint</tt></dd></dl>
+
+<dl><dt><a name="SleepDurationPredictor-get_sleep_time"><strong>get_sleep_time</strong></a>(self, user_id:str, day:datetime.datetime) -&gt; cerebralcortex.core.datatypes.datapoint.DataPoint</dt><dd><tt>Calculates&nbsp;the&nbsp;sleep&nbsp;duration&nbsp;and&nbsp;returns&nbsp;a&nbsp;DataPoint&nbsp;with&nbsp;sample&nbsp;is&nbsp;list&nbsp;with&nbsp;index&nbsp;0&nbsp;as&nbsp;sleep&nbsp;duration<br>
+It&nbsp;gets&nbsp;four&nbsp;streams&nbsp;(light,&nbsp;activity&nbsp;from&nbsp;android,&nbsp;phone&nbsp;screen&nbsp;on/off&nbsp;and&nbsp;audio&nbsp;energy)&nbsp;and&nbsp;convert&nbsp;them<br>
+into&nbsp;a&nbsp;list&nbsp;of&nbsp;size&nbsp;24*60*60&nbsp;(total&nbsp;seconds&nbsp;in&nbsp;24&nbsp;hours),&nbsp;index&nbsp;1&nbsp;is&nbsp;the&nbsp;sleep&nbsp;onset&nbsp;or&nbsp;start&nbsp;time&nbsp;in&nbsp;localtime<br>
+and&nbsp;index&nbsp;2&nbsp;is&nbsp;the&nbsp;sleep&nbsp;offset&nbsp;or&nbsp;end&nbsp;time.&nbsp;Then&nbsp;a&nbsp;unsupervised&nbsp;method&nbsp;written&nbsp;in&nbsp;SleepUnsupervisedPredictor&nbsp;class<br>
+is&nbsp;used&nbsp;to&nbsp;get&nbsp;the&nbsp;sleep&nbsp;duration&nbsp;in&nbsp;hours.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data,&nbsp;then&nbsp;it&nbsp;returns&nbsp;None.<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;stream&nbsp;owner<br>
+:param&nbsp;datetime&nbsp;day:&nbsp;Sleep&nbsp;calculation&nbsp;day<br>
+:return:&nbsp;DataPoint&nbsp;containing&nbsp;the&nbsp;sample:&nbsp;[total&nbsp;sleep&nbsp;time&nbsp;for&nbsp;last&nbsp;night&nbsp;in&nbsp;hours,&nbsp;sleep&nbsp;onset,&nbsp;sleep&nbsp;offset]<br>
+:rtype:&nbsp;DataPoint</tt></dd></dl>
+
+<dl><dt><a name="SleepDurationPredictor-get_time_range"><strong>get_time_range</strong></a>(self, day:datetime.datetime) -&gt; Tuple[datetime.datetime, datetime.datetime]</dt><dd><tt>Calculates&nbsp;the&nbsp;time&nbsp;range&nbsp;for&nbsp;example&nbsp;8&nbsp;PM&nbsp;of&nbsp;previous&nbsp;day<br>
+to&nbsp;8&nbsp;PM&nbsp;of&nbsp;current&nbsp;day<br>
+&nbsp;<br>
+:param&nbsp;datetime&nbsp;day:&nbsp;user&nbsp;calculation&nbsp;date<br>
+:return:&nbsp;Adjusted&nbsp;start&nbsp;and&nbsp;end&nbsp;time<br>
+:rtype:&nbsp;Tuple(datetime,&nbsp;datetime)</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>DAY_END_HOUR</strong> = 20<br>
+<strong>DAY_START_HOUR</strong> = -4</td></tr></table>
+</body></html>

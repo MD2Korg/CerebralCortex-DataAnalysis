@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.activity.admission_control</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.activity.html"><font color="#ffffff">activity</font></a>.admission_control</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/activity/admission_control.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/activity/admission_control.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="json.html">json</a><br>
+</td><td width="25%" valign=top><a href="numbers.html">numbers</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+</td><td width="25%" valign=top><a href="uuid.html">uuid</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-check_motionsense_hrv_accel_gyroscope"><strong>check_motionsense_hrv_accel_gyroscope</strong></a>(accel_data, gyro_data)</dt><dd><tt>Check&nbsp;valid&nbsp;gyroscope&nbsp;data&nbsp;stream<br>
+:param&nbsp;gyro_data:<br>
+:return:&nbsp;valid_accel_data</tt></dd></dl>
+ <dl><dt><a name="-check_motionsense_hrv_accelerometer"><strong>check_motionsense_hrv_accelerometer</strong></a>(accel_data)</dt><dd><tt>Check&nbsp;valid&nbsp;accelerometer&nbsp;data&nbsp;stream<br>
+:param&nbsp;accel_data:<br>
+:return:&nbsp;valid_accel_data</tt></dd></dl>
+ <dl><dt><a name="-check_motionsense_hrv_gyroscope"><strong>check_motionsense_hrv_gyroscope</strong></a>(gyro_data)</dt><dd><tt>Check&nbsp;valid&nbsp;gyroscope&nbsp;data&nbsp;stream<br>
+:param&nbsp;gyro_data:<br>
+:return:&nbsp;valid_gyro_data</tt></dd></dl>
+ <dl><dt><a name="-is_valid_motionsense_hrv_accelerometer"><strong>is_valid_motionsense_hrv_accelerometer</strong></a>(dp:cerebralcortex.core.datatypes.datapoint.DataPoint)</dt><dd><tt>Check&nbsp;whether&nbsp;a&nbsp;valid&nbsp;accelerometer&nbsp;data&nbsp;point<br>
+It&nbsp;checks&nbsp;whether&nbsp;it&nbsp;is&nbsp;a&nbsp;array&nbsp;of&nbsp;three&nbsp;real&nbsp;number&nbsp;and&nbsp;range&nbsp;is&nbsp;valid<br>
+:param&nbsp;dp:&nbsp;accelerometer&nbsp;data&nbsp;point<br>
+:return:&nbsp;True&nbsp;if&nbsp;valid&nbsp;data&nbsp;point</tt></dd></dl>
+ <dl><dt><a name="-is_valid_motionsense_hrv_gyroscope"><strong>is_valid_motionsense_hrv_gyroscope</strong></a>(dp:cerebralcortex.core.datatypes.datapoint.DataPoint)</dt><dd><tt>Check&nbsp;whether&nbsp;a&nbsp;valid&nbsp;gyroscope&nbsp;data&nbsp;point<br>
+It&nbsp;checks&nbsp;whether&nbsp;it&nbsp;is&nbsp;a&nbsp;array&nbsp;of&nbsp;three&nbsp;real&nbsp;number&nbsp;and&nbsp;range&nbsp;is&nbsp;valid<br>
+:param&nbsp;dp:&nbsp;gyroscope&nbsp;data&nbsp;point<br>
+:return:&nbsp;True&nbsp;if&nbsp;valid&nbsp;data&nbsp;point</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>ACTIVITY_ACCEL_ONLY_MODEL_FILENAME</strong> = 'core/resources/models/activity/activity_type_randomforest_accelonly500.model'<br>
+<strong>ACTIVITY_LABELS</strong> = ['NO', 'LOW', 'WALKING', 'MOD', 'HIGH']<br>
+<strong>ACTIVITY_LABELS_INDEX_MAP</strong> = {'HIGH': 4, 'LOW': 1, 'MOD': 3, 'NO': 0, 'WALKING': 2}<br>
+<strong>ACTIVITY_MODEL_FILENAME</strong> = 'core/resources/models/activity/activity_level_randomforest.model'<br>
+<strong>ACTIVITY_TYPE_10SECONDS_WINDOW</strong> = 'activity_type_10seconds_window.json'<br>
+<strong>ACTIVITY_TYPE_ACCEL_ONLY_10SECONDS_WINDOW</strong> = 'activity_type_accelonly_10seconds_window.json'<br>
+<strong>IS_MOTIONSENSE_HRV_GYRO_IN_DEGREE</strong> = True<br>
+<strong>LEFT_WRIST</strong> = 'left_wrist'<br>
+<strong>MADGWICKFILTER_BETA</strong> = 0.4<br>
+<strong>MAX_MSHRV_ACCEL</strong> = 2.5<br>
+<strong>MAX_MSHRV_GYRO</strong> = 250<br>
+<strong>MIN_MSHRV_ACCEL</strong> = -2.5<br>
+<strong>MIN_MSHRV_GYRO</strong> = -250<br>
+<strong>MOTIONSENSE_HRV_ACCEL_LEFT</strong> = 'ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST'<br>
+<strong>MOTIONSENSE_HRV_ACCEL_RIGHT</strong> = 'ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST'<br>
+<strong>MOTIONSENSE_HRV_GYRO_LEFT</strong> = 'GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST'<br>
+<strong>MOTIONSENSE_HRV_GYRO_RIGHT</strong> = 'GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST'<br>
+<strong>POSTURE_10SECONDS_WINDOW</strong> = 'posture_10seconds_window.json'<br>
+<strong>POSTURE_ACCEL_ONLY_10SECONDS_WINDOW</strong> = 'posture_accelonly_10seconds_window.json'<br>
+<strong>POSTURE_ACCEL_ONLY_MODEL_FILENAME</strong> = 'core/resources/models/activity/posture_randomforest_accelonly500.model'<br>
+<strong>POSTURE_LABELS</strong> = ['lying', 'sitting', 'standing']<br>
+<strong>POSTURE_LABELS_INDEX_MAP</strong> = {'lying': 0, 'sitting': 1, 'standing': 2}<br>
+<strong>POSTURE_MODEL_FILENAME</strong> = 'core/resources/models/activity/posture_randomforest.model'<br>
+<strong>RIGHT_WRIST</strong> = 'right_wrist'<br>
+<strong>SAMPLING_FREQ_MOTIONSENSE_ACCEL</strong> = 25.0<br>
+<strong>SAMPLING_FREQ_MOTIONSENSE_GYRO</strong> = 25.0<br>
+<strong>TEN_SECONDS</strong> = 10</td></tr></table>
+</body></html>

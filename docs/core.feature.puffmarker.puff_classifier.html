@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.puffmarker.puff_classifier</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.puffmarker.html"><font color="#ffffff">puffmarker</font></a>.puff_classifier</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/puffmarker/puff_classifier.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/puffmarker/puff_classifier.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="json.html">json</a><br>
+<a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+<a href="pickle.html">pickle</a><br>
+</td><td width="25%" valign=top><a href="uuid.html">uuid</a><br>
+<a href="core.signalprocessing.vector.html">core.signalprocessing.vector</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-classify_puffs"><strong>classify_puffs</strong></a>(features)</dt></dl>
+ <dl><dt><a name="-get_posture_model"><strong>get_posture_model</strong></a>() -&gt; sklearn.ensemble.forest.RandomForestClassifier</dt></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>CONV_L</strong> = [[0, 1, 0], [1, 0, 0], [0, 0, 1]]<br>
+<strong>CONV_R</strong> = [[0, 1, 0], [-1, 0, 0], [0, 0, 1]]<br>
+<strong>FAST_MOVING_AVG_SIZE</strong> = 20<br>
+<strong>MAX_MSHRV_ACCEL</strong> = 2.5<br>
+<strong>MAX_MSHRV_GYRO</strong> = 250<br>
+<strong>MAX_PITCH</strong> = -40<br>
+<strong>MAX_ROLL</strong> = 65<br>
+<strong>MINIMUM_INTER_PUFF_DURATION</strong> = 5<br>
+<strong>MINIMUM_PUFFS_IN_EPISODE</strong> = 4<br>
+<strong>MINIMUM_TIME_DIFFERENCE_FIRST_AND_LAST_PUFFS</strong> = 420<br>
+<strong>MIN_MSHRV_ACCEL</strong> = -2.5<br>
+<strong>MIN_MSHRV_GYRO</strong> = -250<br>
+<strong>MIN_PITCH</strong> = -125<br>
+<strong>MIN_ROLL</strong> = -20<br>
+<strong>MOTIONSENSE_HRV_ACCEL_LEFT_STREAMNAME</strong> = 'ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST'<br>
+<strong>MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME</strong> = 'ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST'<br>
+<strong>MOTIONSENSE_HRV_GYRO_LEFT_STREAMNAME</strong> = 'GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST'<br>
+<strong>MOTIONSENSE_HRV_GYRO_RIGHT_STREAMNAME</strong> = 'GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST'<br>
+<strong>NON_PUFF_LABEL</strong> = 0<br>
+<strong>PUFFMARKER_MODEL_FILENAME</strong> = 'core/resources/models/puffmarker/puffmarker_wrist_randomforest.model'<br>
+<strong>PUFFMARKER_WRIST_SMOKING_EPISODE</strong> = 'org.md2k.data_analysis.feature.puffmarker.smoking_episode'<br>
+<strong>PUFFMARKER_WRIST_SMOKING_PUFF</strong> = 'org.md2k.data_analysis.feature.puffmarker.smoking_puff'<br>
+<strong>PUFF_LABEL_LEFT</strong> = 1<br>
+<strong>PUFF_LABEL_RIGHT</strong> = 2<br>
+<strong>SAMPLING_FREQ_MOTIONSENSE_ACCEL</strong> = 25<br>
+<strong>SAMPLING_FREQ_MOTIONSENSE_GYRO</strong> = 25<br>
+<strong>SAMPLING_FREQ_RIP</strong> = 21.33<br>
+<strong>SLOW_MOVING_AVG_SIZE</strong> = 205<br>
+<strong>study_name</strong> = 'mperf'</td></tr></table>
+</body></html>

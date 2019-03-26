@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.gps.gps</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.gps.html"><font color="#ffffff">gps</font></a>.gps</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/gps/gps.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/gps/gps.py</a></font></td></tr></table>
+    <p><tt>Class&nbsp;to&nbsp;compute&nbsp;GPS&nbsp;markers<br>
+&nbsp;<br>
+1.&nbsp;Compute&nbsp;GPS&nbsp;clusters&nbsp;using&nbsp;DBScan&nbsp;algorithm,&nbsp;find&nbsp;centroids,&nbsp;persist<br>
+them&nbsp;as&nbsp;a&nbsp;confidential&nbsp;data&nbsp;stream&nbsp;for&nbsp;feature&nbsp;computation.<br>
+2.&nbsp;Mark&nbsp;each&nbsp;centroid&nbsp;semantically&nbsp;from&nbsp;user&nbsp;marked&nbsp;locations,&nbsp;for&nbsp;those<br>
+who&nbsp;have&nbsp;the&nbsp;manual&nbsp;markings.<br>
+3.&nbsp;For&nbsp;all&nbsp;the&nbsp;users&nbsp;mark&nbsp;centroid&nbsp;using&nbsp;a&nbsp;semantic_location&nbsp;model&nbsp;(<br>
+random&nbsp;forest&nbsp;classifier)&nbsp;trained&nbsp;with&nbsp;10&nbsp;participants'&nbsp;data.&nbsp;Each<br>
+co-ordinate&nbsp;is&nbsp;marked&nbsp;as&nbsp;'home',&nbsp;'work'&nbsp;or&nbsp;'other'.<br>
+4.&nbsp;Create&nbsp;context&nbsp;epochs&nbsp;from&nbsp;gps&nbsp;data,&nbsp;representing&nbsp;those&nbsp;locations<br>
+which&nbsp;have&nbsp;been&nbsp;dwelled&nbsp;for&nbsp;at&nbsp;least&nbsp;5&nbsp;minutes.&nbsp;Used&nbsp;google&nbsp;places&nbsp;api&nbsp;to<br>
+mark&nbsp;if&nbsp;a&nbsp;location&nbsp;has&nbsp;either&nbsp;of&nbsp;the&nbsp;following&nbsp;restaurant/bar,<br>
+school,&nbsp;entertainment,&nbsp;store,&nbsp;place&nbsp;of&nbsp;worship,&nbsp;sport&nbsp;arena&nbsp;nearby&nbsp;or&nbsp;not.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="ast.html">ast</a><br>
+<a href="base64.html">base64</a><br>
+<a href="datetime.html">datetime</a><br>
+</td><td width="25%" valign=top><a href="googleplaces.html">googleplaces</a><br>
+<a href="googleplaces.lang.html">googleplaces.lang</a><br>
+<a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+<a href="pandas.html">pandas</a><br>
+<a href="pickle.html">pickle</a><br>
+</td><td width="25%" valign=top><a href="time.html">time</a><br>
+<a href="googleplaces.types.html">googleplaces.types</a><br>
+<a href="uuid.html">uuid</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="core.feature.gps.gps.html#GPSClusteringEpochComputation">GPSClusteringEpochComputation</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="GPSClusteringEpochComputation">class <strong>GPSClusteringEpochComputation</strong></a>(<a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Class&nbsp;to&nbsp;compute&nbsp;GPS&nbsp;markers<br>
+&nbsp;<br>
+1.&nbsp;Compute&nbsp;GPS&nbsp;clusters&nbsp;using&nbsp;DBScan&nbsp;algorithm,&nbsp;find&nbsp;centroids,&nbsp;persist<br>
+them&nbsp;as&nbsp;a&nbsp;confidential&nbsp;data&nbsp;stream&nbsp;for&nbsp;feature&nbsp;computation.<br>
+2.&nbsp;Mark&nbsp;each&nbsp;centroid&nbsp;semantically&nbsp;from&nbsp;user&nbsp;marked&nbsp;locations,&nbsp;for&nbsp;those<br>
+who&nbsp;have&nbsp;the&nbsp;manual&nbsp;markings.<br>
+3.&nbsp;For&nbsp;all&nbsp;the&nbsp;users&nbsp;mark&nbsp;centroid&nbsp;using&nbsp;a&nbsp;semantic_location&nbsp;model&nbsp;(<br>
+random&nbsp;forest&nbsp;classifier)&nbsp;trained&nbsp;with&nbsp;10&nbsp;participants'&nbsp;data.&nbsp;Each<br>
+co-ordinate&nbsp;is&nbsp;marked&nbsp;as&nbsp;'home',&nbsp;'work'&nbsp;or&nbsp;'other'.<br>
+4.&nbsp;Create&nbsp;context&nbsp;epochs&nbsp;from&nbsp;gps&nbsp;data,&nbsp;representing&nbsp;those&nbsp;locations<br>
+which&nbsp;have&nbsp;been&nbsp;dwelled&nbsp;for&nbsp;at&nbsp;least&nbsp;5&nbsp;minutes.&nbsp;Used&nbsp;google&nbsp;places&nbsp;api&nbsp;to<br>
+mark&nbsp;if&nbsp;a&nbsp;location&nbsp;has&nbsp;either&nbsp;of&nbsp;the&nbsp;following&nbsp;restaurant/bar,<br>
+school,&nbsp;entertainment,&nbsp;store,&nbsp;place&nbsp;of&nbsp;worship,&nbsp;sport&nbsp;arena&nbsp;nearby&nbsp;or&nbsp;not.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="core.feature.gps.gps.html#GPSClusteringEpochComputation">GPSClusteringEpochComputation</a></dd>
+<dd><a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="GPSClusteringEpochComputation-find_interesting_places"><strong>find_interesting_places</strong></a>(self, latitude:object, longitude:object, api_key:object, geofence_radius:object) -&gt; object</dt><dd><tt>Obtain&nbsp;the&nbsp;list&nbsp;of&nbsp;interesting&nbsp;places&nbsp;near&nbsp;a&nbsp;coordinate<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;float&nbsp;latitude:&nbsp;Latitude&nbsp;of&nbsp;the&nbsp;place<br>
+:param&nbsp;float&nbsp;longitude:&nbsp;Longitude&nbsp;of&nbsp;the&nbsp;place<br>
+:param&nbsp;string&nbsp;api_key:&nbsp;API&nbsp;key&nbsp;of&nbsp;google&nbsp;places<br>
+:param&nbsp;float&nbsp;geofence_radius:&nbsp;Radius&nbsp;within&nbsp;which&nbsp;we&nbsp;search&nbsp;for<br>
+interesting&nbsp;places.<br>
+:return:&nbsp;List&nbsp;of&nbsp;1&nbsp;or&nbsp;0.&nbsp;1,&nbsp;if&nbsp;we&nbsp;find&nbsp;the&nbsp;corresponding&nbsp;interesting<br>
+place&nbsp;otherwise&nbsp;0.</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-getFeatures"><strong>getFeatures</strong></a>(self, timestampEntry:object, timestampExit:object) -&gt; object</dt><dd><tt>Compute&nbsp;features&nbsp;for&nbsp;semantic&nbsp;assignment&nbsp;model<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;int&nbsp;timestampEntry:&nbsp;entry&nbsp;time&nbsp;into&nbsp;an&nbsp;epoch<br>
+:param&nbsp;int&nbsp;timestampExit:&nbsp;exit&nbsp;time&nbsp;into&nbsp;an&nbsp;epoch<br>
+:return:&nbsp;feature&nbsp;list</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-get_centroid"><strong>get_centroid</strong></a>(self, centroids:object, c_name:object, lat:object, long:object, max_dist_assign_centroid:object) -&gt; object</dt><dd><tt>Obtain&nbsp;the&nbsp;nearest&nbsp;centroid&nbsp;and&nbsp;semantic&nbsp;name&nbsp;for&nbsp;a&nbsp;given&nbsp;location<br>
+coordinate<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;list&nbsp;centroids:&nbsp;list&nbsp;of&nbsp;centroid&nbsp;co-ordinates<br>
+:param&nbsp;list&nbsp;c_name:&nbsp;list&nbsp;of&nbsp;user&nbsp;marked&nbsp;location&nbsp;name<br>
+:param&nbsp;float&nbsp;lat:&nbsp;Latitude&nbsp;of&nbsp;location<br>
+:param&nbsp;float&nbsp;long:&nbsp;Longitude&nbsp;of&nbsp;location<br>
+:param&nbsp;int&nbsp;max_dist_assign_centroid:&nbsp;Distance&nbsp;threshold<br>
+:return:&nbsp;list&nbsp;of&nbsp;centroid&nbsp;and&nbsp;semantic&nbsp;name&nbsp;assigned&nbsp;to&nbsp;the&nbsp;given&nbsp;GPS<br>
+datapoint</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-get_gps"><strong>get_gps</strong></a>(self, gps_stream_id:object, user_id:object, all_days:object) -&gt; object</dt><dd><tt>Extract&nbsp;all&nbsp;gps&nbsp;data&nbsp;of&nbsp;a&nbsp;given&nbsp;user<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;List&nbsp;all_days:&nbsp;List&nbsp;of&nbsp;all&nbsp;days&nbsp;present<br>
+:param&nbsp;string&nbsp;gps_stream_id:&nbsp;Stream&nbsp;id<br>
+:param&nbsp;string&nbsp;user_id:&nbsp;User&nbsp;ID<br>
+:return:&nbsp;List(Datapoints):&nbsp;Gps&nbsp;DataPoints&nbsp;for&nbsp;the&nbsp;that&nbsp;gps_stream_id<br>
+for&nbsp;that&nbsp;user_id)</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-get_gps_clusters"><strong>get_gps_clusters</strong></a>(self, interpolated_gps_data:object, geo_fence_distance:object, min_points_in_cluster:object) -&gt; object</dt><dd><tt>Computes&nbsp;the&nbsp;clusters<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;list&nbsp;interpolated_gps_data:&nbsp;list&nbsp;of&nbsp;interpolated&nbsp;gps&nbsp;data<br>
+:param&nbsp;float&nbsp;geo_fence_distance:&nbsp;Maximum&nbsp;distance&nbsp;between&nbsp;points&nbsp;in&nbsp;a<br>
+cluster<br>
+:param&nbsp;int&nbsp;min_points_in_cluster:&nbsp;Minimum&nbsp;number&nbsp;of&nbsp;points&nbsp;in&nbsp;a&nbsp;cluster<br>
+:return:&nbsp;list&nbsp;of&nbsp;cluster-centroids&nbsp;coordinates</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-get_gps_data_format"><strong>get_gps_data_format</strong></a>(self, interpolated_gps_data:object, geo_fence_distance:object, min_points_in_cluster:object, max_dist_assign_centroid:object, centroid_name_dict:object) -&gt; object</dt><dd><tt>Final&nbsp;computations&nbsp;as&nbsp;described&nbsp;in&nbsp;the&nbsp;class&nbsp;description&nbsp;above<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;list&nbsp;interpolated_gps_data:&nbsp;List&nbsp;of&nbsp;interpolated&nbsp;gps&nbsp;points<br>
+:param&nbsp;int&nbsp;geo_fence_distance:&nbsp;Maximum&nbsp;distance&nbsp;between&nbsp;points&nbsp;in&nbsp;a<br>
+cluster<br>
+:param&nbsp;int&nbsp;min_points_in_cluster:&nbsp;Minimum&nbsp;number&nbsp;of&nbsp;points&nbsp;in&nbsp;a&nbsp;cluster<br>
+:param&nbsp;int&nbsp;max_dist_assign_centroid:&nbsp;Distance&nbsp;threshold&nbsp;for&nbsp;assigning&nbsp;a<br>
+cluster<br>
+:param&nbsp;dict&nbsp;centroid_name_dict:&nbsp;Dictionary&nbsp;of&nbsp;user&nbsp;marked&nbsp;semantic&nbsp;names<br>
+:return:&nbsp;List&nbsp;(Datapoints)</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-gps_groundtruth"><strong>gps_groundtruth</strong></a>(self, geofence_stream_id:object, user_id:object, all_days:object) -&gt; object</dt><dd><tt>&nbsp;Obtain&nbsp;gps&nbsp;locations&nbsp;marked&nbsp;by&nbsp;users<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;list&nbsp;all_days:&nbsp;list&nbsp;of&nbsp;all&nbsp;days<br>
+:param&nbsp;string&nbsp;geofence_stream_id:&nbsp;Data&nbsp;stream&nbsp;id<br>
+:param&nbsp;string&nbsp;user_id:&nbsp;User&nbsp;ID<br>
+:return:&nbsp;Dictionary&nbsp;(key&nbsp;-&nbsp;semantic&nbsp;names,&nbsp;values&nbsp;-&nbsp;Corresponding&nbsp;coordinates)</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-gps_interpolation"><strong>gps_interpolation</strong></a>(self, gps_data:object) -&gt; object</dt><dd><tt>Interpolate&nbsp;raw&nbsp;gps&nbsp;data<br>
+&nbsp;<br>
+:param&nbsp;List(Datapoints)&nbsp;gps_data:&nbsp;list&nbsp;of&nbsp;gps&nbsp;data<br>
+:return:&nbsp;list&nbsp;of&nbsp;interpolated&nbsp;gps&nbsp;data</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-gps_semantic_locations"><strong>gps_semantic_locations</strong></a>(self, semantic_groundtruth:object, centorids_coord:object) -&gt; object</dt><dd><tt>Assigns&nbsp;semantic&nbsp;name&nbsp;to&nbsp;a&nbsp;centroid<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;dict&nbsp;semantic_groundtruth:&nbsp;Dictionary&nbsp;of&nbsp;user&nbsp;marked&nbsp;location<br>
+:param&nbsp;list&nbsp;centorids_coord:&nbsp;list&nbsp;of&nbsp;centroid&nbsp;co-ordinates<br>
+:return:&nbsp;list&nbsp;of&nbsp;centroids&nbsp;with&nbsp;their&nbsp;corresponding&nbsp;semantic&nbsp;names,&nbsp;if<br>
+found</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-haversine"><strong>haversine</strong></a>(self, lon1:float, lat1:float, lon2:float, lat2:float) -&gt; float</dt><dd><tt>Calculate&nbsp;the&nbsp;great&nbsp;circle&nbsp;distance&nbsp;between&nbsp;two&nbsp;points&nbsp;(A&nbsp;and&nbsp;B)<br>
+on&nbsp;the&nbsp;earth&nbsp;(specified&nbsp;in&nbsp;decimal&nbsp;degrees)<br>
+&nbsp;<br>
+:param&nbsp;float&nbsp;lon1:&nbsp;Longitude&nbsp;of&nbsp;location&nbsp;A<br>
+:param&nbsp;float&nbsp;lat1:&nbsp;Latitude&nbsp;of&nbsp;location&nbsp;A<br>
+:param&nbsp;float&nbsp;lon2:&nbsp;Longitude&nbsp;of&nbsp;location&nbsp;B<br>
+:param&nbsp;float&nbsp;lat2:&nbsp;Latitude&nbsp;of&nbsp;location&nbsp;B<br>
+:return:&nbsp;float&nbsp;(Distance&nbsp;in&nbsp;km)</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-predictLabel"><strong>predictLabel</strong></a>(self, timestampEntry:object, timestampExit:object) -&gt; object</dt><dd><tt>Predict&nbsp;label&nbsp;from&nbsp;model<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;int&nbsp;timestampEntry:&nbsp;entry&nbsp;time&nbsp;into&nbsp;an&nbsp;epoch<br>
+:param&nbsp;int&nbsp;timestampExit:&nbsp;exit&nbsp;time&nbsp;into&nbsp;an&nbsp;epoch<br>
+:return:&nbsp;predicted&nbsp;label&nbsp;('home',&nbsp;'work',&nbsp;or&nbsp;'other')</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-process"><strong>process</strong></a>(self, user, all_days)</dt><dd><tt>Process&nbsp;GPS&nbsp;data<br>
+&nbsp;<br>
+:param&nbsp;string&nbsp;user:&nbsp;User<br>
+:param&nbsp;list&nbsp;all_days:&nbsp;List&nbsp;of&nbsp;all&nbsp;days<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-utc_unix_time"><strong>utc_unix_time</strong></a>(self, strinddate:object) -&gt; object</dt><dd><tt>:rtype:&nbsp;object<br>
+:param&nbsp;strinddate:<br>
+:return:</tt></dd></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="GPSClusteringEpochComputation-getDayOfWeek"><strong>getDayOfWeek</strong></a>(timestamp:object) -&gt; object</dt><dd><tt>Get&nbsp;Day&nbsp;of&nbsp;Week<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;int&nbsp;timestamp:&nbsp;unixtimestamp<br>
+:return:&nbsp;Day&nbsp;of&nbsp;week</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-getHourOfDay"><strong>getHourOfDay</strong></a>(timestamp:object) -&gt; object</dt><dd><tt>Get&nbsp;Time&nbsp;of&nbsp;day<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;int&nbsp;timestamp:&nbsp;unixtimestamp<br>
+:return:&nbsp;Hour&nbsp;of&nbsp;day</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-get_centermost_point"><strong>get_centermost_point</strong></a>(cluster:object) -&gt; object</dt><dd><tt>:param&nbsp;cluster:<br>
+:return:<br>
+:rtype:&nbsp;object</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-gps_admission_control"><strong>gps_admission_control</strong></a>(gps_data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Filter&nbsp;out&nbsp;spurious&nbsp;data<br>
+&nbsp;<br>
+:rtype:&nbsp;List[DataPoint]<br>
+:param&nbsp;List[DataPoint]&nbsp;gps_data:&nbsp;List&nbsp;of&nbsp;GPS&nbsp;datapoints<br>
+:return:</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>ACCURACY</strong> = -1</dl>
+
+<dl><dt><strong>CENTROID_INDEX</strong> = 7</dl>
+
+<dl><dt><strong>CENTROID_LATITUDE</strong> = 3</dl>
+
+<dl><dt><strong>CENTROID_LONGITUDE</strong> = 4</dl>
+
+<dl><dt><strong>DATE_FORMAT</strong> = '%Y-%m-%d %H:%M:%S'</dl>
+
+<dl><dt><strong>ENTERTAINMENT</strong> = ['zoo', 'amusement_park', 'aquarium', 'art_gallery', 'bowling_alley', 'movie_theater', 'museum', 'night_club', 'casino']</dl>
+
+<dl><dt><strong>EPOCH_THRESHOLD</strong> = 0.5</dl>
+
+<dl><dt><strong>EPSILON_CONSTANT</strong> = 1000</dl>
+
+<dl><dt><strong>FIVE_MINUTE_SECONDS</strong> = 600.0</dl>
+
+<dl><dt><strong>GEOFENCE_ASSIGNING_CENTROID</strong> = 1000</dl>
+
+<dl><dt><strong>GEO_FENCE_DISTANCE</strong> = 2</dl>
+
+<dl><dt><strong>GPS_ACCURACY_THRESHOLD</strong> = 41.0</dl>
+
+<dl><dt><strong>GPS_DATA_THRESHOLD</strong> = 100</dl>
+
+<dl><dt><strong>GPS_SAMPLE_LENGTH</strong> = 6</dl>
+
+<dl><dt><strong>GROUND_STRING_LENGTH</strong> = 3</dl>
+
+<dl><dt><strong>INTERPOLATION_TIME</strong> = 1.0</dl>
+
+<dl><dt><strong>IN_SECONDS</strong> = 60</dl>
+
+<dl><dt><strong>KM_PER_RADIAN</strong> = 6371.0088</dl>
+
+<dl><dt><strong>LATITUDE</strong> = 0</dl>
+
+<dl><dt><strong>LONGITUDE</strong> = 1</dl>
+
+<dl><dt><strong>MINIMUM_POINTS_IN_CLUSTER</strong> = 500</dl>
+
+<dl><dt><strong>MODEL_FILE_PATH</strong> = 'core/resources/models/gps/semantic_location_model.pkl'</dl>
+
+<dl><dt><strong>NOT_HOME_OR_WORK</strong> = 'other'</dl>
+
+<dl><dt><strong>OFFSET</strong> = -1</dl>
+
+<dl><dt><strong>OFFSET_INDEX</strong> = 6</dl>
+
+<dl><dt><strong>PLACE_OF_WORSHIP</strong> = ['church', 'hindu_temple', 'mosque']</dl>
+
+<dl><dt><strong>QUERY_LIMIT</strong> = 130000</dl>
+
+<dl><dt><strong>RESTAURANT</strong> = ['restaurant', 'bar']</dl>
+
+<dl><dt><strong>SCHOOL</strong> = ['school', 'book_store', 'library']</dl>
+
+<dl><dt><strong>SEMANTIC_NAMES_INDEX</strong> = 5</dl>
+
+<dl><dt><strong>SPORTS</strong> = ['bowling_alley', 'gym']</dl>
+
+<dl><dt><strong>STORE</strong> = ['jewelry_store', 'store', 'bicycle_store', 'movie_rental', 'car_rental', 'pet_store', 'clothing_store', 'convenience_store', 'department_store', 'shoe_store', 'shopping_mall', 'furniture_store', 'supermarket', 'home_goods_store']</dl>
+
+<dl><dt><strong>UNDEFINED</strong> = 'UNDEFINED'</dl>
+
+<hr>
+Methods inherited from <a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>:<br>
+<dl><dt><a name="GPSClusteringEpochComputation-__init__"><strong>__init__</strong></a>(self, CC=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-get_latest_stream_id"><strong>get_latest_stream_id</strong></a>(self, user_id, stream_name)</dt></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-store"><strong>store</strong></a>(self, identifier, owner, name, data_descriptor, execution_context, annotations, stream_type=1, data=None, localtime=True)</dt><dd><tt>All&nbsp;store&nbsp;operations&nbsp;MUST&nbsp;be&nbsp;through&nbsp;this&nbsp;method.</tt></dd></dl>
+
+<dl><dt><a name="GPSClusteringEpochComputation-store_stream"><strong>store_stream</strong></a>(self, filepath:str, input_streams:list, user_id:&lt;module 'uuid' from '/usr/lib/python3.6/uuid.py'&gt;, data:list, localtime=True)</dt><dd><tt>This&nbsp;method&nbsp;saves&nbsp;the&nbsp;computed&nbsp;DataStreams&nbsp;from&nbsp;different&nbsp;features</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-asin"><strong>asin</strong></a>(...)</dt><dd><tt><a href="#-asin">asin</a>(x)<br>
+&nbsp;<br>
+Return&nbsp;the&nbsp;arc&nbsp;sine&nbsp;(measured&nbsp;in&nbsp;radians)&nbsp;of&nbsp;x.</tt></dd></dl>
+ <dl><dt><a name="-cos"><strong>cos</strong></a>(...)</dt><dd><tt><a href="#-cos">cos</a>(x)<br>
+&nbsp;<br>
+Return&nbsp;the&nbsp;cosine&nbsp;of&nbsp;x&nbsp;(measured&nbsp;in&nbsp;radians).</tt></dd></dl>
+ <dl><dt><a name="-radians"><strong>radians</strong></a>(...)</dt><dd><tt><a href="#-radians">radians</a>(x)<br>
+&nbsp;<br>
+Convert&nbsp;angle&nbsp;x&nbsp;from&nbsp;degrees&nbsp;to&nbsp;radians.</tt></dd></dl>
+ <dl><dt><a name="-sin"><strong>sin</strong></a>(...)</dt><dd><tt><a href="#-sin">sin</a>(x)<br>
+&nbsp;<br>
+Return&nbsp;the&nbsp;sine&nbsp;of&nbsp;x&nbsp;(measured&nbsp;in&nbsp;radians).</tt></dd></dl>
+ <dl><dt><a name="-sqrt"><strong>sqrt</strong></a>(...)</dt><dd><tt><a href="#-sqrt">sqrt</a>(x)<br>
+&nbsp;<br>
+Return&nbsp;the&nbsp;square&nbsp;root&nbsp;of&nbsp;x.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>feature_class_name</strong> = 'GPSClusteringEpochComputation'</td></tr></table>
+</body></html>
