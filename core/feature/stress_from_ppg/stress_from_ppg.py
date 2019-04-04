@@ -57,21 +57,39 @@ class StressFromPPG(ComputeFeatureBase):
         raw_stream_names = [raw_led_hrvp_lw, raw_led_hrvp_rw, raw_led_hrv_lw, raw_led_hrv_rw, raw_hrv_lw, raw_hrv_wr]
         ppg_data = None
         input_streams = []
-        for rs in raw_stream_names:
-            if rs not in streams:
-                continue
-            data = utils.get_raw_data_by_stream_name(rs, user_id, day, self.CC, localtime=False)
-            data = get_realigned_data(data)
-            input_streams.append(streams[rs])
-            if ppg_data is None:
-                ppg_data = data
-            else:
-                ppg_data = np.concatenate(ppg_data, data)
-
-        if ppg_data is None:
-            return
-
         try:
+            for rs in raw_stream_names:
+                if rs not in streams:
+                    continue
+                data = utils.get_raw_data_by_stream_name(rs, user_id, day, self.CC, localtime=False)
+                raw_data = []
+                for d in data:
+                    if type(d.sample) is list and len(d.sample)!=20:
+                        continue
+                    if type(d.sample) is str:
+                        st = list(map(float, d.sample.strip().split(",")))
+                        if len(st)!=20:
+                            continue
+                        tmp = [tm.mktime(d.start_time.timetuple()), d.offset]
+                        tmp += st
+                    else:
+                        tmp = [tm.mktime(d.start_time.timetuple()), d.offset]
+                        tmp += d.sample
+                    raw_data.append(tmp)
+
+                if not raw_data:
+                    return None
+                data = get_realigned_data(raw_data)
+                input_streams.append(streams[rs])
+                if ppg_data is None:
+                    ppg_data = data
+                else:
+                    ppg_data = np.concatenate(ppg_data, data)
+
+            if ppg_data is None:
+                return 
+
+
             ppg_data = sorted(ppg_data)
             offset = ppg_data[0][1]
             stress_data = get_stress_time_series(ppg_data)
