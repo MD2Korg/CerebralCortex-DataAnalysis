@@ -79,7 +79,7 @@ class StressFromPPG(ComputeFeatureBase):
 
                 if not raw_data:
                     return None
-                data = get_realigned_data(raw_data)
+                data = get_realigned_data(np.array(raw_data))
                 input_streams.append(streams[rs])
                 if ppg_data is None:
                     ppg_data = data
@@ -87,7 +87,7 @@ class StressFromPPG(ComputeFeatureBase):
                     ppg_data = np.concatenate(ppg_data, data)
 
             if ppg_data is None:
-                return 
+                return
 
 
             ppg_data = sorted(ppg_data)
