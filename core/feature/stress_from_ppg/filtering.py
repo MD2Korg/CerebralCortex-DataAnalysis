@@ -1,6 +1,6 @@
 import numpy as np
 from scipy import signal
-from decode import Preprc
+from core.feature.stress_from_ppg.decode import Preprc
 
 def isDatapointsWithinRange(red,infrared,green):
     """

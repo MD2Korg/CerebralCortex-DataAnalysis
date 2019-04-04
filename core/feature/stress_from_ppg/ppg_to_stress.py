@@ -10,7 +10,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import StandardScaler,MinMaxScaler,RobustScaler
 from sklearn.neighbors import LocalOutlierFactor
 from sklearn.covariance import  MinCovDet
-from ecg import ecg_feature_computation
+from core.feature.stress_from_ppg.ecg import ecg_feature_computation
 from sklearn.decomposition import PCA
 from scipy.stats.stats import pearsonr
 from scipy import signal
