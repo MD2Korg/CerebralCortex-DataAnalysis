@@ -36,11 +36,11 @@ from typing import List, Callable, Any, Tuple
 import numpy as np
 
 
-from ppg_to_stress import get_stress_time_series
-from decode import Preprc
-from filtering import get_realigned_data
-from ppg_to_stress import get_stress_time_series
-import utils
+# from ppg_to_stress import get_stress_time_series
+# from decode import Preprc
+from core.feature.stress_from_ppg.filtering import get_realigned_data
+from core.feature.stress_from_ppg.ppg_to_stress import get_stress_time_series
+import core.feature.stress_from_ppg.utils as utils
 
 feature_class_name = 'StressFromPPG'
 
