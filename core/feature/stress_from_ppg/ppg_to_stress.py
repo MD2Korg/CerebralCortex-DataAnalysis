@@ -18,7 +18,12 @@ import warnings
 from scipy.stats import skew,kurtosis
 from scipy import interpolate
 from datetime import datetime
+
+from core.computefeature import get_resource_contents
 warnings.filterwarnings('ignore')
+
+STRESS_MODEL_PATH = 'core/resources/models/stress_from_ppg/stress_clf.p'
+
 
 def get_pv(ppg_window_val,p=0,Fs=25,peak_percentile=30,peak_distance=.3):
     peak_loc, peak_dict = find_peaks(ppg_window_val[:,p],
@@ -191,7 +196,8 @@ def combine_data_sobc(window_col,ts_col,clf):
         return np.zeros((0,2))
 
 def get_stress_time_series(data):
-    clf = pickle.load(open('stress_clf.p','rb'))
+    # clf = pickle.load(open('stress_clf.p','rb'))
+    clf = get_resource_contents(STRESS_MODEL_PATH)
     data[:,0] = data[:,0]*1000
     data = data[:300000,:]
     if np.shape(data)[0]>100:

@@ -43,6 +43,7 @@ from core.feature.stress_from_ppg.filtering import get_realigned_data
 from core.feature.stress_from_ppg.ppg_to_stress import get_stress_time_series
 import core.feature.stress_from_ppg.utils as utils
 
+
 feature_class_name = 'StressFromPPG'
 
 class StressFromPPG(ComputeFeatureBase):
