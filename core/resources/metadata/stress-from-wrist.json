@@ -40,7 +40,7 @@
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "test.org.md2k.data_analysis.feature.predicted_stress",
+  "name": "org.md2k.data_analysis.feature.predicted_stress.v1",
   "owner": "CC_OWNER_CC",
   "type": "datastream"
 }
