@@ -196,8 +196,8 @@ def combine_data_sobc(window_col,ts_col,clf):
         return np.zeros((0,2))
 
 def get_stress_time_series(data):
-    # clf = pickle.load(open('stress_clf.p','rb'))
-    clf = get_resource_contents(STRESS_MODEL_PATH)
+    clf = pickle.load(open(STRESS_MODEL_PATH,'rb'))
+    # clf = get_resource_contents(STRESS_MODEL_PATH)
     data[:,0] = data[:,0]*1000
     data = data[:300000,:]
     if np.shape(data)[0]>100:
