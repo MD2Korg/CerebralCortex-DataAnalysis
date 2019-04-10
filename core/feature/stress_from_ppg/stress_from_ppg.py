@@ -99,6 +99,7 @@ class StressFromPPG(ComputeFeatureBase):
                               input_streams=input_streams, user_id=user_id,
                               data=data, localtime=False)
         except Exception as e:
+            self.CC.logging.log("user_id:", user_id, "day:", day)
             self.CC.logging.log("Exception:", str(e))
             self.CC.logging.log(str(traceback.format_exc()))
 
