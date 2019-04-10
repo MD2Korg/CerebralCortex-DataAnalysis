@@ -87,8 +87,6 @@ class StressFromPPG(ComputeFeatureBase):
 
             if not ppg_data:
                 return
-
-
             ppg_data = np.array(sorted(ppg_data))
             offset = ppg_data[0, 1]
             stress_data = get_stress_time_series(ppg_data)
@@ -99,7 +97,7 @@ class StressFromPPG(ComputeFeatureBase):
                               input_streams=input_streams, user_id=user_id,
                               data=data, localtime=False)
         except Exception as e:
-            self.CC.logging.log("user_id:", user_id, "day:", day)
+            self.CC.logging.log("user_id: "+ user_id + " day: " + day)
             self.CC.logging.log("Exception:", str(e))
             self.CC.logging.log(str(traceback.format_exc()))
 
