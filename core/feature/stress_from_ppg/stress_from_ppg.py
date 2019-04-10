@@ -85,7 +85,7 @@ class StressFromPPG(ComputeFeatureBase):
                 input_streams.append(streams[rs])
                 ppg_data += data
 
-            if ppg_data is None:
+            if not ppg_data:
                 return
 
 
