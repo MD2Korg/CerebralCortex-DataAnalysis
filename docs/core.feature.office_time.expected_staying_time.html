@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.office_time.expected_staying_time</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.office_time.html"><font color="#ffffff">office_time</font></a>.expected_staying_time</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/office_time/expected_staying_time.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/office_time/expected_staying_time.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2018,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;-&nbsp;Alina&nbsp;Zaman&nbsp;&lt;azaman@memphis.edu&gt;<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="json.html">json</a><br>
+<a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+<a href="pdb.html">pdb</a><br>
+</td><td width="25%" valign=top><a href="pickle.html">pickle</a><br>
+<a href="pprint.html">pprint</a><br>
+</td><td width="25%" valign=top><a href="traceback.html">traceback</a><br>
+<a href="uuid.html">uuid</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="core.feature.office_time.expected_staying_time.html#ExpectedStayingTimes">ExpectedStayingTimes</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ExpectedStayingTimes">class <strong>ExpectedStayingTimes</strong></a>(<a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>&nbsp;Produce&nbsp;feature&nbsp;from&nbsp;the&nbsp;days&nbsp;when&nbsp;a&nbsp;participant&nbsp;was&nbsp;in&nbsp;office&nbsp;from&nbsp;stream<br>
+"org.md2k.data_analysis.feature.working_days".&nbsp;The&nbsp;time&nbsp;extent&nbsp;between&nbsp;arrival&nbsp;time<br>
+and&nbsp;leaving&nbsp;time&nbsp;is&nbsp;taken&nbsp;as&nbsp;staying&nbsp;time.&nbsp;Usual&nbsp;staying&nbsp;time&nbsp;is&nbsp;calculated&nbsp;from&nbsp;these<br>
+data.&nbsp;For&nbsp;example,&nbsp;if&nbsp;anyone's&nbsp;office&nbsp;staying&nbsp;time&nbsp;is&nbsp;the&nbsp;7&nbsp;hour&nbsp;30&nbsp;min&nbsp;in&nbsp;usual&nbsp;then<br>
+expected&nbsp;conservative&nbsp;staying&nbsp;time&nbsp;is&nbsp;8&nbsp;hour&nbsp;and&nbsp;expected&nbsp;liberal&nbsp;staying&nbsp;time&nbsp;is&nbsp;7&nbsp;hour.<br>
+Each&nbsp;day's&nbsp;staying_time&nbsp;is&nbsp;marked&nbsp;as&nbsp;in_expected_conservative_time&nbsp;or<br>
+more_than_expected_conservative_time&nbsp;or&nbsp;less_than_expected_conservative_time&nbsp;in&nbsp;one&nbsp;stream.<br>
+And&nbsp;in&nbsp;another&nbsp;stream&nbsp;each&nbsp;day's&nbsp;staying_time&nbsp;is&nbsp;marked&nbsp;as&nbsp;in_expected_liberal_time&nbsp;or<br>
+more_than_expected_liberal_time&nbsp;or&nbsp;less_than_expected_liberal_time<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="core.feature.office_time.expected_staying_time.html#ExpectedStayingTimes">ExpectedStayingTimes</a></dd>
+<dd><a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="ExpectedStayingTimes-listing_all_expected_staying_times"><strong>listing_all_expected_staying_times</strong></a>(self, user_id:str, all_days:List[str])</dt><dd><tt>Produce&nbsp;and&nbsp;save&nbsp;the&nbsp;list&nbsp;of&nbsp;work_day's&nbsp;staying_time&nbsp;at&nbsp;office&nbsp;from<br>
+"org.md2k.data_analysis.feature.working_days"&nbsp;stream&nbsp;and&nbsp;marked&nbsp;each&nbsp;day's<br>
+staying_time&nbsp;as&nbsp;in_expected_conservative_time&nbsp;or&nbsp;more_than_expected_conservative_time<br>
+or&nbsp;less_than_expected_conservative_time&nbsp;in&nbsp;one&nbsp;stream&nbsp;and&nbsp;in&nbsp;another&nbsp;stream&nbsp;each&nbsp;day's<br>
+staying_time&nbsp;is&nbsp;marked&nbsp;as&nbsp;in_expected_liberal_time&nbsp;or&nbsp;more_than_expected_liberal_time<br>
+or&nbsp;less_than_expected_liberal_time<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;stream&nbsp;owner<br>
+:param&nbsp;List(str)&nbsp;all_days:&nbsp;All&nbsp;days&nbsp;of&nbsp;the&nbsp;user&nbsp;in&nbsp;the&nbsp;format&nbsp;'YYYYMMDD'<br>
+:return:</tt></dd></dl>
+
+<dl><dt><a name="ExpectedStayingTimes-process"><strong>process</strong></a>(self, user_id:str, all_days:List[str])</dt><dd><tt>Main&nbsp;processing&nbsp;function&nbsp;inherited&nbsp;from&nbsp;ComputerFeatureBase<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;user<br>
+:param&nbsp;List(str)&nbsp;all_days:&nbsp;List&nbsp;of&nbsp;days&nbsp;with&nbsp;format&nbsp;'YYYYMMDD'<br>
+:return:</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>:<br>
+<dl><dt><a name="ExpectedStayingTimes-__init__"><strong>__init__</strong></a>(self, CC=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="ExpectedStayingTimes-get_latest_stream_id"><strong>get_latest_stream_id</strong></a>(self, user_id, stream_name)</dt></dl>
+
+<dl><dt><a name="ExpectedStayingTimes-store"><strong>store</strong></a>(self, identifier, owner, name, data_descriptor, execution_context, annotations, stream_type=1, data=None, localtime=True)</dt><dd><tt>All&nbsp;store&nbsp;operations&nbsp;MUST&nbsp;be&nbsp;through&nbsp;this&nbsp;method.</tt></dd></dl>
+
+<dl><dt><a name="ExpectedStayingTimes-store_stream"><strong>store_stream</strong></a>(self, filepath:str, input_streams:list, user_id:&lt;module 'uuid' from '/usr/lib/python3.6/uuid.py'&gt;, data:list, localtime=True)</dt><dd><tt>This&nbsp;method&nbsp;saves&nbsp;the&nbsp;computed&nbsp;DataStreams&nbsp;from&nbsp;different&nbsp;features</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>MEDIAN_ABSOLUTE_DEVIATION_MULTIPLIER</strong> = 1.4826<br>
+<strong>OUTLIER_DETECTION_MULTIPLIER</strong> = 3<br>
+<strong>Working_Days_STREAM</strong> = 'org.md2k.data_analysis.feature.working_days'<br>
+<strong>feature_class_name</strong> = 'ExpectedStayingTimes'</td></tr></table>
+</body></html>

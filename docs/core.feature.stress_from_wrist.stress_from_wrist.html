@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.stress_from_wrist.stress_from_wrist</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.stress_from_wrist.html"><font color="#ffffff">stress_from_wrist</font></a>.stress_from_wrist</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/stress_from_wrist/stress_from_wrist.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/stress_from_wrist/stress_from_wrist.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2018,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="core.html">core</a><br>
+<a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+<a href="pickle.html">pickle</a><br>
+</td><td width="25%" valign=top><a href="pytz.html">pytz</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="core.feature.stress_from_wrist.stress_from_wrist.html#stress_from_wrist">stress_from_wrist</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="stress_from_wrist">class <strong>stress_from_wrist</strong></a>(<a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;class&nbsp;extracts&nbsp;all&nbsp;the&nbsp;RR&nbsp;interval&nbsp;data&nbsp;that&nbsp;is&nbsp;present&nbsp;for&nbsp;a&nbsp;person&nbsp;on&nbsp;a&nbsp;specific&nbsp;day.<br>
+Calculates&nbsp;the&nbsp;necessary&nbsp;features&nbsp;from&nbsp;the&nbsp;rr&nbsp;interval&nbsp;data&nbsp;and&nbsp;assigns&nbsp;each&nbsp;minute&nbsp;of&nbsp;the&nbsp;day&nbsp;as&nbsp;<br>
+Stress/Not&nbsp;stress&nbsp;state.<br>
+&nbsp;<br>
+Algorithm::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Input:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RR&nbsp;interval&nbsp;datastream.&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Each&nbsp;DataPoint&nbsp;contains&nbsp;the&nbsp;following&nbsp;three&nbsp;things<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;A&nbsp;list&nbsp;of&nbsp;RR-interval&nbsp;array.&nbsp;Each&nbsp;entry&nbsp;in&nbsp;the&nbsp;list&nbsp;corresponds&nbsp;to&nbsp;a&nbsp;realization&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;the&nbsp;position&nbsp;of&nbsp;R&nbsp;peaks&nbsp;in&nbsp;that&nbsp;minute<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;Standard&nbsp;Deviation&nbsp;of&nbsp;Heart&nbsp;Rate&nbsp;within&nbsp;the&nbsp;minute<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.&nbsp;A&nbsp;list&nbsp;corresponding&nbsp;to&nbsp;the&nbsp;heart&nbsp;rate&nbsp;values&nbsp;calculated&nbsp;from&nbsp;variable&nbsp;realizations&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;the&nbsp;RR&nbsp;interval&nbsp;on&nbsp;a&nbsp;sliding&nbsp;window&nbsp;of&nbsp;window&nbsp;size&nbsp;=&nbsp;8&nbsp;second&nbsp;and&nbsp;window&nbsp;offset&nbsp;=&nbsp;2&nbsp;second.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Steps:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;Extract&nbsp;all&nbsp;the&nbsp;RR&nbsp;interval&nbsp;data&nbsp;for&nbsp;a&nbsp;user&nbsp;on&nbsp;a&nbsp;specific&nbsp;day<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;Extract&nbsp;all&nbsp;the&nbsp;16&nbsp;features&nbsp;per&nbsp;minute&nbsp;of&nbsp;the&nbsp;RR&nbsp;interval&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.&nbsp;Standardize&nbsp;each&nbsp;feature&nbsp;row&nbsp;and&nbsp;output&nbsp;stress/not&nbsp;stress&nbsp;state<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Output:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;datastream&nbsp;containing&nbsp;a&nbsp;list&nbsp;of&nbsp;datapoints,&nbsp;each&nbsp;DataPoint&nbsp;represents&nbsp;one&nbsp;minute&nbsp;where&nbsp;sample=0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;means&nbsp;the&nbsp;user&nbsp;was&nbsp;not&nbsp;stressed&nbsp;and&nbsp;sample=1&nbsp;means&nbsp;the&nbsp;person&nbsp;was&nbsp;stressed<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;:Features:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;82nd&nbsp;perentile<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;18th&nbsp;perentile<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.&nbsp;mean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.&nbsp;median<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5.&nbsp;standard&nbsp;deviation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6.&nbsp;inter&nbsp;quartile&nbsp;deviation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7.&nbsp;skewness<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8.&nbsp;kurtosis<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9.&nbsp;Energy&nbsp;in&nbsp;very&nbsp;low&nbsp;frequency&nbsp;range<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10.&nbsp;Energy&nbsp;in&nbsp;very&nbsp;high&nbsp;frequency&nbsp;range<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11.&nbsp;Energy&nbsp;in&nbsp;low&nbsp;frequency&nbsp;range<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12.&nbsp;Ration&nbsp;of&nbsp;low&nbsp;to&nbsp;high&nbsp;frequency&nbsp;energy&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13.&nbsp;quartile&nbsp;deviation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;14.&nbsp;heart&nbsp;rate<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;15.&nbsp;median&nbsp;of&nbsp;inter&nbsp;percentile&nbsp;difference<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;16.&nbsp;standard&nbsp;deviation&nbsp;of&nbsp;inter&nbsp;percentile&nbsp;difference&nbsp;<br>
+&nbsp;<br>
+:References<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;K.&nbsp;Hovsepian,&nbsp;M.&nbsp;al’Absi,&nbsp;E.&nbsp;Ertin,&nbsp;T.&nbsp;Kamarck,&nbsp;M.&nbsp;Nakajima,&nbsp;and&nbsp;S.&nbsp;Kumar,&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"cStress:&nbsp;Towards&nbsp;a&nbsp;Gold&nbsp;Standard&nbsp;for&nbsp;Continuous&nbsp;Stress&nbsp;Assessment&nbsp;in&nbsp;the&nbsp;Mobile&nbsp;Environment,"&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACM&nbsp;UbiComp,&nbsp;pp.&nbsp;493-504,&nbsp;2015.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="core.feature.stress_from_wrist.stress_from_wrist.html#stress_from_wrist">stress_from_wrist</a></dd>
+<dd><a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="stress_from_wrist-get_and_save_data"><strong>get_and_save_data</strong></a>(self, streams:dict, day:str, stream_identifier:str, user_id:str, json_path:list)</dt><dd><tt>This&nbsp;&nbsp;function&nbsp;takes&nbsp;all&nbsp;the&nbsp;streams&nbsp;of&nbsp;one&nbsp;user&nbsp;and&nbsp;extracts&nbsp;all&nbsp;the&nbsp;RR&nbsp;interval&nbsp;data&nbsp;the&nbsp;person&nbsp;has&nbsp;for&nbsp;a&nbsp;<br>
+specific&nbsp;day&nbsp;and&nbsp;calculates&nbsp;a&nbsp;feature&nbsp;matrix&nbsp;of&nbsp;shape&nbsp;(m,16)&nbsp;where&nbsp;m&nbsp;is&nbsp;the&nbsp;number&nbsp;of&nbsp;minutes&nbsp;of&nbsp;rr&nbsp;interval&nbsp;data<br>
+present&nbsp;for&nbsp;the&nbsp;day.<br>
+&nbsp;<br>
+It&nbsp;then&nbsp;transforms&nbsp;the&nbsp;feature&nbsp;matrix&nbsp;on&nbsp;a&nbsp;row&nbsp;by&nbsp;row&nbsp;basis&nbsp;with&nbsp;a&nbsp;pre&nbsp;trained&nbsp;standard&nbsp;transformation&nbsp;and&nbsp;<br>
+applies&nbsp;the&nbsp;stess&nbsp;model&nbsp;to&nbsp;get&nbsp;a&nbsp;binary&nbsp;output&nbsp;of&nbsp;0/1&nbsp;meaning&nbsp;stress/not&nbsp;stress.<br>
+&nbsp;<br>
+It&nbsp;saves&nbsp;the&nbsp;stress&nbsp;datastream<br>
+&nbsp;<br>
+:param&nbsp;dict&nbsp;streams:&nbsp;All&nbsp;the&nbsp;streams&nbsp;of&nbsp;a&nbsp;user<br>
+:param&nbsp;str&nbsp;day:&nbsp;day&nbsp;in&nbsp;string&nbsp;format<br>
+:param&nbsp;str&nbsp;stream_identifier:&nbsp;stream&nbsp;name&nbsp;of&nbsp;rr&nbsp;interval<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;uuid&nbsp;of&nbsp;user<br>
+:param&nbsp;list&nbsp;json_path:&nbsp;the&nbsp;names&nbsp;of&nbsp;the&nbsp;json&nbsp;files&nbsp;where&nbsp;the&nbsp;metadata&nbsp;of&nbsp;stress&nbsp;from&nbsp;wrist&nbsp;is&nbsp;written</tt></dd></dl>
+
+<dl><dt><a name="stress_from_wrist-get_feature_for_one_window"><strong>get_feature_for_one_window</strong></a>(self, rr:list) -&gt; numpy.ndarray</dt><dd><tt>This&nbsp;function&nbsp;takes&nbsp;as&nbsp;input&nbsp;a&nbsp;list&nbsp;of&nbsp;many&nbsp;realizations&nbsp;of&nbsp;where&nbsp;the&nbsp;R&nbsp;peaks&nbsp;are&nbsp;present&nbsp;in&nbsp;one&nbsp;minute&nbsp;of&nbsp;<br>
+PPG&nbsp;data&nbsp;and&nbsp;calculates&nbsp;16&nbsp;features&nbsp;from&nbsp;it.<br>
+The&nbsp;features&nbsp;are:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;82nd&nbsp;perentile<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;18th&nbsp;perentile<br>
+&nbsp;&nbsp;&nbsp;&nbsp;3.&nbsp;mean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;4.&nbsp;median<br>
+&nbsp;&nbsp;&nbsp;&nbsp;5.&nbsp;standard&nbsp;deviation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;6.&nbsp;inter&nbsp;quartile&nbsp;deviation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;7.&nbsp;skewness<br>
+&nbsp;&nbsp;&nbsp;&nbsp;8.&nbsp;kurtosis<br>
+&nbsp;&nbsp;&nbsp;&nbsp;9.&nbsp;Energy&nbsp;in&nbsp;very&nbsp;low&nbsp;frequency&nbsp;range<br>
+&nbsp;&nbsp;&nbsp;&nbsp;10.&nbsp;Energy&nbsp;in&nbsp;very&nbsp;high&nbsp;frequency&nbsp;range<br>
+&nbsp;&nbsp;&nbsp;&nbsp;11.&nbsp;Energy&nbsp;in&nbsp;low&nbsp;frequency&nbsp;range<br>
+&nbsp;&nbsp;&nbsp;&nbsp;12.&nbsp;Ration&nbsp;of&nbsp;low&nbsp;to&nbsp;high&nbsp;frequency&nbsp;energy&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;13.&nbsp;quartile&nbsp;deviation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;14.&nbsp;heart&nbsp;rate<br>
+&nbsp;&nbsp;&nbsp;&nbsp;15.&nbsp;median&nbsp;of&nbsp;inter&nbsp;percentile&nbsp;difference<br>
+&nbsp;&nbsp;&nbsp;&nbsp;16.&nbsp;standard&nbsp;deviation&nbsp;of&nbsp;inter&nbsp;percentile&nbsp;difference&nbsp;<br>
+&nbsp;<br>
+:param&nbsp;list&nbsp;rr:&nbsp;A&nbsp;list&nbsp;of&nbsp;numpy&nbsp;array.&nbsp;Each&nbsp;array&nbsp;contains&nbsp;a&nbsp;realization&nbsp;of&nbsp;RR&nbsp;interval&nbsp;timeseries&nbsp;for&nbsp;the&nbsp;same&nbsp;one<br>
+minute&nbsp;of&nbsp;data&nbsp;<br>
+:return:&nbsp;A&nbsp;numpy&nbsp;array&nbsp;of&nbsp;shape(1,16)&nbsp;representing&nbsp;the&nbsp;16&nbsp;features&nbsp;calculated&nbsp;from&nbsp;one&nbsp;minute&nbsp;of&nbsp;data<br>
+:rtype:&nbsp;np.ndarray</tt></dd></dl>
+
+<dl><dt><a name="stress_from_wrist-process"><strong>process</strong></a>(self, user:str, all_days:list)</dt><dd><tt>Takes&nbsp;the&nbsp;user&nbsp;identifier&nbsp;and&nbsp;the&nbsp;list&nbsp;of&nbsp;days&nbsp;and&nbsp;does&nbsp;the&nbsp;required&nbsp;processing&nbsp;&nbsp;<br>
+:param&nbsp;str&nbsp;user:&nbsp;user&nbsp;id&nbsp;string<br>
+:param&nbsp;list&nbsp;all_days:&nbsp;list&nbsp;of&nbsp;days&nbsp;to&nbsp;compute</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>:<br>
+<dl><dt><a name="stress_from_wrist-__init__"><strong>__init__</strong></a>(self, CC=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="stress_from_wrist-get_latest_stream_id"><strong>get_latest_stream_id</strong></a>(self, user_id, stream_name)</dt></dl>
+
+<dl><dt><a name="stress_from_wrist-store"><strong>store</strong></a>(self, identifier, owner, name, data_descriptor, execution_context, annotations, stream_type=1, data=None, localtime=True)</dt><dd><tt>All&nbsp;store&nbsp;operations&nbsp;MUST&nbsp;be&nbsp;through&nbsp;this&nbsp;method.</tt></dd></dl>
+
+<dl><dt><a name="stress_from_wrist-store_stream"><strong>store_stream</strong></a>(self, filepath:str, input_streams:list, user_id:&lt;module 'uuid' from '/usr/lib/python3.6/uuid.py'&gt;, data:list, localtime=True)</dt><dd><tt>This&nbsp;method&nbsp;saves&nbsp;the&nbsp;computed&nbsp;DataStreams&nbsp;from&nbsp;different&nbsp;features</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>Fs</strong> = 25<br>
+<strong>activity_identifier</strong> = 'org.md2k.data_analysis.feature.activity.wrist.accel_only.10_seconds'<br>
+<strong>feature_class_name</strong> = 'stress_from_wrist'<br>
+<strong>no_of_feature</strong> = 14<br>
+<strong>path_to_model_files</strong> = 'core/resources/models/stress_wrist/'<br>
+<strong>rr_interval_identifier</strong> = 'org.md2k.data_analysis.feature.rr_interval.v1'<br>
+<strong>window_offset</strong> = 60<br>
+<strong>window_size</strong> = 60</td></tr></table>
+</body></html>

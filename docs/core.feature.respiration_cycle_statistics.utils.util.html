@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.respiration_cycle_statistics.utils.util</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.respiration_cycle_statistics.html"><font color="#ffffff">respiration_cycle_statistics</font></a>.<a href="core.feature.respiration_cycle_statistics.utils.html"><font color="#ffffff">utils</font></a>.util</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/respiration_cycle_statistics/utils/util.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/respiration_cycle_statistics/utils/util.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2018,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="scipy.interpolate.html">scipy.interpolate</a><br>
+<a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="scipy.html">scipy</a><br>
+<a href="scipy.signal.html">scipy.signal</a><br>
+</td><td width="25%" valign=top><a href="scipy.stats.html">scipy.stats</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="enum.html#Enum">enum.Enum</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="core.feature.respiration_cycle_statistics.utils.util.html#Quality">Quality</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Quality">class <strong>Quality</strong></a>(<a href="enum.html#Enum">enum.Enum</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>An&nbsp;enumeration.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="core.feature.respiration_cycle_statistics.utils.util.html#Quality">Quality</a></dd>
+<dd><a href="enum.html#Enum">enum.Enum</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>ACCEPTABLE</strong> = &lt;Quality.ACCEPTABLE: 1&gt;</dl>
+
+<dl><dt><strong>UNACCEPTABLE</strong> = &lt;Quality.UNACCEPTABLE: 0&gt;</dl>
+
+<hr>
+Data descriptors inherited from <a href="enum.html#Enum">enum.Enum</a>:<br>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>The&nbsp;name&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<dl><dt><strong>value</strong></dt>
+<dd><tt>The&nbsp;value&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<hr>
+Data descriptors inherited from <a href="enum.html#EnumMeta">enum.EnumMeta</a>:<br>
+<dl><dt><strong>__members__</strong></dt>
+<dd><tt>Returns&nbsp;a&nbsp;mapping&nbsp;of&nbsp;member&nbsp;name-&gt;value.<br>
+&nbsp;<br>
+This&nbsp;mapping&nbsp;lists&nbsp;all&nbsp;enum&nbsp;members,&nbsp;including&nbsp;aliases.&nbsp;Note&nbsp;that&nbsp;this<br>
+is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-admission_control"><strong>admission_control</strong></a>(data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Checks&nbsp;if&nbsp;all&nbsp;the&nbsp;DataPoints&nbsp;in&nbsp;the&nbsp;input&nbsp;conform&nbsp;towards&nbsp;being&nbsp;a&nbsp;respiration<br>
+DataPoint&nbsp;and&nbsp;returns&nbsp;only&nbsp;those&nbsp;who&nbsp;passes&nbsp;the&nbsp;condition<br>
+&nbsp;<br>
+:param&nbsp;data:&nbsp;list&nbsp;of&nbsp;respiration&nbsp;DataPoints<br>
+:return:&nbsp;list&nbsp;of&nbsp;filtered&nbsp;respiration&nbsp;datapoints</tt></dd></dl>
+ <dl><dt><a name="-bandpower"><strong>bandpower</strong></a>(x:object, fs:object, fmin:object, fmax:object, nfft_point:object=1024) -&gt; object</dt><dd><tt>returns&nbsp;the&nbsp;power&nbsp;in&nbsp;a&nbsp;frequency&nbsp;band&nbsp;of&nbsp;a&nbsp;signal<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;x:<br>
+:param&nbsp;fs:<br>
+:param&nbsp;fmin:&nbsp;low&nbsp;frequency<br>
+:param&nbsp;fmax:&nbsp;high&nbsp;frequency<br>
+:param&nbsp;nfft_point:<br>
+:return:&nbsp;power&nbsp;in&nbsp;low&nbsp;to&nbsp;high&nbsp;frequency&nbsp;band</tt></dd></dl>
+ <dl><dt><a name="-calculate_power_in_frequency_band"><strong>calculate_power_in_frequency_band</strong></a>(y:object, Fs:object) -&gt; object</dt><dd><tt>calculates&nbsp;power&nbsp;in&nbsp;respiration&nbsp;cycle&nbsp;from&nbsp;predefined&nbsp;frequency&nbsp;bands<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;y:<br>
+:param&nbsp;Fs:<br>
+:return:&nbsp;an&nbsp;array&nbsp;of&nbsp;5&nbsp;represinting&nbsp;the&nbsp;power&nbsp;in&nbsp;each&nbsp;band</tt></dd></dl>
+ <dl><dt><a name="-filter_bad_rip"><strong>filter_bad_rip</strong></a>(ts:object, sample:object, window_size:object=150, filter_condition:object=120) -&gt; object</dt><dd><tt>Filters&nbsp;respiration&nbsp;signal&nbsp;to&nbsp;remove&nbsp;outliers<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;ts:<br>
+:param&nbsp;sample:<br>
+:param&nbsp;window_size:<br>
+:param&nbsp;filter_condition:&nbsp;minimum&nbsp;range&nbsp;of&nbsp;acceptable&nbsp;signal<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-get_covariance"><strong>get_covariance</strong></a>(data1:object, data2:object) -&gt; object</dt><dd><tt>Get&nbsp;the&nbsp;correlation&nbsp;of&nbsp;two&nbsp;signals&nbsp;with&nbsp;unequal&nbsp;data&nbsp;length<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;data1:<br>
+:param&nbsp;data2:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-get_cycle_quality"><strong>get_cycle_quality</strong></a>(sample:object, ts:object, fs:object=25, acceptable_percentage:object=0.5) -&gt; object</dt><dd><tt>get&nbsp;the&nbsp;quality&nbsp;of&nbsp;a&nbsp;respiration&nbsp;cycle&nbsp;through&nbsp;checking&nbsp;the&nbsp;number&nbsp;of<br>
+DataPoints&nbsp;present<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;sample:<br>
+:param&nbsp;ts:<br>
+:param&nbsp;fs:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-get_recovery"><strong>get_recovery</strong></a>(rip:List[cerebralcortex.core.datatypes.datapoint.DataPoint], baseline:List[cerebralcortex.core.datatypes.datapoint.DataPoint], Fs) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>matches&nbsp;respiration&nbsp;raw&nbsp;with&nbsp;baseline&nbsp;signal&nbsp;and&nbsp;returns&nbsp;the&nbsp;recovered<br>
+signal<br>
+&nbsp;<br>
+:param&nbsp;rip:&nbsp;respiration&nbsp;raw<br>
+:param&nbsp;baseline:<br>
+:param&nbsp;Fs:<br>
+:return:&nbsp;respiration&nbsp;recovered&nbsp;signal</tt></dd></dl>
+ <dl><dt><a name="-recover_rip_rawwithmeasuredref"><strong>recover_rip_rawwithmeasuredref</strong></a>(RIP:list, ref:list, Fs:object) -&gt; numpy.ndarray</dt><dd><tt>Recovers&nbsp;Respiration&nbsp;final&nbsp;signal&nbsp;from&nbsp;baseline&nbsp;and&nbsp;raw<br>
+&nbsp;<br>
+:param&nbsp;RIP:&nbsp;respiration&nbsp;raw<br>
+:param&nbsp;ref:&nbsp;respiration&nbsp;baseline<br>
+:param&nbsp;Fs:&nbsp;sampling&nbsp;frequency<br>
+:return:&nbsp;recovered&nbsp;final&nbsp;respiration&nbsp;signal&nbsp;as&nbsp;a&nbsp;combination&nbsp;of&nbsp;respiration&nbsp;raw&nbsp;and&nbsp;baseline</tt></dd></dl>
+ <dl><dt><a name="-respiration_area_shape_velocity_calculation"><strong>respiration_area_shape_velocity_calculation</strong></a>(sample:object, ts:object, peak:object, cycle_quality:object, fs:object=25, unacceptable:object=-9999) -&gt; object</dt><dd><tt>Calculates&nbsp;the&nbsp;area&nbsp;,&nbsp;shape&nbsp;and&nbsp;velocity&nbsp;features&nbsp;from&nbsp;respiration&nbsp;cycles<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;sample:<br>
+:param&nbsp;ts:<br>
+:param&nbsp;peak:<br>
+:param&nbsp;cycle_quality:<br>
+:param&nbsp;fs:<br>
+:return:&nbsp;respiration&nbsp;cycle&nbsp;quality,Inspiration&nbsp;area,Expiration&nbsp;area,<br>
+Respiration&nbsp;area,Insp&nbsp;Exp&nbsp;Area&nbsp;ratio,Inspiration&nbsp;velocity,<br>
+Expiration&nbsp;velocity,skewness&nbsp;of&nbsp;cycle,&nbsp;kurtosis&nbsp;of&nbsp;cycle</tt></dd></dl>
+ <dl><dt><a name="-return_bandPassedSignal"><strong>return_bandPassedSignal</strong></a>(sample:object, f1L:object, f1H:object, f2L:object, f2H:object, Fs:object=25) -&gt; object</dt><dd><tt>Return&nbsp;bandpass&nbsp;filtered&nbsp;signal&nbsp;with&nbsp;two&nbsp;set&nbsp;of&nbsp;cutoffs<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;sample:<br>
+:param&nbsp;f1L:<br>
+:param&nbsp;f1H:<br>
+:param&nbsp;f2L:<br>
+:param&nbsp;f2H:<br>
+:param&nbsp;Fs:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-return_neighbour_cycle_correlation"><strong>return_neighbour_cycle_correlation</strong></a>(sample:object, ts:object, inspiration:object, unacceptable:object=-9999) -&gt; object</dt><dd><tt>Return&nbsp;Neighbour&nbsp;Cycle&nbsp;correlation&nbsp;array&nbsp;of&nbsp;respiration&nbsp;cycles.<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;sample:<br>
+:param&nbsp;ts:<br>
+:param&nbsp;inspiration:<br>
+&nbsp;<br>
+:return:&nbsp;modified&nbsp;cycle&nbsp;quality,correlation&nbsp;with&nbsp;previous&nbsp;cycle,<br>
+correlation&nbsp;with&nbsp;next&nbsp;cycle</tt></dd></dl>
+ <dl><dt><a name="-smooth"><strong>smooth</strong></a>(y:list, box_pts:int) -&gt; numpy.ndarray</dt><dd><tt>smooths&nbsp;a&nbsp;1d&nbsp;signal&nbsp;through&nbsp;convolution<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;y:&nbsp;signal<br>
+:param&nbsp;box_pts:&nbsp;number&nbsp;of&nbsp;samples&nbsp;in&nbsp;moving&nbsp;average<br>
+:return:&nbsp;smoothed&nbsp;signal</tt></dd></dl>
+ <dl><dt><a name="-smooth_detrend"><strong>smooth_detrend</strong></a>(sample:object, ts:object, window_size:object=300, no_of_samples:object=13) -&gt; object</dt><dd><tt>piecewise&nbsp;detrending&nbsp;of&nbsp;signal&nbsp;by&nbsp;subtracting&nbsp;the&nbsp;mean&nbsp;of&nbsp;every&nbsp;non<br>
+overlapping&nbsp;300&nbsp;seconds<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;sample:<br>
+:param&nbsp;ts:<br>
+:param&nbsp;window_size:<br>
+:param&nbsp;no_of_samples:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-spectral_energy_calculation"><strong>spectral_energy_calculation</strong></a>(sample:object, ts:object, cycle_quality:object, fs:object=25, unacceptable:object=-9999, f1L:object=0.01, f1H:object=0.05, f2L:object=1.8, f2H:object=1.85) -&gt; object</dt><dd><tt>calculates&nbsp;the&nbsp;spectral&nbsp;energy&nbsp;of&nbsp;respiration&nbsp;cycle<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;sample:<br>
+:param&nbsp;ts:<br>
+:param&nbsp;cycle_quality:<br>
+:param&nbsp;fs:<br>
+:return:&nbsp;energy&nbsp;of&nbsp;respiration&nbsp;cycle,power&nbsp;between&nbsp;.05-.2&nbsp;Hz,.201-.4&nbsp;Hz,<br>
+.401-.6&nbsp;Hz,.601-.8&nbsp;Hz,.801-1&nbsp;Hz</tt></dd></dl>
+ <dl><dt><a name="-spectral_entropy_calculation"><strong>spectral_entropy_calculation</strong></a>(sample:object, ts:object, cycle_quality:object, unacceptable:object=-9999) -&gt; object</dt><dd><tt>Calcuclates&nbsp;the&nbsp;entropy&nbsp;of&nbsp;a&nbsp;respiration&nbsp;cycle<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;sample:<br>
+:param&nbsp;ts:<br>
+:param&nbsp;cycle_quality:<br>
+:return:&nbsp;entropy&nbsp;of&nbsp;respiration&nbsp;cycle</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>Fs</strong> = 25<br>
+<strong>respiration_baseline_autosenseble</strong> = 'RESPIRATION_BASELINE--org.md2k.autosenseble--AUTOSENSE_BLE--CHEST'<br>
+<strong>respiration_raw_autosenseble</strong> = 'RESPIRATION--org.md2k.autosenseble--AUTOSENSE_BLE--CHEST'</td></tr></table>
+</body></html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.context.util</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.context.html"><font color="#ffffff">context</font></a>.util</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/context/util.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/context/util.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2018,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;-&nbsp;Nasir&nbsp;Ali&nbsp;&lt;nasir.ali08@gmail.com&gt;<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-filter_data"><strong>filter_data</strong></a>(data:list, start_time:datetime.datetime, end_time:datetime.datetime) -&gt; list</dt><dd><tt>Filter&nbsp;data&nbsp;points&nbsp;based&nbsp;on&nbsp;start&nbsp;and&nbsp;end&nbsp;time<br>
+:param&nbsp;data:<br>
+:param&nbsp;start_time:<br>
+:param&nbsp;end_time:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-get_home_work_location"><strong>get_home_work_location</strong></a>(data:list, start_time:datetime.datetime, end_time:datetime.datetime) -&gt; str</dt><dd><tt>Get&nbsp;location&nbsp;(work/home)&nbsp;between&nbsp;start&nbsp;and&nbsp;end&nbsp;time&nbsp;duration<br>
+:param&nbsp;data:<br>
+:param&nbsp;start_time:<br>
+:param&nbsp;end_time:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-get_input_streams"><strong>get_input_streams</strong></a>(stream:dict) -&gt; list</dt><dd><tt>Generate&nbsp;input&nbsp;stream&nbsp;list<br>
+:param&nbsp;stream:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-get_phone_physical_activity_data"><strong>get_phone_physical_activity_data</strong></a>(data:list, start_time:datetime.datetime, end_time:datetime.datetime) -&gt; int</dt><dd><tt>Get&nbsp;a&nbsp;user's&nbsp;physical&nbsp;activity&nbsp;between&nbsp;start&nbsp;and&nbsp;end&nbsp;time<br>
+:param&nbsp;data:<br>
+:param&nbsp;start_time:<br>
+:param&nbsp;end_time:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-get_physical_activity_wrist_sensor"><strong>get_physical_activity_wrist_sensor</strong></a>(data:list, start_time:datetime.datetime, end_time:datetime.datetime) -&gt; str</dt><dd><tt>Get&nbsp;a&nbsp;user's&nbsp;activity&nbsp;based&nbsp;on&nbsp;wrist&nbsp;sensor&nbsp;during&nbsp;start/end&nbsp;time<br>
+:param&nbsp;data:<br>
+:param&nbsp;start_time:<br>
+:param&nbsp;end_time:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-get_places"><strong>get_places</strong></a>(data:list, start_time:datetime.datetime, end_time:datetime.datetime) -&gt; list</dt><dd><tt>Filter&nbsp;data&nbsp;points&nbsp;based&nbsp;on&nbsp;start&nbsp;and&nbsp;end&nbsp;time<br>
+:param&nbsp;data:<br>
+:param&nbsp;start_time:<br>
+:param&nbsp;end_time:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-in_time_range"><strong>in_time_range</strong></a>(dp_start_time:datetime.datetime, dp_end_time:datetime.datetime, start_time:datetime.datetime, end_time:datetime.datetime) -&gt; bool</dt><dd><tt>Check&nbsp;whether&nbsp;datapoint's&nbsp;start/end&nbsp;time&nbsp;is&nbsp;in&nbsp;range&nbsp;of&nbsp;qualtrics&nbsp;start/end&nbsp;time<br>
+:param&nbsp;dp_start_time:<br>
+:param&nbsp;dp_end_time:<br>
+:param&nbsp;start_time:<br>
+:param&nbsp;end_time:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-is_on_phone"><strong>is_on_phone</strong></a>(data:list, start_time:datetime.datetime, end_time:datetime.datetime) -&gt; bool</dt><dd><tt>Get&nbsp;whether&nbsp;a&nbsp;user&nbsp;was&nbsp;on&nbsp;phone&nbsp;durting&nbsp;start/end&nbsp;time<br>
+:param&nbsp;data:<br>
+:param&nbsp;start_time:<br>
+:param&nbsp;end_time:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-is_on_sms"><strong>is_on_sms</strong></a>(data:list, start_time:datetime.datetime, end_time:datetime.datetime) -&gt; bool</dt><dd><tt>Get&nbsp;whether&nbsp;a&nbsp;user&nbsp;was&nbsp;busy&nbsp;with&nbsp;sms&nbsp;durting&nbsp;start/end&nbsp;time<br>
+:param&nbsp;data:<br>
+:param&nbsp;start_time:<br>
+:param&nbsp;end_time:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-is_on_social_app"><strong>is_on_social_app</strong></a>(data:list, start_time:datetime.datetime, end_time:datetime.datetime) -&gt; bool</dt><dd><tt>Get&nbsp;whether&nbsp;a&nbsp;user&nbsp;was&nbsp;busy&nbsp;on&nbsp;social&nbsp;apps&nbsp;durting&nbsp;start/end&nbsp;time<br>
+:param&nbsp;data:<br>
+:param&nbsp;start_time:<br>
+:param&nbsp;end_time:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-is_talking"><strong>is_talking</strong></a>(data:list, start_time:datetime.datetime, end_time:datetime.datetime) -&gt; bool</dt><dd><tt>Get&nbsp;whether&nbsp;a&nbsp;user&nbsp;was&nbsp;talking&nbsp;between&nbsp;start/end&nbsp;time&nbsp;provided<br>
+:param&nbsp;data:<br>
+:param&nbsp;start_time:<br>
+:param&nbsp;end_time:<br>
+:return:</tt></dd></dl>
+</td></tr></table>
+</body></html>

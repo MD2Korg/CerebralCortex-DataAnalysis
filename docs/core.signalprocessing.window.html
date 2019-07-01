@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.signalprocessing.window</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.signalprocessing.html"><font color="#ffffff">signalprocessing</font></a>.window</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/signalprocessing/window.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/signalprocessing/window.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2017,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;-&nbsp;Nasir&nbsp;Ali&nbsp;&lt;nasir.ali08@gmail.com&gt;<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="pytz.html">pytz</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-create_all_windows"><strong>create_all_windows</strong></a>(datapoint:List[cerebralcortex.core.datatypes.datapoint.DataPoint], window_size:float, window_offset:float)</dt><dd><tt>This&nbsp;method&nbsp;will&nbsp;create&nbsp;a&nbsp;complete&nbsp;list&nbsp;of&nbsp;a&nbsp;windows&nbsp;between&nbsp;export_data&nbsp;and&nbsp;end&nbsp;time&nbsp;of&nbsp;the&nbsp;data&nbsp;provided.<br>
+:param&nbsp;datapoint:<br>
+:param&nbsp;window_size:<br>
+:param&nbsp;window_offset:<br>
+:return:&nbsp;a&nbsp;tupal&nbsp;of&nbsp;windowed&nbsp;data:&nbsp;[(st,et),[dp,dp,dp,dp...],&nbsp;{if&nbsp;a&nbsp;window&nbsp;contains&nbsp;data}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(st,et),[],&nbsp;(if&nbsp;a&nbsp;window&nbsp;does&nbsp;not&nbsp;contain&nbsp;any&nbsp;data}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...]</tt></dd></dl>
+ <dl><dt><a name="-epoch_align"><strong>epoch_align</strong></a>(ts:datetime.datetime, offset:float, after:bool=False, time_base:int=1000000.0) -&gt; datetime.datetime</dt><dd><tt>Epoch&nbsp;timestamp&nbsp;alignment&nbsp;based&nbsp;on&nbsp;offset<br>
+&nbsp;<br>
+:param&nbsp;time_zone:&nbsp;Specifiy&nbsp;the&nbsp;timezone&nbsp;of&nbsp;the&nbsp;timestamps,&nbsp;default&nbsp;US/Central<br>
+:param&nbsp;ts:&nbsp;datatime&nbsp;object&nbsp;representing&nbsp;the&nbsp;timestamp&nbsp;to&nbsp;export_data&nbsp;with<br>
+:param&nbsp;offset:&nbsp;seconds&nbsp;as&nbsp;a&nbsp;float<br>
+:param&nbsp;after:&nbsp;Flag&nbsp;designating&nbsp;if&nbsp;the&nbsp;result&nbsp;should&nbsp;be&nbsp;after&nbsp;ts<br>
+:param&nbsp;time_base:&nbsp;specifies&nbsp;the&nbsp;precision&nbsp;with&nbsp;which&nbsp;the&nbsp;time&nbsp;base&nbsp;should&nbsp;be&nbsp;manipulated&nbsp;(1e6&nbsp;-&gt;&nbsp;microseconds)<br>
+:return:&nbsp;aligned&nbsp;datetime&nbsp;object</tt></dd></dl>
+ <dl><dt><a name="-merge_consective_windows"><strong>merge_consective_windows</strong></a>(data:collections.OrderedDict) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Merge&nbsp;two&nbsp;or&nbsp;more&nbsp;windows&nbsp;if&nbsp;the&nbsp;time&nbsp;difference&nbsp;between&nbsp;them&nbsp;is&nbsp;0<br>
+:param&nbsp;data:&nbsp;windowed&nbsp;data&nbsp;(start-time,&nbsp;end-time,&nbsp;sample)<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-window"><strong>window</strong></a>(data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], window_size:float, all_windows:bool=False) -&gt; collections.OrderedDict</dt><dd><tt>Special&nbsp;case&nbsp;of&nbsp;a&nbsp;sliding&nbsp;window&nbsp;with&nbsp;no&nbsp;overlaps<br>
+:param&nbsp;data:<br>
+:param&nbsp;window_size:<br>
+:param&nbsp;all_windows:&nbsp;setting&nbsp;it&nbsp;to&nbsp;"True"&nbsp;will&nbsp;return&nbsp;a&nbsp;complete&nbsp;list&nbsp;(empty&nbsp;and&nbsp;non-empty)&nbsp;windows.&nbsp;Otherwise,&nbsp;it&nbsp;will&nbsp;only&nbsp;return&nbsp;windows&nbsp;that&nbsp;contain&nbsp;data&nbsp;(non-empty).<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-window_iter"><strong>window_iter</strong></a>(iterable:List[cerebralcortex.core.datatypes.datapoint.DataPoint], window_size:float, window_offset:float)</dt><dd><tt>Window&nbsp;iteration&nbsp;function&nbsp;that&nbsp;support&nbsp;various&nbsp;common&nbsp;implementations<br>
+:param&nbsp;iterable:<br>
+:param&nbsp;window_size:<br>
+:param&nbsp;window_offset:</tt></dd></dl>
+ <dl><dt><a name="-window_sliding"><strong>window_sliding</strong></a>(data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], window_size:float, window_offset:float, all_windows=False) -&gt; collections.OrderedDict</dt><dd><tt>Sliding&nbsp;Window&nbsp;Implementation<br>
+&nbsp;<br>
+:param&nbsp;all_windows:<br>
+:param&nbsp;data:&nbsp;list<br>
+:param&nbsp;window_size:&nbsp;float<br>
+:param&nbsp;window_offset:&nbsp;float<br>
+:param&nbsp;all_windows:&nbsp;setting&nbsp;it&nbsp;to&nbsp;"True"&nbsp;will&nbsp;return&nbsp;a&nbsp;complete&nbsp;list&nbsp;(empty&nbsp;and&nbsp;non-empty)&nbsp;windows.&nbsp;Otherwise,&nbsp;it&nbsp;will&nbsp;only&nbsp;return&nbsp;windows&nbsp;that&nbsp;contain&nbsp;data&nbsp;(non-empty).<br>
+:return:&nbsp;OrderedDict&nbsp;representing&nbsp;[(st,et),[dp,dp,dp,dp...],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(st,et),[dp,dp,dp,dp...],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...]</tt></dd></dl>
+</td></tr></table>
+</body></html>

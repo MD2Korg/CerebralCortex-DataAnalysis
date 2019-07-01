@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.puffmarker.wrist_features</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.puffmarker.html"><font color="#ffffff">puffmarker</font></a>.wrist_features</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/puffmarker/wrist_features.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/puffmarker/wrist_features.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2018,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;-&nbsp;Nazir&nbsp;Saleheen&nbsp;&lt;nazir.saleheen@gmail.com&gt;<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="json.html">json</a><br>
+<a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+<a href="os.html">os</a><br>
+</td><td width="25%" valign=top><a href="uuid.html">uuid</a><br>
+<a href="core.signalprocessing.vector.html">core.signalprocessing.vector</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-calculate_pitch"><strong>calculate_pitch</strong></a>(accel_data:List[cerebralcortex.core.datatypes.datapoint.DataPoint])</dt></dl>
+ <dl><dt><a name="-calculate_roll"><strong>calculate_roll</strong></a>(accel_data:List[cerebralcortex.core.datatypes.datapoint.DataPoint])</dt></dl>
+ <dl><dt><a name="-calculate_roll_pitch_yaw"><strong>calculate_roll_pitch_yaw</strong></a>(accel_data:List[cerebralcortex.core.datatypes.datapoint.DataPoint])</dt><dd><tt>Computes&nbsp;hand&nbsp;orientation&nbsp;(roll,&nbsp;pitch,&nbsp;yaw)&nbsp;from&nbsp;accelerometer&nbsp;signal<br>
+:param&nbsp;accel_data:<br>
+:return:&nbsp;roll_list,&nbsp;pitch_list,&nbsp;yaw_list</tt></dd></dl>
+ <dl><dt><a name="-calculate_yaw"><strong>calculate_yaw</strong></a>(accel_data:List[cerebralcortex.core.datatypes.datapoint.DataPoint])</dt></dl>
+ <dl><dt><a name="-compute_basic_statistical_features"><strong>compute_basic_statistical_features</strong></a>(data)</dt></dl>
+ <dl><dt><a name="-compute_candidate_features"><strong>compute_candidate_features</strong></a>(gyr_intersections, gyr_mag_data, roll_list, pitch_list, yaw_list)</dt><dd><tt>Computes&nbsp;feature&nbsp;vector&nbsp;for&nbsp;single&nbsp;hand-to-mouth&nbsp;gesture.&nbsp;Mainly&nbsp;statistical&nbsp;features&nbsp;of&nbsp;hand&nbsp;orientation<br>
+:param&nbsp;gyr_intersections:<br>
+:param&nbsp;gyr_mag_stream:<br>
+:param&nbsp;roll_list:<br>
+:param&nbsp;pitch_list:<br>
+:param&nbsp;yaw_list:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-compute_wrist_features"><strong>compute_wrist_features</strong></a>(accel_data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], gyro_data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], fast_moving_avg_size=20, slow_moving_avg_size=205)</dt></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>CONV_L</strong> = [[0, 1, 0], [1, 0, 0], [0, 0, 1]]<br>
+<strong>CONV_R</strong> = [[0, 1, 0], [-1, 0, 0], [0, 0, 1]]<br>
+<strong>FAST_MOVING_AVG_SIZE</strong> = 20<br>
+<strong>MAX_MSHRV_ACCEL</strong> = 2.5<br>
+<strong>MAX_MSHRV_GYRO</strong> = 250<br>
+<strong>MAX_PITCH</strong> = -40<br>
+<strong>MAX_ROLL</strong> = 65<br>
+<strong>MINIMUM_INTER_PUFF_DURATION</strong> = 5<br>
+<strong>MINIMUM_PUFFS_IN_EPISODE</strong> = 4<br>
+<strong>MINIMUM_TIME_DIFFERENCE_FIRST_AND_LAST_PUFFS</strong> = 420<br>
+<strong>MIN_MSHRV_ACCEL</strong> = -2.5<br>
+<strong>MIN_MSHRV_GYRO</strong> = -250<br>
+<strong>MIN_PITCH</strong> = -125<br>
+<strong>MIN_ROLL</strong> = -20<br>
+<strong>MOTIONSENSE_HRV_ACCEL_LEFT_STREAMNAME</strong> = 'ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST'<br>
+<strong>MOTIONSENSE_HRV_ACCEL_RIGHT_STREAMNAME</strong> = 'ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST'<br>
+<strong>MOTIONSENSE_HRV_GYRO_LEFT_STREAMNAME</strong> = 'GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST'<br>
+<strong>MOTIONSENSE_HRV_GYRO_RIGHT_STREAMNAME</strong> = 'GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST'<br>
+<strong>NON_PUFF_LABEL</strong> = 0<br>
+<strong>PUFFMARKER_MODEL_FILENAME</strong> = 'core/resources/models/puffmarker/puffmarker_wrist_randomforest.model'<br>
+<strong>PUFFMARKER_WRIST_SMOKING_EPISODE</strong> = 'org.md2k.data_analysis.feature.puffmarker.smoking_episode'<br>
+<strong>PUFFMARKER_WRIST_SMOKING_PUFF</strong> = 'org.md2k.data_analysis.feature.puffmarker.smoking_puff'<br>
+<strong>PUFF_LABEL_LEFT</strong> = 1<br>
+<strong>PUFF_LABEL_RIGHT</strong> = 2<br>
+<strong>SAMPLING_FREQ_MOTIONSENSE_ACCEL</strong> = 25<br>
+<strong>SAMPLING_FREQ_MOTIONSENSE_GYRO</strong> = 25<br>
+<strong>SAMPLING_FREQ_RIP</strong> = 21.33<br>
+<strong>SLOW_MOVING_AVG_SIZE</strong> = 205<br>
+<strong>study_name</strong> = 'mperf'</td></tr></table>
+</body></html>

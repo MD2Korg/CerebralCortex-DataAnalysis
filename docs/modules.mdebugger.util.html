@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module modules.mdebugger.util</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="modules.html"><font color="#ffffff">modules</font></a>.<a href="modules.mdebugger.html"><font color="#ffffff">mdebugger</font></a>.util</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/modules/mdebugger/util.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/modules/mdebugger/util.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2017,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;-&nbsp;Nasir&nbsp;Ali&nbsp;&lt;nasir.ali08@gmail.com&gt;<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="json.html">json</a><br>
+<a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+<a href="statistics.html">statistics</a><br>
+</td><td width="25%" valign=top><a href="uuid.html">uuid</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-get_stream_days"><strong>get_stream_days</strong></a>(raw_stream_id:&lt;module 'uuid' from '/usr/lib/python3.6/uuid.py'&gt;, dd_stream_id:&lt;module 'uuid' from '/usr/lib/python3.6/uuid.py'&gt;, CC:cerebralcortex.cerebralcortex.CerebralCortex) -&gt; List</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;days&nbsp;(string&nbsp;format:&nbsp;YearMonthDay&nbsp;(e.g.,&nbsp;20171206)<br>
+:param&nbsp;raw_stream_id:<br>
+:param&nbsp;dd_stream_id:</tt></dd></dl>
+ <dl><dt><a name="-magnitude_autosense_v1"><strong>magnitude_autosense_v1</strong></a>(accel_x:float, accel_y:float, accel_z:float) -&gt; list</dt><dd><tt>compute&nbsp;magnitude&nbsp;of&nbsp;x,&nbsp;y,&nbsp;and&nbsp;z<br>
+:param&nbsp;accel_x:<br>
+:param&nbsp;accel_y:<br>
+:param&nbsp;accel_z:<br>
+:return:&nbsp;magnitude&nbsp;values&nbsp;of&nbsp;a&nbsp;window&nbsp;as&nbsp;list</tt></dd></dl>
+ <dl><dt><a name="-magnitude_datapoints"><strong>magnitude_datapoints</strong></a>(data:cerebralcortex.core.datatypes.datapoint.DataPoint) -&gt; List</dt><dd><tt>:param&nbsp;data:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-magnitude_list"><strong>magnitude_list</strong></a>(data:List) -&gt; List</dt><dd><tt>:param&nbsp;data:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-merge_consective_windows"><strong>merge_consective_windows</strong></a>(data:collections.OrderedDict) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Merge&nbsp;two&nbsp;or&nbsp;more&nbsp;windows&nbsp;if&nbsp;the&nbsp;time&nbsp;difference&nbsp;between&nbsp;them&nbsp;is&nbsp;0<br>
+:param&nbsp;data:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-outlier_detection"><strong>outlier_detection</strong></a>(window_data:list) -&gt; list</dt><dd><tt>removes&nbsp;outliers&nbsp;from&nbsp;a&nbsp;list<br>
+This&nbsp;algorithm&nbsp;is&nbsp;modified&nbsp;version&nbsp;of&nbsp;Chauvenet's_criterion&nbsp;(https://en.wikipedia.org/wiki/Chauvenet's_criterion)<br>
+:param&nbsp;window_data:<br>
+:return:</tt></dd></dl>
+</td></tr></table>
+</body></html>
