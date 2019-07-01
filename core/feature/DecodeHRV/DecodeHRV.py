@@ -237,6 +237,8 @@ class DecodeHRV(ComputeFeatureBase):
             decoded_data[:,4:7] = decoded_data[:,4:7]*2/16384
             decoded_data[:,7:] = 500.0 * decoded_data[:,7:] / 32768
             marked_data = self.get_clean_ppg(decoded_data)
+            if len(marked_data)<100:
+                continue
             self.save_data(marked_data,offset,tzinfo,json_paths,all_streams,user_id,localtime)
 
 
