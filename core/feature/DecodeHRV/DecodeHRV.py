@@ -229,7 +229,7 @@ class DecodeHRV(ComputeFeatureBase):
                 continue
             offset = motionsense_raw_data[0,1]
             motionsense_raw_data = motionsense_raw_data[motionsense_raw_data[:,0].argsort()]
-            decoded_data = self.get_decoded_matrix(motionsense_raw_data[:2000])
+            decoded_data = self.get_decoded_matrix(motionsense_raw_data)
             if not list(decoded_data):
                 continue
             ind_led = np.array([10,7,8,9,1,2,3,4,5,6])
