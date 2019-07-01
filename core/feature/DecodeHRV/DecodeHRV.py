@@ -220,8 +220,10 @@ class DecodeHRV(ComputeFeatureBase):
             if len(motionsense_raw)<100:
                 continue
             print(motionsense_raw[0],'first datapoint')
+            print(len(motionsense_raw)," Size of extracted raw byte data")
             tzinfo = motionsense_raw[0].start_time.tzinfo
             motionsense_raw = self.admission_control(motionsense_raw)
+            print(len(motionsense_raw)," Size after admission control")
             if len(motionsense_raw)<100:
                 continue
             motionsense_raw_data = self.return_numpy_array_from_datastream_raw(motionsense_raw)
@@ -230,6 +232,7 @@ class DecodeHRV(ComputeFeatureBase):
             offset = motionsense_raw_data[0,1]
             motionsense_raw_data = motionsense_raw_data[motionsense_raw_data[:,0].argsort()]
             decoded_data = self.get_decoded_matrix(motionsense_raw_data)
+            print(len(decoded_data)," Size of decoded matrix")
             if not list(decoded_data):
                 continue
             ind_led = np.array([10,7,8,9,1,2,3,4,5,6])
@@ -237,6 +240,7 @@ class DecodeHRV(ComputeFeatureBase):
             decoded_data[:,4:7] = decoded_data[:,4:7]*2/16384
             decoded_data[:,7:] = 500.0 * decoded_data[:,7:] / 32768
             marked_data = self.get_clean_ppg(decoded_data)
+            print(len(marked_data)," Size of clean PPG data")
             if len(marked_data)<100:
                 continue
             self.save_data(marked_data,offset,tzinfo,json_paths,all_streams,user_id,localtime)
