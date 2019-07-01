@@ -219,7 +219,7 @@ class DecodeHRV(ComputeFeatureBase):
                 motionsense_raw.extend(self.get_datastream_raw(s,day,user_id,localtime=localtime))
             if len(motionsense_raw)<100:
                 continue
-            print(motionsense_raw[0])
+            print(motionsense_raw[0],'first datapoint')
             tzinfo = motionsense_raw[0].start_time.tzinfo
             motionsense_raw = self.admission_control(motionsense_raw)
             if len(motionsense_raw)<100:
@@ -237,7 +237,7 @@ class DecodeHRV(ComputeFeatureBase):
             decoded_data[:,4:7] = decoded_data[:,4:7]*2/16384
             decoded_data[:,7:] = 500.0 * decoded_data[:,7:] / 32768
             marked_data = self.get_clean_ppg(decoded_data)
-            self.save_data(marked_data,offset,tzinfo,json_paths[0],all_streams,user_id,localtime)
+            self.save_data(marked_data,offset,tzinfo,json_paths,all_streams,user_id,localtime)
 
 
     def process(self, user, all_days: list):
