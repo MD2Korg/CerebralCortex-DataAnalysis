@@ -2,6 +2,27 @@
   "annotations": [],
   "data_descriptor": [
     {
+      "name": "red",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "Value of Red LED"
+    },
+    {
+      "name": "infrared",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "Value of Infrared LED"
+    },
+    {
+      "name": "green",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "Value of Green LED"
+    },
+    {
       "name": "accelerometer_x",
       "unit": "g",
       "type": "double",
@@ -50,30 +71,17 @@
       "description": "Angular speed around the z-axis"
     },
     {
-      "name": "red",
+      "name": "indicator",
+      "unit": "bool",
       "type": "double",
-      "max_value": "250",
-      "min_value": "-250",
-      "description": "Value of Red LED"
-    },
-    {
-      "name": "infrared",
-      "type": "double",
-      "max_value": "250",
-      "min_value": "-250",
-      "description": "Value of Infrared LED"
-    },
-    {
-      "name": "green",
-      "type": "double",
-      "max_value": "250",
-      "min_value": "-250",
-      "description": "Value of Green LED"
+      "max_value": "1",
+      "min_value": "-1",
+      "description": "Indicator of Quality"
     }
   ],
   "execution_context": {
     "processing_module": {
-      "name": "core.feature.motionsenseHRVdecode",
+      "name": "core.feature.DecodeHRV",
       "input_streams": [
         {
           "id": "CC_INPUT_STREAM_ID_CC",
@@ -95,11 +103,11 @@
       "version": "1",
       "reference": {
       },
-      "description": "Decodes the LED values from raw byte array and interpolates the timestamps based on sequence number"
+      "description": "Decodes the LED values from raw byte array and interpolates the timestamps based on sequence number and assigns a quality from each sample"
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.feature.decodedLED.leftwrist",
+  "name": "org.md2k.feature.motionsensehrv.decoded.leftwrist",
   "owner": "CC_OWNER_CC",
   "type": "datastream"
 }
