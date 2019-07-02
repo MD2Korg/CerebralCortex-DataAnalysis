@@ -90,7 +90,7 @@ class StressFromPPG(ComputeFeatureBase):
 
                 if not ppg_data or len(ppg_data)==0:
                     continue
-                # ppg_data = np.array(sorted(ppg_data))
+                ppg_data = np.array(ppg_data)
                 offset = ppg_data[0, 1]
                 stress_data = get_stress_time_series(ppg_data)
                 data = []
