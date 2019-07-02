@@ -22,11 +22,9 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
 import numpy as np
 import pandas as pd
-
+from numpy import int16,uint8
 
 def Preprc(raw_data: object, flag: object = 0) -> object:
     """
@@ -37,10 +35,11 @@ def Preprc(raw_data: object, flag: object = 0) -> object:
     :param flag:
     :return:
     """
+    #     print(raw_data.shape,'input')
     # process recieved arrays (data_arr1=data, data_arr2=time,seq)
     if not list(raw_data):
         return []
-
+    #     print(raw_data.shape)
     data_arr1, data_arr2, err_pkts = process_raw_PPG(raw_data)
     seq = np.copy(data_arr2[:, 1])
     # make Sq no. ordered
@@ -73,78 +72,45 @@ def Preprc(raw_data: object, flag: object = 0) -> object:
     df3.interpolate(method='time', axis=0, inplace=True)  # filling missing data
     df3.dropna(inplace=True)
     df3['time_stamps'] = np.linspace(itime, ftime, len(df2))
+    #     print(df3.values.shape,'output')
     return df3
 
-
-def process_raw_PPG(raw_data: object) -> object:
-    """
-    function to decode the values from raw byte arrays
-
-    :rtype: object
-    :param raw_data:
-    :return:
-    """
+def process_raw_PPG(raw_data):
     data = raw_data
-    Vals = data[:, 2:]
+    Vals = data[:,2:]
     num_samples = Vals.shape[0]
-    ts = data[:, 0]
-    Accx = np.zeros((num_samples));
-    Accy = np.zeros((num_samples))
-    Accz = np.zeros((num_samples));
-    Gyrox = np.zeros((num_samples))
-    Gyroy = np.zeros((num_samples));
-    Gyroz = np.zeros((num_samples))
-    led1 = np.zeros((num_samples));
-    led2 = np.zeros((num_samples))
-    led3 = np.zeros((num_samples));
-    seq = np.zeros((num_samples))
-    time_stamps = np.zeros((num_samples))
-    n = 0;
-    i = 0;
-    s = 0;
-    mis_pkts = 0
-    while (n) < (num_samples):
-        time_stamps[i] = ts[n]
-        Accx[i] = np.int16((np.uint8(Vals[n, 0]) << 8) | (np.uint8(Vals[n, 1])))
-        Accy[i] = np.int16((np.uint8(Vals[n, 2]) << 8) | (np.uint8(Vals[n, 3])))
-        Accz[i] = np.int16((np.uint8(Vals[n, 4]) << 8) | (np.uint8(Vals[n, 5])))
-        Gyrox[i] = np.int16((np.uint8(Vals[n, 6]) << 8) | (np.uint8(Vals[n, 7])))
-        Gyroy[i] = np.int16((np.uint8(Vals[n, 8]) << 8) | (np.uint8(Vals[n, 9])))
-        Gyroz[i] = np.int16((np.uint8(Vals[n, 10]) << 8) | (np.uint8(Vals[n, 11])))
-        led1[i] = (np.uint8(Vals[n, 12]) << 10) | (np.uint8(Vals[n, 13]) << 2) | \
-                  ((np.uint8(Vals[n, 14]) & int('11000000', 2)) >> 6)
-        led2[i] = ((np.uint8(Vals[n, 14]) & int('00111111', 2)) << 12) | \
-                  (np.uint8(Vals[n, 15]) << 4) | \
-                  ((np.uint8(Vals[n, 16]) & int('11110000', 2)) >> 4)
-        led3[i] = ((np.uint8(Vals[n, 16]) & int('00001111', 2)) << 14) | \
-                  (np.uint8(Vals[n, 17]) << 6) | \
-                  ((np.uint8(Vals[n, 18]) & int('11111100', 2)) >> 2)
-        seq[i] = ((np.uint8(Vals[n, 18]) & int('00000011', 2)) << 8) | \
-                 (np.uint8(Vals[n, 19]))
-        if i > 0:
-            difer = int((seq[i] - seq[i - 1]) % 1024)
-            if difer > 50:
-                s = s + 1  # keep a record of how many such errors occured
-                n = n + 1
+    ts = data[:,0]
+    Accx=np.zeros((num_samples));Accy=np.zeros((num_samples))
+    Accz=np.zeros((num_samples));Gyrox=np.zeros((num_samples))
+    Gyroy=np.zeros((num_samples));Gyroz=np.zeros((num_samples))
+    led1=np.zeros((num_samples));led2=np.zeros((num_samples))
+    led3=np.zeros((num_samples));seq=np.zeros((num_samples))
+    time_stamps=np.zeros((num_samples))
+    i=0;s=0
+    while (i+s)<(num_samples):
+        time_stamps[i]=ts[i+s]
+        Accx[i] = int16((uint8(Vals[i+s,0])<<8) | (uint8(Vals[i+s,1])))
+        Accy[i] = int16((uint8(Vals[i+s,2])<<8) | (uint8(Vals[i+s,3])))
+        Accz[i] = int16((uint8(Vals[i+s,4])<<8) | (uint8(Vals[i+s,5])))
+        Gyrox[i] = int16((uint8(Vals[i+s,6])<<8) | (uint8(Vals[i+s,7])))
+        Gyroy[i] = int16((uint8(Vals[i+s,8])<<8) | (uint8(Vals[i+s,9])))
+        Gyroz[i] = int16((uint8(Vals[i+s,10])<<8) | (uint8(Vals[i+s,11])))
+        led1[i]=(uint8(Vals[i+s,12])<<10) | (uint8(Vals[i+s,13])<<2) | ((uint8(Vals[i+s,14]) & int('11000000',2))>>6)
+        led2[i]=((uint8(Vals[i+s,14]) & int('00111111',2))<<12) | (uint8(Vals[i+s,15])<<4) | ((uint8(Vals[i+s,16]) & int('11110000',2))>>4)
+        led3[i]=((uint8(Vals[i+s,16]) & int('00001111',2))<<14) | (uint8(Vals[i+s,17])<<6) | ((uint8(Vals[i+s,18]) & int('11111100',2))>>2)
+        seq[i]=((uint8(Vals[i+s,18]) & int('00000011',2))<<8) | (uint8(Vals[i+s,19]))
+        if i>0:
+            difer=int((seq[i]-seq[i-1])%1024)
+            if difer>20:
+                s=s+1 # keep a record of how many such errors occured
                 continue
-            mis_pkts = mis_pkts + (difer - 1)
-        n = n + 1;
-        i = i + 1
+        i=i+1
     # removing any trailing zeros
-    seq = seq[:i];
-    time_stamps = time_stamps[:i]
-    Accx = Accx[:i];
-    Accy = Accy[:i];
-    Accz = Accz[:i]
-    Gyrox = Gyrox[:i];
-    Gyroy = Gyroy[:i];
-    Gyroz = Gyroz[:i]
-    led1 = led1[:i];
-    led2 = led2[:i];
-    led3 = led3[:i]
-    # print('no. of unknown seq errors in PPG= ',s)
-    # print('no. of missed packets= {}'.format(mis_pkts))
-    data_arr1 = np.stack((Accx, Accy, Accz, Gyrox, Gyroy, Gyroz, led1, led2, led3), axis=1)
-    # print(np.shape(data_arr1))
-    data_arr2 = np.concatenate((time_stamps.reshape(1, -1), seq.reshape(1, -1))).T
-    return data_arr1, data_arr2, (mis_pkts + s)
+    seq=seq[:i];time_stamps=time_stamps[:i]
+    Accx=Accx[:i]; Accy=Accy[:i]; Accz=Accz[:i]
+    Gyrox=Gyrox[:i]; Gyroy=Gyroy[:i]; Gyroz=Gyroz[:i]
+    led1=led1[:i]; led2=led2[:i]; led3=led3[:i]
+    #     print('no. of unknown seq errors in PPG= ',s)
+    data_arr1=np.stack((Accx,Accy,Accz,Gyrox,Gyroy,Gyroz,led1,led2,led3),axis=1)
+    data_arr2=np.concatenate((time_stamps.reshape(1,-1),seq.reshape(1,-1))).T
+    return data_arr1,data_arr2,0
