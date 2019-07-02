@@ -58,9 +58,11 @@ class StressFromPPG(ComputeFeatureBase):
         raw_hrv_wr = "RAW--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST"
         raw_stream_names = [raw_led_hrvp_lw, raw_led_hrvp_rw, raw_led_hrv_lw, raw_led_hrv_rw, raw_hrv_lw, raw_hrv_wr]
         ppg_data = []
-        input_streams = []
+        metadata_filename = ['stress_from_wrist_char_hrv_plus_left', 'stress_from_wrist_char_hrv_plus_right',
+                             'stress_from_wrist_char_hrv_left', 'stress_from_wrist_char_hrv_right',
+                             'stress_from_wrist_hrv_left', 'stress_from_wrist_hrv_right']
         try:
-            for rs in raw_stream_names:
+            for idx, rs in enumerate(raw_stream_names):
                 if rs not in streams:
                     continue
                 data = utils.get_raw_data_by_stream_name(rs, user_id, day, self.CC, localtime=False)
@@ -79,23 +81,24 @@ class StressFromPPG(ComputeFeatureBase):
                         tmp += d.sample
                     raw_data.append(tmp)
 
-                if not raw_data:
-                    return None
-                data = get_realigned_data(np.array(raw_data)).tolist()
+                if not raw_data or len(raw_data)==0:
+                    continue
+                ppg_data = get_realigned_data(np.array(raw_data)).tolist()
+                input_streams = []
                 input_streams.append(streams[rs])
-                ppg_data += data
+                # ppg_data += data
 
-            if not ppg_data:
-                return
-            ppg_data = np.array(sorted(ppg_data))
-            offset = ppg_data[0, 1]
-            stress_data = get_stress_time_series(ppg_data)
-            data = []
-            for d in stress_data:
-                data.append(DataPoint(start_time=datetime.datetime.fromtimestamp(d[0]/1000), offset=offset, sample=[d[1]]))
-            self.store_stream(filepath="stress-from-wrist.json",
-                              input_streams=input_streams, user_id=user_id,
-                              data=data, localtime=False)
+                if not ppg_data or len(ppg_data)==0:
+                    continue
+                # ppg_data = np.array(sorted(ppg_data))
+                offset = ppg_data[0, 1]
+                stress_data = get_stress_time_series(ppg_data)
+                data = []
+                for d in stress_data:
+                    data.append(DataPoint(start_time=datetime.datetime.fromtimestamp(d[0]/1000), offset=offset, sample=[d[1]]))
+                self.store_stream(filepath=metadata_filename[idx]+".json",
+                                  input_streams=input_streams, user_id=user_id,
+                                  data=data, localtime=False)
         except Exception as e:
             self.CC.logging.log("user_id: "+ user_id + " day: " + day)
             self.CC.logging.log("Exception:", str(e))
