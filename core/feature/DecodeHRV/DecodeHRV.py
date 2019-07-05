@@ -39,7 +39,6 @@ class DecodeHRV(ComputeFeatureBase):
     """
 
 
-
     def isDatapointsWithinRange(self,red,infrared,green):
         red = np.asarray(red, dtype=np.float32)
         infrared = np.asarray(infrared, dtype=np.float32)
@@ -63,22 +62,17 @@ class DecodeHRV(ComputeFeatureBase):
         infrared = window[:,1]
         green = window[:,2]
         if not self.isDatapointsWithinRange(red,infrared,green):
-            #         print("Not in range")
             return 1
         if np.mean(red) < 5000 and np.mean(infrared) < 5000:
-            #         print("mean low")
             return 1
         if not (np.mean(red)>np.mean(green) and np.mean(infrared)>np.mean(red)):
-            #         print("mean low 2")
             return 1
         diff = 30000
         if np.mean(red)<130000:
             diff = 10000
         if not np.mean(red) - np.mean(green) > diff:
-            #         print("mean low diff")
             return 1
         if not np.mean(infrared) - np.mean(red) >diff:
-            #         print("mean low diff")
             return 1
         temp  = [1,1,1]
         if np.std(red)<14:
@@ -88,7 +82,6 @@ class DecodeHRV(ComputeFeatureBase):
         if np.std(green)<13:
             temp[2] = 0
         if np.sum(temp)<1:
-            #         print("var low")
             return 1
         return 0
 
