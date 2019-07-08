@@ -43,9 +43,9 @@ class DecodeHRV(ComputeFeatureBase):
         red = np.asarray(red, dtype=np.float32)
         infrared = np.asarray(infrared, dtype=np.float32)
         green = np.asarray(green, dtype=np.float32)
-        a =  len(np.where((red >= 40000)& (red<=170000))[0]) < .66*3*25
-        b = len(np.where((infrared >= 110000)& (infrared<=230000))[0]) < .66*3*25
-        c = len(np.where((green >= 2000)& (green<=20000))[0]) < .66*3*25
+        a =  len(np.where((red >= 30000)& (red<=200000))[0]) < .33*3*25
+        b = len(np.where((infrared >= 110000)& (infrared<=230000))[0]) < .33*3*25
+        c = len(np.where((green >= 800)& (green<=20000))[0]) < .33*3*25
         if a and b and c:
             return False
         return True
@@ -53,7 +53,6 @@ class DecodeHRV(ComputeFeatureBase):
 
     def compute_quality(self,window):
         """
-
         :param window: a window containing list of DataPoints
         :return: an integer reptresenting the status of the window 0= attached, 1 = not attached
         """
@@ -70,7 +69,7 @@ class DecodeHRV(ComputeFeatureBase):
             return 1
         diff = 30000
         if np.mean(red)<130000:
-            diff = 15000
+            diff = 10000
         if not np.mean(red) - np.mean(green) > diff:
             return 1
         if not np.mean(infrared) - np.mean(red) >diff:
@@ -82,7 +81,7 @@ class DecodeHRV(ComputeFeatureBase):
             temp[1] = 0
         if np.std(green)<13:
             temp[2] = 0
-        if np.sum(temp)<2:
+        if np.sum(temp)<1:
             return 1
         return 0
 
