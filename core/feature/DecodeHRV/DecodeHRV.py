@@ -123,7 +123,7 @@ class DecodeHRV(ComputeFeatureBase):
         sample[:, 1] = ts
         sample[:,2:] = data[:,2:]
         ts_temp = np.array([0] + list(np.diff(ts)))
-        ind = np.where(ts_temp > 300)[0]
+        ind = np.where(ts_temp > 500)[0]
         initial = 0
         sample_final = [0] * int(row_length / 2)
         for k in ind:
