@@ -107,7 +107,7 @@
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.feature.motionsensehrv.decoded.leftwrist.v1",
+  "name": "org.md2k.feature.motionsensehrv.decoded.leftwrist.v2",
   "owner": "CC_OWNER_CC",
   "type": "datastream"
 }
