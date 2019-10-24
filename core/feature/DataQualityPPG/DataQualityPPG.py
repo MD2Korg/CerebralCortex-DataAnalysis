@@ -185,6 +185,7 @@ class DecodeHRV(ComputeFeatureBase):
                 tmp = acl_features[:,k,:].reshape(-1,4)
                 likelihood.append(clf.predict_proba(tmp)[:,1].reshape(-1,1))
             likelihood = np.concatenate(likelihood,axis=1)
+            likelihood = np.max(likelihood,axis=1).reshape(-1,1)
             ppg_data_final = np.concatenate((ts_col,likelihood,attachment_all,window_col),axis=1)
             self.save_data(ppg_data_final,offset,tzinfo,json_paths,all_streams,user_id,localtime)
         return 0

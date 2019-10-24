@@ -116,7 +116,7 @@ def compute_basic_features(timestamp: object, data: object) -> object:
     kurt = kurtosis(data)
     rate_of_changes = get_rate_of_change(timestamp, data)
     power = np.mean([v * v for v in data])
-    sp_entropy = spectral_entropy(data,16.33)
+    sp_entropy = spectral_entropy(data,25)
     peak_freq = peak_frequency(data)
 
     return mean, median, std, skewness, kurt, rate_of_changes, power, sp_entropy, peak_freq
@@ -140,26 +140,26 @@ def computeFeatures(time: object, x: object, y: object, z: object) -> object:
 
     mag_mean, mag_median, mag_std, mag_skewness, mag_kurt, mag_rateOfChanges, \
     mag_power, mag_sp_entropy, mag_peak_freq = compute_basic_features(time, mag)
-    x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power, \
-    x_sp_entropy, x_peak_freq = compute_basic_features(time, x)
-    y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power, \
-    y_sp_entropy, y_peak_freq = compute_basic_features(time, y)
-    z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power, \
-    z_sp_entropy, z_peak_freq = compute_basic_features(time, z)
+    # x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power, \
+    # x_sp_entropy, x_peak_freq = compute_basic_features(time, x)
+    # y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power, \
+    # y_sp_entropy, y_peak_freq = compute_basic_features(time, y)
+    # z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power, \
+    # z_sp_entropy, z_peak_freq = compute_basic_features(time, z)
 
     f = [mag_mean, mag_median, mag_std, mag_skewness,
          mag_kurt, mag_rateOfChanges, mag_power,
          mag_sp_entropy, mag_peak_freq]
 
-    f.extend(
-        [x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power,
-         x_sp_entropy, x_peak_freq])
-    f.extend(
-        [y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power,
-         y_sp_entropy, y_peak_freq])
-    f.extend(
-        [z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power,
-         z_sp_entropy, z_peak_freq])
+    # f.extend(
+    #     [x_mean, x_median, x_std, x_skewness, x_kurt, x_rateOfChanges, x_power,
+    #      x_sp_entropy, x_peak_freq])
+    # f.extend(
+    #     [y_mean, y_median, y_std, y_skewness, y_kurt, y_rateOfChanges, y_power,
+    #      y_sp_entropy, y_peak_freq])
+    # f.extend(
+    #     [z_mean, z_median, z_std, z_skewness, z_kurt, z_rateOfChanges, z_power,
+    #      z_sp_entropy, z_peak_freq])
 
     return f
 def get_features(window):
