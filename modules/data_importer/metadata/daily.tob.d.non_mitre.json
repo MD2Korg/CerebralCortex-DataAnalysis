@@ -26,12 +26,12 @@
           "email":"nndugudi@memphis.edu"
         }
       ],
-      "version":"0.0.1",
+      "version":"1.0",
       "description":"Importer of qualtrics data"
     }
   },
   "identifier":"CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name":"org.md2k.data_qualtrics.feature.v15.tob.quantity.not_mitre.d",
+  "name":"org.md2k.data_qualtrics.feature.tob.quantity.not_mitre.d",
   "owner":"CC_OWNER_CC",
   "type":"datastream"
 }

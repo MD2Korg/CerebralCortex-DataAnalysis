@@ -30,14 +30,14 @@
           "email": "rbnjade1@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Signifies whether voice is present in a minute or not"
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.v2.audio.voice_segments_context_per_minute",
+  "name": "org.md2k.data_analysis.feature.audio.voice_segments_context_per_minute",
   "owner": "CC_OWNER_CC",
   "type": "datastream"
 }

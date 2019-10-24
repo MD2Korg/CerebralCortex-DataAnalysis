@@ -39,6 +39,8 @@ import copy
 import traceback
 from functools import lru_cache
 import math
+import base64
+import pickle
 
 from sklearn.mixture import GaussianMixture
 from typing import List, Callable, Any
@@ -78,10 +80,18 @@ class PhoneFeatures(ComputeFeatureBase):
         """
         if admission_control is None:
             return data
-        return [d for d in data if admission_control(d.sample)]
+        filtered_data = []
+        for d in data:
+            if admission_control(d.sample):
+                filtered_data.append(d)
+            elif type(d.sample) is list and len(d.sample) == 1 and admission_control(d.sample[0]):
+                d.sample = d.sample[0]
+                filtered_data.append(d)
+
+        return filtered_data
 
     def get_data_by_stream_name(self, stream_name: str, user_id: str, day: str,
-                                localtime: bool=True) -> List[DataPoint]:
+                                localtime: bool=True, ingested_stream=True) -> List[DataPoint]:
         """
         Combines data from multiple streams data of same stream based on stream name.
 
@@ -93,7 +103,11 @@ class PhoneFeatures(ComputeFeatureBase):
         :rtype: List(DataPoint)
         """
 
-        stream_ids = self.CC.get_stream_id(user_id, stream_name)
+        if ingested_stream:
+            stream_ids = self.CC.get_stream_id(user_id, stream_name)
+        else:
+            stream_ids = self.get_latest_stream_id(user_id, stream_name)
+
         data = []
         for stream in stream_ids:
             if stream is not None:
@@ -1348,33 +1362,47 @@ class PhoneFeatures(ComputeFeatureBase):
         :rtype: List(str)
         """
         appid = appid.strip()
-        time.sleep(2.0)
         if appid == "com.samsung.android.messaging":
             return [appid, "Communication", "Samsung Message", None]
 
         url = "https://play.google.com/store/apps/details?id=" + appid
-        try:
-            response = urlopen(url)
-        except Exception:
-            return [appid, None, None, None]
+        cached_response = None
+        #cached_response = self.CC.get_cache_value(appid)
+        response = None
+        
+        if cached_response is None:
+            try:
+                time.sleep(2.0)
+                self.CC.logging.log('%s not found in cache.' % (appid))
+                response = urlopen(url)
+            except Exception:
+                toreturn = [appid, None, None, None]
+                objstr = base64.b64encode(pickle.dumps(toreturn))
+                #self.CC.set_cache_value(appid, objstr.decode())
+                return toreturn
+        else:
+            return pickle.loads(base64.decodebytes(cached_response.encode()))
 
         soup = BeautifulSoup(response, 'html.parser')
-        text = soup.find('span', itemprop='genre')
+        text = soup.find('a', itemprop='genre')
 
-        name = soup.find('div', class_='id-app-title')
-
-        cat = soup.find('a', class_='document-subtitle category')
-        if cat:
-            category = cat.attrs['href'].split('/')[-1]
+        name = soup.find('h1', itemprop='name').find('span')
+        if text:
+            category = text.attrs['href'].split('/')[-1]
         else:
             category = None
 
+        toreturn = None
         if category and category.startswith('GAME_'):
-            return [appid, "Game", str(name.contents[0]) if name else None, str(text.contents[0])]
+            toreturn = [appid, "Game", str(name.contents[0]) if name else None, str(text.contents[0])]
         elif text:
-            return [appid, str(text.contents[0]), str(name.contents[0]) if name else None, None]
+            toreturn = [appid, str(text.contents[0]), str(name.contents[0]) if name else None, None]
         else:
-            return [appid, None, str(name.contents[0]) if name else None, None]
+            toreturn = [appid, None, str(name.contents[0]) if name else None, None]
+
+        objstr = base64.b64encode(pickle.dumps(toreturn))
+        self.CC.set_cache_value(appid, objstr.decode())
+        return toreturn
 
     def get_appusage_duration_by_category(self, appdata: List[DataPoint], categories: List[str],
                                           appusage_gap_threshold_seconds: float=120) -> List:
@@ -2097,7 +2125,6 @@ class PhoneFeatures(ComputeFeatureBase):
         try:
             data = self.get_total_call_sms_hourly(call_number_data, sms_number_data)
             if data:
-                print(data)
                 self.store_stream(filepath="total_call_sms_hourly.json",
                                   input_streams=[input_callstream, input_smsstream],
                                   user_id=user_id, data=data, localtime=False)
@@ -2108,7 +2135,6 @@ class PhoneFeatures(ComputeFeatureBase):
         try:
             data = self.get_total_call_sms_four_hourly(call_number_data, sms_number_data)
             if data:
-                print(data)
                 self.store_stream(filepath="total_call_sms_four_hourly.json",
                                   input_streams=[input_callstream, input_smsstream],
                                   user_id=user_id, data=data, localtime=False)
@@ -2169,7 +2195,6 @@ class PhoneFeatures(ComputeFeatureBase):
         try:
             data = self.get_total_sms_four_hourly(sms_number_data)
             if data:
-                print(data)
                 self.store_stream(filepath="total_sms_four_hourly.json",
                                   input_streams=[input_callstream, input_smsstream],
                                   user_id=user_id, data=data, localtime=False)
@@ -3089,18 +3114,20 @@ class PhoneFeatures(ComputeFeatureBase):
                                 % (str(user_id), self.__class__.__name__))
             return
 
-        for stream_name, stream_metadata in streams.items():
-            if stream_name == appcategory_stream_name:
-                input_appcategorystream = stream_metadata
 
-        if not input_appcategorystream:
+        latest_appcategorystreamid = self.get_latest_stream_id(user_id,
+                                                               appcategory_stream_name)
+
+        if not latest_appcategorystreamid:
             self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
                                 "USERID %s" %
                                 (self.__class__.__name__, appcategory_stream_name,
                                  str(user_id)))
         else:
+            input_appcategorystream = self.CC.get_stream_metadata(latest_appcategorystreamid[0]['identifier'])
             for day in all_days:
-                appcategorydata = self.get_data_by_stream_name(appcategory_stream_name, user_id, day, localtime=False)
+                appcategorydata = self.get_data_by_stream_name(appcategory_stream_name, user_id,
+                                             day, localtime=False, ingested_stream=False)
                 appcategorydata = self.get_filtered_data(appcategorydata, lambda x: (type(x) is list and len(x) == 4))
                 self.process_appusage_day_data(user_id, appcategorydata, input_appcategorystream)
 
@@ -3110,23 +3137,28 @@ class PhoneFeatures(ComputeFeatureBase):
                                 % (str(user_id), self.__class__.__name__))
             return
 
-        for stream_name, stream_metadata in streams.items():
-            if stream_name == appusage_stream_name:
-                input_appusage_stream = stream_metadata
-            elif stream_name == gpssemantic_stream_name:
-                input_gpssemanticstream = stream_metadata
+        
+        latest_appusage_streamid = self.get_latest_stream_id(user_id,
+                                                             appusage_stream_name)
+        latest_gps_semantic_streamid = self.get_latest_stream_id(user_id,
+                                                             gpssemantic_stream_name)
 
-        if not input_appusage_stream:
+        if not latest_appusage_streamid:
             self.CC.logging.log("No input stream found FEATURE %s STREAM %s "
                                 "USERID %s" %
                                 (self.__class__.__name__, appusage_stream_name,
                                  str(user_id)))
         else:
+            input_appusage_stream = self.CC.get_stream_metadata(latest_appusage_streamid[0]['identifier'])
+            input_gpssemanticstream = self.CC.get_stream_metadata(latest_gps_semantic_streamid[0]['identifier'])
             for day in all_days:
-                app_usage_data = self.get_data_by_stream_name(appusage_stream_name, user_id, day, localtime=False)
+                app_usage_data = self.get_data_by_stream_name(appusage_stream_name, user_id, day,
+                                             localtime=False,
+                                             ingested_stream=False)
                 app_usage_data = self.get_filtered_data(app_usage_data, lambda x: type(x) is dict)
 
-                gps_semantic_data = self.get_data_by_stream_name(gpssemantic_stream_name, user_id, day, localtime=False)
+                gps_semantic_data = self.get_data_by_stream_name(gpssemantic_stream_name, user_id,
+                                             day, localtime=False, ingested_stream=False)
                 gps_semantic_data = self.get_filtered_data(gps_semantic_data,
                                                            lambda x: ((type(x) is str) or (type(x) is np.str_)))
 

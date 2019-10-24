@@ -29,14 +29,14 @@
           "email": "rabin.banjade@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "The participants' context based on proximity to home beacon"
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.v6.beacon.home_beacon_context",
+  "name": "org.md2k.data_analysis.feature.beacon.home_beacon_context",
   "owner": "CC_OWNER_CC",
   "type": "datastream"
 }

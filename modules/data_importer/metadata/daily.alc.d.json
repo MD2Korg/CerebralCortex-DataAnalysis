@@ -26,9 +26,9 @@
           "email":"nndugudi@memphis.edu"
         }
       ],
-      "version":"0.0.1",
+      "version":"1.0",
       "description":"Importer of qualtrics data"
     }
   },
-  "name":"org.md2k.data_qualtrics.feature.v15.alc.quantity.d"
+  "name":"org.md2k.data_qualtrics.feature.alc.quantity.d"
 }

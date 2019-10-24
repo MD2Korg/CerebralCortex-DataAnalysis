@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.task_features.utils</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.task_features.html"><font color="#ffffff">task_features</font></a>.utils</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/task_features/utils.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/task_features/utils.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2018,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;-Mithun&nbsp;Saha&nbsp;&lt;msaha1@memphis.edu&gt;<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="datetime.html">datetime</a><br>
+<a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+<a href="pandas.html">pandas</a><br>
+</td><td width="25%" valign=top><a href="pytz.html">pytz</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-output_stream"><strong>output_stream</strong></a>(targetconstruct_with_time:dict, context_with_time:dict, offset:int) -&gt; tuple</dt><dd><tt>This&nbsp;function&nbsp;compares&nbsp;time&nbsp;intervals&nbsp;of&nbsp;posture&nbsp;or&nbsp;activity&nbsp;with&nbsp;time<br>
+intervals&nbsp;of&nbsp;office&nbsp;or&nbsp;beacon,&nbsp;to&nbsp;find&nbsp;overlapping&nbsp;time&nbsp;windows&nbsp;to<br>
+extract&nbsp;time&nbsp;intervals,&nbsp;in&nbsp;which&nbsp;posture/activity&nbsp;occurs&nbsp;in&nbsp;office/around<br>
+work&nbsp;beacon.<br>
+&nbsp;<br>
+:param&nbsp;dict&nbsp;targetconstruct_with_time:&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;posture/activity&nbsp;time&nbsp;intervals<br>
+:param&nbsp;dict&nbsp;context_with_time:&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;office/beacon&nbsp;time&nbsp;intervals<br>
+:param&nbsp;int&nbsp;offset:&nbsp;for&nbsp;local&nbsp;time&nbsp;information<br>
+:return:&nbsp;total&nbsp;time&nbsp;spent&nbsp;for&nbsp;posture/activity,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataPoints&nbsp;for&nbsp;output&nbsp;stream<br>
+:rtype:&nbsp;tuple(dict,List)</tt></dd></dl>
+ <dl><dt><a name="-process_data"><strong>process_data</strong></a>(data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; dict</dt><dd><tt>&nbsp;This&nbsp;function&nbsp;takes&nbsp;a&nbsp;list&nbsp;of&nbsp;data&nbsp;points&nbsp;of&nbsp;a&nbsp;stream.<br>
+&nbsp;For&nbsp;each&nbsp;DataPoint,&nbsp;based&nbsp;on&nbsp;sample&nbsp;value(sitting,standing,walking,work,1)<br>
+&nbsp;creates&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;start&nbsp;and&nbsp;end&nbsp;time.<br>
+&nbsp;<br>
+:param&nbsp;List[DataPoint]&nbsp;data:&nbsp;list&nbsp;of&nbsp;posture,activity,gps,beacon&nbsp;datapoints<br>
+:return:&nbsp;dictionaries&nbsp;denoting&nbsp;start&nbsp;and&nbsp;end&nbsp;times&nbsp;for&nbsp;standing,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sitting,walking,&nbsp;office&nbsp;and&nbsp;office&nbsp;beacon&nbsp;in&nbsp;a&nbsp;day<br>
+:rtype:&nbsp;dict</tt></dd></dl>
+ <dl><dt><a name="-target_in_fraction_of_context"><strong>target_in_fraction_of_context</strong></a>(target_total_time:dict, context_with_time:dict, offset:int, context:str) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>This&nbsp;function&nbsp;calculates&nbsp;total&nbsp;context&nbsp;time(office,&nbsp;around&nbsp;office&nbsp;beacon)&nbsp;in<br>
+a&nbsp;day&nbsp;and&nbsp;finds&nbsp;fraction&nbsp;of&nbsp;times&nbsp;spent&nbsp;in&nbsp;sitting,standing&nbsp;and&nbsp;walking&nbsp;in&nbsp;minutes<br>
+per&nbsp;hour&nbsp;in&nbsp;office&nbsp;and&nbsp;around&nbsp;office&nbsp;beacon.<br>
+&nbsp;<br>
+:param&nbsp;dict&nbsp;target_total_time:&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;posture/activity&nbsp;total&nbsp;time&nbsp;in&nbsp;a&nbsp;day<br>
+:param&nbsp;dict&nbsp;context_with_time:&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;office/beacon&nbsp;start&nbsp;and&nbsp;end&nbsp;times<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;a&nbsp;day<br>
+:param&nbsp;int&nbsp;offset:&nbsp;offset&nbsp;for&nbsp;local&nbsp;time<br>
+:param&nbsp;str&nbsp;context:&nbsp;office(work)/work&nbsp;beacon(1)<br>
+:return:&nbsp;DataPoints&nbsp;denoting&nbsp;time&nbsp;spent&nbsp;in&nbsp;minutes&nbsp;per&nbsp;hour&nbsp;for&nbsp;standing,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sitting,walking&nbsp;in&nbsp;office&nbsp;and&nbsp;around&nbsp;office&nbsp;beacon&nbsp;context<br>
+:rtype:&nbsp;List(DataPoint)</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>activity_stream_name</strong> = 'org.md2k.data_analysis.feature.activity.wrist.accel_only.10_seconds'<br>
+<strong>beacon_stream_name</strong> = 'org.md2k.data_analysis.feature.beacon.work_beacon_context'<br>
+<strong>office_stream_name</strong> = 'org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model'<br>
+<strong>posture_stream_name</strong> = 'org.md2k.data_analysis.feature.body_posture.wrist.accel_only.10_second'</td></tr></table>
+</body></html>

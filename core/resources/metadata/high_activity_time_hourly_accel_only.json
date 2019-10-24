@@ -41,7 +41,7 @@
           "email": "sakther@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Amount of moderate activity of that hour and amount of data of that hour from accel only model"

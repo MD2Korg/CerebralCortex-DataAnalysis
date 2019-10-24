@@ -57,7 +57,7 @@ class stress_from_respiration(ComputeFeatureBase):
         11.  inspiration_expiration_velocity_ratio
         12.  inspiration_expiration_area_ratio
         13.  expiration_respiration_duration_ratio
-        14.  resspiration_area_inspiration_duration_ratio
+        14.  respiration_area_inspiration_duration_ratio
     
     In every one minute of data there will be more than 1 respiration cycles each with 
     these 14 features pre-calculated. We take the median of each of this feature found within the minute, 

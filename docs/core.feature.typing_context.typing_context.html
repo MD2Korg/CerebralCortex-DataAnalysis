@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.typing_context.typing_context</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.typing_context.html"><font color="#ffffff">typing_context</font></a>.typing_context</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/typing_context/typing_context.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/typing_context/typing_context.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2018,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;-Mithun&nbsp;Saha&nbsp;&lt;msaha1@memphis.edu&gt;<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="datetime.html">datetime</a><br>
+<a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+<a href="pandas.html">pandas</a><br>
+</td><td width="25%" valign=top><a href="pytz.html">pytz</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="core.feature.typing_context.typing_context.html#TypingContext">TypingContext</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TypingContext">class <strong>TypingContext</strong></a>(<a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Detects&nbsp;start&nbsp;and&nbsp;end&nbsp;times&nbsp;of&nbsp;typing<br>
+in&nbsp;office&nbsp;context&nbsp;and&nbsp;around&nbsp;office&nbsp;beacon&nbsp;context&nbsp;in&nbsp;a&nbsp;day.&nbsp;It&nbsp;also<br>
+Computes&nbsp;Typing&nbsp;duration-&nbsp;Total&nbsp;and&nbsp;per&nbsp;hour&nbsp;in&nbsp;minutes&nbsp;in<br>
+office&nbsp;and&nbsp;in&nbsp;office&nbsp;around&nbsp;office&nbsp;beacon&nbsp;context&nbsp;on&nbsp;daily&nbsp;basis.<br>
+&nbsp;<br>
+Algorithm::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;step&nbsp;1:&nbsp;For&nbsp;each&nbsp;user&nbsp;collects&nbsp;stream&nbsp;data&nbsp;of&nbsp;all&nbsp;stream&nbsp;ids&nbsp;of&nbsp;one&nbsp;day<br>
+&nbsp;&nbsp;&nbsp;&nbsp;step&nbsp;2:&nbsp;Checks&nbsp;and&nbsp;removes&nbsp;duplicate&nbsp;data&nbsp;points<br>
+&nbsp;&nbsp;&nbsp;&nbsp;step&nbsp;3:&nbsp;Converts&nbsp;stream&nbsp;data&nbsp;of&nbsp;one&nbsp;day&nbsp;into&nbsp;dictionary&nbsp;of&nbsp;lists&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start&nbsp;and&nbsp;end&nbsp;times&nbsp;for&nbsp;each&nbsp;stream.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;step&nbsp;4:&nbsp;Finds&nbsp;overlapping&nbsp;start&nbsp;and&nbsp;end&nbsp;times&nbsp;of&nbsp;typing&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;office&nbsp;and&nbsp;around&nbsp;office&nbsp;beacon&nbsp;context.&nbsp;Converts&nbsp;each&nbsp;such&nbsp;finding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;into&nbsp;a&nbsp;DataPoint.Sums&nbsp;difference&nbsp;of&nbsp;these&nbsp;start&nbsp;and&nbsp;end&nbsp;times&nbsp;to&nbsp;find<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;total&nbsp;time&nbsp;spent&nbsp;in&nbsp;typing&nbsp;in&nbsp;office&nbsp;and&nbsp;around<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;office&nbsp;beacon&nbsp;context.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;step&nbsp;5:&nbsp;Stores&nbsp;each&nbsp;such&nbsp;DataPoint.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;step&nbsp;6:&nbsp;Finds&nbsp;typing&nbsp;duration&nbsp;-&nbsp;total&nbsp;and&nbsp;per&nbsp;hour&nbsp;in&nbsp;mintues<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;respect&nbsp;to&nbsp;total&nbsp;time&nbsp;sent&nbsp;in&nbsp;office&nbsp;location&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;around&nbsp;office&nbsp;beacon&nbsp;in&nbsp;a&nbsp;day.Converts&nbsp;each&nbsp;such&nbsp;finding&nbsp;in&nbsp;a&nbsp;DataPoint.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Step&nbsp;7:&nbsp;Stores&nbsp;each&nbsp;such&nbsp;datapoint<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="core.feature.typing_context.typing_context.html#TypingContext">TypingContext</a></dd>
+<dd><a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="TypingContext-get_day_data"><strong>get_day_data</strong></a>(self, stream_name:str, user_id:str, day:str) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>This&nbsp;function&nbsp;collects&nbsp;participant&nbsp;data&nbsp;of&nbsp;all&nbsp;stream&nbsp;ids&nbsp;for&nbsp;a&nbsp;day<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;stream_name:&nbsp;Name&nbsp;of&nbsp;the&nbsp;stream<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;stream&nbsp;owner<br>
+:param&nbsp;str&nbsp;day:&nbsp;The&nbsp;day&nbsp;(YYYYMMDD)&nbsp;on&nbsp;which&nbsp;to&nbsp;operate<br>
+:return:&nbsp;Combined&nbsp;stream&nbsp;data&nbsp;if&nbsp;there&nbsp;are&nbsp;multiple&nbsp;stream&nbsp;id<br>
+:rtype:&nbsp;List(DataPoint)</tt></dd></dl>
+
+<dl><dt><a name="TypingContext-process"><strong>process</strong></a>(self, user:str, all_days:list)</dt><dd><tt>This&nbsp;function&nbsp;collects&nbsp;user&nbsp;data&nbsp;of&nbsp;individual&nbsp;streams&nbsp;like&nbsp;typing,<br>
+gps&nbsp;locations&nbsp;and&nbsp;office&nbsp;beacon.&nbsp;Creates&nbsp;dictionaries&nbsp;of&nbsp;time&nbsp;intervals<br>
+for&nbsp;typing;&nbsp;gps&nbsp;semantic&nbsp;location&nbsp;like&nbsp;office;&nbsp;beacon&nbsp;type&nbsp;like&nbsp;office.<br>
+Then&nbsp;finds&nbsp;overlapping&nbsp;time&nbsp;intervals&nbsp;of&nbsp;typing&nbsp;in&nbsp;office&nbsp;and<br>
+office&nbsp;beacon&nbsp;context&nbsp;on&nbsp;daily&nbsp;basis.<br>
+Finally&nbsp;calculates&nbsp;typing&nbsp;duration-total&nbsp;and&nbsp;per&nbsp;hour&nbsp;in&nbsp;minutes&nbsp;in<br>
+office&nbsp;and&nbsp;office&nbsp;beacon&nbsp;context&nbsp;on&nbsp;daily&nbsp;basis.<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;user:&nbsp;UUID<br>
+:param&nbsp;list&nbsp;all_days:&nbsp;list&nbsp;of&nbsp;days&nbsp;on&nbsp;which&nbsp;to&nbsp;operate</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>:<br>
+<dl><dt><a name="TypingContext-__init__"><strong>__init__</strong></a>(self, CC=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="TypingContext-get_latest_stream_id"><strong>get_latest_stream_id</strong></a>(self, user_id, stream_name)</dt></dl>
+
+<dl><dt><a name="TypingContext-store"><strong>store</strong></a>(self, identifier, owner, name, data_descriptor, execution_context, annotations, stream_type=1, data=None, localtime=True)</dt><dd><tt>All&nbsp;store&nbsp;operations&nbsp;MUST&nbsp;be&nbsp;through&nbsp;this&nbsp;method.</tt></dd></dl>
+
+<dl><dt><a name="TypingContext-store_stream"><strong>store_stream</strong></a>(self, filepath:str, input_streams:list, user_id:&lt;module 'uuid' from '/usr/lib/python3.6/uuid.py'&gt;, data:list, localtime=True)</dt><dd><tt>This&nbsp;method&nbsp;saves&nbsp;the&nbsp;computed&nbsp;DataStreams&nbsp;from&nbsp;different&nbsp;features</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>beacon_stream_name</strong> = 'org.md2k.data_analysis.feature.beacon.work_beacon_context'<br>
+<strong>feature_class_name</strong> = 'TypingContext'<br>
+<strong>office_stream_name</strong> = 'org.md2k.data_analysis.gps_episodes_and_semantic_location_from_model'<br>
+<strong>typing_stream_name</strong> = 'org.md2k.data_analysis.feature.typing.episodes.day'</td></tr></table>
+</body></html>

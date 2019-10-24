@@ -1,0 +1,704 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.phone_features.phone_features</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.phone_features.html"><font color="#ffffff">phone_features</font></a>.phone_features</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/phone_features/phone_features.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/phone_features/phone_features.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2018,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;-&nbsp;Md&nbsp;Shiplu&nbsp;Hawlader&nbsp;&lt;shiplu.cse.du@gmail.com;&nbsp;mhwlader@memphis.edu&gt;<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="base64.html">base64</a><br>
+<a href="copy.html">copy</a><br>
+</td><td width="25%" valign=top><a href="datetime.html">datetime</a><br>
+<a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+<a href="pickle.html">pickle</a><br>
+</td><td width="25%" valign=top><a href="time.html">time</a><br>
+<a href="traceback.html">traceback</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="core.feature.phone_features.phone_features.html#PhoneFeatures">PhoneFeatures</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="PhoneFeatures">class <strong>PhoneFeatures</strong></a>(<a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;class&nbsp;is&nbsp;responsible&nbsp;for&nbsp;computing&nbsp;features&nbsp;based&nbsp;on&nbsp;streams&nbsp;of&nbsp;data<br>
+derived&nbsp;from&nbsp;the&nbsp;smartphone&nbsp;sensors.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="core.feature.phone_features.phone_features.html#PhoneFeatures">PhoneFeatures</a></dd>
+<dd><a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="PhoneFeatures-appusage_interval_list"><strong>appusage_interval_list</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], appusage:List) -&gt; List[int]</dt><dd><tt>Helper&nbsp;function&nbsp;to&nbsp;get&nbsp;screen&nbsp;touch&nbsp;gap&nbsp;for&nbsp;specific&nbsp;app&nbsp;categories<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;Phone&nbsp;screen&nbsp;touch&nbsp;data&nbsp;stream<br>
+:param&nbsp;List&nbsp;appusage:&nbsp;list&nbsp;of&nbsp;app&nbsp;usage&nbsp;duration&nbsp;of&nbsp;specific&nbsp;app&nbsp;categories&nbsp;of&nbsp;the&nbsp;form<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[start_time,&nbsp;end_time,&nbsp;category]<br>
+:return:&nbsp;A&nbsp;list&nbsp;of&nbsp;integers&nbsp;containing&nbsp;screen&nbsp;touch&nbsp;gap&nbsp;as&nbsp;in&nbsp;touch&nbsp;screen&nbsp;timestamp&nbsp;unit&nbsp;(milliseconds)<br>
+:rtype:&nbsp;List(int)</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_ambient_light_daily"><strong>average_ambient_light_daily</strong></a>(self, lightdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], data_frequency:float=16, minimum_data_percent:float=40) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;ambient&nbsp;light&nbsp;(in&nbsp;flux)&nbsp;for&nbsp;a&nbsp;day.&nbsp;If&nbsp;the&nbsp;input&nbsp;light&nbsp;data&nbsp;is&nbsp;less&nbsp;than&nbsp;minimum_data_percent%<br>
+which&nbsp;is&nbsp;default&nbsp;40%,&nbsp;it&nbsp;will&nbsp;return&nbsp;None.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;lightdata:&nbsp;Phone&nbsp;ambient&nbsp;light&nbsp;DataStream<br>
+:param&nbsp;float&nbsp;data_frequency:&nbsp;How&nbsp;many&nbsp;data&nbsp;point&nbsp;should&nbsp;generate&nbsp;in&nbsp;a&nbsp;second<br>
+:param&nbsp;float&nbsp;minimum_data_percent:&nbsp;Minimum&nbsp;percent&nbsp;of&nbsp;data&nbsp;should&nbsp;be&nbsp;available<br>
+:return:&nbsp;Average&nbsp;of&nbsp;ambient&nbsp;light&nbsp;over&nbsp;1&nbsp;day&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_ambient_light_four_hourly"><strong>average_ambient_light_four_hourly</strong></a>(self, lightdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], data_frequency:float=16, minimum_data_percent:float=40) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;ambient&nbsp;light&nbsp;(in&nbsp;flux)&nbsp;for&nbsp;each&nbsp;four&nbsp;hour&nbsp;window&nbsp;in&nbsp;a&nbsp;day.&nbsp;If&nbsp;the&nbsp;input&nbsp;light&nbsp;data&nbsp;is&nbsp;less&nbsp;than<br>
+minimum_data_percent%,&nbsp;which&nbsp;is&nbsp;default&nbsp;40%,&nbsp;in&nbsp;a&nbsp;window&nbsp;then&nbsp;it&nbsp;will&nbsp;not&nbsp;generate&nbsp;any&nbsp;data&nbsp;point&nbsp;for&nbsp;that<br>
+window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;lightdata:&nbsp;Phone&nbsp;ambient&nbsp;light&nbsp;DataStream<br>
+:param&nbsp;float&nbsp;data_frequency:&nbsp;How&nbsp;many&nbsp;data&nbsp;point&nbsp;should&nbsp;generate&nbsp;in&nbsp;a&nbsp;second<br>
+:param&nbsp;float&nbsp;minimum_data_percent:&nbsp;Minimum&nbsp;percent&nbsp;of&nbsp;data&nbsp;should&nbsp;be&nbsp;available<br>
+:return:&nbsp;Average&nbsp;of&nbsp;ambient&nbsp;light&nbsp;over&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_ambient_light_hourly"><strong>average_ambient_light_hourly</strong></a>(self, lightdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], data_frequency:float=16, minimum_data_percent:float=40) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;ambient&nbsp;light&nbsp;(in&nbsp;flux)&nbsp;for&nbsp;each&nbsp;hour&nbsp;window&nbsp;in&nbsp;a&nbsp;day.&nbsp;If&nbsp;the&nbsp;input&nbsp;light&nbsp;data&nbsp;is&nbsp;less&nbsp;than&nbsp;minimum_data_percent%<br>
+which&nbsp;is&nbsp;default&nbsp;40%,&nbsp;in&nbsp;a&nbsp;window&nbsp;then&nbsp;it&nbsp;will&nbsp;not&nbsp;generate&nbsp;any&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;lightdata:&nbsp;Phone&nbsp;ambient&nbsp;light&nbsp;DataStream<br>
+:param&nbsp;float&nbsp;data_frequency:&nbsp;How&nbsp;many&nbsp;data&nbsp;point&nbsp;should&nbsp;generate&nbsp;in&nbsp;a&nbsp;second<br>
+:param&nbsp;float&nbsp;minimum_data_percent:&nbsp;Minimum&nbsp;percent&nbsp;of&nbsp;data&nbsp;should&nbsp;be&nbsp;available<br>
+:return:&nbsp;Average&nbsp;of&nbsp;ambient&nbsp;light&nbsp;over&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_call_duration_daily"><strong>average_call_duration_daily</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;spent&nbsp;in&nbsp;call&nbsp;in&nbsp;a&nbsp;day.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data<br>
+for&nbsp;that&nbsp;day&nbsp;then&nbsp;it&nbsp;will&nbsp;return&nbsp;None.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;DataStream<br>
+:return:&nbsp;Average&nbsp;call&nbsp;duration&nbsp;over&nbsp;1&nbsp;day&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_call_duration_four_hourly"><strong>average_call_duration_four_hourly</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;spent&nbsp;in&nbsp;call&nbsp;for&nbsp;each&nbsp;four&nbsp;hour&nbsp;window.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data<br>
+for&nbsp;any&nbsp;window&nbsp;then&nbsp;there&nbsp;will&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;DataStream<br>
+:return:&nbsp;Average&nbsp;phone&nbsp;call&nbsp;duration&nbsp;over&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_call_duration_hourly"><strong>average_call_duration_hourly</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;spent&nbsp;in&nbsp;call&nbsp;for&nbsp;each&nbsp;hour&nbsp;window.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data<br>
+for&nbsp;any&nbsp;window&nbsp;then&nbsp;there&nbsp;will&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;DataStream<br>
+:return:&nbsp;Average&nbsp;phone&nbsp;call&nbsp;duration&nbsp;over&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_inter_phone_call_sms_time_daily"><strong>average_inter_phone_call_sms_time_daily</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;events&nbsp;(call&nbsp;and&nbsp;sms)<br>
+for&nbsp;whole&nbsp;day.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;then&nbsp;it&nbsp;will&nbsp;return&nbsp;None.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;DataStream<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Average&nbsp;inter-phone&nbsp;call&nbsp;and&nbsp;sms&nbsp;time&nbsp;over&nbsp;1&nbsp;day&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_inter_phone_call_sms_time_four_hourly"><strong>average_inter_phone_call_sms_time_four_hourly</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;events&nbsp;(call&nbsp;and&nbsp;sms)<br>
+for&nbsp;each&nbsp;four&nbsp;hour&nbsp;window.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;a&nbsp;window&nbsp;then<br>
+there&nbsp;will&nbsp;be&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;DataStream<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Average&nbsp;inter-phone&nbsp;call&nbsp;and&nbsp;sms&nbsp;time&nbsp;over&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_inter_phone_call_sms_time_hourly"><strong>average_inter_phone_call_sms_time_hourly</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;events&nbsp;(call&nbsp;and&nbsp;sms)<br>
+for&nbsp;each&nbsp;hour&nbsp;window.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;a&nbsp;window&nbsp;then<br>
+there&nbsp;will&nbsp;be&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;DataStream<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Average&nbsp;inter-phone&nbsp;call&nbsp;and&nbsp;sms&nbsp;time&nbsp;over&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_inter_phone_call_time_daily"><strong>average_inter_phone_call_time_daily</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;call&nbsp;for&nbsp;a&nbsp;whole&nbsp;day.<br>
+If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;the&nbsp;day&nbsp;then&nbsp;it&nbsp;will&nbsp;return&nbsp;None.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;DataStream<br>
+:return:&nbsp;Average&nbsp;inter-phone&nbsp;call&nbsp;time&nbsp;over&nbsp;1&nbsp;day&nbsp;window<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_inter_phone_call_time_four_hourly"><strong>average_inter_phone_call_time_four_hourly</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;call&nbsp;for&nbsp;each&nbsp;four&nbsp;hour&nbsp;window.<br>
+If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;a&nbsp;window&nbsp;then&nbsp;there&nbsp;will&nbsp;be&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;DataStream<br>
+:return:&nbsp;Average&nbsp;inter-phone&nbsp;call&nbsp;time&nbsp;over&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_inter_phone_call_time_hourly"><strong>average_inter_phone_call_time_hourly</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;call&nbsp;for&nbsp;each&nbsp;hour&nbsp;window.<br>
+If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;a&nbsp;window&nbsp;then&nbsp;there&nbsp;will&nbsp;be&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;DataStream<br>
+:return:&nbsp;Average&nbsp;inter-phone&nbsp;call&nbsp;time&nbsp;over&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_inter_sms_time_daily"><strong>average_inter_sms_time_daily</strong></a>(self, smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;sms&nbsp;for&nbsp;a&nbsp;day.<br>
+If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;the&nbsp;day&nbsp;then&nbsp;it&nbsp;will&nbsp;return&nbsp;None.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Average&nbsp;inter-sms&nbsp;time&nbsp;over&nbsp;1&nbsp;day&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_inter_sms_time_four_hourly"><strong>average_inter_sms_time_four_hourly</strong></a>(self, smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;sms&nbsp;for&nbsp;each&nbsp;four&nbsp;hour&nbsp;window.<br>
+If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;a&nbsp;window&nbsp;then&nbsp;there&nbsp;will&nbsp;be&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Average&nbsp;inter-sms&nbsp;time&nbsp;over&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_inter_sms_time_hourly"><strong>average_inter_sms_time_hourly</strong></a>(self, smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;sms&nbsp;for&nbsp;each&nbsp;hour&nbsp;window.<br>
+If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;a&nbsp;window&nbsp;then&nbsp;there&nbsp;will&nbsp;be&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Average&nbsp;inter-sms&nbsp;time&nbsp;over&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_sms_length_daily"><strong>average_sms_length_daily</strong></a>(self, smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;sms&nbsp;length&nbsp;for&nbsp;a&nbsp;day.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;that&nbsp;day<br>
+then&nbsp;it&nbsp;will&nbsp;return&nbsp;None.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;DataStream<br>
+:return:&nbsp;Average&nbsp;sms&nbsp;length&nbsp;over&nbsp;1&nbsp;day&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_sms_length_four_hourly"><strong>average_sms_length_four_hourly</strong></a>(self, smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;sms&nbsp;length&nbsp;for&nbsp;each&nbsp;four&nbsp;hour&nbsp;window.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data<br>
+for&nbsp;any&nbsp;window&nbsp;then&nbsp;there&nbsp;will&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Average&nbsp;sms&nbsp;length&nbsp;over&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-average_sms_length_hourly"><strong>average_sms_length_hourly</strong></a>(self, smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;sms&nbsp;length&nbsp;for&nbsp;each&nbsp;hour&nbsp;window.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data<br>
+for&nbsp;any&nbsp;window&nbsp;then&nbsp;there&nbsp;will&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Average&nbsp;SMS&nbsp;length&nbsp;over&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-calculate_phone_outside_duration"><strong>calculate_phone_outside_duration</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], phone_inside_threshold_second:float=60) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Finds&nbsp;the&nbsp;duration&nbsp;(start_time&nbsp;and&nbsp;end_time)&nbsp;of&nbsp;phone&nbsp;outside&nbsp;(not&nbsp;in&nbsp;pocket&nbsp;or&nbsp;parse).<br>
+It&nbsp;uses&nbsp;a&nbsp;threshold&nbsp;(phone_inside_threshold_second),&nbsp;such&nbsp;that,&nbsp;if&nbsp;there&nbsp;is&nbsp;a&nbsp;duration&nbsp;of<br>
+at&nbsp;least&nbsp;this&nbsp;amount&nbsp;of&nbsp;consecutive&nbsp;time&nbsp;the&nbsp;phone&nbsp;proximity&nbsp;is&nbsp;0,&nbsp;then&nbsp;this&nbsp;will&nbsp;be&nbsp;a<br>
+period&nbsp;of&nbsp;phone&nbsp;inside.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;Phone&nbsp;proximity&nbsp;Datastream<br>
+:param&nbsp;float&nbsp;phone_inside_threshold_second:&nbsp;Threshold&nbsp;in&nbsp;seconds,&nbsp;that&nbsp;is&nbsp;allowed&nbsp;with<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;proximity&nbsp;0&nbsp;with&nbsp;phone&nbsp;outside<br>
+:return:&nbsp;DataPoints&nbsp;containing&nbsp;intervals&nbsp;of&nbsp;phone&nbsp;outside<br>
+:rtype:&nbsp;List(DataPoint)</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_app_category"><strong>get_app_category</strong></a>(self, appid:str) -&gt; List[str]</dt><dd><tt>Fetch&nbsp;and&nbsp;parse&nbsp;the&nbsp;google&nbsp;play&nbsp;store&nbsp;page&nbsp;of&nbsp;the&nbsp;android&nbsp;app<br>
+and&nbsp;return&nbsp;the&nbsp;category.&nbsp;If&nbsp;there&nbsp;are&nbsp;multiple&nbsp;category&nbsp;it&nbsp;will<br>
+return&nbsp;the&nbsp;first&nbsp;one&nbsp;in&nbsp;the&nbsp;webpage.&nbsp;Only&nbsp;for&nbsp;the&nbsp;GAME&nbsp;category<br>
+it&nbsp;will&nbsp;return&nbsp;the&nbsp;sub-category&nbsp;also.<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;appid:&nbsp;package&nbsp;name&nbsp;of&nbsp;an&nbsp;app<br>
+:return:&nbsp;[package_name,&nbsp;category&nbsp;(if&nbsp;exists,&nbsp;otherwise&nbsp;None)&nbsp;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;app_name&nbsp;(if&nbsp;exists,&nbsp;otherwise&nbsp;None),&nbsp;sub_category&nbsp;(if&nbsp;exists,&nbsp;otherwise&nbsp;None)]<br>
+:rtype:&nbsp;List(str)</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_appusage_duration_by_category"><strong>get_appusage_duration_by_category</strong></a>(self, appdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], categories:List[str], appusage_gap_threshold_seconds:float=120) -&gt; List</dt><dd><tt>Given&nbsp;the&nbsp;app&nbsp;category,&nbsp;it&nbsp;will&nbsp;return&nbsp;the&nbsp;list&nbsp;of&nbsp;duration&nbsp;when&nbsp;the&nbsp;app&nbsp;was&nbsp;used.<br>
+It&nbsp;is&nbsp;assumed&nbsp;that&nbsp;if&nbsp;the&nbsp;gap&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;data&nbsp;points&nbsp;with&nbsp;same&nbsp;app&nbsp;usage<br>
+is&nbsp;within&nbsp;the&nbsp;appusage_gap_threshold_seconds&nbsp;time&nbsp;then,&nbsp;the&nbsp;app&nbsp;usage&nbsp;is&nbsp;in&nbsp;same&nbsp;session.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;appdata:&nbsp;App&nbsp;category&nbsp;data&nbsp;stream<br>
+:param&nbsp;List(str)&nbsp;categories:&nbsp;List&nbsp;of&nbsp;app&nbsp;categories&nbsp;of&nbsp;which&nbsp;the&nbsp;usage&nbsp;duration&nbsp;should&nbsp;be&nbsp;calculated<br>
+:param&nbsp;float&nbsp;appusage_gap_threshold_seconds:&nbsp;Threshold&nbsp;in&nbsp;seconds,&nbsp;which&nbsp;is&nbsp;the&nbsp;gap&nbsp;allowed&nbsp;between&nbsp;two<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;consecutive&nbsp;DataPoint&nbsp;of&nbsp;same&nbsp;app<br>
+:return:&nbsp;A&nbsp;list&nbsp;of&nbsp;intervals&nbsp;of&nbsp;the&nbsp;given&nbsp;apps&nbsp;(categories)&nbsp;usage&nbsp;[start_time,&nbsp;end_time,&nbsp;category]<br>
+:rtype:&nbsp;List</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_call_daily_entropy"><strong>get_call_daily_entropy</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Entropy&nbsp;of&nbsp;phone&nbsp;call&nbsp;for&nbsp;a&nbsp;whole&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;Phone&nbsp;call&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;Entropy&nbsp;of&nbsp;phone&nbsp;call&nbsp;for&nbsp;1&nbsp;day&nbsp;window<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_call_four_hourly_entropy"><strong>get_call_four_hourly_entropy</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Entropy&nbsp;of&nbsp;phone&nbsp;call&nbsp;for&nbsp;each&nbsp;four&nbsp;hour&nbsp;window&nbsp;in&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;Phone&nbsp;call&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;Entropy&nbsp;of&nbsp;phone&nbsp;call&nbsp;for&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_call_hourly_entropy"><strong>get_call_hourly_entropy</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Entropy&nbsp;of&nbsp;phone&nbsp;call&nbsp;for&nbsp;each&nbsp;hour&nbsp;in&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;Phone&nbsp;call&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;Entropy&nbsp;of&nbsp;phone&nbsp;call&nbsp;for&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_call_sms_daily_entropy"><strong>get_call_sms_daily_entropy</strong></a>(self, calldata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Entropy&nbsp;of&nbsp;phone&nbsp;call&nbsp;and&nbsp;SMS&nbsp;(combined)&nbsp;for&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;calldata:&nbsp;Phone&nbsp;call&nbsp;number&nbsp;data&nbsp;stream<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;Entropy&nbsp;of&nbsp;phone&nbsp;call&nbsp;and&nbsp;SMS&nbsp;for&nbsp;1&nbsp;day&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_call_sms_four_hourly_entropy"><strong>get_call_sms_four_hourly_entropy</strong></a>(self, calldata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Entropy&nbsp;of&nbsp;phone&nbsp;call&nbsp;and&nbsp;SMS&nbsp;(combined)&nbsp;for&nbsp;each&nbsp;four&nbsp;hour&nbsp;window&nbsp;in&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;calldata:&nbsp;Phone&nbsp;call&nbsp;number&nbsp;data&nbsp;stream<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;Entropy&nbsp;of&nbsp;phone&nbsp;call&nbsp;and&nbsp;SMS&nbsp;for&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_call_sms_hourly_entropy"><strong>get_call_sms_hourly_entropy</strong></a>(self, calldata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Entropy&nbsp;of&nbsp;phone&nbsp;call&nbsp;and&nbsp;SMS&nbsp;(combined)&nbsp;for&nbsp;each&nbsp;one&nbsp;hour&nbsp;window&nbsp;in&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;calldata:&nbsp;Phone&nbsp;call&nbsp;number&nbsp;data&nbsp;stream<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;Entropy&nbsp;of&nbsp;phone&nbsp;call&nbsp;and&nbsp;SMS&nbsp;for&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_contact_entropy"><strong>get_contact_entropy</strong></a>(self, data:List[str]) -&gt; float</dt><dd><tt>Helper&nbsp;method&nbsp;to&nbsp;calculate&nbsp;entropy&nbsp;of&nbsp;a&nbsp;list&nbsp;of&nbsp;contacts<br>
+&nbsp;<br>
+:param&nbsp;List(str)&nbsp;data:&nbsp;List&nbsp;of&nbsp;contacts<br>
+:return:&nbsp;Entropy&nbsp;of&nbsp;the&nbsp;given&nbsp;contact&nbsp;list<br>
+:rtype:&nbsp;float</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_data_by_stream_name"><strong>get_data_by_stream_name</strong></a>(self, stream_name:str, user_id:str, day:str, localtime:bool=True, ingested_stream=True) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Combines&nbsp;data&nbsp;from&nbsp;multiple&nbsp;streams&nbsp;data&nbsp;of&nbsp;same&nbsp;stream&nbsp;based&nbsp;on&nbsp;stream&nbsp;name.<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;stream_name:&nbsp;Name&nbsp;of&nbsp;the&nbsp;stream<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;stream&nbsp;owner<br>
+:param&nbsp;str&nbsp;day:&nbsp;The&nbsp;day&nbsp;(YYYYMMDD)&nbsp;on&nbsp;which&nbsp;to&nbsp;operate<br>
+:param&nbsp;bool&nbsp;localtime:&nbsp;The&nbsp;way&nbsp;to&nbsp;structure&nbsp;time,&nbsp;True&nbsp;for&nbsp;operating&nbsp;in&nbsp;participant's&nbsp;local&nbsp;time,&nbsp;False&nbsp;for&nbsp;UTC<br>
+:return:&nbsp;Combined&nbsp;stream&nbsp;data&nbsp;if&nbsp;there&nbsp;are&nbsp;multiple&nbsp;stream&nbsp;id<br>
+:rtype:&nbsp;List(DataPoint)</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_filtered_data"><strong>get_filtered_data</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], admission_control:Callable[[Any], bool]=None) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Return&nbsp;the&nbsp;filtered&nbsp;list&nbsp;of&nbsp;DataPoints&nbsp;according&nbsp;to&nbsp;the&nbsp;admission&nbsp;control&nbsp;provided<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;Input&nbsp;data&nbsp;list<br>
+:param&nbsp;Callable[[Any],&nbsp;bool]&nbsp;admission_control:&nbsp;Admission&nbsp;control&nbsp;lambda&nbsp;function,&nbsp;which&nbsp;accepts&nbsp;the&nbsp;sample&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;a&nbsp;bool&nbsp;based&nbsp;on&nbsp;the&nbsp;data&nbsp;sample&nbsp;validity<br>
+:return:&nbsp;Filtered&nbsp;list&nbsp;of&nbsp;DataPoints<br>
+:rtype:&nbsp;List(DataPoint)</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_overlapped_value"><strong>get_overlapped_value</strong></a>(self, px1, py1, px2, py2)</dt></dl>
+
+<dl><dt><a name="PhoneFeatures-get_percent_initiated_call"><strong>get_percent_initiated_call</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Percent&nbsp;of&nbsp;time&nbsp;the&nbsp;user&nbsp;initiated&nbsp;a&nbsp;call&nbsp;for&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;Call&nbsp;type&nbsp;stream&nbsp;data&nbsp;points<br>
+:return:&nbsp;List&nbsp;of&nbsp;single&nbsp;data&nbsp;point&nbsp;with&nbsp;percent&nbsp;of&nbsp;call&nbsp;initiated&nbsp;for&nbsp;the&nbsp;day<br>
+:rtype:&nbsp;List(DataPoint)</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_percent_initiated_callsms"><strong>get_percent_initiated_callsms</strong></a>(self, calldata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Percent&nbsp;of&nbsp;time&nbsp;the&nbsp;user&nbsp;initiated&nbsp;a&nbsp;Call&nbsp;or&nbsp;SMS&nbsp;for&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;calldata:&nbsp;Call&nbsp;type&nbsp;stream&nbsp;data&nbsp;points<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;type&nbsp;stream&nbsp;data&nbsp;points<br>
+:return:&nbsp;List&nbsp;of&nbsp;single&nbsp;data&nbsp;point&nbsp;with&nbsp;percent&nbsp;of&nbsp;Call&nbsp;and&nbsp;SMS&nbsp;initiated&nbsp;for&nbsp;the&nbsp;day<br>
+:rtype:&nbsp;List(DataPoint)</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_percent_initiated_sms"><strong>get_percent_initiated_sms</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Percent&nbsp;of&nbsp;time&nbsp;the&nbsp;user&nbsp;initiated&nbsp;a&nbsp;SMS&nbsp;for&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;SMS&nbsp;type&nbsp;stream&nbsp;data&nbsp;points<br>
+:return:&nbsp;List&nbsp;of&nbsp;single&nbsp;data&nbsp;point&nbsp;with&nbsp;percent&nbsp;of&nbsp;SMS&nbsp;initiated&nbsp;for&nbsp;the&nbsp;day<br>
+:rtype:&nbsp;List(DataPoint)</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_sms_daily_entropy"><strong>get_sms_daily_entropy</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Entropy&nbsp;of&nbsp;SMS&nbsp;for&nbsp;a&nbsp;whole&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;SMS&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;Entropy&nbsp;of&nbsp;sms&nbsp;for&nbsp;1&nbsp;day&nbsp;window<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_sms_four_hourly_entropy"><strong>get_sms_four_hourly_entropy</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Entropy&nbsp;of&nbsp;SMS&nbsp;for&nbsp;each&nbsp;four&nbsp;hour&nbsp;window&nbsp;in&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;SMS&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;Entropy&nbsp;of&nbsp;SMS&nbsp;for&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_sms_hourly_entropy"><strong>get_sms_hourly_entropy</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Entropy&nbsp;of&nbsp;SMS&nbsp;for&nbsp;each&nbsp;hour&nbsp;of&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;SMS&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;Entropy&nbsp;of&nbsp;SMS&nbsp;for&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_total_call_daily"><strong>get_total_call_daily</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Number&nbsp;of&nbsp;phone&nbsp;calls&nbsp;in&nbsp;a&nbsp;day<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;Phone&nbsp;call&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;Number&nbsp;of&nbsp;phone&nbsp;calls&nbsp;in&nbsp;a&nbsp;day<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_total_call_four_hourly"><strong>get_total_call_four_hourly</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Number&nbsp;of&nbsp;phone&nbsp;calls&nbsp;for&nbsp;each&nbsp;four&nbsp;hour&nbsp;in&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;Phone&nbsp;call&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;number&nbsp;of&nbsp;phone&nbsp;calls&nbsp;for&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_total_call_hourly"><strong>get_total_call_hourly</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Number&nbsp;of&nbsp;phone&nbsp;calls&nbsp;for&nbsp;each&nbsp;hour&nbsp;in&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;Phone&nbsp;call&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;number&nbsp;of&nbsp;phone&nbsp;calls&nbsp;for&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_total_call_sms_daily"><strong>get_total_call_sms_daily</strong></a>(self, calldata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Number&nbsp;of&nbsp;phone&nbsp;and&nbsp;SMS&nbsp;for&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;calldata:&nbsp;Phone&nbsp;call&nbsp;number&nbsp;data&nbsp;stream<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;Number&nbsp;of&nbsp;phone&nbsp;and&nbsp;SMS&nbsp;in&nbsp;1&nbsp;day&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_total_call_sms_four_hourly"><strong>get_total_call_sms_four_hourly</strong></a>(self, calldata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Number&nbsp;of&nbsp;phone&nbsp;and&nbsp;SMS&nbsp;for&nbsp;each&nbsp;four&nbsp;hour&nbsp;window&nbsp;for&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;calldata:&nbsp;Phone&nbsp;call&nbsp;number&nbsp;data&nbsp;stream<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;Number&nbsp;of&nbsp;phone&nbsp;and&nbsp;SMS&nbsp;in&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_total_call_sms_hourly"><strong>get_total_call_sms_hourly</strong></a>(self, calldata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Number&nbsp;of&nbsp;phone&nbsp;and&nbsp;SMS&nbsp;for&nbsp;each&nbsp;one&nbsp;hour&nbsp;of&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;calldata:&nbsp;Phone&nbsp;call&nbsp;number&nbsp;data&nbsp;stream<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;Number&nbsp;of&nbsp;phone&nbsp;and&nbsp;SMS&nbsp;for&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_total_phone_activity_time_by_type"><strong>get_total_phone_activity_time_by_type</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], activity_type:float) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Total&nbsp;time&nbsp;in&nbsp;a&nbsp;day&nbsp;of&nbsp;type&nbsp;'activity_type'.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;Phone&nbsp;activity&nbsp;API&nbsp;stream&nbsp;data&nbsp;points<br>
+:param&nbsp;float&nbsp;activity_type:&nbsp;The&nbsp;activity&nbsp;summary&nbsp;to&nbsp;be&nbsp;calculated&nbsp;ranging&nbsp;from&nbsp;0&nbsp;to&nbsp;7<br>
+:return:&nbsp;List&nbsp;with&nbsp;single&nbsp;data&nbsp;point&nbsp;including&nbsp;the&nbsp;total&nbsp;time&nbsp;phone&nbsp;found&nbsp;the&nbsp;'activity_type'&nbsp;in&nbsp;minutes<br>
+:rtype:&nbsp;List(DataPoint)</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_total_sms_daily"><strong>get_total_sms_daily</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Number&nbsp;of&nbsp;SMS&nbsp;in&nbsp;a&nbsp;day<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;SMS&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;Number&nbsp;of&nbsp;SMS&nbsp;in&nbsp;a&nbsp;day<br>
+:rtype:&nbsp;List(DataPoint)</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_total_sms_four_hourly"><strong>get_total_sms_four_hourly</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Number&nbsp;of&nbsp;SMS&nbsp;for&nbsp;each&nbsp;four&nbsp;hour&nbsp;in&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;SMS&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;number&nbsp;of&nbsp;SMS&nbsp;for&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_total_sms_hourly"><strong>get_total_sms_hourly</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Number&nbsp;of&nbsp;SMS&nbsp;for&nbsp;each&nbsp;hour&nbsp;in&nbsp;a&nbsp;day.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;SMS&nbsp;number&nbsp;data&nbsp;stream<br>
+:return:&nbsp;number&nbsp;of&nbsp;sms&nbsp;for&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-inter_event_time_list"><strong>inter_event_time_list</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[float]</dt><dd><tt>Helper&nbsp;function&nbsp;to&nbsp;compute&nbsp;inter-event&nbsp;times<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;A&nbsp;list&nbsp;of&nbsp;DataPoints<br>
+:return:&nbsp;Time&nbsp;deltas&nbsp;between&nbsp;DataPoints&nbsp;in&nbsp;minutes<br>
+:rtype:&nbsp;list(float)</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-label_appusage_intervals"><strong>label_appusage_intervals</strong></a>(self, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], appusage:List, intervals:List, interval_label:List[str]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Helper&nbsp;function&nbsp;to&nbsp;label&nbsp;screen&nbsp;touch&nbsp;in&nbsp;a&nbsp;fixed&nbsp;app&nbsp;category&nbsp;usage<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;data:&nbsp;Phone&nbsp;touch&nbsp;screen&nbsp;data&nbsp;stream<br>
+:param&nbsp;List&nbsp;appusage:&nbsp;List&nbsp;appusage:&nbsp;list&nbsp;of&nbsp;app&nbsp;usage&nbsp;duration&nbsp;of&nbsp;specific&nbsp;app&nbsp;categories&nbsp;of&nbsp;the&nbsp;form<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[start_time,&nbsp;end_time,&nbsp;category]<br>
+:param&nbsp;intervals:&nbsp;List&nbsp;of&nbsp;integers&nbsp;containing&nbsp;screen&nbsp;touch&nbsp;gap&nbsp;as&nbsp;in&nbsp;touch&nbsp;screen&nbsp;timestamp&nbsp;unit&nbsp;(milliseconds)<br>
+:param&nbsp;interval_label:&nbsp;A&nbsp;list&nbsp;of&nbsp;possible&nbsp;type&nbsp;of&nbsp;screen&nbsp;touch&nbsp;which&nbsp;are&nbsp;[typing,&nbsp;pause,&nbsp;reading,&nbsp;unknown]<br>
+:return:&nbsp;Labelled&nbsp;touche&nbsp;interval<br>
+:rtype:&nbsp;List(DataPoint)</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-process"><strong>process</strong></a>(self, user_id:str, all_days:List[str])</dt><dd><tt>Main&nbsp;processing&nbsp;function&nbsp;inherited&nbsp;from&nbsp;ComputerFeatureBase<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;user<br>
+:param&nbsp;List(str)&nbsp;all_days:&nbsp;List&nbsp;of&nbsp;days&nbsp;with&nbsp;format&nbsp;'YYYYMMDD'<br>
+:return:</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-process_appcategory_day_data"><strong>process_appcategory_day_data</strong></a>(self, user_id:str, appcategorystream:List[cerebralcortex.core.datatypes.datapoint.DataPoint], input_appcategorystream:cerebralcortex.core.datatypes.datastream.DataStream)</dt><dd><tt>process&nbsp;all&nbsp;app&nbsp;category&nbsp;related&nbsp;features.<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;stream&nbsp;owner<br>
+:param&nbsp;List(DataPoint)&nbsp;appcategorystream:&nbsp;App&nbsp;category&nbsp;stream&nbsp;data<br>
+:param&nbsp;DataStream&nbsp;input_appcategorystream:&nbsp;DataStream&nbsp;object&nbsp;of&nbsp;the&nbsp;app&nbsp;category&nbsp;stream<br>
+:return:</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-process_appusage_context_day_data"><strong>process_appusage_context_day_data</strong></a>(self, user_id:str, app_usage_data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], input_usage_stream:cerebralcortex.core.datatypes.datastream.DataStream, gps_semantic_data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], input_gps_semantic_stream:cerebralcortex.core.datatypes.datastream.DataStream)</dt><dd><tt>Process&nbsp;appusage&nbsp;related&nbsp;modules<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;stream&nbsp;owner<br>
+:param&nbsp;List(DataPoint)&nbsp;app_usage_data:&nbsp;App&nbsp;usage&nbsp;stream&nbsp;data<br>
+:param&nbsp;input_usage_stream:&nbsp;DataStram&nbsp;object&nbsp;of&nbsp;app&nbsp;usage&nbsp;stream<br>
+:param&nbsp;gps_semantic_data:&nbsp;GPS&nbsp;semantic&nbsp;location&nbsp;data&nbsp;splitted&nbsp;daywise&nbsp;(localtime&nbsp;false)<br>
+:param&nbsp;input_gps_semantic_stream:&nbsp;DataStream&nbsp;object&nbsp;of&nbsp;the&nbsp;gps&nbsp;semantic&nbsp;daysiwse&nbsp;data<br>
+:return:</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-process_appusage_day_data"><strong>process_appusage_day_data</strong></a>(self, user_id:str, appcategorydata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], input_appcategorystream:cerebralcortex.core.datatypes.datastream.DataStream)</dt><dd><tt>Processing&nbsp;all&nbsp;app&nbsp;usage&nbsp;by&nbsp;category&nbsp;modules.<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;stream&nbsp;owner<br>
+:param&nbsp;List(DataPoint)&nbsp;appcategorydata:&nbsp;App&nbsp;category&nbsp;data&nbsp;stream<br>
+:param&nbsp;DataStream&nbsp;input_appcategorystream:&nbsp;DataStream&nbsp;object&nbsp;of&nbsp;app&nbsp;category&nbsp;stream<br>
+:return:</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-process_callsms_type_day_data"><strong>process_callsms_type_day_data</strong></a>(self, user_id:str, calltype_data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], smstype_data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], input_call_type_stream:cerebralcortex.core.datatypes.datastream.DataStream, input_sms_type_stream:cerebralcortex.core.datatypes.datastream.DataStream)</dt><dd><tt>Processing&nbsp;all&nbsp;streams&nbsp;related&nbsp;to&nbsp;call&nbsp;type&nbsp;and&nbsp;sms&nbsp;type&nbsp;streams.<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;stream&nbsp;owner<br>
+:param&nbsp;List(DataPoint)&nbsp;calltype_data:&nbsp;Call&nbsp;type&nbsp;stream&nbsp;data&nbsp;points<br>
+:param&nbsp;List(DataPoint)&nbsp;smstype_data:&nbsp;SMS&nbsp;type&nbsp;stream&nbsp;data&nbsp;points<br>
+:param&nbsp;DataStream&nbsp;input_call_type_stream:&nbsp;DataStream&nbsp;object&nbsp;of&nbsp;call&nbsp;type&nbsp;stream<br>
+:param&nbsp;DataStream&nbsp;input_sms_type_stream:&nbsp;DataStream&nbsp;object&nbsp;of&nbsp;sms&nbsp;type&nbsp;stream<br>
+:return:</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-process_callsmsnumber_day_data"><strong>process_callsmsnumber_day_data</strong></a>(self, user_id:str, call_number_data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], sms_number_data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], input_callstream:cerebralcortex.core.datatypes.datastream.DataStream, input_smsstream:cerebralcortex.core.datatypes.datastream.DataStream)</dt><dd><tt>Process&nbsp;all&nbsp;phone&nbsp;call&nbsp;number&nbsp;and&nbsp;SMS&nbsp;number&nbsp;related&nbsp;modules<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;stream&nbsp;owner<br>
+:param&nbsp;List(DataPoint)&nbsp;call_number_data:&nbsp;Phone&nbsp;call&nbsp;number&nbsp;stream<br>
+:param&nbsp;List(DataPoint)&nbsp;sms_number_data:&nbsp;SMS&nbsp;number&nbsp;stream<br>
+:param&nbsp;DataStream&nbsp;input_callstream:&nbsp;DataStream&nbsp;object&nbsp;of&nbsp;phone&nbsp;call&nbsp;number<br>
+:param&nbsp;DataStream&nbsp;input_smsstream:&nbsp;DataStream&nbsp;object&nbsp;of&nbsp;SMS&nbsp;call&nbsp;number<br>
+:return:</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-process_callsmsstream_day_data"><strong>process_callsmsstream_day_data</strong></a>(self, user_id:str, callstream:List[cerebralcortex.core.datatypes.datapoint.DataPoint], smsstream:List[cerebralcortex.core.datatypes.datapoint.DataPoint], input_callstream:cerebralcortex.core.datatypes.datastream.DataStream, input_smsstream:cerebralcortex.core.datatypes.datastream.DataStream)</dt><dd><tt>Process&nbsp;all&nbsp;the&nbsp;call&nbsp;and&nbsp;sms&nbsp;related&nbsp;features&nbsp;and&nbsp;store&nbsp;them&nbsp;as&nbsp;datastreams.<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;stream&nbsp;owner<br>
+:param&nbsp;List(DataPoint)&nbsp;callstream:&nbsp;Phone&nbsp;call&nbsp;duration&nbsp;data&nbsp;stream<br>
+:param&nbsp;List(DataPoint)&nbsp;smsstream:&nbsp;SMS&nbsp;length&nbsp;data&nbsp;stream<br>
+:param&nbsp;DataStream&nbsp;input_callstream:&nbsp;DataStream&nbsp;object&nbsp;of&nbsp;phone&nbsp;call&nbsp;stream<br>
+:param&nbsp;DataStream&nbsp;input_smsstream:&nbsp;DataStream&nbsp;object&nbsp;of&nbsp;SMS&nbsp;call&nbsp;stream<br>
+:return:</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-process_data"><strong>process_data</strong></a>(self, user_id:str, all_user_streams:dict, all_days:List[str])</dt><dd><tt>Getting&nbsp;all&nbsp;the&nbsp;necessary&nbsp;input&nbsp;datastreams&nbsp;for&nbsp;a&nbsp;user<br>
+and&nbsp;run&nbsp;all&nbsp;feature&nbsp;processing&nbsp;modules&nbsp;for&nbsp;all&nbsp;the&nbsp;days<br>
+of&nbsp;the&nbsp;user.<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;stream&nbsp;owner<br>
+:param&nbsp;dict&nbsp;all_user_streams:&nbsp;Dictionary&nbsp;containing&nbsp;all&nbsp;the&nbsp;user&nbsp;streams,&nbsp;where&nbsp;key&nbsp;is&nbsp;the&nbsp;stream&nbsp;name,&nbsp;value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;the&nbsp;stream&nbsp;metadata<br>
+:param&nbsp;List(str)&nbsp;all_days:&nbsp;List&nbsp;of&nbsp;all&nbsp;days&nbsp;for&nbsp;the&nbsp;processing&nbsp;in&nbsp;the&nbsp;format&nbsp;'YYYYMMDD'<br>
+:return:</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-process_light_day_data"><strong>process_light_day_data</strong></a>(self, user_id:str, lightdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], input_lightstream:cerebralcortex.core.datatypes.datastream.DataStream)</dt><dd><tt>Process&nbsp;all&nbsp;the&nbsp;ambient&nbsp;light&nbsp;related&nbsp;features&nbsp;and&nbsp;store&nbsp;the&nbsp;output&nbsp;streams.<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;stream&nbsp;owner<br>
+:param&nbsp;List(DataPoint)&nbsp;&nbsp;lightdata:&nbsp;Ambient&nbsp;light&nbsp;data&nbsp;stream<br>
+:param&nbsp;DataStream&nbsp;input_lightstream:&nbsp;DataStream&nbsp;object&nbsp;of&nbsp;Ambient&nbsp;light&nbsp;stream<br>
+:return:</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-process_phone_activity_day_data"><strong>process_phone_activity_day_data</strong></a>(self, user_id:str, activity_data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], input_activity_stream:cerebralcortex.core.datatypes.datastream.DataStream)</dt><dd><tt>Process&nbsp;all&nbsp;phone&nbsp;activity&nbsp;API&nbsp;stream&nbsp;related&nbsp;features<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;stream&nbsp;owner<br>
+:param&nbsp;List(DataPoint)&nbsp;activity_data:&nbsp;Phone&nbsp;activity&nbsp;API&nbsp;stream&nbsp;data&nbsp;points<br>
+:param&nbsp;DataStream&nbsp;input_activity_stream:&nbsp;DataStream&nbsp;object&nbsp;of&nbsp;phone&nbsp;activity&nbsp;data<br>
+:return:</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-process_proximity_day_data"><strong>process_proximity_day_data</strong></a>(self, user_id:str, proximitystream:List[cerebralcortex.core.datatypes.datapoint.DataPoint], input_proximitystream:cerebralcortex.core.datatypes.datastream.DataStream)</dt><dd><tt>Process&nbsp;all&nbsp;proximity&nbsp;related&nbsp;modules<br>
+&nbsp;<br>
+:param&nbsp;str&nbsp;user_id:&nbsp;UUID&nbsp;of&nbsp;the&nbsp;stream&nbsp;owner<br>
+:param&nbsp;List(DataPoint)&nbsp;proximitystream:&nbsp;Phone&nbsp;proximity&nbsp;data&nbsp;stream<br>
+:param&nbsp;DataStream&nbsp;input_proximitystream:&nbsp;DataStream&nbsp;object&nbsp;of&nbsp;proximity&nbsp;data&nbsp;stream<br>
+:return:</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_ambient_light_daily"><strong>variance_ambient_light_daily</strong></a>(self, lightdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], data_frequency:float=16, minimum_data_percent:float=40) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Variance&nbsp;of&nbsp;ambient&nbsp;light&nbsp;(in&nbsp;flux)&nbsp;for&nbsp;a&nbsp;day.&nbsp;If&nbsp;the&nbsp;input&nbsp;light&nbsp;data&nbsp;is&nbsp;less&nbsp;than&nbsp;minimum_data_percent%<br>
+which&nbsp;is&nbsp;default&nbsp;40%,&nbsp;it&nbsp;will&nbsp;return&nbsp;None.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;lightdata:&nbsp;Phone&nbsp;ambient&nbsp;light&nbsp;DataStream<br>
+:param&nbsp;float&nbsp;data_frequency:&nbsp;How&nbsp;many&nbsp;data&nbsp;point&nbsp;should&nbsp;generate&nbsp;in&nbsp;a&nbsp;second<br>
+:param&nbsp;float&nbsp;minimum_data_percent:&nbsp;Minimum&nbsp;percent&nbsp;of&nbsp;data&nbsp;should&nbsp;be&nbsp;available<br>
+:return:&nbsp;Variance&nbsp;of&nbsp;ambient&nbsp;light&nbsp;over&nbsp;1&nbsp;day&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_ambient_light_four_hourly"><strong>variance_ambient_light_four_hourly</strong></a>(self, lightdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], data_frequency:float=16, minimum_data_percent:float=40) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Variance&nbsp;of&nbsp;ambient&nbsp;light&nbsp;(in&nbsp;flux)&nbsp;for&nbsp;each&nbsp;four&nbsp;hour&nbsp;window&nbsp;in&nbsp;a&nbsp;day.&nbsp;If&nbsp;the&nbsp;input&nbsp;light&nbsp;data&nbsp;is<br>
+less&nbsp;than&nbsp;minimum_data_percent%,&nbsp;which&nbsp;is&nbsp;default&nbsp;40%,&nbsp;in&nbsp;a&nbsp;window&nbsp;then&nbsp;it&nbsp;will&nbsp;not&nbsp;generate&nbsp;any&nbsp;data<br>
+&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;lightdata:&nbsp;Phone&nbsp;ambient&nbsp;light&nbsp;DataStream<br>
+:param&nbsp;float&nbsp;data_frequency:&nbsp;How&nbsp;many&nbsp;data&nbsp;point&nbsp;should&nbsp;generate&nbsp;in&nbsp;a&nbsp;second<br>
+:param&nbsp;float&nbsp;minimum_data_percent:&nbsp;Minimum&nbsp;percent&nbsp;of&nbsp;data&nbsp;should&nbsp;be&nbsp;available<br>
+:return:&nbsp;Variance&nbsp;of&nbsp;ambient&nbsp;light&nbsp;over&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_ambient_light_hourly"><strong>variance_ambient_light_hourly</strong></a>(self, lightdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], data_frequency:float=16, minimum_data_percent:float=40) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Variance&nbsp;of&nbsp;ambient&nbsp;light&nbsp;(in&nbsp;flux)&nbsp;for&nbsp;each&nbsp;hour&nbsp;window&nbsp;in&nbsp;a&nbsp;day.&nbsp;If&nbsp;the&nbsp;input&nbsp;light&nbsp;data&nbsp;is&nbsp;less&nbsp;than<br>
+&nbsp;minimum_data_percent%,&nbsp;which&nbsp;is&nbsp;default&nbsp;40%,&nbsp;in&nbsp;a&nbsp;window&nbsp;then&nbsp;it&nbsp;will&nbsp;not&nbsp;generate&nbsp;any&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;lightdata:&nbsp;Phone&nbsp;ambient&nbsp;light&nbsp;DataStream<br>
+:param&nbsp;float&nbsp;data_frequency:&nbsp;How&nbsp;many&nbsp;data&nbsp;point&nbsp;should&nbsp;generate&nbsp;in&nbsp;a&nbsp;second<br>
+:param&nbsp;float&nbsp;minimum_data_percent:&nbsp;Minimum&nbsp;percent&nbsp;of&nbsp;data&nbsp;should&nbsp;be&nbsp;available<br>
+:return:&nbsp;Variance&nbsp;of&nbsp;ambient&nbsp;light&nbsp;over&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_call_duration_daily"><strong>variance_call_duration_daily</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Variance&nbsp;of&nbsp;call&nbsp;duration&nbsp;in&nbsp;minutes&nbsp;for&nbsp;a&nbsp;day.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data<br>
+for&nbsp;that&nbsp;day&nbsp;then&nbsp;it&nbsp;will&nbsp;return&nbsp;None.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;duration&nbsp;DataStream<br>
+:return:&nbsp;Variance&nbsp;of&nbsp;phone&nbsp;call&nbsp;duration&nbsp;over&nbsp;1&nbsp;day&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_call_duration_four_hourly"><strong>variance_call_duration_four_hourly</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Variance&nbsp;of&nbsp;call&nbsp;duration&nbsp;in&nbsp;minutes&nbsp;for&nbsp;each&nbsp;four&nbsp;hour&nbsp;window.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data<br>
+for&nbsp;any&nbsp;window&nbsp;then&nbsp;there&nbsp;will&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;duration&nbsp;DataStream<br>
+:return:&nbsp;Variance&nbsp;of&nbsp;phone&nbsp;call&nbsp;duration&nbsp;over&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_call_duration_hourly"><strong>variance_call_duration_hourly</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Variance&nbsp;of&nbsp;call&nbsp;duration&nbsp;in&nbsp;minutes&nbsp;for&nbsp;each&nbsp;hour&nbsp;window.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data<br>
+for&nbsp;any&nbsp;window&nbsp;then&nbsp;there&nbsp;will&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;duration&nbsp;DataStream<br>
+:return:&nbsp;Variance&nbsp;of&nbsp;phone&nbsp;call&nbsp;duration&nbsp;over&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_inter_phone_call_sms_time_daily"><strong>variance_inter_phone_call_sms_time_daily</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Variance&nbsp;of&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;events&nbsp;(call&nbsp;and&nbsp;sms)<br>
+for&nbsp;whole&nbsp;day.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;then&nbsp;it&nbsp;will&nbsp;return&nbsp;None.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;DataStream<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Variance&nbsp;of&nbsp;inter-phone&nbsp;call&nbsp;and&nbsp;sms&nbsp;time&nbsp;over&nbsp;1&nbsp;day&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_inter_phone_call_sms_time_four_hourly"><strong>variance_inter_phone_call_sms_time_four_hourly</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Variance&nbsp;of&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;events&nbsp;(call&nbsp;and&nbsp;sms)<br>
+for&nbsp;each&nbsp;four&nbsp;hour&nbsp;window.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;a&nbsp;window&nbsp;then<br>
+there&nbsp;will&nbsp;be&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;DataStream<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Variances&nbsp;of&nbsp;inter-phone&nbsp;call&nbsp;and&nbsp;sms&nbsp;time&nbsp;over&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_inter_phone_call_sms_time_hourly"><strong>variance_inter_phone_call_sms_time_hourly</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint], smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Variance&nbsp;of&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;events&nbsp;(call&nbsp;and&nbsp;sms)<br>
+for&nbsp;each&nbsp;hour&nbsp;window.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;a&nbsp;window&nbsp;then<br>
+there&nbsp;will&nbsp;be&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;DataStream<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Variances&nbsp;of&nbsp;inter-phone&nbsp;call&nbsp;and&nbsp;sms&nbsp;time&nbsp;over&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_inter_phone_call_time_daily"><strong>variance_inter_phone_call_time_daily</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;call&nbsp;for&nbsp;a&nbsp;day.<br>
+If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;the&nbsp;day&nbsp;then&nbsp;it&nbsp;will&nbsp;return&nbsp;None.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;DataStream<br>
+:return:&nbsp;Variance&nbsp;of&nbsp;inter-phone&nbsp;call&nbsp;time&nbsp;over&nbsp;1&nbsp;day&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_inter_phone_call_time_four_hourly"><strong>variance_inter_phone_call_time_four_hourly</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Variance&nbsp;of&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;call&nbsp;for&nbsp;each&nbsp;four&nbsp;hour&nbsp;window.<br>
+If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;a&nbsp;window&nbsp;then&nbsp;there&nbsp;will&nbsp;be&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;DataStream<br>
+:return:&nbsp;Variance&nbsp;of&nbsp;inter-phone&nbsp;call&nbsp;time&nbsp;over&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_inter_phone_call_time_hourly"><strong>variance_inter_phone_call_time_hourly</strong></a>(self, phonedata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Variance&nbsp;of&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;call&nbsp;for&nbsp;each&nbsp;hour&nbsp;window.<br>
+If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;a&nbsp;window&nbsp;then&nbsp;there&nbsp;will&nbsp;be&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;phonedata:&nbsp;Phone&nbsp;call&nbsp;DataStream<br>
+:return:&nbsp;Average&nbsp;inter-phone&nbsp;call&nbsp;time&nbsp;over&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_inter_sms_time_daily"><strong>variance_inter_sms_time_daily</strong></a>(self, smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;sms&nbsp;for&nbsp;a&nbsp;day.<br>
+If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;that&nbsp;day,&nbsp;then&nbsp;it&nbsp;will&nbsp;return&nbsp;None.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Variance&nbsp;of&nbsp;inter-sms&nbsp;time&nbsp;over&nbsp;1&nbsp;daily&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_inter_sms_time_four_hourly"><strong>variance_inter_sms_time_four_hourly</strong></a>(self, smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Average&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;sms&nbsp;for&nbsp;each&nbsp;four&nbsp;hour&nbsp;window.<br>
+If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;a&nbsp;window&nbsp;then&nbsp;there&nbsp;will&nbsp;be&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Variance&nbsp;of&nbsp;inter-sms&nbsp;time&nbsp;over&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_inter_sms_time_hourly"><strong>variance_inter_sms_time_hourly</strong></a>(self, smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Variance&nbsp;of&nbsp;time&nbsp;(in&nbsp;minutes)&nbsp;between&nbsp;two&nbsp;consecutive&nbsp;sms&nbsp;for&nbsp;each&nbsp;hour&nbsp;window.<br>
+If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data&nbsp;for&nbsp;a&nbsp;window&nbsp;then&nbsp;there&nbsp;will&nbsp;be&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Variance&nbsp;of&nbsp;inter-sms&nbsp;time&nbsp;over&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_sms_length_daily"><strong>variance_sms_length_daily</strong></a>(self, smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Variance&nbsp;of&nbsp;sms&nbsp;length&nbsp;for&nbsp;a&nbsp;day.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data<br>
+for&nbsp;that&nbsp;day,&nbsp;then&nbsp;it&nbsp;will&nbsp;return&nbsp;None.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Variance&nbsp;of&nbsp;SMS&nbsp;length&nbsp;over&nbsp;1&nbsp;day&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_sms_length_four_hourly"><strong>variance_sms_length_four_hourly</strong></a>(self, smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Variance&nbsp;of&nbsp;sms&nbsp;length&nbsp;for&nbsp;each&nbsp;four&nbsp;hour&nbsp;window.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data<br>
+for&nbsp;any&nbsp;window&nbsp;then&nbsp;there&nbsp;will&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Variance&nbsp;of&nbsp;SMS&nbsp;length&nbsp;over&nbsp;4&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-variance_sms_length_hourly"><strong>variance_sms_length_hourly</strong></a>(self, smsdata:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>Variance&nbsp;of&nbsp;sms&nbsp;length&nbsp;for&nbsp;each&nbsp;hour&nbsp;window.&nbsp;If&nbsp;there&nbsp;is&nbsp;not&nbsp;enough&nbsp;data<br>
+for&nbsp;any&nbsp;window&nbsp;then&nbsp;there&nbsp;will&nbsp;no&nbsp;data&nbsp;point&nbsp;for&nbsp;that&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;List(DataPoint)&nbsp;smsdata:&nbsp;SMS&nbsp;DataStream<br>
+:return:&nbsp;Variance&nbsp;of&nbsp;SMS&nbsp;length&nbsp;over&nbsp;1&nbsp;hour&nbsp;windows<br>
+:rtype:&nbsp;List(DataPoint)&nbsp;or&nbsp;None</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>:<br>
+<dl><dt><a name="PhoneFeatures-__init__"><strong>__init__</strong></a>(self, CC=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-get_latest_stream_id"><strong>get_latest_stream_id</strong></a>(self, user_id, stream_name)</dt></dl>
+
+<dl><dt><a name="PhoneFeatures-store"><strong>store</strong></a>(self, identifier, owner, name, data_descriptor, execution_context, annotations, stream_type=1, data=None, localtime=True)</dt><dd><tt>All&nbsp;store&nbsp;operations&nbsp;MUST&nbsp;be&nbsp;through&nbsp;this&nbsp;method.</tt></dd></dl>
+
+<dl><dt><a name="PhoneFeatures-store_stream"><strong>store_stream</strong></a>(self, filepath:str, input_streams:list, user_id:&lt;module 'uuid' from '/usr/lib/python3.6/uuid.py'&gt;, data:list, localtime=True)</dt><dd><tt>This&nbsp;method&nbsp;saves&nbsp;the&nbsp;computed&nbsp;DataStreams&nbsp;from&nbsp;different&nbsp;features</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>Any</strong> = typing.Any<br>
+<strong>IN_VEHICLE</strong> = 6.0<br>
+<strong>MESSAGE_TYPE_SENT</strong> = 2.0<br>
+<strong>ON_BICYCLE</strong> = 5.0<br>
+<strong>ON_FOOT</strong> = 1.0<br>
+<strong>OUTGOING_TYPE</strong> = 2.0<br>
+<strong>RUNNING</strong> = 4.0<br>
+<strong>STILL</strong> = 0.0<br>
+<strong>TILTING</strong> = 2.0<br>
+<strong>UNKNOWN</strong> = 7.0<br>
+<strong>WALKING</strong> = 3.0<br>
+<strong>feature_class_name</strong> = 'PhoneFeatures'</td></tr></table>
+</body></html>

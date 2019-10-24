@@ -30,7 +30,7 @@
           "email": "sakther@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Detects posture types (LYING, SITTING, STANDING) in 10 seconds window  using wrist accelerometer"

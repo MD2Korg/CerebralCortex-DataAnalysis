@@ -29,7 +29,7 @@
           "email": "shiplu.cse.du@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Duration of touch event. The output is one of the four verdicts [typing, pause, reading, unknown]. The touch screen data was analyzed using Gaussian Mixture algorithm on Productivity and Communication app only."

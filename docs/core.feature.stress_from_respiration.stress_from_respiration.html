@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.stress_from_respiration.stress_from_respiration</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.stress_from_respiration.html"><font color="#ffffff">stress_from_respiration</font></a>.stress_from_respiration</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/stress_from_respiration/stress_from_respiration.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/stress_from_respiration/stress_from_respiration.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2018,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="core.html">core</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="pickle.html">pickle</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="core.feature.stress_from_respiration.stress_from_respiration.html#stress_from_respiration">stress_from_respiration</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="stress_from_respiration">class <strong>stress_from_respiration</strong></a>(<a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;class&nbsp;applies&nbsp;a&nbsp;pretrained&nbsp;Support&nbsp;Vector&nbsp;Machine&nbsp;model&nbsp;with&nbsp;radial&nbsp;basis&nbsp;kernel&nbsp;to&nbsp;one&nbsp;minute&nbsp;of&nbsp;<br>
+respiration&nbsp;cycle&nbsp;features&nbsp;<br>
+and&nbsp;produces&nbsp;a&nbsp;binary&nbsp;output&nbsp;of&nbsp;Stress/Not&nbsp;Stressed.<br>
+&nbsp;<br>
+The&nbsp;model&nbsp;was&nbsp;trained&nbsp;with&nbsp;python&nbsp;scikit-learn&nbsp;library&nbsp;with&nbsp;21&nbsp;participants&nbsp;data.<br>
+&nbsp;<br>
+The&nbsp;hyperparameters&nbsp;of&nbsp;the&nbsp;model&nbsp;are:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;C&nbsp;=&nbsp;10.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;Gamma&nbsp;=&nbsp;0.01<br>
+&nbsp;<br>
+The&nbsp;model&nbsp;takes&nbsp;14&nbsp;input&nbsp;features&nbsp;as&nbsp;listed:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;&nbsp;inspiration_duration<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;&nbsp;expiration_duration<br>
+&nbsp;&nbsp;&nbsp;&nbsp;3.&nbsp;&nbsp;respiration_duration<br>
+&nbsp;&nbsp;&nbsp;&nbsp;4.&nbsp;&nbsp;inspiration_expiration_duration_ratio<br>
+&nbsp;&nbsp;&nbsp;&nbsp;5.&nbsp;&nbsp;stretch<br>
+&nbsp;&nbsp;&nbsp;&nbsp;6.&nbsp;&nbsp;inspiration_velocity<br>
+&nbsp;&nbsp;&nbsp;&nbsp;7.&nbsp;&nbsp;expiration_velocity<br>
+&nbsp;&nbsp;&nbsp;&nbsp;8.&nbsp;&nbsp;skewness<br>
+&nbsp;&nbsp;&nbsp;&nbsp;9.&nbsp;&nbsp;kurtosis<br>
+&nbsp;&nbsp;&nbsp;&nbsp;10.&nbsp;&nbsp;entropy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;11.&nbsp;&nbsp;inspiration_expiration_velocity_ratio<br>
+&nbsp;&nbsp;&nbsp;&nbsp;12.&nbsp;&nbsp;inspiration_expiration_area_ratio<br>
+&nbsp;&nbsp;&nbsp;&nbsp;13.&nbsp;&nbsp;expiration_respiration_duration_ratio<br>
+&nbsp;&nbsp;&nbsp;&nbsp;14.&nbsp;&nbsp;respiration_area_inspiration_duration_ratio<br>
+&nbsp;<br>
+In&nbsp;every&nbsp;one&nbsp;minute&nbsp;of&nbsp;data&nbsp;there&nbsp;will&nbsp;be&nbsp;more&nbsp;than&nbsp;1&nbsp;respiration&nbsp;cycles&nbsp;each&nbsp;with&nbsp;<br>
+these&nbsp;14&nbsp;features&nbsp;pre-calculated.&nbsp;We&nbsp;take&nbsp;the&nbsp;median&nbsp;of&nbsp;each&nbsp;of&nbsp;this&nbsp;feature&nbsp;found&nbsp;within&nbsp;the&nbsp;minute,&nbsp;<br>
+transform&nbsp;the&nbsp;(1,14)&nbsp;shape&nbsp;feature&nbsp;row&nbsp;according&nbsp;to&nbsp;a&nbsp;pre-trained&nbsp;standard&nbsp;<br>
+transformation&nbsp;and&nbsp;apply&nbsp;the&nbsp;Support&nbsp;Vector&nbsp;Machine&nbsp;model&nbsp;to&nbsp;get&nbsp;the&nbsp;binary&nbsp;output<br>
+&nbsp;<br>
+The&nbsp;model&nbsp;trained&nbsp;from&nbsp;respiration&nbsp;here&nbsp;has&nbsp;its&nbsp;theoretical&nbsp;underpinnings&nbsp;described&nbsp;in&nbsp;the&nbsp;following&nbsp;paper:<br>
+&nbsp;<br>
+K.&nbsp;Hovsepian,&nbsp;M.&nbsp;al’Absi,&nbsp;E.&nbsp;Ertin,&nbsp;T.&nbsp;Kamarck,&nbsp;M.&nbsp;Nakajima,&nbsp;and&nbsp;S.&nbsp;Kumar,&nbsp;<br>
+"cStress:&nbsp;Towards&nbsp;a&nbsp;Gold&nbsp;Standard&nbsp;for&nbsp;Continuous&nbsp;Stress&nbsp;Assessment&nbsp;in&nbsp;the&nbsp;Mobile&nbsp;Environment,"&nbsp;<br>
+ACM&nbsp;UbiComp,&nbsp;pp.&nbsp;493-504,&nbsp;2015.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="core.feature.stress_from_respiration.stress_from_respiration.html#stress_from_respiration">stress_from_respiration</a></dd>
+<dd><a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="stress_from_respiration-process"><strong>process</strong></a>(self, user:str, all_days:list)</dt><dd><tt>Takes&nbsp;the&nbsp;user&nbsp;identifier&nbsp;and&nbsp;the&nbsp;list&nbsp;of&nbsp;days&nbsp;and&nbsp;does&nbsp;the&nbsp;required&nbsp;processing<br>
+&nbsp;<br>
+:param&nbsp;user:&nbsp;user&nbsp;id&nbsp;string<br>
+:param&nbsp;all_days:&nbsp;list&nbsp;of&nbsp;days&nbsp;to&nbsp;compute</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>:<br>
+<dl><dt><a name="stress_from_respiration-__init__"><strong>__init__</strong></a>(self, CC=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="stress_from_respiration-get_latest_stream_id"><strong>get_latest_stream_id</strong></a>(self, user_id, stream_name)</dt></dl>
+
+<dl><dt><a name="stress_from_respiration-store"><strong>store</strong></a>(self, identifier, owner, name, data_descriptor, execution_context, annotations, stream_type=1, data=None, localtime=True)</dt><dd><tt>All&nbsp;store&nbsp;operations&nbsp;MUST&nbsp;be&nbsp;through&nbsp;this&nbsp;method.</tt></dd></dl>
+
+<dl><dt><a name="stress_from_respiration-store_stream"><strong>store_stream</strong></a>(self, filepath:str, input_streams:list, user_id:&lt;module 'uuid' from '/usr/lib/python3.6/uuid.py'&gt;, data:list, localtime=True)</dt><dd><tt>This&nbsp;method&nbsp;saves&nbsp;the&nbsp;computed&nbsp;DataStreams&nbsp;from&nbsp;different&nbsp;features</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="core.computefeature.html#ComputeFeatureBase">core.computefeature.ComputeFeatureBase</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>feature_class_name</strong> = 'stress_from_respiration'<br>
+<strong>path_to_model_files</strong> = 'core/resources/models/stress_respiration/'<br>
+<strong>respiration_cycle_feature</strong> = 'org.md2k.feature.respirationcyclefeature.v3'<br>
+<strong>window_offset</strong> = 60<br>
+<strong>window_size</strong> = 60</td></tr></table>
+</body></html>

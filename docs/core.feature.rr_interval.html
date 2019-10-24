@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: package core.feature.rr_interval</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.rr_interval</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/rr_interval/__init__.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/rr_interval/__init__.py</a></font></td></tr></table>
+    <p><tt>Takes&nbsp;the&nbsp;raw&nbsp;datastream&nbsp;of&nbsp;motionsenseHRV&nbsp;and&nbsp;motionsenseHRV+&nbsp;which&nbsp;contains&nbsp;a&nbsp;byte&nbsp;array&nbsp;<br>
+in&nbsp;each&nbsp;DataPoint&nbsp;and&nbsp;decodes&nbsp;them&nbsp;to&nbsp;get&nbsp;the&nbsp;PPG&nbsp;signal&nbsp;in&nbsp;RED,INFRARED,GREEN&nbsp;channel.&nbsp;This&nbsp;is&nbsp;done&nbsp;for<br>
+both&nbsp;left&nbsp;and&nbsp;right/only&nbsp;left/only&nbsp;right&nbsp;sensors&nbsp;whichever&nbsp;is&nbsp;applicable&nbsp;for&nbsp;the&nbsp;person&nbsp;wearing&nbsp;the&nbsp;sensor&nbsp;suite.<br>
+Depending&nbsp;on&nbsp;the&nbsp;presence&nbsp;of&nbsp;PPG&nbsp;signal&nbsp;it&nbsp;then&nbsp;tries&nbsp;to&nbsp;combine&nbsp;information&nbsp;of&nbsp;both&nbsp;the&nbsp;wrists&nbsp;in&nbsp;a&nbsp;one&nbsp;minute&nbsp;<br>
+window&nbsp;basis.&nbsp;Then&nbsp;a&nbsp;subspace&nbsp;based&nbsp;method&nbsp;is&nbsp;applied&nbsp;to&nbsp;generate&nbsp;the&nbsp;initial&nbsp;likelihood&nbsp;of&nbsp;the&nbsp;presence&nbsp;of&nbsp;R-peaks&nbsp;in&nbsp;<br>
+the&nbsp;ppg&nbsp;signals.&nbsp;This&nbsp;likelihood&nbsp;array&nbsp;is&nbsp;then&nbsp;used&nbsp;to&nbsp;compute&nbsp;the&nbsp;R-peaks&nbsp;through&nbsp;an&nbsp;Bayesian&nbsp;IP&nbsp;algorithm.&nbsp;<br>
+&nbsp;<br>
+Algorithm::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Input:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Raw&nbsp;datastream&nbsp;of&nbsp;motionsenseHRV&nbsp;and&nbsp;motionsenseHRV+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Each&nbsp;DataPoint&nbsp;contains&nbsp;a&nbsp;20&nbsp;byte&nbsp;array&nbsp;that&nbsp;was&nbsp;transmitted&nbsp;to&nbsp;the&nbsp;mobile&nbsp;phone&nbsp;by&nbsp;the&nbsp;sensors&nbsp;itself<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Steps:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;Decodes&nbsp;the&nbsp;raw&nbsp;datastream&nbsp;to&nbsp;get&nbsp;the&nbsp;PPG&nbsp;signals&nbsp;of&nbsp;Red,&nbsp;Infrared,&nbsp;Green&nbsp;channels.&nbsp;Done&nbsp;for&nbsp;both&nbsp;the&nbsp;wrists.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;windows&nbsp;ppg&nbsp;from&nbsp;both&nbsp;the&nbsp;wrists&nbsp;on&nbsp;a&nbsp;single&nbsp;windowing&nbsp;scheme&nbsp;of&nbsp;window&nbsp;size=60&nbsp;secs&nbsp;and&nbsp;window&nbsp;offset=60s.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.&nbsp;For&nbsp;every&nbsp;minute&nbsp;of&nbsp;ppg&nbsp;data&nbsp;from&nbsp;both&nbsp;the&nbsp;wrist&nbsp;combine&nbsp;them&nbsp;through&nbsp;interpolation&nbsp;on&nbsp;time&nbsp;axis.&nbsp;It&nbsp;omits&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;those&nbsp;minutes&nbsp;in&nbsp;which&nbsp;the&nbsp;ppg&nbsp;signal&nbsp;does&nbsp;not&nbsp;conform&nbsp;to&nbsp;the&nbsp;standards&nbsp;set&nbsp;beforehand&nbsp;basically&nbsp;rendering&nbsp;a&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;decision&nbsp;of&nbsp;sensor&nbsp;not&nbsp;being&nbsp;worn&nbsp;in&nbsp;any&nbsp;of&nbsp;the&nbsp;wrists.&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.&nbsp;For&nbsp;every&nbsp;minute&nbsp;of&nbsp;data&nbsp;found&nbsp;after&nbsp;combining&nbsp;the&nbsp;information&nbsp;from&nbsp;both&nbsp;the&nbsp;wrists&nbsp;computes&nbsp;the&nbsp;initial&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;likelihood&nbsp;of&nbsp;having&nbsp;a&nbsp;R-peak&nbsp;at&nbsp;every&nbsp;timestamp.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5.&nbsp;Pass&nbsp;the&nbsp;initial&nbsp;likelihood&nbsp;found&nbsp;to&nbsp;the&nbsp;Bayesian&nbsp;IP&nbsp;algorithm&nbsp;to&nbsp;generate&nbsp;the&nbsp;necessary&nbsp;RR&nbsp;interval&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;statistics&nbsp;calculated&nbsp;for&nbsp;each&nbsp;minute<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Output:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RR&nbsp;interval&nbsp;datastream,&nbsp;each&nbsp;DataPoint&nbsp;representing&nbsp;one&nbsp;minute&nbsp;of&nbsp;data&nbsp;and&nbsp;contains&nbsp;the&nbsp;followings&nbsp;things<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;A&nbsp;list&nbsp;of&nbsp;RR-interval&nbsp;array.&nbsp;Each&nbsp;entry&nbsp;in&nbsp;the&nbsp;list&nbsp;corresponds&nbsp;to&nbsp;a&nbsp;realization&nbsp;of&nbsp;the&nbsp;position&nbsp;of&nbsp;R&nbsp;peaks&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;that&nbsp;minute<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;Standard&nbsp;Deviation&nbsp;of&nbsp;Heart&nbsp;Rate&nbsp;within&nbsp;the&nbsp;minute<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.&nbsp;A&nbsp;list&nbsp;corresponding&nbsp;to&nbsp;the&nbsp;heart&nbsp;rate&nbsp;values&nbsp;calculated&nbsp;from&nbsp;variable&nbsp;realizations&nbsp;of&nbsp;the&nbsp;RR&nbsp;interval&nbsp;on&nbsp;a&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sliding&nbsp;window&nbsp;of&nbsp;window&nbsp;size&nbsp;=&nbsp;8&nbsp;second&nbsp;and&nbsp;window&nbsp;offset&nbsp;=&nbsp;2&nbsp;second.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Package Contents</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="core.feature.rr_interval.rr_interval.html">rr_interval</a><br>
+</td><td width="25%" valign=top><a href="core.feature.rr_interval.utils.html"><strong>utils</strong>&nbsp;(package)</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table>
+</body></html>

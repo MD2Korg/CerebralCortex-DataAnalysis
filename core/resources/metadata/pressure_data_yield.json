@@ -29,14 +29,14 @@
           "email": "shiplu.cse.du@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Each data points contains the interval of pressure data present or not. Sample: 1 - data present,  0 - data is absent."
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.v2.phone.pressure_data_yield",
+  "name": "org.md2k.data_analysis.feature.phone.pressure_data_yield",
   "owner": "CC_OWNER_CC",
   "type": "datastream"
 }

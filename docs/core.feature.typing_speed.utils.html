@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.typing_speed.utils</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.typing_speed.html"><font color="#ffffff">typing_speed</font></a>.utils</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/typing_speed/utils.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/typing_speed/utils.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2018,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;-Mithun&nbsp;Saha&nbsp;&lt;msaha1@memphis.edu&gt;,JEYA&nbsp;VIKRANTH&nbsp;JEYAKUMAR&nbsp;&lt;vikranth94@ucla.edu&gt;<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="keras.backend.html">keras.backend</a><br>
+<a href="sklearn.ensemble.html">sklearn.ensemble</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+<a href="numbers.html">numbers</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+<a href="pandas.html">pandas</a><br>
+</td><td width="25%" valign=top><a href="scipy.html">scipy</a><br>
+<a href="tempfile.html">tempfile</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-get_dataframe"><strong>get_dataframe</strong></a>(data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], var_name)</dt><dd><tt>This&nbsp;function&nbsp;takes&nbsp;a&nbsp;list&nbsp;of&nbsp;datapoints&nbsp;for&nbsp;each&nbsp;stream<br>
+and&nbsp;makes&nbsp;a&nbsp;dataframe&nbsp;with&nbsp;unique&nbsp;set&nbsp;of&nbsp;column&nbsp;names<br>
+:param&nbsp;data:&nbsp;a&nbsp;list&nbsp;of&nbsp;datapoints<br>
+:param&nbsp;var_name:&nbsp;a&nbsp;list&nbsp;of&nbsp;columnnames<br>
+:return:&nbsp;a&nbsp;dataframe&nbsp;of&nbsp;one&nbsp;stream&nbsp;(like&nbsp;accl&nbsp;left)</tt></dd></dl>
+ <dl><dt><a name="-sync_left_right_accel"><strong>sync_left_right_accel</strong></a>(dl, dr)</dt><dd><tt>This&nbsp;function&nbsp;is&nbsp;used&nbsp;to&nbsp;sync&nbsp;the&nbsp;left,right&nbsp;accl&nbsp;and&nbsp;gyro&nbsp;dataframes.<br>
+:param&nbsp;dl:&nbsp;left&nbsp;accl,gyro&nbsp;dataframe<br>
+:param&nbsp;dr:&nbsp;right&nbsp;accl,gyro&nbsp;dataframe<br>
+:return:&nbsp;synced&nbsp;dataframe</tt></dd></dl>
+ <dl><dt><a name="-typing_episodes"><strong>typing_episodes</strong></a>(dataset:pandas.core.frame.DataFrame, offset:int) -&gt; List[cerebralcortex.core.datatypes.datapoint.DataPoint]</dt><dd><tt>This&nbsp;function&nbsp;detects&nbsp;typing&nbsp;episodes&nbsp;and&nbsp;typing&nbsp;speed.<br>
+&nbsp;<br>
+Makes&nbsp;a&nbsp;prediction&nbsp;every&nbsp;200ms&nbsp;using&nbsp;values&nbsp;from&nbsp;a&nbsp;window&nbsp;of&nbsp;1000ms.<br>
+This&nbsp;means&nbsp;there&nbsp;will&nbsp;be&nbsp;a&nbsp;overlap&nbsp;of&nbsp;800ms&nbsp;between&nbsp;each&nbsp;sample&nbsp;window.<br>
+&nbsp;<br>
+:param&nbsp;pd.DataFrame&nbsp;dataset:&nbsp;the&nbsp;synced&nbsp;dataframe&nbsp;of&nbsp;left&nbsp;and&nbsp;right&nbsp;accl&nbsp;and&nbsp;gyro&nbsp;data<br>
+:param&nbsp;int&nbsp;offset:&nbsp;offset&nbsp;for&nbsp;local&nbsp;time<br>
+:return:&nbsp;DataPoints&nbsp;of&nbsp;typing&nbsp;episodes<br>
+:rtype:List(DataPoint)</tt></dd></dl>
+ <dl><dt><a name="-unique_days_of_one_stream"><strong>unique_days_of_one_stream</strong></a>(dict)</dt><dd><tt>This&nbsp;function&nbsp;takes&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;stream&nbsp;ids&nbsp;with&nbsp;dates&nbsp;of&nbsp;each&nbsp;stream<br>
+and&nbsp;makes&nbsp;a&nbsp;unique&nbsp;set&nbsp;of&nbsp;dates&nbsp;for&nbsp;all&nbsp;the&nbsp;stream&nbsp;ids<br>
+:param&nbsp;dict:&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;stream&nbsp;ids&nbsp;with&nbsp;dates&nbsp;of&nbsp;each&nbsp;stream<br>
+:return:&nbsp;a&nbsp;unique&nbsp;set&nbsp;of&nbsp;dates&nbsp;for&nbsp;all&nbsp;the&nbsp;stream&nbsp;ids</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>STRIDE</strong> = 5<br>
+<strong>STRIDE_S</strong> = 25<br>
+<strong>TYPINGSPEED_MODEL_FILENAME</strong> = 'core/resources/models/typing/Speed_CNN_all3.h5'<br>
+<strong>TYPING_MODEL_FILENAME</strong> = 'core/resources/models/typing/CNN_all.h5'<br>
+<strong>WINDOW_SIZE</strong> = 25</td></tr></table>
+</body></html>

@@ -1,0 +1,40 @@
+{
+  "annotations": [],
+  "data_descriptor": {
+    "name": "value",
+    "type": "int",
+    "unit": "day",
+    "description": "Inference about presence of voicing segements.Consecutive voicing segments within 10 secs are merged, representing as a voicing segment.",
+    "stream_type": "periodic",
+    "expected_samples_per_day": 1440,
+    "missing_data_handling": "impute"
+  },
+  "execution_context": {
+    "processing_module": {
+      "name": "voice_segments_context_daily",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ]
+    },
+    "algorithm": {
+      "method": "core.feature.audio_features.audio",
+      "authors": [
+        {
+          "name": "Rabin Banjade",
+          "email": "rbnjade1@memphis.edu"
+        }
+      ],
+      "version": "2",
+      "reference": {
+      },
+      "description": "Represents voiced instances within 10 secs as a voicing episode."
+    }
+  },
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.data_analysis.feature.audio.voice_segments_context_daily",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
+}

@@ -28,7 +28,7 @@
           "email": "aniknagato@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "The value indicates the number of transitions to Home that happened between the start_time and end_time of the DataPoint."

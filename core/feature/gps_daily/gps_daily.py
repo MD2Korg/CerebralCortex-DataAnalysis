@@ -116,26 +116,26 @@ class GPSDaily(ComputeFeatureBase):
             semantic_user_data_duplication = []
 
             if stream_name_gps_cluster in streams:
-                cluster_stream_ids = self.CC.get_stream_id(user_id, stream_name_gps_cluster)
+                cluster_stream_ids = self.get_latest_stream_id(user_id, stream_name_gps_cluster)
                 for cluster_stream_id in cluster_stream_ids:
                     cluster_data_duplication += self.CC.get_stream(cluster_stream_id['identifier'], user_id, day,
                                                                    localtime=True).data
 
             if stream_name_semantic_location in streams:
-                semantic_stream_ids = self.CC.get_stream_id(user_id, stream_name_semantic_location)
+                semantic_stream_ids = self.get_latest_stream_id(user_id, stream_name_semantic_location)
                 for semantic_stream_id in semantic_stream_ids:
                     semantic_data_duplication += self.CC.get_stream(semantic_stream_id['identifier'], user_id, day,
                                                                     localtime=True).data
 
             if stream_name_semantic_location_places in streams:
-                semantic_stream_ids = self.CC.get_stream_id(user_id,
+                semantic_stream_ids = self.get_latest_stream_id(user_id,
                                                             stream_name_semantic_location_places)
                 for semantic_stream_id in semantic_stream_ids:
                     semantic_places_data_duplication += self.CC.get_stream(semantic_stream_id['identifier'], user_id, day,
                                                                     localtime=True).data
 
             if stream_name_semantic_location_user_marked in streams:
-                user_marked_stream_ids = self.CC.get_stream_id(user_id, stream_name_semantic_location_user_marked)
+                user_marked_stream_ids = self.get_latest_stream_id(user_id, stream_name_semantic_location_user_marked)
                 for user_marked_stream_id in user_marked_stream_ids:
                     semantic_user_data_duplication += self.CC.get_stream(user_marked_stream_id['identifier'], user_id,
                                                                          day, localtime=True).data

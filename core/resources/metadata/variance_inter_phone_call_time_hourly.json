@@ -30,7 +30,7 @@
           "email": "shiplu.cse.du@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "The variance time between two consecutive phone calls in minute for each hour of a day"

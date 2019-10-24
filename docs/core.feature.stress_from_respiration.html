@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: package core.feature.stress_from_respiration</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.stress_from_respiration</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/stress_from_respiration/__init__.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/stress_from_respiration/__init__.py</a></font></td></tr></table>
+    <p><tt>Applies&nbsp;a&nbsp;trained&nbsp;support&nbsp;vector&nbsp;machine&nbsp;(SVM)&nbsp;model&nbsp;with&nbsp;radial&nbsp;basis&nbsp;function&nbsp;kernel&nbsp;(RBF)&nbsp;to&nbsp;one&nbsp;minute&nbsp;of<br>
+respiration&nbsp;cycle&nbsp;features&nbsp;and&nbsp;produces&nbsp;a&nbsp;binary&nbsp;output&nbsp;of&nbsp;Stress/Not&nbsp;Stressed.<br>
+&nbsp;<br>
+Algorithm::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Input:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;Respiration&nbsp;cycle&nbsp;feature&nbsp;datastream:&nbsp;Contains&nbsp;a&nbsp;list&nbsp;of&nbsp;DataPoints&nbsp;each&nbsp;representing&nbsp;a&nbsp;respiration&nbsp;cycle<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;a&nbsp;list&nbsp;of&nbsp;21&nbsp;features&nbsp;calculated&nbsp;from&nbsp;each&nbsp;cycle<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Steps:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;Implement&nbsp;a&nbsp;non-overlapping&nbsp;windowing&nbsp;with&nbsp;window-size=60&nbsp;seconds&nbsp;on&nbsp;the&nbsp;input&nbsp;datastream.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;Construct&nbsp;a&nbsp;matrix&nbsp;of&nbsp;size&nbsp;(m,14)&nbsp;from&nbsp;each&nbsp;one&nbsp;minute&nbsp;window&nbsp;where&nbsp;m&nbsp;is&nbsp;the&nbsp;number&nbsp;of&nbsp;respiration&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cycles&nbsp;found&nbsp;in&nbsp;this&nbsp;window<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.&nbsp;Take&nbsp;median&nbsp;of&nbsp;each&nbsp;column&nbsp;on&nbsp;the&nbsp;matrix&nbsp;for&nbsp;each&nbsp;window&nbsp;generating&nbsp;a&nbsp;(1,14)&nbsp;shaped&nbsp;feature&nbsp;row&nbsp;for&nbsp;every&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;one&nbsp;minute<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5.&nbsp;Transform&nbsp;the&nbsp;feature&nbsp;rows&nbsp;with&nbsp;a&nbsp;standard&nbsp;transformation.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6.&nbsp;Apply&nbsp;the&nbsp;support&nbsp;vector&nbsp;machine&nbsp;model&nbsp;to&nbsp;predict&nbsp;the&nbsp;output.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Output:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;A&nbsp;0&nbsp;or&nbsp;1&nbsp;binary&nbsp;value&nbsp;for&nbsp;each&nbsp;minute&nbsp;of&nbsp;data&nbsp;with&nbsp;0&nbsp;representing&nbsp;that&nbsp;the&nbsp;person&nbsp;was&nbsp;not&nbsp;stressed&nbsp;and&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;representing&nbsp;stress&nbsp;for&nbsp;the&nbsp;minute.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;Description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Support&nbsp;vector&nbsp;machine&nbsp;model&nbsp;was&nbsp;trained&nbsp;with&nbsp;python&nbsp;scikit-learn&nbsp;library&nbsp;with&nbsp;21&nbsp;participants&nbsp;data.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;hyper-parameters&nbsp;of&nbsp;the&nbsp;model&nbsp;are:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;C&nbsp;=&nbsp;10.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;Gamma&nbsp;=&nbsp;0.01<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Input&nbsp;Feature&nbsp;Description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;model&nbsp;takes&nbsp;14&nbsp;input&nbsp;features&nbsp;as&nbsp;listed:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;&nbsp;inspiration_duration<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;&nbsp;expiration_duration<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.&nbsp;&nbsp;respiration_duration<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.&nbsp;&nbsp;inspiration_expiration_duration_ratio<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5.&nbsp;&nbsp;stretch<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6.&nbsp;&nbsp;inspiration_velocity<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7.&nbsp;&nbsp;expiration_velocity<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8.&nbsp;&nbsp;skewness<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9.&nbsp;&nbsp;kurtosis<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10.&nbsp;&nbsp;entropy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11.&nbsp;&nbsp;inspiration_expiration_velocity_ratio<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12.&nbsp;&nbsp;inspiration_expiration_area_ratio<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13.&nbsp;&nbsp;expiration_respiration_duration_ratio<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;14.&nbsp;&nbsp;respiration_area_inspiration_duration_ratio<br>
+&nbsp;<br>
+:References:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;model&nbsp;trained&nbsp;from&nbsp;respiration&nbsp;here&nbsp;to&nbsp;compute&nbsp;stress&nbsp;has&nbsp;its&nbsp;theoretical&nbsp;underpinnings&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;described&nbsp;in&nbsp;the&nbsp;following&nbsp;paper:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;K.&nbsp;Hovsepian,&nbsp;M.&nbsp;al’Absi,&nbsp;E.&nbsp;Ertin,&nbsp;T.&nbsp;Kamarck,&nbsp;M.&nbsp;Nakajima,&nbsp;and&nbsp;S.&nbsp;Kumar,&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"cStress:&nbsp;Towards&nbsp;a&nbsp;Gold&nbsp;Standard&nbsp;for&nbsp;Continuous&nbsp;Stress&nbsp;Assessment&nbsp;in&nbsp;the&nbsp;Mobile&nbsp;Environment,"&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACM&nbsp;UbiComp,&nbsp;pp.&nbsp;493-504,&nbsp;2015.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Package Contents</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="core.feature.stress_from_respiration.stress_from_respiration.html">stress_from_respiration</a><br>
+</td><td width="25%" valign=top><a href="core.feature.stress_from_respiration.utils.html"><strong>utils</strong>&nbsp;(package)</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table>
+</body></html>

@@ -30,14 +30,14 @@
           "email": "mullah@memphis.edu"
         }
       ],
-      "version": "0.0.1",
+      "version": "1.0",
       "reference": {
       },
       "description": "Calculates the stress likelihood of one minute window from calculating RR interval statistics calculated from wrist ppg"
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.data_analysis.feature.stress.wrist.likelihood.60seconds.v1",
+  "name": "org.md2k.data_analysis.feature.stress.wrist.likelihood.60seconds",
   "owner": "",
   "type": "datastream"
 }

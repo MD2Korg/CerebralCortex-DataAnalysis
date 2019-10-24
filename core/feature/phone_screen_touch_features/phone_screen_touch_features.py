@@ -36,6 +36,8 @@ import copy
 from sklearn.mixture import GaussianMixture
 from typing import List, Callable, Any
 
+from core.feature.phone_screen_touch_features.phone_screen_touch_features_all_app import PhoneScreenTouchFeaturesAllApp
+
 feature_class_name = 'PhoneScreenTouchFeatures'
 
 
@@ -57,7 +59,15 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
         """
         if admission_control is None:
             return data
-        return [d for d in data if admission_control(d.sample)]
+        filtered_data = []
+        for d in data:
+            if admission_control(d.sample):
+                filtered_data.append(d)
+            elif type(d.sample) is list and len(d.sample) == 1 and admission_control(d.sample[0]):
+                d.sample = d.sample[0]
+                filtered_data.append(d)
+
+        return filtered_data
 
     def get_data_by_stream_name(self, stream_name: str, user_id: str, day: str,
                                 localtime: bool=True) -> List[DataPoint]:
@@ -623,3 +633,7 @@ class PhoneScreenTouchFeatures(ComputeFeatureBase):
             self.CC.logging.log("Processing PhoneTouchScreenFeatures")
             streams = self.CC.get_user_streams(user_id)
             self.process_data(user_id, streams, all_days)
+
+            # feature calculation without app categories
+            features_all_app = PhoneScreenTouchFeaturesAllApp(self.CC)
+            features_all_app.process(user_id, all_days)

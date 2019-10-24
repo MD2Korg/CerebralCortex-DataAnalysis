@@ -28,7 +28,7 @@
           "email": "aniknagato@gmail.com"
         }
       ],
-      "version": "0.0.1",
+      "version": "1",
       "reference": {
       },
       "description": "Sample is a dictionary. Key is the type of location (home, work etc.) and corresponding value is the cumulative time (in seconds) in that type of location"

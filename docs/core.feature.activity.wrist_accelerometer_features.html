@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module core.feature.activity.wrist_accelerometer_features</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="core.html"><font color="#ffffff">core</font></a>.<a href="core.feature.html"><font color="#ffffff">feature</font></a>.<a href="core.feature.activity.html"><font color="#ffffff">activity</font></a>.wrist_accelerometer_features</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/activity/wrist_accelerometer_features.py">/home/a/CCdoc/CerebralCortex-DataAnalysis/core/feature/activity/wrist_accelerometer_features.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Copyright&nbsp;(c)&nbsp;2018,&nbsp;MD2K&nbsp;Center&nbsp;of&nbsp;Excellence<br>
+#&nbsp;-&nbsp;Sayma&nbsp;Akther&nbsp;&lt;sakther@memphis.edu&gt;<br>
+#&nbsp;All&nbsp;rights&nbsp;reserved.<br>
+#<br>
+#&nbsp;Redistribution&nbsp;and&nbsp;use&nbsp;in&nbsp;source&nbsp;and&nbsp;binary&nbsp;forms,&nbsp;with&nbsp;or&nbsp;without<br>
+#&nbsp;modification,&nbsp;are&nbsp;permitted&nbsp;provided&nbsp;that&nbsp;the&nbsp;following&nbsp;conditions&nbsp;are&nbsp;met:<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;of&nbsp;source&nbsp;code&nbsp;must&nbsp;retain&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,&nbsp;this<br>
+#&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer.<br>
+#<br>
+#&nbsp;*&nbsp;Redistributions&nbsp;in&nbsp;binary&nbsp;form&nbsp;must&nbsp;reproduce&nbsp;the&nbsp;above&nbsp;copyright&nbsp;notice,<br>
+#&nbsp;this&nbsp;list&nbsp;of&nbsp;conditions&nbsp;and&nbsp;the&nbsp;following&nbsp;disclaimer&nbsp;in&nbsp;the&nbsp;documentation<br>
+#&nbsp;and/or&nbsp;other&nbsp;materials&nbsp;provided&nbsp;with&nbsp;the&nbsp;distribution.<br>
+#<br>
+#&nbsp;THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"<br>
+#&nbsp;AND&nbsp;ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE<br>
+#&nbsp;IMPLIED&nbsp;WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+#&nbsp;DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE<br>
+#&nbsp;FOR&nbsp;ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL<br>
+#&nbsp;DAMAGES&nbsp;(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR<br>
+#&nbsp;SERVICES;&nbsp;LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER<br>
+#&nbsp;CAUSED&nbsp;AND&nbsp;ON&nbsp;ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,<br>
+#&nbsp;OR&nbsp;TORT&nbsp;(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE<br>
+#&nbsp;OF&nbsp;THIS&nbsp;SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="json.html">json</a><br>
+<a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+<a href="os.html">os</a><br>
+</td><td width="25%" valign=top><a href="uuid.html">uuid</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-computeFeatures"><strong>computeFeatures</strong></a>(start_time:object, end_time:object, time:object, x:object, y:object, z:object, pid:object) -&gt; object</dt><dd><tt>:rtype:&nbsp;object<br>
+:param&nbsp;start_time:<br>
+:param&nbsp;end_time:<br>
+:param&nbsp;time:<br>
+:param&nbsp;x:<br>
+:param&nbsp;y:<br>
+:param&nbsp;z:<br>
+:param&nbsp;pid:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-compute_accelerometer_features"><strong>compute_accelerometer_features</strong></a>(accel_data:List[cerebralcortex.core.datatypes.datapoint.DataPoint], window_size:float=10.0) -&gt; object</dt><dd><tt>Segment&nbsp;data&nbsp;and&nbsp;computes&nbsp;feature&nbsp;vector&nbsp;for&nbsp;each&nbsp;window<br>
+&nbsp;<br>
+:rtype:&nbsp;object<br>
+:param&nbsp;accel_stream:<br>
+:param&nbsp;window_size:<br>
+:return:&nbsp;list&nbsp;of&nbsp;feature&nbsp;vectors</tt></dd></dl>
+ <dl><dt><a name="-compute_basic_features"><strong>compute_basic_features</strong></a>(timestamp:object, data:object) -&gt; object</dt><dd><tt>:rtype:&nbsp;object<br>
+:param&nbsp;timestamp:<br>
+:param&nbsp;data:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-compute_window_features"><strong>compute_window_features</strong></a>(start_time, end_time, data:List[cerebralcortex.core.datatypes.datapoint.DataPoint]) -&gt; cerebralcortex.core.datatypes.datapoint.DataPoint</dt><dd><tt>Computes&nbsp;feature&nbsp;vector&nbsp;for&nbsp;single&nbsp;window<br>
+&nbsp;<br>
+:rtype:&nbsp;DataPoint<br>
+:param&nbsp;start_time:<br>
+:param&nbsp;end_time:<br>
+:param&nbsp;data:<br>
+:return:&nbsp;feature&nbsp;vector&nbsp;as&nbsp;DataPoint</tt></dd></dl>
+ <dl><dt><a name="-get_magnitude"><strong>get_magnitude</strong></a>(ax:object, ay:object, az:object) -&gt; object</dt><dd><tt>:rtype:&nbsp;object<br>
+:param&nbsp;ax:<br>
+:param&nbsp;ay:<br>
+:param&nbsp;az:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-get_rate_of_change"><strong>get_rate_of_change</strong></a>(timestamp:object, value:object) -&gt; object</dt><dd><tt>:rtype:&nbsp;object<br>
+:param&nbsp;timestamp:<br>
+:param&nbsp;value:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-peak_frequency"><strong>peak_frequency</strong></a>(data:object) -&gt; object</dt><dd><tt>:rtype:&nbsp;object<br>
+:param&nbsp;data:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-spectral_entropy"><strong>spectral_entropy</strong></a>(data, sampling_freq, bands=None)</dt><dd><tt>Compute&nbsp;spectral&nbsp;entropy&nbsp;of&nbsp;a&nbsp;&nbsp;signal&nbsp;with&nbsp;respect&nbsp;to&nbsp;frequency&nbsp;bands.<br>
+The&nbsp;power&nbsp;spectrum&nbsp;is&nbsp;computed&nbsp;through&nbsp;fft.&nbsp;Then,&nbsp;it&nbsp;is&nbsp;normalised&nbsp;and<br>
+assimilated&nbsp;to&nbsp;a&nbsp;probability&nbsp;density&nbsp;function.<br>
+The&nbsp;entropy&nbsp;of&nbsp;the&nbsp;signal&nbsp;:math:`x`&nbsp;can&nbsp;be&nbsp;expressed&nbsp;by:<br>
+..&nbsp;math::<br>
+&nbsp;&nbsp;&nbsp;&nbsp;H(x)&nbsp;=&nbsp;&nbsp;-\sum_{f=0}^{f&nbsp;=&nbsp;f_s/2}&nbsp;PSD(f)&nbsp;log_2[PSD(f)]<br>
+Where:<br>
+:math:`PSD`&nbsp;is&nbsp;the&nbsp;normalised&nbsp;power&nbsp;spectrum&nbsp;(Power&nbsp;Spectrum&nbsp;Density),&nbsp;and<br>
+:math:`f_s`&nbsp;is&nbsp;the&nbsp;sampling&nbsp;frequency<br>
+&nbsp;<br>
+:param&nbsp;data:&nbsp;a&nbsp;one&nbsp;dimensional&nbsp;floating-point&nbsp;array&nbsp;representing&nbsp;a&nbsp;time&nbsp;series.<br>
+:type&nbsp;data:&nbsp;:class:`~numpy.ndarray`&nbsp;or&nbsp;:class:`~pyrem.time_series.Signal`<br>
+:param&nbsp;sampling_freq:&nbsp;the&nbsp;sampling&nbsp;frequency<br>
+:type&nbsp;sampling_freq:&nbsp;&nbsp;float<br>
+:param&nbsp;bands:&nbsp;a&nbsp;list&nbsp;of&nbsp;numbers&nbsp;delimiting&nbsp;the&nbsp;bins&nbsp;of&nbsp;the&nbsp;frequency&nbsp;bands.<br>
+If&nbsp;None&nbsp;the&nbsp;entropy&nbsp;is&nbsp;computed&nbsp;over&nbsp;the&nbsp;whole&nbsp;range&nbsp;of&nbsp;the&nbsp;DFT<br>
+(from&nbsp;0&nbsp;to&nbsp;:math:`f_s/2`)<br>
+:return:&nbsp;the&nbsp;spectral&nbsp;entropy;&nbsp;a&nbsp;scalar</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>ACTIVITY_ACCEL_ONLY_MODEL_FILENAME</strong> = 'core/resources/models/activity/activity_type_randomforest_accelonly500.model'<br>
+<strong>ACTIVITY_LABELS</strong> = ['NO', 'LOW', 'WALKING', 'MOD', 'HIGH']<br>
+<strong>ACTIVITY_LABELS_INDEX_MAP</strong> = {'HIGH': 4, 'LOW': 1, 'MOD': 3, 'NO': 0, 'WALKING': 2}<br>
+<strong>ACTIVITY_MODEL_FILENAME</strong> = 'core/resources/models/activity/activity_level_randomforest.model'<br>
+<strong>ACTIVITY_TYPE_10SECONDS_WINDOW</strong> = 'activity_type_10seconds_window.json'<br>
+<strong>ACTIVITY_TYPE_ACCEL_ONLY_10SECONDS_WINDOW</strong> = 'activity_type_accelonly_10seconds_window.json'<br>
+<strong>IS_MOTIONSENSE_HRV_GYRO_IN_DEGREE</strong> = True<br>
+<strong>LEFT_WRIST</strong> = 'left_wrist'<br>
+<strong>MADGWICKFILTER_BETA</strong> = 0.4<br>
+<strong>MAX_MSHRV_ACCEL</strong> = 2.5<br>
+<strong>MAX_MSHRV_GYRO</strong> = 250<br>
+<strong>MIN_MSHRV_ACCEL</strong> = -2.5<br>
+<strong>MIN_MSHRV_GYRO</strong> = -250<br>
+<strong>MOTIONSENSE_HRV_ACCEL_LEFT</strong> = 'ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST'<br>
+<strong>MOTIONSENSE_HRV_ACCEL_RIGHT</strong> = 'ACCELEROMETER--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST'<br>
+<strong>MOTIONSENSE_HRV_GYRO_LEFT</strong> = 'GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST'<br>
+<strong>MOTIONSENSE_HRV_GYRO_RIGHT</strong> = 'GYROSCOPE--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST'<br>
+<strong>POSTURE_10SECONDS_WINDOW</strong> = 'posture_10seconds_window.json'<br>
+<strong>POSTURE_ACCEL_ONLY_10SECONDS_WINDOW</strong> = 'posture_accelonly_10seconds_window.json'<br>
+<strong>POSTURE_ACCEL_ONLY_MODEL_FILENAME</strong> = 'core/resources/models/activity/posture_randomforest_accelonly500.model'<br>
+<strong>POSTURE_LABELS</strong> = ['lying', 'sitting', 'standing']<br>
+<strong>POSTURE_LABELS_INDEX_MAP</strong> = {'lying': 0, 'sitting': 1, 'standing': 2}<br>
+<strong>POSTURE_MODEL_FILENAME</strong> = 'core/resources/models/activity/posture_randomforest.model'<br>
+<strong>RIGHT_WRIST</strong> = 'right_wrist'<br>
+<strong>SAMPLING_FREQ_MOTIONSENSE_ACCEL</strong> = 25.0<br>
+<strong>SAMPLING_FREQ_MOTIONSENSE_GYRO</strong> = 25.0<br>
+<strong>TEN_SECONDS</strong> = 10</td></tr></table>
+</body></html>

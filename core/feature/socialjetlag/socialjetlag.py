@@ -83,8 +83,8 @@ class SocialJetlag(ComputeFeatureBase):
 #	'''
 #       Calculates the social jetlag for entire data between start_date and end_date for specific participant.
 #	'''
-		streamids_sleep = self.CC.get_stream_id(user_id=userid, stream_name=SLEEP_STREAM)
-		streamids_work = self.CC.get_stream_id(user_id=userid, stream_name=WORKDAY_STREAM)
+		streamids_sleep = self.get_latest_stream_id(user_id=userid, stream_name=SLEEP_STREAM)
+		streamids_work = self.get_latest_stream_id(user_id=userid, stream_name=WORKDAY_STREAM)
 
 		midsleep_work=[]
 		midsleep_nonwork=[]
