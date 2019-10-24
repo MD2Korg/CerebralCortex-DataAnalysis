@@ -1,0 +1,113 @@
+{
+  "annotations": [],
+  "data_descriptor": [
+    {
+      "name": "likelihood",
+      "type": "double",
+      "max_value": "1",
+      "min_value": "0",
+      "description": "Signal Quality Likelihood"
+    },
+    {
+      "name": "attachment",
+      "type": "double",
+      "max_value": "1",
+      "min_value": "-1",
+      "description": "Label of Attachment"
+    },
+    {
+      "name": "mean_acl",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "mean of acl mag"
+    },
+    {
+      "name": "median_acl",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "median of acl mag"
+    },
+    {
+      "name": "std_acl",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "std of acl mag"
+    },
+    {
+      "name": "skew_acl",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "skew of acl mag"
+    },
+    {
+      "name": "kurtosis_acl",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "kurtosis of acl mag"
+    },
+    {
+      "name": "rate_acl",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "rate of change of acl mag"
+    },
+    {
+      "name": "power_acl",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "spectral power of acl mag"
+    },
+    {
+      "name": "sp_entropy_acl",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "spectral entropy of acl mag"
+    },
+    {
+      "name": "peak_freq_acl",
+      "type": "double",
+      "max_value": "250",
+      "min_value": "-250",
+      "description": "peak frequency of acl mag"
+    }
+  ],
+  "execution_context": {
+    "processing_module": {
+      "name": "core.feature.DataQualityPPG",
+      "input_streams": [
+        {
+          "id": "CC_INPUT_STREAM_ID_CC",
+          "name": "CC_INPUT_STREAM_NAME_CC"
+        }
+      ],
+      "input_parameters": {
+        "sampling frequency": "25"
+      }
+    },
+    "algorithm": {
+      "method": "core.",
+      "authors": [
+        {
+          "name": "Md Azim Ullah",
+          "email": "mullah@memphis.edu"
+        }
+      ],
+      "version": "1",
+      "reference": {
+      },
+      "description": "Calculates the signal quality likelihood of PPG data in slinding windows of size 2.5 seconds offset 1 second"
+    }
+  },
+  "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
+  "name": "org.md2k.feature.motionsensehrv.ppg.quality.leftwrist",
+  "owner": "CC_OWNER_CC",
+  "type": "datastream"
+}
