@@ -24,12 +24,11 @@
 
 
 from core.computefeature import ComputeFeatureBase
-from core.feature.DataQualityPPG.utils import get_features,get_model
+from core.feature.DataQualityPPG.utils import get_features, get_model
 import numpy as np
 from datetime import datetime
 from cerebralcortex.core.datatypes.datapoint import DataPoint
 from typing import List
-import numpy as np
 from scipy.stats import skew,kurtosis
 from core.feature.PPGHourYield.utils import get_model
 
@@ -37,7 +36,7 @@ from core.feature.PPGHourYield.utils import get_model
 feature_class_name = 'PPGHourYield'
 
 
-class DecodeHRV(ComputeFeatureBase):
+class PPGHourYield(ComputeFeatureBase):
     """
     This class takes as input raw datastreams from motionsenseHRV and decodes them to get the Accelerometer, Gyroscope
     PPG, Sequence number timeseries. Last of all it does timestamp correction on all the timeseries and saves them.
@@ -109,7 +108,7 @@ class DecodeHRV(ComputeFeatureBase):
                 continue
             if motion_indicator==1:
                 count_motion+=1
-            elif np.mean(window_likelihood)>=.7 and len(window_likelihood)>30:
+            elif np.mean(window_likelihood)>=.75 and len(window_likelihood)>30:
                 count_best+=1
                 count_medium+=1
                 count_good+=1
@@ -136,9 +135,9 @@ class DecodeHRV(ComputeFeatureBase):
 
         :param all_streams: all streams of a person
         :param all_days: daylist to compute
-        :param stream_identifier: left/right wrist HRV raw stream identifier
+        :param stream_identifiers: left/right wrist HRV raw stream identifier
         :param user_id: user id
-        :param json_path: name of json file containing metadata
+        :param json_paths: name of json file containing metadata
 
         """
         clf = get_model()

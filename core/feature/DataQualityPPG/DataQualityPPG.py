@@ -38,7 +38,7 @@ from collections import Counter
 feature_class_name = 'DataQualityPPG'
 
 
-class DecodeHRV(ComputeFeatureBase):
+class DataQualityPPG(ComputeFeatureBase):
     """
     This class takes as input raw datastreams from motionsenseHRV and decodes them to get the Accelerometer, Gyroscope
     PPG, Sequence number timeseries. Last of all it does timestamp correction on all the timeseries and saves them.
@@ -174,7 +174,7 @@ class DecodeHRV(ComputeFeatureBase):
                 continue
             ts_col = np.array(ts_col).reshape(-1,1)
             acl_features = np.concatenate(acl_features)
-            window_col = np.array(window_col).reshape(-1,1)
+            window_col = np.array(window_col)
             # print(window_col.shape,acl_features.shape)
             attachment_all = np.array(attachment_all).reshape(-1,1)
             # print(window_col.shape,attachment_all.shape)
