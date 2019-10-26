@@ -24,7 +24,6 @@
 
 
 from core.computefeature import ComputeFeatureBase
-from core.feature.DataQualityPPG.utils import get_features, get_model
 import numpy as np
 from datetime import datetime
 from cerebralcortex.core.datatypes.datapoint import DataPoint
