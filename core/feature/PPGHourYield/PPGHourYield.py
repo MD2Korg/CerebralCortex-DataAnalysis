@@ -97,7 +97,7 @@ class PPGHourYield(ComputeFeatureBase):
             window_attachment = tmp[:,3]
             index_window = np.array([4+1,4+2])
             acl_window = tmp[:,index_window]
-            feature_acl = get_features(acl_window)
+            feature_acl = self.get_features(acl_window)
             motion_indicator = clf.predict(np.array(feature_acl).reshape(-1,8))[0]
             if len(window_attachment[window_attachment==-1])/len(window_attachment)>=.66:
                 continue
