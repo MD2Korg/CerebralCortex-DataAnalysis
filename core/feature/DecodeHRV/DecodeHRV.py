@@ -259,29 +259,37 @@ class DecodeHRV(ComputeFeatureBase):
             return
         if self.CC is not None:
             if user:
-                streams = self.CC.get_user_streams(user_id=user)
-                if streams is None:
-                    return None
-                user_id = user
-                all_streams_left = ['RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST',
-                                    "RAW--CHARACTERISTIC_LED--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST",
-                                    "RAW--CHARACTERISTIC_LED--org.md2k.motionsense--MOTION_SENSE_HRV_PLUS--LEFT_WRIST",
-                                    "org.md2k.motionsense.motion_sense_hrv.left_wrist.raw"]
-                for s in all_streams_left:
-                    if s in streams:
-                        json_path = 'decoded_hrv_left_wrist.json'
-                        self.get_and_save_data(streams[s], all_days,
-                                               all_streams_left,
-                                               user_id, json_path)
-                        break
-                all_streams_right = ['RAW--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST',
-                                     "RAW--CHARACTERISTIC_LED--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST",
-                                     "RAW--CHARACTERISTIC_LED--org.md2k.motionsense--MOTION_SENSE_HRV_PLUS--RIGHT_WRIST",
-                                     "org.md2k.motionsense.motion_sense_hrv.right_wrist.raw"]
-                for s in all_streams_right:
-                    if s in streams:
-                        json_path = 'decoded_hrv_right_wrist.json'
-                        self.get_and_save_data(streams[s], all_days,
-                                               all_streams_right,
-                                               user_id, json_path)
-                        break
+                tmp = self.get_datastream_raw("org.md2k.feature.motionsensehrv.decoded.leftwrist.v2",
+                                              all_days[0],
+                                              user,False)
+                if len(tmp)==0:
+                    streams = self.CC.get_user_streams(user_id=user)
+                    if streams is None:
+                        return None
+                    user_id = user
+                    all_streams_left = ['RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST',
+                                        "RAW--CHARACTERISTIC_LED--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST",
+                                        "RAW--CHARACTERISTIC_LED--org.md2k.motionsense--MOTION_SENSE_HRV_PLUS--LEFT_WRIST",
+                                        "org.md2k.motionsense.motion_sense_hrv.left_wrist.raw"]
+                    for s in all_streams_left:
+                        if s in streams:
+                            json_path = 'decoded_hrv_left_wrist.json'
+                            self.get_and_save_data(streams[s], all_days,
+                                                   all_streams_left,
+                                                   user_id, json_path)
+                            break
+                tmp = self.get_datastream_raw("org.md2k.feature.motionsensehrv.decoded.rightwrist.v2",
+                                              all_days[0],
+                                              user,False)
+                if len(tmp)==0:
+                    all_streams_right = ['RAW--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST',
+                                         "RAW--CHARACTERISTIC_LED--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST",
+                                         "RAW--CHARACTERISTIC_LED--org.md2k.motionsense--MOTION_SENSE_HRV_PLUS--RIGHT_WRIST",
+                                         "org.md2k.motionsense.motion_sense_hrv.right_wrist.raw"]
+                    for s in all_streams_right:
+                        if s in streams:
+                            json_path = 'decoded_hrv_right_wrist.json'
+                            self.get_and_save_data(streams[s], all_days,
+                                                   all_streams_right,
+                                                   user_id, json_path)
+                            break
