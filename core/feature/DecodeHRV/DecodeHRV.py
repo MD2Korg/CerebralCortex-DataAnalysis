@@ -257,15 +257,15 @@ class DecodeHRV(ComputeFeatureBase):
         """
         if not all_days:
             return
+        streams = self.CC.get_user_streams(user_id=user)
+        if streams is None:
+            return None
         if self.CC is not None:
             if user:
                 tmp = self.get_datastream_raw("org.md2k.feature.motionsensehrv.decoded.leftwrist.v2",
                                               all_days[0],
                                               user,False)
                 if len(tmp)==0:
-                    streams = self.CC.get_user_streams(user_id=user)
-                    if streams is None:
-                        return None
                     user_id = user
                     all_streams_left = ['RAW--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST',
                                         "RAW--CHARACTERISTIC_LED--org.md2k.motionsense--MOTION_SENSE_HRV--LEFT_WRIST",
@@ -282,6 +282,7 @@ class DecodeHRV(ComputeFeatureBase):
                                               all_days[0],
                                               user,False)
                 if len(tmp)==0:
+                    user_id = user
                     all_streams_right = ['RAW--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST',
                                          "RAW--CHARACTERISTIC_LED--org.md2k.motionsense--MOTION_SENSE_HRV--RIGHT_WRIST",
                                          "RAW--CHARACTERISTIC_LED--org.md2k.motionsense--MOTION_SENSE_HRV_PLUS--RIGHT_WRIST",
