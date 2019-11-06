@@ -148,7 +148,7 @@ class PPGHourYield(ComputeFeatureBase):
             if len(data)<100:
                 continue
             tzinfo = data[0].start_time.tzinfo
-            offset = 0
+            offset = data[0].offset
             i=0
             while i<len(data):
                 j = i
