@@ -65,7 +65,7 @@
     }
   },
   "identifier": "CC_OUTPUT_STREAM_IDENTIFIER_CC",
-  "name": "org.md2k.feature.motionsensehrv.ppg.yield.leftwrist",
+  "name": "org.md2k.feature.motionsensehrv.ppg.yield.leftwrist.v2",
   "owner": "CC_OWNER_CC",
   "type": "datastream"
 }
