@@ -105,17 +105,16 @@ class PPGHourYield(ComputeFeatureBase):
             if motion_indicator==1:
                 count_motion+=1
                 continue
-            if len(window_likelihood)<30:
+            if len(window_likelihood)<40:
                 count_bad+=1
-                continue
-            elif np.mean(window_likelihood)>=.75 and len(window_likelihood)>30:
+            elif np.mean(window_likelihood)>=.7 and len(window_likelihood)>=40:
                 count_best+=1
                 count_medium+=1
                 count_good+=1
-            elif np.mean(window_likelihood)>=.5 and len(window_likelihood)>30:
+            elif np.mean(window_likelihood)>=.5 and len(window_likelihood)>=40:
                 count_medium+=1
                 count_good+=1
-            elif np.mean(window_likelihood)>=.3 and len(window_likelihood)>30:
+            elif np.mean(window_likelihood)>=.3 and len(window_likelihood)>=40:
                 count_good+=1
             else:
                 count_bad+=1
