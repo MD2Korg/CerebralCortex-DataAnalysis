@@ -155,31 +155,34 @@ class PPGHourYield(ComputeFeatureBase):
         """
         clf = get_model()
         for day in all_days:
-            final_data = []
-            data = []
-            for s in stream_identifiers:
-                data.extend(self.get_datastream_raw(s,day,user_id,localtime=localtime))
-            if len(data)<100:
+            try:
+                final_data = []
+                data = []
+                for s in stream_identifiers:
+                    data.extend(self.get_datastream_raw(s,day,user_id,localtime=localtime))
+                if len(data)<100:
+                    continue
+                tzinfo = data[0].start_time.tzinfo
+                offset = data[0].offset
+                i=0
+                while i<len(data):
+                    j = i
+                    hour_now = data[j].start_time.hour
+                    tmp = [data[j]]
+                    while j<len(data) and data[j].start_time.hour== hour_now:
+                        tmp.append(data[j])
+                        j+=1
+                    if len(tmp)>60:
+                        tmp_data = self.return_numpy_array_from_datastream(tmp)
+                        offset = tmp_data[0,1]
+                        feat = self.get_yield(clf,tmp_data)
+                        feat = [tmp_data[30,0]]+feat
+                        final_data.append(np.array(feat))
+                    i=j
+                ppg_data_final = np.array(final_data)
+                self.save_data(ppg_data_final,offset,tzinfo,json_paths,all_streams,user_id,localtime)
+            except Exception as e:
                 continue
-            tzinfo = data[0].start_time.tzinfo
-            offset = data[0].offset
-            i=0
-            while i<len(data):
-                j = i
-                hour_now = data[j].start_time.hour
-                tmp = [data[j]]
-                while j<len(data) and data[j].start_time.hour== hour_now:
-                    tmp.append(data[j])
-                    j+=1
-                if len(tmp)>60:
-                    tmp_data = self.return_numpy_array_from_datastream(tmp)
-                    offset = tmp_data[0,1]
-                    feat = self.get_yield(clf,tmp_data)
-                    feat = [tmp_data[30,0]]+feat
-                    final_data.append(np.array(feat))
-                i=j
-            ppg_data_final = np.array(final_data)
-            self.save_data(ppg_data_final,offset,tzinfo,json_paths,all_streams,user_id,localtime)
         return 0
 
     def process(self, user, all_days: list):
