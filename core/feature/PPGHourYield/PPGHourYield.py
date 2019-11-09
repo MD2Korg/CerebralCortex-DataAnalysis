@@ -187,7 +187,7 @@ class PPGHourYield(ComputeFeatureBase):
                 if streams is None:
                     return None
                 user_id = user
-                all_streams_left = ['org.md2k.feature.motionsensehrv.ppg.quality.leftwrist.v2']
+                all_streams_left = ['org.md2k.feature.motionsensehrv.ppg.quality.leftwrist']
                 for s in all_streams_left:
                     if s in streams:
                         json_path = 'data_yield_left.json'
@@ -195,7 +195,7 @@ class PPGHourYield(ComputeFeatureBase):
                                                       all_streams_left,
                                                       user_id, json_path)
                         break
-                all_streams_right = ['org.md2k.feature.motionsensehrv.ppg.quality.rightwrist.v2']
+                all_streams_right = ['org.md2k.feature.motionsensehrv.ppg.quality.rightwrist']
                 for s in all_streams_right:
                     if s in streams:
                         json_path = 'data_yield_right.json'
