@@ -105,17 +105,16 @@ class PPGHourYield(ComputeFeatureBase):
             if motion_indicator==1:
                 count_motion+=1
                 continue
-            if len(window_likelihood)<30:
+            if len(window_likelihood)<40:
                 count_bad+=1
-                continue
-            elif np.mean(window_likelihood)>=.75 and len(window_likelihood)>30:
+            elif np.mean(window_likelihood)>=.7 and len(window_likelihood)>=40:
                 count_best+=1
                 count_medium+=1
                 count_good+=1
-            elif np.mean(window_likelihood)>=.5 and len(window_likelihood)>30:
+            elif np.mean(window_likelihood)>=.5 and len(window_likelihood)>=40:
                 count_medium+=1
                 count_good+=1
-            elif np.mean(window_likelihood)>=.3 and len(window_likelihood)>30:
+            elif np.mean(window_likelihood)>=.3 and len(window_likelihood)>=40:
                 count_good+=1
             else:
                 count_bad+=1
@@ -187,7 +186,7 @@ class PPGHourYield(ComputeFeatureBase):
                 if streams is None:
                     return None
                 user_id = user
-                all_streams_left = ['org.md2k.feature.motionsensehrv.ppg.quality.leftwrist.v2']
+                all_streams_left = ['org.md2k.feature.motionsensehrv.ppg.quality.leftwrist']
                 for s in all_streams_left:
                     if s in streams:
                         json_path = 'data_yield_left.json'
@@ -195,7 +194,7 @@ class PPGHourYield(ComputeFeatureBase):
                                                       all_streams_left,
                                                       user_id, json_path)
                         break
-                all_streams_right = ['org.md2k.feature.motionsensehrv.ppg.quality.rightwrist.v2']
+                all_streams_right = ['org.md2k.feature.motionsensehrv.ppg.quality.rightwrist']
                 for s in all_streams_right:
                     if s in streams:
                         json_path = 'data_yield_right.json'
