@@ -80,45 +80,59 @@ class PPGHourYield(ComputeFeatureBase):
         return np.array(feature)
 
     def get_yield(self,clf,data):
-        ts_array = np.arange(data[0,0],data[-1,0],20000)
         count_all = 0
         count_best = 0
         count_good = 0
         count_bad = 0
         count_motion = 0
         count_medium = 0
-        for t in ts_array:
-            index = np.where((data[:,0]>=t-30000)&(data[:,0]<=t+30000))[0]
-            if len(index)==0:
-                continue
+        i = 0
+        index_col = []
+        while i<len(data[:,0]):
+            j = i
+            index = []
+            while j<len(data[:,0]) and (data[j,0]-data[i,0])<=60000:
+                index.append(j)
+                j+=1
+            index_col.append(np.array(index))
+            j = i
+            while j<len(data[:,0]) and (data[j,0]-data[i,0])<=20000:
+                j+=1
+            i=j
+        acl_features = []
+        for index in index_col:
+            tmp = data[index]
+            index_window = np.array([4+1,4+2])
+            acl_window = tmp[:,index_window]
+            feature_acl = self.get_features(acl_window)
+            acl_features.append(feature_acl)
+        motion_indicator = clf.predict(np.array(acl_features)).reshape(-1)
+        for i,index in enumerate(index_col):
             tmp = data[index]
             window_likelihood = tmp[:,2]
             window_likelihood = window_likelihood[window_likelihood>=.1]
             window_attachment = tmp[:,3]
-            index_window = np.array([4+1,4+2])
-            acl_window = tmp[:,index_window]
-            feature_acl = self.get_features(acl_window)
-            motion_indicator = clf.predict(np.array(feature_acl).reshape(-1,8))[0]
-            if len(window_attachment[window_attachment==-1])/len(window_attachment)>=.66:
-                continue
             count_all+=1
-            if motion_indicator==1:
+            if len(window_attachment[window_attachment==-1])/len(window_attachment)>=.5:
+                continue
+            if motion_indicator[i]==1:
                 count_motion+=1
                 continue
-            if len(window_likelihood)<40:
+            if len(window_likelihood)<30:
                 count_bad+=1
-            elif np.mean(window_likelihood)>=.7 and len(window_likelihood)>=40:
+            elif np.mean(window_likelihood)>=.7 and len(window_likelihood)>=30:
                 count_best+=1
                 count_medium+=1
                 count_good+=1
-            elif np.mean(window_likelihood)>=.5 and len(window_likelihood)>=40:
+            elif np.mean(window_likelihood)>=.5 and len(window_likelihood)>=30:
                 count_medium+=1
                 count_good+=1
-            elif np.mean(window_likelihood)>=.3 and len(window_likelihood)>=40:
+            elif np.mean(window_likelihood)>=.3 and len(window_likelihood)>=30:
                 count_good+=1
             else:
                 count_bad+=1
         tmp = [count_best/180,count_medium/180,count_good/180,count_motion/180,count_bad/180]
+        #     print(tmp)
         return tmp
 
 
@@ -186,7 +200,8 @@ class PPGHourYield(ComputeFeatureBase):
                 if streams is None:
                     return None
                 user_id = user
-                all_streams_left = ['org.md2k.feature.motionsensehrv.ppg.quality.leftwrist']
+                all_streams_left = ['org.md2k.feature.motionsensehrv.ppg.quality.leftwrist',
+                                    'org.md2k.feature.motionsensehrv.ppg.quality.leftwrist.v2']
                 for s in all_streams_left:
                     if s in streams:
                         json_path = 'data_yield_left.json'
@@ -194,7 +209,8 @@ class PPGHourYield(ComputeFeatureBase):
                                                       all_streams_left,
                                                       user_id, json_path)
                         break
-                all_streams_right = ['org.md2k.feature.motionsensehrv.ppg.quality.rightwrist']
+                all_streams_right = ['org.md2k.feature.motionsensehrv.ppg.quality.rightwrist',
+                                     'org.md2k.feature.motionsensehrv.ppg.quality.rightwrist.v2']
                 for s in all_streams_right:
                     if s in streams:
                         json_path = 'data_yield_right.json'
