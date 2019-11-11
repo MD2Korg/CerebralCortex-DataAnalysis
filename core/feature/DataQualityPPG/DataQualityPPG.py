@@ -210,19 +210,29 @@ class DataQualityPPG(ComputeFeatureBase):
                 if streams is None:
                     return None
                 user_id = user
-                all_streams_left = ['org.md2k.feature.motionsensehrv.decoded.leftwrist.v2']
-                for s in all_streams_left:
-                    if s in streams:
-                        json_path = 'data_quality_motion_left.json'
-                        temp = self.get_and_save_data(streams[s], all_days,
-                                               all_streams_left,
-                                               user_id, json_path)
-                        break
-                all_streams_right = ['org.md2k.feature.motionsensehrv.decoded.rightwrist.v2']
-                for s in all_streams_right:
-                    if s in streams:
-                        json_path = 'data_quality_motion_right.json'
-                        temp = self.get_and_save_data(streams[s], all_days,
-                                               all_streams_right,
-                                               user_id, json_path)
-                        break
+                output_streams = ['org.md2k.feature.motionsensehrv.ppg.quality.leftwrist',
+                                  'org.md2k.feature.motionsensehrv.ppg.quality.leftwrist.v2']
+                data_out = []
+                for s1 in output_streams:
+                    data_out.extend(self.get_datastream_raw(s1,all_days[0],user_id,False))
+                if len(data_out)==0:
+                    all_streams_left = ['org.md2k.feature.motionsensehrv.decoded.leftwrist.v2']
+                    for s in all_streams_left:
+                        if s in streams:
+                            json_path = 'data_quality_motion_left.json'
+                            temp = self.get_and_save_data(streams[s], all_days,
+                                                   all_streams_left,
+                                                   user_id, json_path)
+                output_streams = ['org.md2k.feature.motionsensehrv.ppg.quality.rightwrist',
+                                  'org.md2k.feature.motionsensehrv.ppg.quality.rightwrist.v2']
+                data_out = []
+                for s1 in output_streams:
+                    data_out.extend(self.get_datastream_raw(s1,all_days[0],user_id,False))
+                if len(data_out)==0:
+                    all_streams_right = ['org.md2k.feature.motionsensehrv.decoded.rightwrist.v2']
+                    for s in all_streams_right:
+                        if s in streams:
+                            json_path = 'data_quality_motion_right.json'
+                            temp = self.get_and_save_data(streams[s], all_days,
+                                                   all_streams_right,
+                                                   user_id, json_path)
